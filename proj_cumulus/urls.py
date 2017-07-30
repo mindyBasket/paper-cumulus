@@ -14,9 +14,30 @@ Including another URLconf
     2. Import the include() function: from django.conf.urls import url, include
     3. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib import admin
+from django.conf import settings
+from django.conf.urls.static import static
+
+from .views import home
+from flipbooks.views import (
+    FrameListView
+)
+
+
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    
+    #standalone homepage
+    #url(r'^$', home, name='home'),
+    
+    #list view test
+    url(r'^$', FrameListView.as_view(), name='home'),
+    
+    #flipbooks include
+    url(r'^flipbooks/', include('flipbooks.urls', namespace='flipbooks'))
 ]
+
+if settings.DEBUG == True:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

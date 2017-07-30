@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %} {{block.super}} | Frames{% endblock title %}
+
+{% block content %}
+<h3>Here are all the frames</h3>
+
+<div class="content">
+    <p>Check out my attempt at listing the frames</p>
+
+    <ul>
+        {% for fr in object_list %}
+            <li>
+                {{fr.id}} | {{fr.note}}
+            </li>
+        {% empty %}
+            <p>No frames could be found</p>
+        
+        {% endfor %}
+    </ul>
+</div>
+
+{% endblock content %}

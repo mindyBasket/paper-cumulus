@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title%} {{block.super}} | Home{% endblock title %}
+
+{% block content %}
+<h1>This is the home page</h1>
+<h3>{{welcome_msg}}</h3>
+<ul>
+    <li>Open <a href="/chatter">Chatter App</a></li>
+</ul>
+
+<div class="content">
+    <p>Check out my attempt at listing the frames</p>
+
+    <ul>
+        {% for fr in object_list %}
+            <li>
+                {{fr.id}} | {{fr.note}}
+            </li>
+        {% empty %}
+            <p>No frames could be found</p>
+        
+        {% endfor %}
+    </ul>
+</div>
+
+{% endblock content %}
