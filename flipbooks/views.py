@@ -20,6 +20,8 @@ class FrameListView(generic.ListView):
         # Default contexts
         # - object_list, is_paginated, paginator, page_obj
         
-        context['test_context'] = "Hello World!" 
+        #context['frame_image'] = self.frame_image #doesn't work like that
+        # here, "self" = FrameListView, not the Frame object
+        # think of this context like the stuff for the WHOLE view, not the individual model.
         return context
         

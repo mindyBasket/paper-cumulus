@@ -12,6 +12,10 @@ class Frame(models.Model):
     #note = models.CharField(max_length=255, blank=False, unique=True)
     note = models.TextField(max_length=100, blank=True, default="")
     
+    #frame images
+    frame_image = models.ImageField(upload_to = 'frame_images/', blank=True)
+    
+    
     def __str__(self):
         #How can I print its own id? self.id?
         return ("%d : %s" % (self.id, self.note))
