@@ -22,4 +22,8 @@ class FrameModelAdmin(admin.ModelAdmin):
     form = forms.FrameForm
         
 # Register your models here.
+admin.site.register(models.Scene)
+admin.site.register(models.Strip)
 admin.site.register(models.Frame, FrameModelAdmin)
+
+
