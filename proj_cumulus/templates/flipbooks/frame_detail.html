@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %} {{block.super}} | Frame Detail View{% endblock title %}
+
+{% block content %}
+<h3>Frame id {{object.id}} : {{extra}}</h3>
+
+<div class="content">
+
+    <p><img src="{{object.frame_image.url}}" width="100%"/></p>
+    <h3>Details:</h3>
+    <ul>
+        <li>Name: {{object.frame_image.name}}</li>
+        <li>size: {{object.frame_image.size}} bytes</li>
+    </ul>
+</div>
+
+{% endblock content %}

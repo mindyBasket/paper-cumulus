@@ -10,6 +10,31 @@ from .models import (
     )
 
 # Create your views here.
+
+
+class FrameDetailView(generic.DetailView):
+    
+    #I don't need this for detail view, do I?
+    #queryset = Frame.objects.all()
+    
+    def get_object(self):
+        #print("-------------output: ", self.kwargs)
+        pk = self.kwargs.get("pk") # primary key
+        return Frame.objects.get(id=pk)
+        #return get_object_or_404(Chatter, id=pk)
+    
+    # NOT THE SAME AS ListView's get_context_data()
+    def get_context_data(self, **kwargs):
+
+        context = super(FrameDetailView, self).get_context_data(**kwargs)
+        # Default contexts
+        # - object, context_object_name
+        
+        context["extra"] = "Kiefer"
+
+        return context
+        
+    
 class FrameListView(generic.ListView):
 
     queryset = Frame.objects.all() 
