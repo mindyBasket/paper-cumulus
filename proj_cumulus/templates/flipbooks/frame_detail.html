@@ -7,11 +7,11 @@
 
 <div class="content">
 
-    <p><img src="{{object.frame_image.url}}" width="100%"/></p>
+    <p><img src="{{object.frame_image.url | default:'none'}}" width="100%"/></p>
     <h3>Details:</h3>
     <ul>
-        <li>Name: {{object.frame_image.name}}</li>
-        <li>size: {{object.frame_image.size}} bytes</li>
+        <li>Name: {{object.frame_image.name |  default:"path not found" }}</li>
+        <li>size: {{object.frame_image.size | filesizeformat}} bytes</li>
     </ul>
 </div>
 
