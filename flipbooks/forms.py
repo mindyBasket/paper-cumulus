@@ -7,4 +7,4 @@ from .models import (
 class FrameForm(forms.ModelForm):
     class Meta:
         model = Frame
-        fields = ['note', 'frame_image',]
+        fields = ['note', 'order', 'frame_image', 'strip']

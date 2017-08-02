@@ -13,9 +13,12 @@ from . import models
 #       You can have this in models.py and import it.
 class FrameModelAdmin(admin.ModelAdmin):
     def frame_order(self, obj):
-        return ("%d-%d" % (1, obj.id))
+        if obj.strip is None:
+            return ("%s-%d" % ("Stray", obj.order))
+        else:
+            return ("%d-%d" % (obj.strip.order, obj.order))
         
-    list_display = ("frame_order", 'note', 'frame_image', 'date_created',)
+    list_display = ("id", "frame_order", 'note', 'frame_image', 'date_created',)
     empty_value_display = 'unknown'
     
     #custom form
