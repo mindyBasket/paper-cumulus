@@ -11,7 +11,7 @@ from . import views
 urlpatterns = [
     #note: "/" = "{proj}/flipbooks"
     
-    url(r'^$', views.FrameListView.as_view(), name="list"),
+    url(r'^$', views.StripListView.as_view(), name="list"),
     
     # url(r'^search/$', views.ChatterListView.as_view(), name='list'),
     # url(r'^create/$', views.ChatterCreateView.as_view(), name='create'),

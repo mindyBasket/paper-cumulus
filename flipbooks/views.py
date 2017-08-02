@@ -6,6 +6,8 @@ from django.views import generic
 
 #import your models
 from .models import (
+        Scene,
+        Strip,
         Frame
     )
 
@@ -50,3 +52,13 @@ class FrameListView(generic.ListView):
         # think of this context like the stuff for the WHOLE view, not the individual model.
         return context
         
+
+class SceneListView(generic.ListView):
+    
+    queryset = Scene.objects.all()
+
+
+class StripListView(generic.ListView):
+    
+    queryset = Strip.objects.all()
+    

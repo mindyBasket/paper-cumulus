@@ -33,7 +33,7 @@ urlpatterns = [
     #url(r'^$', home, name='home'),
     
     #list view test
-    url(r'^$', FrameListView.as_view(), name='home'),
+    url(r'^$', home, name='home'),
     
     #flipbooks include
     url(r'^flipbooks/', include('flipbooks.urls', namespace='flipbooks'))

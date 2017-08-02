@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %} {{block.super}} | Strips{% endblock title %}
+
+{% block content %}
+<h3>List of Strips</h3>
+
+<div class="content">
+
+    <p>These shouldn't actually be a static list of strips. Opening a strip should start "playing" the frames.</p>
+
+    <ul>
+        {% for strip in object_list %}
+            <li>
+                {{strip.id}} | {{strip.description}}
+                
+                <p class="frames">
+                    {% for fr in strip.frame_set.all %}
+                        <img src="{{fr.frame_image.url}}" height="100px"/>
+                    {% endfor %}
+                </p>
+            </li>
+        {% empty %}
+            <p>No strips could be found</p>
+        
+        {% endfor %}
+    </ul>
+</div>
+
+{% endblock content %}
