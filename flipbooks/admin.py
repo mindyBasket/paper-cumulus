@@ -11,10 +11,17 @@ from . import models
 
 # note: I think FrameModelAdmin don't actually have to be here
 #       You can have this in models.py and import it.
+
+class StripModelAdmin(admin.ModelAdmin):
+
+    list_display = ("id", "__str__", "scene", "description")
+    empty_value_display = 'unknown'
+    
+
 class FrameModelAdmin(admin.ModelAdmin):
     def frame_order(self, obj):
         if obj.strip is None:
-            return ("%s-%d" % ("Stray", obj.order))
+            return ("%s-%d" % ("<Stray>", obj.order))
         else:
             return ("%d-%d" % (obj.strip.order, obj.order))
         
@@ -26,7 +33,7 @@ class FrameModelAdmin(admin.ModelAdmin):
         
 # Register your models here.
 admin.site.register(models.Scene)
-admin.site.register(models.Strip)
+admin.site.register(models.Strip, StripModelAdmin)
 admin.site.register(models.Frame, FrameModelAdmin)
 
 

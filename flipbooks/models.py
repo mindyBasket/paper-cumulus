@@ -41,7 +41,7 @@ class Strip(models.Model):
     
     def __str__(self):
         # https://docs.python.org/2/library/stdtypes.html#str.format
-        return "Strip order: {}".format(self.order)
+        return "Sn {} - {}".format(self.scene.order, self.order)
     
     
 #Frame: holds individual frames

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %} {{block.super}} | Scenes{% endblock title %}
+
+{% block content %}
+<h3>Scenes</h3>
+
+<p>This should be everything in the DB, listed in the manner I set as of 08/02/2017</p>
+
+<ul>
+    {% for scene in object_list %}
+        <li>
+            {{scene.order}} | {{scene.description}}
+            
+            <ol>
+                {% for strip in scene.strip_set.all %}
+                        <img src="{{strip.frame_set.first.frame_image.url}}" height="100px"/>
+ 
+                {% endfor %}
+            </ol>
+                
+
+        </li>
+    {% empty %}
+        <p>No strips could be found</p>
+    
+    {% endfor %}
+</ul>
+
+
+{% endblock content %}

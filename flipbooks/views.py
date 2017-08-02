@@ -56,7 +56,7 @@ class FrameListView(generic.ListView):
 class SceneListView(generic.ListView):
     
     queryset = Scene.objects.all()
-
+    
 
 class StripListView(generic.ListView):
     
