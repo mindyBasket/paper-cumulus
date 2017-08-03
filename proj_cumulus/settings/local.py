@@ -128,6 +128,7 @@ STATIC_URL = '/static/'
 # Storage and serves
 
 # not served directly. Long term storage.
+# Wait...this IS served directly when I run this app.
 STATICFILES_DIRS = [ os.path.join(BASE_DIR, "static-storage") ]
 
 #Is served

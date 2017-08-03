@@ -1,0 +1,32 @@
+body{
+    background-color: #ededed;
+}
+
+
+.frame_thumbs.stacked img{
+    position: relative;
+    -webkit-box-shadow: 4px 0px 0px 0px rgba(0,0,0,0.35);
+    -moz-box-shadow: 4px 0px 0px 0px rgba(0,0,0,0.35);
+    box-shadow: 4px 0px 0px 0px rgba(0,0,0,0.35);
+    
+    margin-right: -50px;
+}
+
+
+
+.frame_thumbs.stacked img:nth-of-type(1){z-index:5;}
+.frame_thumbs.stacked img:nth-of-type(2){z-index:4;}
+.frame_thumbs.stacked img:nth-of-type(3){z-index:3;}
+.frame_thumbs.stacked img:nth-of-type(4){z-index:2;}
+.frame_thumbs.stacked img:nth-of-type(5){z-index:1;}
+
+
+.frame_view.wide{
+    background-color: #424242;
+    width: 100%;
+}
+
+.frame_view.wide img{
+    width: 100%;
+    
+}
