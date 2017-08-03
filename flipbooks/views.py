@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views import generic
 
 #import your models
@@ -61,3 +61,9 @@ class SceneListView(generic.ListView):
 class StripListView(generic.ListView):
     
     queryset = Strip.objects.all()
+    
+    def get_queryset(self):
+        self.scene = get_object_or_404(Scene, pk=self.kwargs['scene_pk'])
+        
+        #if you need it to be more specific, use .filter(scene__order=1)
+        return Strip.objects.filter(scene=self.scene)
