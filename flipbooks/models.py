@@ -43,6 +43,8 @@ class Strip(models.Model):
         # https://docs.python.org/2/library/stdtypes.html#str.format
         return "Sn {} - {}".format(self.scene.order, self.order)
     
+    # def get_absolute_url(self):
+    #     return reverse("chatter:detail", kwargs={"pk":self.pk})
     
 #Frame: holds individual frames
 class Frame(models.Model):

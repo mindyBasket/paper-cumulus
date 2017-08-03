@@ -61,4 +61,3 @@ class SceneListView(generic.ListView):
 class StripListView(generic.ListView):
     
     queryset = Strip.objects.all()
-    
