@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load thumbnail %}
 
 {% block title %} {{block.super}} | Scenes{% endblock title %}
 
@@ -8,6 +9,8 @@
 <p>This is a page listing all the scenes in a chapter. Currently I don't have 
 a chapter object, so all this is in a hypothetical chapter "1". Try to imagine one 
 "scene" = "page" in a comic book sense. Thus, viewing a scene should start "playing".</p>
+
+
 
 <ul>
     {% for scene in object_list %}
@@ -30,7 +33,8 @@ a chapter object, so all this is in a hypothetical chapter "1". Try to imagine o
                     {% for strip in scene.strip_set.all|slice:":5" %}
                         <!--{% cycle 'row1' 'row2' %}-->
                         
-                            <img src="{{strip.frame_set.first.frame_image.url}}" height="100px"/>
+                            <!--<img src="{{strip.frame_set.first.frame_image.url}}" height="100px"/>-->
+                            <img src="{% thumbnail strip.frame_set.first.frame_image 200x200 autocrop %}"/>
                 
                         
                     {% endfor %}

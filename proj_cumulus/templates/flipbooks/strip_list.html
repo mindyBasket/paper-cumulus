@@ -12,7 +12,7 @@
 
 <!-- it would be nice if you can ajax load and don't show interface until first 
 strip has been loaded -->
-
+{% load thumbnail %}
 <div class="frame_view wide">
 
         {% for fr in object_list.first.frame_set.all %}
@@ -20,6 +20,7 @@ strip has been loaded -->
         {% endfor %}
 
 </div>
+
 
 
 <ul>
@@ -30,6 +31,7 @@ strip has been loaded -->
             <p class="frames">
                 {% for fr in strip.frame_set.all %}
                     <img src="{{fr.frame_image.url}}" height="100px"/>
+                    
                 {% endfor %}
             </p>
         </li>
