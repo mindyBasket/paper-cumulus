@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load thumbnail %}
+
 
 {% block title %} {{block.super}} | Strips{% endblock title %}
 
@@ -12,16 +14,36 @@
 
 <!-- it would be nice if you can ajax load and don't show interface until first 
 strip has been loaded -->
-{% load thumbnail %}
+
+{% if is_paginated %}
+    This view is currently paginated
+{% else %}
+    This view is NOT paginated. 
+{% endif %}
+
+
 <div class="frame_view wide">
-
-        {% for fr in object_list.first.frame_set.all %}
-            <img src="{{fr.frame_image.url}}"/>
-        {% endfor %}
-
+        
+        <!-- WELL I GUESS YOU CAN'T USE THIS -->
+        <!--{ for fr in object_list.first.frame_set.all }-->
+        <!--    <img src="{{fr.frame_image.url}}"/>-->
+        <!--{ endfor }-->
+        
+        <!-- this is where you load first batch of images -->
+        <!-- {{object_list|first}} -->
+        <div class='frame_load'>
+            {% for strip in object_list|slice:":2" %}
+                {% for fr in strip.frame_set.all %} 
+                    <img src="{{fr.frame_image.url}}"/>
+                {% endfor %}
+            {% endfor %}
+        </div>
+        
+        <div class="cover"><span>Loading</span></div>
+        
 </div>
 
-
+<h3>currently trying to display:</h2>
 
 <ul>
     {% for strip in object_list %}
@@ -30,8 +52,7 @@ strip has been loaded -->
             
             <p class="frames">
                 {% for fr in strip.frame_set.all %}
-                    <img src="{{fr.frame_image.url}}" height="100px"/>
-                    
+                    <img src="{% thumbnail fr.frame_image 200x200 autocrop %}"/>
                 {% endfor %}
             </p>
         </li>
@@ -43,4 +64,3 @@ strip has been loaded -->
 
 
 {% endblock content %}
-

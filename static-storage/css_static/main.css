@@ -22,11 +22,54 @@ body{
 
 
 .frame_view.wide{
+    display: block;
     background-color: #424242;
-    width: 100%;
+    width: 930px;
+    height: 550px;
+    
+    position: relative;
 }
 
-.frame_view.wide img{
+.frame_view.wide .cover{
+    display: table;
     width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    position: absolute;
+    top:0; left:0;
     
+    text-align: center;
+    
+    z-index: 1001;
+}
+
+.frame_view.wide .cover span{
+    display: table-cell;
+    vertical-align: middle;
+    color: white;
+  
+}
+
+.frame_load {
+    display:block;
+    position: relative;
+    width: 100%; height: 100%;
+}
+
+.frame_load img{
+    width: 100%;
+    position: absolute;
+    top: 0; left: 0;
+    
+}
+
+/*pull first one to top*/
+.frame_view.wide img:nth-of-type(1){
+    filter: blur(5px);
+    z-index: 1000;
+}
+
+.frame_view.wide img:nth-of-type(1)[viewable=true]{
+    filter: blur(0px);
+    z-index: 1000;
 }

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, get_object_or_404
 from django.views import generic
 
@@ -58,12 +59,33 @@ class SceneListView(generic.ListView):
     queryset = Scene.objects.all()
     
 
+# This one "plays" the frames
 class StripListView(generic.ListView):
     
     queryset = Strip.objects.all()
+    #context_object_name = "strip_list"    # default is 'object_list' if you don't like that
     
+    #Pagination for class-based view.
+   #paginate_by = 1  # only need 1 strip per "page"
+    
+
     def get_queryset(self):
         self.scene = get_object_or_404(Scene, pk=self.kwargs['scene_pk'])
         
         #if you need it to be more specific, use .filter(scene__order=1)
         return Strip.objects.filter(scene=self.scene)
+
+# this might have to be separate function
+def load_next_strip(request):
+    
+    # page = request.GET.get('page')
+    # try:
+    #     contacts = paginator.page(page)
+    # except PageNotAnInteger:
+    #     # If page is not an integer, deliver first page.
+    #     contacts = paginator.page(1)
+    # except EmptyPage:
+    #     # If page is out of range (e.g. 9999), deliver last page of results.
+    #    contacts = paginator.page(paginator.num_pages)
+    pass
+        

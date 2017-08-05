@@ -22,6 +22,7 @@ urlpatterns = [
     
     
     url(r'^scene/(?P<scene_pk>\d+)/flip/$', views.StripListView.as_view(), name='strip-list'),
+    #url(r'^objects/page(?P<page>[0-9]+)/$', PaginatedView.as_view()),
 ]
 
 if settings.DEBUG == True:
