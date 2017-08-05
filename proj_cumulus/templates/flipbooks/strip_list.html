@@ -15,11 +15,7 @@
 <!-- it would be nice if you can ajax load and don't show interface until first 
 strip has been loaded -->
 
-{% if is_paginated %}
-    This view is currently paginated
-{% else %}
-    This view is NOT paginated. 
-{% endif %}
+{{strip_json}}
 
 
 <div class="frame_view wide">
@@ -32,18 +28,24 @@ strip has been loaded -->
         <!-- this is where you load first batch of images -->
         <!-- {{object_list|first}} -->
         <div class='frame_load'>
-            {% for strip in object_list|slice:":2" %}
-                {% for fr in strip.frame_set.all %} 
-                    <img src="{{fr.frame_image.url}}"/>
-                {% endfor %}
+            {% for strip in object_list|slice:":3" %}
+                <span class="strip">
+                    {% for fr in strip.frame_set.all %} 
+                        <img src="{{fr.frame_image.url}}" class="frame_item"/>
+
+                    {% endfor %}
+                </span>
             {% endfor %}
         </div>
         
-        <div class="cover"><span>Loading</span></div>
+        <div class="cover">
+            <span id="msg_loading">Loading</span>
+            <span id="msg_instruction">Use arrow keys ></span>
+        </div>
         
 </div>
 
-<h3>currently trying to display:</h2>
+<h3>All frames from current scene:</h2>
 
 <ul>
     {% for strip in object_list %}

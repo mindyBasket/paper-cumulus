@@ -33,8 +33,6 @@ class FrameDetailView(generic.DetailView):
         # Default contexts
         # - object, context_object_name
         
-        context["extra"] = "Kiefer"
-
         return context
         
     
@@ -63,6 +61,8 @@ class SceneListView(generic.ListView):
 class StripListView(generic.ListView):
     
     queryset = Strip.objects.all()
+    queryset_scene = ""
+    strip_json = {}
     #context_object_name = "strip_list"    # default is 'object_list' if you don't like that
     
     #Pagination for class-based view.
@@ -73,7 +73,14 @@ class StripListView(generic.ListView):
         self.scene = get_object_or_404(Scene, pk=self.kwargs['scene_pk'])
         
         #if you need it to be more specific, use .filter(scene__order=1)
-        return Strip.objects.filter(scene=self.scene)
+        
+        self.queryset_scene = Strip.objects.filter(scene=self.scene)
+        return self.queryset_scene
+        
+    # def get_context_data(self, *args, **kwargs):
+    #     context = super(StripListView, self).get_context_data(*args, **kwargs)
+    #     return context
+        
 
 # this might have to be separate function
 def load_next_strip(request):

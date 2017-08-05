@@ -34,7 +34,7 @@ body{
     display: table;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.5);
+    background-color: rgba(0,0,0,0.2);
     position: absolute;
     top:0; left:0;
     
@@ -64,12 +64,12 @@ body{
 }
 
 /*pull first one to top*/
-.frame_view.wide img:nth-of-type(1){
+.frame_view.wide span:nth-of-type(1) > img:nth-of-type(1){
     filter: blur(5px);
     z-index: 1000;
 }
 
-.frame_view.wide img:nth-of-type(1)[viewable=true]{
+.frame_view.wide span:nth-of-type(1) > img:nth-of-type(1)[viewable=true]{
     filter: blur(0px);
     z-index: 1000;
 }
