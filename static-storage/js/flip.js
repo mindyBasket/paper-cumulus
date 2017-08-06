@@ -4,43 +4,46 @@
 // '$' is an undefined variable
 
 $(document).ready(function(){
-    console.log("---------- v.1.4");
-    var display_order = 0;
-    var curr_order = 0;
+    console.log("---------- v.1.5");
+
     var top_z_index = 1000;
-    
     var first_frame
     
-    $('.frame_view.wide .frame_load').imagesLoaded()
+    
+    //apply display order
+    var display_order = 0;
+    $('.frame_view.wide .frame_load').find('img.frame_item').each(function(){
 
+        $(this).css("z-index", top_z_index-display_order); 
+        $(this).attr("display_order", display_order);
+        display_order+=1;
+    });
+    
+    
+    $('.frame_view.wide .frame_load').imagesLoaded()
     .fail( function() {
         console.log('all images loaded, at least one is broken');
     })
     .progress( function( instance, image ) {
         var result = image.isLoaded ? 'loaded' : 'broken';
         console.log( 'image is ' + result + ' for ' + image.img.src + ": instance: " + $(image.img).attr("src"));
-        
-        if(display_order == 0){
-            //first image. grab z-index
-            top_z_index = $(image.img).css("z-index");
-        } else{
-            $(image.img).css("z-index", top_z_index-display_order);
-        }
-
-        $(image.img).attr("display_order", display_order);
-        display_order+= 1
-
     })
     .always( function( instance ) {
         //all images loaded
+    })
+    .done( function( instance ) {
+        console.log('all images successfully loaded');
+        
+        //ready the cover
+        $(document).find(".cover").children("#msg_loading").hide();
+        $(document).find(".cover").children("#msg_instruction").show();
+        
         
         //bind keyboard event
         document.addEventListener("keydown", function(){
         
             if (event.code === "ArrowRight"){ //next
-
                 play_frame();
-
             }
             else if(event.code === "ArrowLeft"){ //previous
                 
@@ -57,11 +60,7 @@ $(document).ready(function(){
                 curr_strip.prev().children(".frame_item").last().show();
             }
             
-        });
-        
-    })
-    .done( function( instance ) {
-        console.log('all images successfully loaded');
+        }); //keyevent listener
         
     });
     
@@ -88,8 +87,18 @@ function play_frame(){
     //find last completed .strip, it is marked with done=true
     // note, done=true does not mean it is visible
     // it means it finished playing all the frames. 
-    var curr_strip = first_play ? null : $(document).find(".frame_view").find('span.strip[done=true]').last();
-    var next_strip = first_play ? $(document).find(".frame_view").find('span.strip').eq(0) : curr_strip.next();
+    var curr_strip;
+    var next_strip;
+    var frame_view = $(document).find(".frame_view");
+    if (first_play || frame_view.find('span.strip[done=true]').length == 0){
+        console.log("Already at first strip");
+        curr_strip = null;
+        next_strip = frame_view.find('span.strip').eq(0);
+    } else {
+        curr_strip = $(document).find(".frame_view").find('span.strip[done=true]').last();
+        next_strip =  curr_strip.next();
+    }
+    
     
     
     //get "timeline"
@@ -108,8 +117,9 @@ function play_frame(){
     });
     
     //remove "done" strip or cover, depending on what's currently on top
-    if (!(first_play)){
-        //finish off "done" strip
+    if (!(first_play) && curr_strip != null){
+        //finish off "done" strip. 
+        //hide ALL, in case user hits next before animation finishes
         curr_strip.children(".frame_item").hide();
     } else { first_play = false;}
     
