@@ -52,3 +52,24 @@ a chapter object, so all this is in a hypothetical chapter "1". Try to imagine o
 
 
 {% endblock content %}
+
+
+{% block extra_js %}
+    <script>
+    /* global $ */
+    // Above line is to prevent cloud9 from thinking 
+    // '$' is an undefined variable
+    
+    // function request_more_strip(){
+    //     $.ajax({
+    //         url: '/ajax/load_more_strips/',
+    //         data: {'test_val': 24},
+    //         dataType: 'json',
+    //         success: function (data) {
+    //           console.log("we got something back: " + data);
+    //         }
+    //     });
+    // }
+    
+  </script>
+{% endblock extra_js %}

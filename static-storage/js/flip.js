@@ -4,7 +4,7 @@
 // '$' is an undefined variable
 
 $(document).ready(function(){
-    console.log("---------- v.1.7");
+    console.log("---------- v.1.9 - Ajax attempt");
 
     var top_z_index = 1000;
     var first_frame
@@ -100,6 +100,7 @@ function play_frame(){
         
         if (next_strip.length == 0){
             //no more strip
+            request_more_strip();
             return;
         }
     }
@@ -151,3 +152,15 @@ function hideFrame(frame_obj){
     frame_obj.hide();
     
 }
+
+
+function request_more_strip(){
+        $.ajax({
+            url: '/flipbooks/ajax/load_more_strips',
+            data: {'test_val': 24},
+            dataType: 'json',
+            success: function (data) {
+              console.log("we got something back: " + JSON.stringify(data));
+            }
+        });
+    }
