@@ -4,7 +4,7 @@
 // '$' is an undefined variable
 
 $(document).ready(function(){
-    console.log("---------- v.1.5");
+    console.log("---------- v.1.7");
 
     var top_z_index = 1000;
     var first_frame
@@ -97,6 +97,11 @@ function play_frame(){
     } else {
         curr_strip = $(document).find(".frame_view").find('span.strip[done=true]').last();
         next_strip =  curr_strip.next();
+        
+        if (next_strip.length == 0){
+            //no more strip
+            return;
+        }
     }
     
     
