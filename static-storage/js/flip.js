@@ -100,7 +100,7 @@ function play_frame(){
         
         if (next_strip.length == 0){
             //no more strip
-            request_more_strip();
+            request_more_strips();
             return;
         }
     }
@@ -154,7 +154,7 @@ function hideFrame(frame_obj){
 }
 
 
-function request_more_strip(){
+function request_more_strips(){
         $.ajax({
             url: '/flipbooks/ajax/load_more_strips',
             data: {'test_val': 24},
