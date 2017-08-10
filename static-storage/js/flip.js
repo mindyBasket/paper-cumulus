@@ -4,20 +4,13 @@
 // '$' is an undefined variable
 
 $(document).ready(function(){
-    console.log("---------- v.1.9 - Ajax attempt");
+    console.log("---------- v.1.11 - Ajax attempt");
 
     var top_z_index = 1000;
     var first_frame
     
     
-    //apply display order
-    var display_order = 0;
-    $('.frame_view.wide .frame_load').find('img.frame_item').each(function(){
-
-        $(this).css("z-index", top_z_index-display_order); 
-        $(this).attr("display_order", display_order);
-        display_order+=1;
-    });
+    init_frame_imgs();
     
     
     $('.frame_view.wide .frame_load').imagesLoaded()
@@ -32,8 +25,7 @@ $(document).ready(function(){
         //all images loaded
     })
     .done( function( instance ) {
-        console.log('all images successfully loaded');
-        
+        alert_msg('all images successfully loaded');
         //ready the cover
         $(document).find(".cover").children("#msg_loading").hide();
         $(document).find(".cover").children("#msg_instruction").show();
@@ -72,6 +64,20 @@ $(document).ready(function(){
 ---------------------helpers------------------------------*/
 var t_step = 400 //ms
 
+function init_frame_imgs(){
+    //apply display order
+    var display_order = 0;
+    $('.frame_view.wide .frame_load').find('img.frame_item').each(function(){
+        //TO DO:
+        // hard coded in "1000", but you must find more reliable way
+        // to retrieve that information
+        $(this).css("z-index", 1000-display_order); 
+        $(this).attr("display_order", display_order);
+        display_order+=1;
+    });
+}
+
+
 function play_frame(){
 
     var timeline = [];
@@ -100,6 +106,7 @@ function play_frame(){
         
         if (next_strip.length == 0){
             //no more strip
+            alert_msg('No more strip available. Requesting more strip.');
             request_more_strips();
             return;
         }
@@ -155,12 +162,48 @@ function hideFrame(frame_obj){
 
 
 function request_more_strips(){
-        $.ajax({
-            url: '/flipbooks/ajax/load_more_strips',
-            data: {'test_val': 24},
-            dataType: 'json',
-            success: function (data) {
-              console.log("we got something back: " + JSON.stringify(data));
-            }
+    
+    $.ajax({
+        url: '/flipbooks/ajax/load_more_strips',
+        data: {
+            'scene_order': 1,
+            'num_stripset_loaded':3
+        },
+        dataType: 'json',
+        success: function (data) {
+            alert_msg("Retrieving more frames")
+            add_strips(data);
+        }
+    });
+}
+
+function add_strips(data){
+    console.log("Loading more frames from a strip: " + JSON.stringify(data));
+    var frame_load = $(document).find(".frame_view > .frame_load");
+    var new_strip = $('<div class="strip"></div>');
+    new_strip.appendTo(frame_load);
+    
+    
+    $.each(data, function(key, img_url){
+        //parse
+        $.each(img_url, function(i, url){
+            console.log("appending strip: " + url);
+            var new_frame = $('<img/>');
+            new_frame.attr("src", url);
+            new_frame.appendTo(new_strip);
         });
-    }
+        
+        
+        
+    });
+}
+    
+/* alert box related*/
+function alert_msg(msg){
+    var msg_box = $(document).find('.alert.alert-info');
+    if(msg_box.length >= 1){
+        console.log("msg box found");
+        msg_box.children('.msg').text(msg);
+        return true;
+    } else {return false;}
+}

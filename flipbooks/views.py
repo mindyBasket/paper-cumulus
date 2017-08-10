@@ -89,9 +89,29 @@ class StripListView(generic.ListView):
 
 def load_more_strips(request):
     #username = request.GET.get('username', None)
+    scene_order = request.GET.get('scene_order', None)
+    strip_set_of_scene = Strip.objects.filter(scene__order=scene_order)
+    
+    #now...how to find the "next set" of strips to be loaded? 
+    #Currently, I've loaded 3 strips arbitrarily, I can load another 3 set. 
+    
+    #do you know how many sets has been loaded? hard coded for now
+    num_stripset_loaded = int(request.GET.get('num_stripset_loaded', None))
+    
+    #extract information
+    num_stripset_limit = num_stripset_loaded + 3
+    
+    strip_set_to_load = strip_set_of_scene[num_stripset_loaded:num_stripset_limit]
+    #note: https://docs.python.org/2/tutorial/introduction.html#strings
+    #      degenerate slice indices are handled nice and safe.
+    
+    strip_set_str_li = [];
+    for strip in strip_set_to_load:
+        for frame in strip.frame_set.all():
+            strip_set_str_li+=[frame.frame_image.url]
     data = {
         #'is_taken': User.objects.filter(username__iexact=username).exists()
-        'response_test_val': request.GET.get('test_val', None)
+        'response_test_val':strip_set_str_li
     }
     return JsonResponse(data)
         
