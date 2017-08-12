@@ -2,16 +2,17 @@
 /* global $ */
 // Above line is to prevent cloud9 from thinking 
 // '$' is an undefined variable
+var frame_view;
+
 
 $(document).ready(function(){
-    console.log("---------- v.1.11 - Ajax attempt");
+    console.log("---------- v.1.12 - Ajax attempt");
 
+    //init global var
     var top_z_index = 1000;
-    var first_frame
-    
-    
+    frame_view = $(document).find('.frame_view');
+
     init_frame_imgs();
-    
     
     $('.frame_view.wide .frame_load').imagesLoaded()
     .fail( function() {
@@ -60,19 +61,26 @@ $(document).ready(function(){
 
 
 
-/*--------------------------------------------------------
----------------------helpers------------------------------*/
+/*-----------------------------------------------------------------
+-----------------------------helpers-------------------------------
+-------------------------------------------------------------------*/
+
+//...........constants............
 var t_step = 400 //ms
 
+//init_frame_imgs()...............
+//Only works after img DOM has been loaded. 
+//Adds proper z-index and display_order attributes to the frames
 function init_frame_imgs(){
-    //apply display order
+    
     var display_order = 0;
+    
     $('.frame_view.wide .frame_load').find('img.frame_item').each(function(){
         //TO DO:
         // hard coded in "1000", but you must find more reliable way
         // to retrieve that information
+        
         $(this).css("z-index", 1000-display_order); 
-        $(this).attr("display_order", display_order);
         display_order+=1;
     });
 }
@@ -95,19 +103,19 @@ function play_frame(){
     // it means it finished playing all the frames. 
     var curr_strip;
     var next_strip;
-    var frame_view = $(document).find(".frame_view");
+    
     if (first_play || frame_view.find('span.strip[done=true]').length == 0){
-        console.log("Already at first strip");
+        //already at first strip
         curr_strip = null;
         next_strip = frame_view.find('span.strip').eq(0);
     } else {
         curr_strip = $(document).find(".frame_view").find('span.strip[done=true]').last();
         next_strip =  curr_strip.next();
         
+        //if there is no more next
         if (next_strip.length == 0){
-            //no more strip
             alert_msg('No more strip available. Requesting more strip.');
-            request_more_strips();
+            load_more_strips();
             return;
         }
     }
@@ -161,7 +169,9 @@ function hideFrame(frame_obj){
 }
 
 
-function request_more_strips(){
+// Requests more strip through a function-view.
+// Once successful, appends them.
+function load_more_strips(){
     
     $.ajax({
         url: '/flipbooks/ajax/load_more_strips',
@@ -173,24 +183,38 @@ function request_more_strips(){
         success: function (data) {
             alert_msg("Retrieving more frames")
             add_strips(data);
+            alert_msg("More frames retrieved")
         }
     });
 }
 
+// Adds additional frames retrieved from the ajax call
 function add_strips(data){
-    console.log("Loading more frames from a strip: " + JSON.stringify(data));
-    var frame_load = $(document).find(".frame_view > .frame_load");
-    var new_strip = $('<div class="strip"></div>');
-    new_strip.appendTo(frame_load);
+
+    var frame_load_container = $(document).find(".frame_view > .frame_load");
     
     
+    
+    var new_strip;
     $.each(data, function(key, img_url){
+        //prep strip container
+        new_strip = $('<span class="strip"></span>');
+        new_strip.appendTo(frame_load_container);
+         
+        //get information on the last displayable frame
+        var last_frame = frame_view.find('img.frame_item').last()
+        var last_z_index = last_frame.css("z-index")-1;
+        
         //parse
         $.each(img_url, function(i, url){
             console.log("appending strip: " + url);
-            var new_frame = $('<img/>');
+            
+            var new_frame = $('<img class="frame_item"/>');
             new_frame.attr("src", url);
+            new_frame.css("z-index", last_z_index);
             new_frame.appendTo(new_strip);
+            
+            last_z_index-=1;
         });
         
         
