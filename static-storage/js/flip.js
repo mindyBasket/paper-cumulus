@@ -12,7 +12,7 @@ $(document).ready(function(){
     var top_z_index = 1000;
     frame_view = $(document).find('.frame_view');
 
-    init_frame_imgs();
+    init_frame_imgs_and_container();
     
     $('.frame_view.wide .frame_load').imagesLoaded()
     .fail( function() {
@@ -71,7 +71,7 @@ var t_step = 400 //ms
 //init_frame_imgs()...............
 //Only works after img DOM has been loaded. 
 //Adds proper z-index and display_order attributes to the frames
-function init_frame_imgs(){
+function init_frame_imgs_and_container(){
     
     var display_order = 0;
     
@@ -83,6 +83,10 @@ function init_frame_imgs(){
         $(this).css("z-index", 1000-display_order); 
         display_order+=1;
     });
+    
+    //set width and height of the container
+    var frame_item = frame_view.find("img.frame_item");
+    frame_view.css({"width":frame_item.width(), "height":frame_item.height()});
 }
 
 

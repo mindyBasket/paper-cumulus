@@ -3,6 +3,12 @@ body{
 }
 
 
+.letterbox{
+    display: block;
+    width: 100%;
+    background-color: #1e1e1e;
+}
+
 .frame_thumbs.stacked img{
     position: relative;
     -webkit-box-shadow: 4px 0px 0px 0px rgba(0,0,0,0.25);
@@ -23,10 +29,9 @@ body{
 
 .frame_view.wide{
     display: block;
-    background-color: #424242;
-    width: 930px;
-    height: 550px;
+    /*width and height set by init_frame_imgs_and_container()*/
     
+    margin: 0 auto;
     position: relative;
 }
 
@@ -57,11 +62,12 @@ body{
 .frame_load {
     display:block;
     position: relative;
+
     width: 100%; height: 100%;
 }
 
 .frame_load img{
-    height: 100%;
+    height: 650px;
     position: absolute;
     top: 0; left: 0;
     

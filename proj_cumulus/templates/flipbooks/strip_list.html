@@ -15,10 +15,11 @@
 <!-- it would be nice if you can ajax load and don't show interface until first 
 strip has been loaded -->
 
-{{strip_json}}
+{% endblock content %}
 
 
-<div class="frame_view wide">
+{% block letterbox %}
+    <div class="frame_view wide">
         
         <!-- WELL I GUESS YOU CAN'T USE THIS -->
         <!--{ for fr in object_list.first.frame_set.all }-->
@@ -43,8 +44,11 @@ strip has been loaded -->
             <span id="msg_instruction">Use arrow keys ></span>
         </div>
         
-</div>
+    </div>
+{% endblock letterbox %}
 
+
+{% block content_2 %}
 <div class="alert alert-info" role="alert">
     <span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span>
     <span class="msg"></span>
@@ -70,4 +74,4 @@ strip has been loaded -->
 </ul>
 
 
-{% endblock content %}
+{% endblock content_2 %}

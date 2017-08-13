@@ -27,9 +27,20 @@
     <!-- include 'base_navbar.html' -->
 
     <div class='container'>
-        {% block content %}
-        {% endblock %}
+      {% block content %}
+      {% endblock %}
     </div>
+    
+    <div class="letterbox"> 
+      {% block letterbox %}
+      {% endblock %}
+    </div>
+    
+    <div class='container'>
+      {% block content_2 %}
+      {% endblock %}
+    </div>
+    
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
