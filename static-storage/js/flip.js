@@ -2,6 +2,7 @@
 /* global $ */
 // Above line is to prevent cloud9 from thinking 
 // '$' is an undefined variable
+var top_z_index;
 var frame_view;
 
 
@@ -9,25 +10,38 @@ $(document).ready(function(){
     console.log("---------- v.1.12 - Ajax attempt");
 
     //init global var
-    var top_z_index = 1000;
+    top_z_index = 1000;
     frame_view = $(document).find('.frame_view');
 
     init_frame_imgs_and_container();
     
-    $('.frame_view.wide .frame_load').imagesLoaded()
+    var first_frame_loaded = false;
+    $('.frame_view .frame_load').imagesLoaded()
     .fail( function() {
         console.log('all images loaded, at least one is broken');
     })
     .progress( function( instance, image ) {
-        var result = image.isLoaded ? 'loaded' : 'broken';
-        console.log( 'image is ' + result + ' for ' + image.img.src + ": instance: " + $(image.img).attr("src"));
+        
+        // Set width and height of the container
+        // This is done here to ensure the width and height of image is avaliable
+        if(!(first_frame_loaded)){
+            var frame_item = frame_view.find("img.frame_item");
+            frame_view.css({"width":frame_item.width(), "height":frame_item.height()});
+            first_frame_loaded = true;
+        }
+        
+        // var result = image.isLoaded ? 'loaded' : 'broken';
+        // console.log( 'image is ' + result + ' for ' + image.img.src + ": instance: " + $(image.img).attr("src"));
+        
     })
     .always( function( instance ) {
         //all images loaded
     })
     .done( function( instance ) {
-        alert_msg('all images successfully loaded');
-        //ready the cover
+        alert_msg('starter frames successfully loaded. Loading rest of frames in this scene.');
+        load_more_strips();
+        
+        //hide cover
         $(document).find(".cover").children("#msg_loading").hide();
         $(document).find(".cover").children("#msg_instruction").show();
         
@@ -80,13 +94,10 @@ function init_frame_imgs_and_container(){
         // hard coded in "1000", but you must find more reliable way
         // to retrieve that information
         
-        $(this).css("z-index", 1000-display_order); 
+        $(this).css("z-index", top_z_index-display_order); 
         display_order+=1;
     });
     
-    //set width and height of the container
-    var frame_item = frame_view.find("img.frame_item");
-    frame_view.css({"width":frame_item.width(), "height":frame_item.height()});
 }
 
 
@@ -118,8 +129,7 @@ function play_frame(){
         
         //if there is no more next
         if (next_strip.length == 0){
-            alert_msg('No more strip available. Requesting more strip.');
-            load_more_strips();
+            alert_msg('No more strip available.');
             return;
         }
     }
@@ -196,8 +206,6 @@ function load_more_strips(){
 function add_strips(data){
 
     var frame_load_container = $(document).find(".frame_view > .frame_load");
-    
-    
     
     var new_strip;
     $.each(data, function(key, img_url){

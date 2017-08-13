@@ -54,24 +54,30 @@ strip has been loaded -->
     <span class="msg"></span>
 </div>
 
-<h3>All frames from current scene:</h2>
-
-<ul>
-    {% for strip in object_list %}
-        <li>
-            {{strip.id}} | {{strip.description}}
-            
-            <p class="frames">
-                {% for fr in strip.frame_set.all %}
-                    <img src="{% thumbnail fr.frame_image 200x200 autocrop %}"/>
-                {% endfor %}
-            </p>
-        </li>
-    {% empty %}
-        <p>No strips could be found</p>
+<!--<ul>-->
+<!--    {% for strip in object_list %}-->
+<!--        <li>-->
+<!--            <p class="frames">-->
+<!--                {% for fr in strip.frame_set.all %}-->
+<!--                    <img src="{% thumbnail fr.frame_image 100x100 autocrop %}"/>-->
+<!--                {% endfor %}-->
+<!--            </p>-->
+<!--        </li>-->
+<!--    {% empty %}-->
+<!--        <p>No strips could be found</p>-->
     
-    {% endfor %}
-</ul>
+<!--    {% endfor %}-->
+<!--</ul>-->
 
+<!-- append thumbnails -->
+<div class="flimstrip_view">
+
+    {% for strip in object_list %}
+        {% for fr in strip.frame_set.all %}
+            <img src="{% thumbnail fr.frame_image 100x100 autocrop %}"/>
+        {% endfor %}
+    {% endfor %}
+
+</div>
 
 {% endblock content_2 %}
