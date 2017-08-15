@@ -75,6 +75,13 @@ TEMPLATES = [
     },
 ]
 
+THUMBNAIL_ALIASES = {
+    '': {
+        'cell': {'size': (100, 100), 'autocrop': True},
+        'thumb': {'size': (300, 300), 'autocrop': True}
+    },
+}
+
 WSGI_APPLICATION = 'proj_cumulus.wsgi.application'
 
 

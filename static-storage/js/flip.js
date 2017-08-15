@@ -1,4 +1,3 @@
-
 /* global $ */
 // Above line is to prevent cloud9 from thinking 
 // '$' is an undefined variable

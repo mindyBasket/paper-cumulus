@@ -1,9 +1,16 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from easy_thumbnails.fields import ThumbnailerImageField
+from easy_thumbnails.signals import saved_file
+from easy_thumbnails.signal_handlers import generate_aliases_global
+
+
 from django.db import models
 
-# Create your models here.
+
+# thumbnail signal handler
+saved_file.connect(generate_aliases_global)
 
     
 # Scene: holds multiple strips. In convensional web-comic sense, this is like a "page"
@@ -50,8 +57,7 @@ class Strip(models.Model):
 class Frame(models.Model):
     
     order = models.IntegerField(default="0") 
-    
-    #note = models.CharField(max_length=255, blank=False, unique=True)
+
     note = models.CharField(
         max_length=100, blank=True, default="", help_text="This note will not be visible for viewers. It's just for the creator"
     )
@@ -59,7 +65,14 @@ class Frame(models.Model):
     strip = models.ForeignKey(Strip, blank=True, null=True)
     
     #frame images
-    frame_image = models.ImageField(upload_to = 'frame_images/', blank=True)
+    frame_image = ThumbnailerImageField(
+        upload_to = 'frame_images/thumbTest/',
+        #resize_source=dict(size=(100, 100)),
+        #thumbnail_storage='frame_images/thumbTest/thumbs/', #I don't know how to use this
+        blank=True
+    )
+    
+    
     
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
