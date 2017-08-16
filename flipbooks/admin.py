@@ -12,6 +12,12 @@ from . import models
 # note: I think FrameModelAdmin don't actually have to be here
 #       You can have this in models.py and import it.
 
+class SceneModelAdmin(admin.ModelAdmin):
+
+    list_display = ("id", "__str__", "name")
+
+    
+    
 class StripModelAdmin(admin.ModelAdmin):
 
     list_display = ("id", "__str__", "scene", "description")
@@ -32,7 +38,7 @@ class FrameModelAdmin(admin.ModelAdmin):
     form = forms.FrameForm
         
 # Register your models here.
-admin.site.register(models.Scene)
+admin.site.register(models.Scene, SceneModelAdmin)
 admin.site.register(models.Strip, StripModelAdmin)
 admin.site.register(models.Frame, FrameModelAdmin)
 

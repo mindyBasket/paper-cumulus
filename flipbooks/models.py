@@ -18,6 +18,7 @@ class Scene(models.Model):
     
     order = models.IntegerField(default="0") 
     
+    name = models.CharField(max_length=50, blank=True, default="")
     description = models.TextField(max_length=100, blank=True, default="")
     
     #chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE)
@@ -52,7 +53,22 @@ class Strip(models.Model):
     
     # def get_absolute_url(self):
     #     return reverse("chatter:detail", kwargs={"pk":self.pk})
+
+
+
+
+def frame_upload_path(instance, filename):
+    # file will be uploaded to MEDIA_ROOT/scene_<order>/strip_<order>-<order>.<ext>
     
+    return 'frame_images/scene_{0}_{1}/strip_{2}-{3}.{4}'.format(
+        instance.strip.scene.id, 
+        instance.strip.scene.name,
+        instance.strip.order,
+        instance.order,
+        filename.split(".")[-1]
+        )
+        
+        
 #Frame: holds individual frames
 class Frame(models.Model):
     
@@ -66,7 +82,7 @@ class Frame(models.Model):
     
     #frame images
     frame_image = ThumbnailerImageField(
-        upload_to = 'frame_images/thumbTest/',
+        upload_to = frame_upload_path,
         #resize_source=dict(size=(100, 100)),
         #thumbnail_storage='frame_images/thumbTest/thumbs/', #I don't know how to use this
         blank=True
@@ -78,10 +94,9 @@ class Frame(models.Model):
     date_modified = models.DateTimeField(auto_now=True)
     
     
+    
     def __str__(self):
         return ("%d : %s" % (self.id, self.note))
 
 
 
-    
-    
