@@ -67,7 +67,7 @@ class StripListView(generic.ListView):
     #context_object_name = "strip_list"    # default is 'object_list' if you don't like that
     
     #Pagination for class-based view.
-   #paginate_by = 1  # only need 1 strip per "page"
+    #paginate_by = 1  # only need 1 strip per "page"
     
 
     def get_queryset(self):
@@ -82,9 +82,6 @@ class StripListView(generic.ListView):
     #     context = super(StripListView, self).get_context_data(*args, **kwargs)
     #     return context
         
-
-# this might have to be separate function
-
 
 
 def load_more_strips(request):

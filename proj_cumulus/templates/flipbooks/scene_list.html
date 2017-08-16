@@ -31,11 +31,10 @@ a chapter object, so all this is in a hypothetical chapter "1". Try to imagine o
                         Unfortunately, there is no "break" in Django. 
                         Truncate the _set instead. -->
                     {% for strip in scene.strip_set.all|slice:":5" %}
-                        <!--{% cycle 'row1' 'row2' %}-->
-                        
-                            <img src="{% thumbnail strip.frame_set.first.frame_image 200x200 autocrop %}"/>
+
+                        <!--<img src="{- thumbnail strip.frame_set.first.frame_image 200x200 autocrop -}"/>-->
+                        <img src="{{ strip.frame_set.first.frame_image.thumb.url }}" width='200px'/>
                 
-                        
                     {% endfor %}
                 </div>
                 
