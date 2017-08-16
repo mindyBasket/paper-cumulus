@@ -6,7 +6,7 @@ var frame_view;
 
 
 $(document).ready(function(){
-    console.log("---------- v.1.12 - Ajax attempt");
+    console.log("---------- v.1.13 - Ajax attempt");
 
     //init global var
     top_z_index = 1000;

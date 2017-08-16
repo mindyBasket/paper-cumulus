@@ -27,10 +27,10 @@ body{
 .frame_thumbs.stacked img:nth-of-type(5){z-index:1;}
 
 
-.frame_view.wide{
+.frame_view{
     display: block;
     /*width and height set by init_frame_imgs_and_container()*/
-    
+    height: 500px; /*default height so that it will be visible*/
     margin: 0 auto;
     position: relative;
 }
