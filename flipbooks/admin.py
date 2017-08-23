@@ -34,9 +34,10 @@ class FrameModelAdmin(admin.ModelAdmin):
     list_display = ("id", "frame_order", 'note', 'frame_image', 'date_created',)
     empty_value_display = 'unknown'
     
-    #custom form
-    form = forms.FrameForm
-        
+    #testing custom form
+    #form = forms.FrameForm
+
+
 # Register your models here.
 admin.site.register(models.Scene, SceneModelAdmin)
 admin.site.register(models.Strip, StripModelAdmin)

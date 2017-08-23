@@ -55,7 +55,7 @@ class FrameListView(generic.ListView):
 
 class SceneListView(generic.ListView):
     
-    queryset = Scene.objects.all()
+    queryset = Scene.objects.order_by('order')
     
 
 # This one "plays" the frames

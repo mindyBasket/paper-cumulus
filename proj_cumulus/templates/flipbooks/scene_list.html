@@ -15,7 +15,7 @@ a chapter object, so all this is in a hypothetical chapter "1". Try to imagine o
 <ul>
     {% for scene in object_list %}
         <li>
-            {{scene.order}} | {{scene.description}}
+            Order: {{scene.order}} (id: {{scene.id}}) | {{scene.description}}
         
             <p>
                 {% url 'flipbooks:strip-list' scene_pk=scene.pk as strip_url %}
