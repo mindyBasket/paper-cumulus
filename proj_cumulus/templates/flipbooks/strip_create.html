@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title%}{{block.super}} | New strip{% endblock title %}
+{% block content %}
+    <div class="row">
+        <div class="col-sm-6 col-sm-offset-3">
+            <!-- put create form here -->
+            {% include "flipbooks/includes/form.html" with btn_title='Make New Strip' %}
+        
+        </div>
+    </div>
+    
+{% endblock content %}

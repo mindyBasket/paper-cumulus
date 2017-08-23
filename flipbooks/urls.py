@@ -23,7 +23,10 @@ urlpatterns = [
     
     url(r'^scene/(?P<scene_pk>\d+)/flip/$', views.StripListView.as_view(), name='strip-list'),
     #url(r'^objects/page(?P<page>[0-9]+)/$', PaginatedView.as_view()),
-
+    
+    #create strip
+    url(r'^strips/create/$', views.StripCreateView.as_view(), name='strip-create'),
+    
     #ajax calls
     url(r'^ajax/load_more_strips/$', views.load_more_strips, name='load_more_strips'),
 ]

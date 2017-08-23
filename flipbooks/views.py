@@ -12,8 +12,11 @@ from .models import (
         Strip,
         Frame
     )
+    
+from . import forms
 
-# Create your views here.
+
+
 
 
 class FrameDetailView(generic.DetailView):
@@ -52,10 +55,24 @@ class FrameListView(generic.ListView):
         # think of this context like the stuff for the WHOLE view, not the individual model.
         return context
         
-
+        
 class SceneListView(generic.ListView):
     
     queryset = Scene.objects.order_by('order')
+
+
+# .................................................. 
+# .................................................. 
+#                   Strip Views
+# .................................................. 
+# .................................................. 
+
+class StripCreateView(generic.CreateView):
+    
+    template_name = "flipbooks/strip_create.html"
+    form_class = forms.StripCreateForm
+    #login_url = '/admin/'
+    success_url = "/flipbooks/"
     
 
 # This one "plays" the frames
@@ -111,4 +128,4 @@ def load_more_strips(request):
         'response_test_val':strip_set_str_li
     }
     return JsonResponse(data)
-        
+
