@@ -129,3 +129,21 @@ def load_more_strips(request):
     }
     return JsonResponse(data)
 
+def retrieve_scene__strip(request):
+    
+    # extract incoming param from request
+    scene_id = request.GET.get('scene_id', None)
+    strip_set_of_scene = Strip.objects.filter(scene__id=scene_id)
+    
+    #send responses as Json
+    strip_set_str_li = [];
+    for strip in strip_set_of_scene:
+        strip_set_str_li+=[strip.id]
+    data = {
+        #'is_taken': User.objects.filter(username__iexact=username).exists()
+        'response_test_val':strip_set_str_li
+    }
+    return JsonResponse(data)
+    
+    
+    
