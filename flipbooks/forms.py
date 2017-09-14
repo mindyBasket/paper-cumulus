@@ -31,8 +31,12 @@ class StripCreateForm(forms.ModelForm):
 
     class Meta:
         model = Strip
-        fields = ['scene', "order", 'description']
+        fields = ['scene', 'description'] #removed 'order'. No need to select them.
         # https://docs.djangoproject.com/en/1.10/topics/forms/modelforms/#overriding-the-default-fields
+        labels = {
+            'scene': 'Under scene'
+        }
+            
         widgets = {
             'order': forms.Select(choices=getOrderChoices()),
         }
