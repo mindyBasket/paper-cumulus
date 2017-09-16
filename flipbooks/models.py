@@ -35,10 +35,24 @@ class Scene(models.Model):
         # At least, that's what he told me.
 
 
+
+
+# -------------------------------------------------
+# -------------------------------------------------
+#                     Strip
+# -------------------------------------------------
+# -------------------------------------------------
+
+#helper 
+def get_default_order(strip_instance):
+    scene = strip_instance.scene
+    return len(scene.strip_set.all())+1
+    
+
 # Strip: holds multiple frames. Used for viewing frames.
 class Strip(models.Model):
     
-    order = models.IntegerField(default="0") 
+    order = models.IntegerField(default="0")
     
     description = models.TextField(max_length=100, blank=True, default="")
     
@@ -53,6 +67,12 @@ class Strip(models.Model):
     
     # def get_absolute_url(self):
     #     return reverse("chatter:detail", kwargs={"pk":self.pk})
+    
+    def save(self):
+        #add better order if it is set 0
+        if self.order == 0:
+            self.order = get_default_order(self)
+            super(Strip, self).save()
 
 
 

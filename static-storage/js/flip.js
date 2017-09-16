@@ -228,8 +228,6 @@ function add_strips(data){
             last_z_index-=1;
         });
         
-        
-        
     });
 }
     

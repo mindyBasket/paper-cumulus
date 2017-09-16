@@ -86,3 +86,13 @@ body{
 /* --------------------------------- */
 /* --------------------------------- */
 
+.placeholder{
+    display:inline-block;
+    width:100px; height: 60px;
+    border: 1px solid #ccc;
+    vertical-align: middle;
+}
+
+.placeholder.new{
+    border:1px solid blue;
+}

@@ -150,6 +150,9 @@ def retrieve_scene__strip(request):
         # strip_set_frame_li+=[strip.frame_set.all()[0].frame_image.cell.url]
         if strip.frame_set.all():
             strip_set_frame_li+=[strip.frame_set.all()[0].frame_image['cell'].url]
+        else:
+            # no frames under this strip. Add placeholder
+            strip_set_frame_li+=["placeholder"]
 
     data = {
         #'is_taken': User.objects.filter(username__iexact=username).exists()

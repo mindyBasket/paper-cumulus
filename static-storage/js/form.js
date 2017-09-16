@@ -3,7 +3,7 @@
 // '$' is an undefined variable
 
 $("select[name='scene']").change(function() {
-    console.log("Scene has been selected -- v 2.1");
+    console.log("Scene has been selected -- v 2.3");
   
     var scene_id = $(this).children('option').eq(($(this).val())).attr("value");
     
@@ -29,18 +29,30 @@ function show_available_strip_id(data){
     // Check if the container exists already
     var strip_display_container = $("select[name='scene']").parent().find('.flimstrip_view');
     if (strip_display_container.length <= 0){
+        $('<h4>Existing strips:</h4>').appendTo($("select[name='scene']").parent());
         strip_display_container = $('<div class="flimstrip_view"/>');
         $("select[name='scene']").parent().append(strip_display_container);
-        $('<h4>Existing strips:</h4>').appendTo(strip_display_container);
+        
     } else {
         strip_display_container = strip_display_container.eq(0);
     }
  
     // Add images
     strip_display_container.html('');
+    
     for(var i=0; i<aval_strip_frames.length; i++){
-        strip_display_container.append('<img src="'+ aval_strip_frames[i] +'"/>')
+        if (aval_strip_frames[i] != "placeholder"){
+            strip_display_container.append('<img src="'+ aval_strip_frames[i] +'"/>')
+        }
+        else {
+            var placeholder_box = $('<span class="placeholder"/>');
+            strip_display_container.append(placeholder_box);
+        }
+        
     }
+    
+    strip_display_container.append('<span class="placeholder new"/>');
+    strip_display_container.append('<p>This new strip will be at order ' + (aval_strip_ids.length+1) +'</p>');
   
 }
 
