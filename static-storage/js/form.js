@@ -3,7 +3,7 @@
 // '$' is an undefined variable
 
 $("select[name='scene']").change(function() {
-    console.log("Scene has been selected -- v 2.0");
+    console.log("Scene has been selected -- v 2.1");
   
     var scene_id = $(this).children('option').eq(($(this).val())).attr("value");
     
@@ -26,14 +26,18 @@ function show_available_strip_id(data){
     }
     
     // Show it right under the scene selection
-    // TODO: check if the container exists already
-    var strip_display_container = $('<div class="flimstrip_view"/>');
-    
-    $("select[name='scene']").parent().append(strip_display_container);
-    $('<h4>Existing strips:</h4>').appendTo(strip_display_container);
-
+    // Check if the container exists already
+    var strip_display_container = $("select[name='scene']").parent().find('.flimstrip_view');
+    if (strip_display_container.length <= 0){
+        strip_display_container = $('<div class="flimstrip_view"/>');
+        $("select[name='scene']").parent().append(strip_display_container);
+        $('<h4>Existing strips:</h4>').appendTo(strip_display_container);
+    } else {
+        strip_display_container = strip_display_container.eq(0);
+    }
  
-    // add images
+    // Add images
+    strip_display_container.html('');
     for(var i=0; i<aval_strip_frames.length; i++){
         strip_display_container.append('<img src="'+ aval_strip_frames[i] +'"/>')
     }
