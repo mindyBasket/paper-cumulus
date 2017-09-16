@@ -4,8 +4,10 @@
 {% block content %}
     <div class="row">
         <h1>Make New Strip</h1>
+        
+        
         <div class="col-sm-6 col-sm-offset-3">
-            
+            <a href="{% url 'flipbooks:scene-list' %}">< return</a>
             <!-- put create form here -->
             <div class='form create'>
             {% include "flipbooks/includes/form.html" with btn_title='Make New Strip' %}
