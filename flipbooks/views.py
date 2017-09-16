@@ -148,8 +148,8 @@ def retrieve_scene__strip(request):
         # Get first frame of each strip. 
         # Extract thumbnail instead of default frame_image.url
         # strip_set_frame_li+=[strip.frame_set.all()[0].frame_image.cell.url]
-        strip_set_frame_li+=[strip.frame_set.all()[0].frame_image['cell'].url]
-
+        if strip.frame_set.all():
+            strip_set_frame_li+=[strip.frame_set.all()[0].frame_image['cell'].url]
 
     data = {
         #'is_taken': User.objects.filter(username__iexact=username).exists()
