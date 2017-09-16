@@ -6,6 +6,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, get_object_or_404
 from django.views import generic
 
+from easy_thumbnails.files import get_thumbnailer
+
 #import your models
 from .models import (
         Scene,
@@ -123,6 +125,7 @@ def load_more_strips(request):
     for strip in strip_set_to_load:
         for frame in strip.frame_set.all():
             strip_set_str_li+=[frame.frame_image.url]
+            
     data = {
         #'is_taken': User.objects.filter(username__iexact=username).exists()
         'response_test_val':strip_set_str_li
@@ -138,11 +141,20 @@ def retrieve_scene__strip(request):
     
     #send responses as Json
     strip_set_str_li = [];
+    strip_set_frame_li = [];
     for strip in strip_set_of_scene:
         strip_set_str_li+=[strip.id]
+        
+        # Get first frame of each strip. 
+        # Extract thumbnail instead of default frame_image.url
+        # strip_set_frame_li+=[strip.frame_set.all()[0].frame_image.cell.url]
+        strip_set_frame_li+=[strip.frame_set.all()[0].frame_image['cell'].url]
+
+
     data = {
         #'is_taken': User.objects.filter(username__iexact=username).exists()
-        'strip_ids':strip_set_str_li
+        'strip_ids':strip_set_str_li,
+        "strip_frames": strip_set_frame_li
     }
     return JsonResponse(data)
     

@@ -10,8 +10,14 @@
 a chapter object, so all this is in a hypothetical chapter "1". Try to imagine one 
 "scene" = "page" in a comic book sense. Thus, viewing a scene should start "playing".</p>
 
-
-
+<div>
+    
+    <ul class="list inline">
+        <li><a href="{% url 'flipbooks:strip-create' %}">create new strip</a></li>
+    </ul>
+    
+</div>
+<h3>Scene list</h3>
 <ul>
     {% for scene in object_list %}
         <li>
