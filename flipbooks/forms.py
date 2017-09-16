@@ -27,7 +27,6 @@ class StripCreateForm(forms.ModelForm):
         # self.fields['scene'] = forms.ModelChoiceField(
         #     queryset=Scene.objects.order_by("order")
         # )
-        
 
     class Meta:
         model = Strip
