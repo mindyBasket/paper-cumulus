@@ -5,6 +5,8 @@ from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, get_object_or_404
 from django.views import generic
+from django.contrib.messages.views import FormValidMessageMixin
+
 
 from easy_thumbnails.files import get_thumbnailer
 
@@ -69,12 +71,16 @@ class SceneListView(generic.ListView):
 # .................................................. 
 # .................................................. 
 
-class StripCreateView(generic.CreateView):
+class StripCreateView(FormMessageMixin, generic.CreateView):
     
     template_name = "flipbooks/strip_create.html"
     form_class = forms.StripCreateForm
     #login_url = '/admin/'
     success_url = "/flipbooks/"
+    
+   
+    #success_message = "Strip was created successfully"
+    form_valid_message = "Strip was created successfully"
     
 
 # This one "plays" the frames

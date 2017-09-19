@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.contrib import messages
+
 from easy_thumbnails.fields import ThumbnailerImageField
 from easy_thumbnails.signals import saved_file
 from easy_thumbnails.signal_handlers import generate_aliases_global
@@ -74,6 +76,7 @@ class Strip(models.Model):
             self.order = get_default_order(self)
 
         super(Strip, self).save()
+        
 
 
 

@@ -80,11 +80,11 @@ body{
 
 
 
-/* --------------------------------- */
-/* --------------------------------- */
-/*            form related           */
-/* --------------------------------- */
-/* --------------------------------- */
+/* -------------------------------------- */
+/* -------------------------------------- */
+/*         form and msg related           */
+/* -------------------------------------- */
+/* -------------------------------------- */
 
 .placeholder{
     display:inline-block;
@@ -95,4 +95,22 @@ body{
 
 .placeholder.new{
     border:1px solid blue;
+}
+
+.message_container{
+    position: absolute;
+    top: 0;
+    left:50%;
+    
+    transition: top 2s;
+}
+
+.message{
+    display: inline-block;
+    height: 80px; width: 600px;
+    background-color: white;
+    
+    position: relative;
+    left:-50%;
+    
 }
