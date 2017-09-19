@@ -11,6 +11,7 @@
             
             <div class="flimstrip_view">
                 Strip preview:
+                <br/>
                  {% for frame in object.frame_set.all %}
                      <img src="{{frame.frame_image.cell.url}}"/>
                  {% endfor %}
@@ -26,5 +27,5 @@
             </div>
         </div>
     </div>
-    
+
 {% endblock content %}

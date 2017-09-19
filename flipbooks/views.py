@@ -7,7 +7,9 @@ from django.shortcuts import render, get_object_or_404
 from django.core.urlresolvers import reverse_lazy
 from django.views import generic
 
+from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
+
 from django.contrib import messages
 
 
@@ -109,7 +111,13 @@ class StripUpdateView(SuccessMessageMixin, generic.UpdateView):
     template_name = "flipbooks/strip_update.html"
     form_class = forms.StripUpdateForm
     success_url = reverse_lazy('flipbooks:scene-list')
+    
     success_message = "Strip was updated successfully"
+    
+    def form_valid(self, form):
+        print("----------- form valid!")
+        messages.success(self.request, self.success_message)
+        return super(StripUpdateView, self).form_valid(form)
     
     
 # This one "plays" the frames
@@ -137,6 +145,12 @@ class StripListView(generic.ListView):
     #     return context
         
 
+
+# .................................................. 
+# .................................................. 
+#                     AJAX calls 
+# .................................................. 
+# .................................................. 
 
 def load_more_strips(request):
     #username = request.GET.get('username', None)

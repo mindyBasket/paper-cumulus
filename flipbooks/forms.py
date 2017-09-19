@@ -12,11 +12,30 @@ class FrameForm(forms.ModelForm):
         model = Frame
         fields = ['note', 'order', 'frame_image', 'strip']
 
-def getOrderChoices():
-    order_choices = (
-        ('1',1),('2',2),('3',3)
-        )
-    return order_choices
+
+
+def getOrderChoices(order_list = [], curr_order=0):
+    order_choices = []
+    last_order = 0
+    for choice in order_list:
+        #make tuple
+        if choice == curr_order:
+            #is current instance's order
+            order_select = (int(choice), "{} - CURRENT".format(choice)) 
+        else:
+            order_select = (int(choice), "{} - taken".format(choice)) 
+        order_choices.append(order_select)
+        
+        last_order = choice
+        
+    #add new order
+    new_order_select = (last_order+1, "(+{} - new)".format(last_order+1)) 
+    order_choices.append(new_order_select)
+    
+    #turn it into tuple
+    print("--------tuple manufacture: {}".format(order_choices))
+ 
+    return tuple(order_choices)
     
 
 class StripCreateForm(forms.ModelForm):
@@ -50,20 +69,38 @@ class StripCreateForm(forms.ModelForm):
 
 class StripUpdateForm(forms.ModelForm):
     
-
+    # Originally integerfield. Now dynamically updated ChoiceField 
+    order = forms.ChoiceField(choices=())
     
+    
+    def __init__(self, *args, **kwargs):
+        strip_instance = kwargs['instance']
+        strip_orders_list = []
+        for strip in strip_instance.scene.strip_set.all():
+            strip_orders_list.append(strip.order)
+    
+        super(StripUpdateForm, self).__init__(*args, **kwargs)
+        
+        self.fields['order'].choices = getOrderChoices(strip_orders_list, strip_instance.order)
+        
+        
     class Meta:
         model = Strip
         fields = ['scene', 'order', 'description'] 
-
         labels = {
             'scene': 'Under scene',
-            'order': 'With order'
+            'order': 'At order'
         }
-            
-        widgets = {
-            'scene': forms.Select(attrs={'disabled': 'disabled'}),
-            #self.fields['sku'].widget.attrs['readonly'] = True
-            'order': forms.Select(choices=getOrderChoices()),
-        }
+        # widgets = {
+        #     # below seem to get treated as...not even a field with a value
+        #     #'scene': forms.Select(attrs={'disabled': 'disabled'}),
+        #     'order': forms.Select,
+        # }
 
+    # This also exists in ModelForm? Originally I assumed it is only for Models
+    # def save(self):
+    #     #add better order if it is set 0
+    #     if int(self.order) == 0:
+    #         self.order = get_last_order(self)
+        
+    #     super(Strip, self).save()

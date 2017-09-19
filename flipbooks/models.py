@@ -46,7 +46,7 @@ class Scene(models.Model):
 # -------------------------------------------------
 
 #helper 
-def get_default_order(strip_instance):
+def get_last_order(strip_instance):
     scene = strip_instance.scene
     return len(scene.strip_set.all())+1
     
@@ -73,7 +73,7 @@ class Strip(models.Model):
     def save(self):
         #add better order if it is set 0
         if int(self.order) == 0:
-            self.order = get_default_order(self)
+            self.order = get_last_order(self)
         
         super(Strip, self).save()
         

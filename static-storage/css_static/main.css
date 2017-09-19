@@ -128,7 +128,7 @@ body{
 
 .message_container{
     position: absolute;
-    top: 0;
+    top: -100%;
     left:50%;
     
     transition: top 2s;
