@@ -21,7 +21,6 @@ def getOrderChoices():
 
 class StripCreateForm(forms.ModelForm):
     
-    
     def __init__(self, *args, **kwargs):
         super(StripCreateForm, self).__init__(*args, **kwargs)
         
@@ -45,17 +44,26 @@ class StripCreateForm(forms.ModelForm):
         
         #so I would like to add class to these fields. To do it, investigate crispy forms.
         
-    def form_valid(self, form):
-        # Validate order:
-        #   Currently, saving with order=0 will automatically become adjusted
-        #   when save() [check models.py
-        
-        #   Should also check if the order is duplicate.
+    #not part of ModelForm
+    # def form_valid()
 
-        messages.success(self.request, self.form_valid_message)
-        print("----------- form valid!")
-        return super(StripCreateForm, self).form_valid(form)
-        
-    # def form_invalid(self,form):
-    #     pass
-        
+
+class StripUpdateForm(forms.ModelForm):
+    
+
+    
+    class Meta:
+        model = Strip
+        fields = ['scene', 'order', 'description'] 
+
+        labels = {
+            'scene': 'Under scene',
+            'order': 'With order'
+        }
+            
+        widgets = {
+            'scene': forms.Select(attrs={'disabled': 'disabled'}),
+            #self.fields['sku'].widget.attrs['readonly'] = True
+            'order': forms.Select(choices=getOrderChoices()),
+        }
+

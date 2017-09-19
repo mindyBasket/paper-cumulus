@@ -2,8 +2,8 @@
 // Above line is to prevent cloud9 from thinking 
 // '$' is an undefined variable
 
-$("select[name='scene']").change(function() {
-    console.log("Scene has been selected -- v 2.3");
+$(".form.create select[name='scene']").change(function() {
+    console.log("Scene has been selected -- v 2.4");
   
     var scene_id = $(this).children('option').eq(($(this).val())).attr("value");
     

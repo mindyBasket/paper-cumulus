@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title%}{{block.super}} | Edit strip{% endblock title %}
+{% block content %}
+    <div class="row">
+        <h1>Update Strip</h1>
+        
+        <div class="col-sm-6 col-sm-offset-3">
+            
+            <a href="{% url 'flipbooks:scene-list' %}">< return</a>
+            
+            <div class="flimstrip_view">
+                Strip preview:
+                 {% for frame in object.frame_set.all %}
+                     <img src="{{frame.frame_image.cell.url}}"/>
+                 {% endfor %}
+                 
+            </div>
+            
+            <br/>
+            <br/>
+            
+            <!-- put create form here -->
+            <div class='form update'>
+            {% include "flipbooks/includes/form.html" with btn_title='Update Strip' %}
+            </div>
+        </div>
+    </div>
+    
+{% endblock content %}

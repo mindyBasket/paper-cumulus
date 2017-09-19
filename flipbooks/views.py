@@ -4,8 +4,11 @@ from __future__ import unicode_literals
 from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, get_object_or_404
+from django.core.urlresolvers import reverse_lazy
 from django.views import generic
-from django.contrib.messages.views import FormValidMessageMixin
+
+from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib import messages
 
 
 from easy_thumbnails.files import get_thumbnailer
@@ -71,18 +74,44 @@ class SceneListView(generic.ListView):
 # .................................................. 
 # .................................................. 
 
-class StripCreateView(FormMessageMixin, generic.CreateView):
+class StripCreateView(SuccessMessageMixin, generic.CreateView):
     
     template_name = "flipbooks/strip_create.html"
     form_class = forms.StripCreateForm
     #login_url = '/admin/'
-    success_url = "/flipbooks/"
+    # success_url = "/flipbooks/"
     
-   
-    #success_message = "Strip was created successfully"
-    form_valid_message = "Strip was created successfully"
-    
+    success_url = reverse_lazy('flipbooks:scene-list')
+    success_message = "Strip was created successfully"
+  
+    def form_valid(self, form):
+        # Validate order:
+        #   Currently, saving with order=0 will automatically become adjusted
+        #   when save() [check models.py]
+        
+        #   Should also check if the order is duplicate.
+        print("----------- form valid!")
+        messages.error(self.request, self.success_message)
+        return super(StripCreateView, self).form_valid(form)
 
+    def get_success_message(self, cleaned_data):
+        print("------------ sending success message: {}, {}".format(self.success_message,cleaned_data))
+        # return self.success_message % dict(
+        #     cleaned_data,
+        #     calculated_field=self.object.calculated_field,
+        # )
+        return self.success_message
+        
+
+class StripUpdateView(SuccessMessageMixin, generic.UpdateView):
+    queryset = Strip.objects.all()
+    
+    template_name = "flipbooks/strip_update.html"
+    form_class = forms.StripUpdateForm
+    success_url = reverse_lazy('flipbooks:scene-list')
+    success_message = "Strip was updated successfully"
+    
+    
 # This one "plays" the frames
 class StripListView(generic.ListView):
     

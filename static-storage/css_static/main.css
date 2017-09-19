@@ -9,8 +9,9 @@ body{
     background-color: #1e1e1e;
 }
 
-.frame_thumbs.stacked img{
+.frame_thumbs.stacked .thumb{
     position: relative;
+    display:inline-block;
     -webkit-box-shadow: 4px 0px 0px 0px rgba(0,0,0,0.25);
     -moz-box-shadow: 4px 0px 0px 0px rgba(0,0,0,0.25);
     box-shadow: 4px 0px 0px 0px rgba(0,0,0,0.25);
@@ -20,11 +21,39 @@ body{
 
 
 
-.frame_thumbs.stacked img:nth-of-type(1){z-index:5;}
-.frame_thumbs.stacked img:nth-of-type(2){z-index:4;}
-.frame_thumbs.stacked img:nth-of-type(3){z-index:3;}
-.frame_thumbs.stacked img:nth-of-type(4){z-index:2;}
-.frame_thumbs.stacked img:nth-of-type(5){z-index:1;}
+.frame_thumbs.stacked .thumb:nth-of-type(1){z-index:5;}
+.frame_thumbs.stacked .thumb:nth-of-type(2){z-index:4;}
+.frame_thumbs.stacked .thumb:nth-of-type(3){z-index:3;}
+.frame_thumbs.stacked .thumb:nth-of-type(4){z-index:2;}
+.frame_thumbs.stacked .thumb:nth-of-type(5){z-index:1;}
+
+
+.thumb .mini_menu{
+    /*small menu that pops up when you hover over .thumb*/
+    position:absolute;
+    top:0; left:0;
+    display: block;
+    width: 100%;
+    background-color: rgba(0,0,0,0.5);
+    text-align: right;
+    
+    padding: 5px 10px 5px 0;
+    color: white;
+    font-size: 1.2em;
+    
+    opacity: 0;
+    transition: opacity 0.3s;
+    
+}    
+
+.thumb:hover .mini_menu{
+    /*small menu that pops up when you hover over .thumb*/
+    opacity: 1;
+    transition: opacity 0.3s;
+    
+}    
+
+
 
 
 .frame_view{

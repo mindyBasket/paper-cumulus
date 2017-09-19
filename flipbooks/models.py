@@ -74,7 +74,7 @@ class Strip(models.Model):
         #add better order if it is set 0
         if int(self.order) == 0:
             self.order = get_default_order(self)
-
+        
         super(Strip, self).save()
         
 

@@ -26,6 +26,8 @@ urlpatterns = [
     
     #create strip
     url(r'^strips/create/$', views.StripCreateView.as_view(), name='strip-create'),
+    url(r'^strips/(?P<pk>\d+)/update/$', views.StripUpdateView.as_view(), name='strip-update'),
+
     
     #ajax calls
     url(r'^ajax/load_more_strips/$', views.load_more_strips, name='load_more_strips'),
