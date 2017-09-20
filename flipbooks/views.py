@@ -114,23 +114,27 @@ class StripUpdateView(SuccessMessageMixin, generic.UpdateView):
     
     success_message = "Strip was updated successfully"
     
+    # There is no instance information here
+    # def __init__(self, *args, **kwargs):
+    #     print("-----------is there kwargs?: {}".format(kwargs))
+        
     def form_valid(self, form):
         print("----------- form valid!")
         messages.success(self.request, self.success_message)
         return super(StripUpdateView, self).form_valid(form)
+        
+  
     
     
-# This one "plays" the frames
+# This one "plays" the frames.
+# It loads all the strip under a scene here, but when this view first loads
+# only a few strips will be loaded. Rest will be loaded using ajax calls.
 class StripListView(generic.ListView):
     
     queryset = Strip.objects.all()
     queryset_scene = ""
     strip_json = {}
-    #context_object_name = "strip_list"    # default is 'object_list' if you don't like that
-    
-    #Pagination for class-based view.
-    #paginate_by = 1  # only need 1 strip per "page"
-    
+    #context_object_name = "strip_list"  # default is 'object_list' if you don't like that
 
     def get_queryset(self):
         self.scene = get_object_or_404(Scene, pk=self.kwargs['scene_pk'])
@@ -151,6 +155,10 @@ class StripListView(generic.ListView):
 #                     AJAX calls 
 # .................................................. 
 # .................................................. 
+
+# ---------------------------
+# Called to load more strips under a scene. This 
+# assumes the scene is loading its strips piece by piece.
 
 def load_more_strips(request):
     #username = request.GET.get('username', None)
@@ -182,6 +190,10 @@ def load_more_strips(request):
     return JsonResponse(data)
 
 
+# ---------------------------
+# With known scene.id, provide preview of the strips 
+# under it. It will not retrieve all frames, just first
+# frames of each strips.
 def retrieve_scene__strip(request):
     
     # extract incoming param from request
@@ -206,7 +218,7 @@ def retrieve_scene__strip(request):
     data = {
         #'is_taken': User.objects.filter(username__iexact=username).exists()
         'strip_ids':strip_set_str_li,
-        "strip_frames": strip_set_frame_li
+        "strip_frames": strip_set_frame_li,
     }
     return JsonResponse(data)
     

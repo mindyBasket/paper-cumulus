@@ -13,6 +13,8 @@ $(".form.create select[name='scene']").change(function() {
 });
 
 function show_available_strip_id(data){
+    console.log("*** Data recieved: " + JSON.stringify(data));
+    
     var aval_strip_ids = [];
     var aval_strip_frames = [];
     
@@ -67,7 +69,6 @@ function retrieve_scene__strip(scene_id){
         },
         dataType: 'json',
         success: function (data) {
-            console.log("Scene (id="+scene_id+") has strips with ids of the following: " + JSON.stringify(data));
             show_available_strip_id(data);
         }
     });

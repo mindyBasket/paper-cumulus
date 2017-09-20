@@ -33,8 +33,6 @@ def getOrderChoices(order_list = [], curr_order=0):
     order_choices.append(new_order_select)
     
     #turn it into tuple
-    print("--------tuple manufacture: {}".format(order_choices))
- 
     return tuple(order_choices)
     
 
@@ -72,13 +70,12 @@ class StripUpdateForm(forms.ModelForm):
     # Originally integerfield. Now dynamically updated ChoiceField 
     order = forms.ChoiceField(choices=())
     
-    
     def __init__(self, *args, **kwargs):
         strip_instance = kwargs['instance']
         strip_orders_list = []
         for strip in strip_instance.scene.strip_set.all():
             strip_orders_list.append(strip.order)
-    
+            
         super(StripUpdateForm, self).__init__(*args, **kwargs)
         
         self.fields['order'].choices = getOrderChoices(strip_orders_list, strip_instance.order)

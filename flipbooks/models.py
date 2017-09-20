@@ -14,14 +14,16 @@ from django.db import models
 # thumbnail signal handler
 saved_file.connect(generate_aliases_global)
 
-    
 # Scene: holds multiple strips. In convensional web-comic sense, this is like a "page"
 class Scene(models.Model):
     
     order = models.IntegerField(default="0") 
+    order_list = models.TextField(max_length=200, default="")
     
     name = models.CharField(max_length=50, blank=True, default="")
     description = models.TextField(max_length=100, blank=True, default="")
+    
+    
     
     #chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE)
     
@@ -37,8 +39,6 @@ class Scene(models.Model):
         # At least, that's what he told me.
 
 
-
-
 # -------------------------------------------------
 # -------------------------------------------------
 #                     Strip
@@ -49,6 +49,25 @@ class Scene(models.Model):
 def get_last_order(strip_instance):
     scene = strip_instance.scene
     return len(scene.strip_set.all())+1
+
+def recatalog_order(scene_instance, new_order):
+    print("-------------RECATALOG ORDER FOR SCENE {}".format(scene_instance.id))
+    scene = scene_instance
+    new_order_list = []
+    
+    #am I trying to make space?
+    index = 1
+    for strip in scene.strip_set.all():
+        if index != new_order:
+            new_order_list.append(strip.id)
+            #TODO: reupdate strip's order?
+            #       Or do I ignore? If I leave it as it is
+            #       It might be harder to retrieve the strips in order
+        
+        index+=1
+
+    return ','.join(str(order) for order in new_order_list)
+        
     
 
 # Strip: holds multiple frames. Used for viewing frames.
@@ -74,12 +93,20 @@ class Strip(models.Model):
         #add better order if it is set 0
         if int(self.order) == 0:
             self.order = get_last_order(self)
-        
+            
+        #re-register order_list for its scene
         super(Strip, self).save()
         
-
-
-
+        #TODO: this doesn't work ):
+        scene = self.scene
+        scene.order_list = recatalog_order(self.scene, self.order)
+        print("------new order list:{}".format(scene.order_list))
+        scene.save()
+        
+        
+        
+        
+        
 def frame_upload_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/scene_<order>/strip_<order>-<order>.<ext>
     
