@@ -18,7 +18,7 @@ saved_file.connect(generate_aliases_global)
 class Scene(models.Model):
     
     order = models.IntegerField(default="0") 
-    order_list = models.TextField(max_length=200, default="")
+    children_orders = models.TextField(max_length=200, default="")
     
     name = models.CharField(max_length=50, blank=True, default="")
     description = models.TextField(max_length=100, blank=True, default="")
@@ -50,23 +50,37 @@ def get_last_order(strip_instance):
     scene = strip_instance.scene
     return len(scene.strip_set.all())+1
 
-def recatalog_order(scene_instance, new_order):
+
+    
+    
+def recatalog_order(scene_instance, target_strip_id, insert_at):
     print("-------------RECATALOG ORDER FOR SCENE {}".format(scene_instance.id))
     scene = scene_instance
-    new_order_list = []
+    new_children_orders = []
     
-    #am I trying to make space?
-    index = 1
-    for strip in scene.strip_set.all():
-        if index != new_order:
-            new_order_list.append(strip.id)
-            #TODO: reupdate strip's order?
-            #       Or do I ignore? If I leave it as it is
-            #       It might be harder to retrieve the strips in order
-        
-        index+=1
+    # if scene.order_list is empty, it means it was never initialized
+    # or there is a problem
+    if scene.children_orders == "":
+        print("-- children_orders empty. Populating based on id...")
+        #no choice but to order the scene by id
+        for strip in scene.strip_set.all():
+            new_children_orders.append(str(strip.id)) #match with stringy list
+        print(new_children_orders)
+    else: 
+        new_children_orders = scene.children_orders.split(",")
 
-    return ','.join(str(order) for order in new_order_list)
+    # because this function runs after "save()", new_children_orders contains
+    # all strips. This means I need to know which strip wants to move,
+    # and move to where. 
+    print("-- Swapping {} to index {}...".format(target_strip_id, insert_at))
+    print("------------initate re-order. BEFORE: {}".format(new_children_orders))
+    new_children_orders.remove(str(target_strip_id))
+    new_children_orders.insert(int(insert_at), str(target_strip_id))
+    print("------------AFTER: {}".format(new_children_orders))
+ 
+    
+    #turn it back to stringy list
+    return ','.join(str(order) for order in new_children_orders)
         
     
 
@@ -91,17 +105,17 @@ class Strip(models.Model):
     
     def save(self):
         #add better order if it is set 0
-        if int(self.order) == 0:
-            self.order = get_last_order(self)
-            
-        #re-register order_list for its scene
+        insert_index = int(self.order) #returns string
+        
         super(Strip, self).save()
         
-        #TODO: this doesn't work ):
+        #update children_orders of its scene (parent)
         scene = self.scene
-        scene.order_list = recatalog_order(self.scene, self.order)
-        print("------new order list:{}".format(scene.order_list))
+        scene.children_orders = recatalog_order(self.scene, self.id, insert_index)
+        print("------new order list:{}".format(scene.children_orders))
         scene.save()
+        
+
         
         
         

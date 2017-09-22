@@ -14,7 +14,7 @@ from . import models
 
 class SceneModelAdmin(admin.ModelAdmin):
 
-    list_display = ("id", "__str__", "name", "order_list")
+    list_display = ("id", "__str__", "name", "children_orders")
 
     
     
