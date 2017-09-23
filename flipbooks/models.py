@@ -54,14 +54,12 @@ def get_last_order(strip_instance):
     
     
 def recatalog_order(scene_instance, target_strip_id, insert_at):
-    print("-------------RECATALOG ORDER FOR SCENE {}".format(scene_instance.id))
     scene = scene_instance
     new_children_orders = []
     
     # if scene.order_list is empty, it means it was never initialized
     # or there is a problem
     if scene.children_orders == "":
-        print("-- children_orders empty. Populating based on id...")
         #no choice but to order the scene by id
         for strip in scene.strip_set.all():
             new_children_orders.append(str(strip.id)) #match with stringy list
@@ -75,7 +73,7 @@ def recatalog_order(scene_instance, target_strip_id, insert_at):
     print("-- Swapping {} to index {}...".format(target_strip_id, insert_at))
     print("------------initate re-order. BEFORE: {}".format(new_children_orders))
     new_children_orders.remove(str(target_strip_id))
-    new_children_orders.insert(int(insert_at), str(target_strip_id))
+    new_children_orders.insert(int(insert_at)-1, str(target_strip_id))
     print("------------AFTER: {}".format(new_children_orders))
  
     
