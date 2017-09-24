@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+
+
+{% block title %} {{block.super}} | Strips{% endblock title %}
+
+{% block content %}
+<h3>Flip through Strips</h3>
+
+<a href="{% url 'flipbooks:scene-list' %}"><< Return</a>
+
+<p>Dev note: This page starts playing the frames inside each strip. When populating strips, 
+consider one scene equivalent to a "page" of a comic book.</p>
+<p>Structurally, this is a scene detail page.</p>
+
+<!-- it would be nice if you can ajax load and don't show interface until first 
+strip has been loaded -->
+
+{% endblock content %}
+
+
+{% block letterbox %}
+    <div class="frame_view wide">
+        
+        <!-- WELL I GUESS YOU CAN'T USE THIS -->
+        <!--{ for fr in object_list.first.frame_set.all }-->
+        <!--    <img src="{{fr.frame_image.url}}"/>-->
+        <!--{ endfor }-->
+        
+        <!-- this is where you load first batch of images -->
+        <!-- {{object_list|first}} -->
+        <div class='frame_load'>
+            {% if valid_children_orders %}
+                
+                {% for strip in ordered_strip_set|slice:":3" %}
+                    {% if strip != None %}
+                        <span class="strip">
+                            {% for fr in strip.frame_set.all %} 
+                                <img src="{{fr.frame_image.url}}" class="frame_item"/>
+        
+                            {% endfor %}
+                        </span>
+                    {% else %}
+                        <b>STRIP NOT FOUND</b>
+                    {% endif %}
+                {% endfor %}
+                
+            {% else %}
+                {% for strip in scene.strip_set.all|slice:":3" %}
+                    <span class="strip">
+                        {% for fr in strip.frame_set.all %} 
+                            <img src="{{fr.frame_image.url}}" class="frame_item"/>
+    
+                        {% endfor %}
+                    </span>
+                {% endfor %}
+                
+            {% endif %}
+                
+        </div>
+        
+        <div class="cover">
+            <span id="msg_loading">Loading</span>
+            <span id="msg_instruction">Use arrow keys ></span>
+        </div>
+        
+    </div>
+{% endblock letterbox %}
+
+
+{% block content_2 %}
+<div class="alert alert-info" role="alert">
+    <span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span>
+    <span class="msg"></span>
+</div>
+
+<!-- append thumbnails -->
+<div class="flimstrip_view">
+    {% if valid_children_orders %}
+        {% for strip in ordered_strip_set %}
+            {% if strip != None %}
+                {% for fr in strip.frame_set.all %}
+                    <img src="{{ fr.frame_image.cell.url }}"/>
+                {% endfor %}
+            {% else %}
+                <b>NOT FOUND</b>
+            {% endif %}
+        {% endfor %}
+    
+    {% else %}
+         <p style="color:red;">Warning: error retrieving strip order reference. Strips has been rendered in id of order.</p>
+         {% for strip in scene.strip_set.all %}
+            {% for fr in strip.frame_set.all %}
+                <img src="{{ fr.frame_image.cell.url }}"/>
+            {% endfor %}
+        {% endfor %}
+    {% endif %} 
+    
+    
+    
+
+</div>
+
+{% endblock content_2 %}

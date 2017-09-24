@@ -6,13 +6,14 @@ var frame_view;
 
 
 $(document).ready(function(){
-    console.log("---------- v.1.13 - Ajax attempt");
+    console.log("* ------- flip.js v.1.14 ------- *");
 
     //init global var
     top_z_index = 1000;
     frame_view = $(document).find('.frame_view');
 
     init_frame_imgs_and_container();
+    
     
     var first_frame_loaded = false;
     $('.frame_view .frame_load').imagesLoaded()

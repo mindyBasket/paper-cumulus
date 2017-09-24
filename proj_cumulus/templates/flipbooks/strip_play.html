@@ -5,12 +5,13 @@
 {% block title %} {{block.super}} | Strips{% endblock title %}
 
 {% block content %}
-<h3>List of Strips</h3>
+<h3>Flip through Strips</h3>
 
 <a href="{% url 'flipbooks:scene-list' %}"><< Return</a>
 
-<p>These shouldn't actually be a static list of strips. Opening a strip should start "playing" the frames.</p>
-<p>This one view represents a "page".</p>
+<p>Dev note: This page starts playing the frames inside each strip. When populating strips, 
+consider one scene equivalent to a "page" of a comic book.</p>
+<p>Structurally, this is a scene detail page.</p>
 
 <!-- it would be nice if you can ajax load and don't show interface until first 
 strip has been loaded -->

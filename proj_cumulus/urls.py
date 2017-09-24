@@ -21,7 +21,8 @@ from django.conf.urls.static import static
 
 from .views import home
 from flipbooks.views import (
-    FrameListView
+    FrameListView,
+    SceneListView
 )
 
 
@@ -32,8 +33,8 @@ urlpatterns = [
     #standalone homepage
     #url(r'^$', home, name='home'),
     
-    #list view test
-    url(r'^$', home, name='home'),
+    # home
+    url(r'^$', SceneListView.as_view(), name='home'), 
     
     #flipbooks include
     url(r'^flipbooks/', include('flipbooks.urls', namespace='flipbooks'))

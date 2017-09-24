@@ -23,6 +23,7 @@ def get_by_id(obj_li, ref_id):
     return [False]
 
 
+# Note: there is a duplicate of this function in helpers.py
 @register.filter(name='order_by_id_ref')
 def order_by_id_ref(obj_li, ref_id_li):
     #make array same size as the object list

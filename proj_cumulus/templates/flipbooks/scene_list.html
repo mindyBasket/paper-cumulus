@@ -27,7 +27,9 @@ a chapter object, so all this is in a hypothetical chapter "1". Try to imagine o
             <p>
                 {% url 'flipbooks:strip-list' scene_pk=scene.pk as strip_url %}
                 <form action="{{strip_url}}">
-                    <a href="{% url 'flipbooks:strip-list' scene_pk=scene.pk %}">link</a>
+
+                    <a href="{% url 'flipbooks:scene-detail' pk=scene.pk %}">link</a>
+                    
                     <button type="submit" class="btn btn-default btn-md">
                       View <span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span>
                      </button>
@@ -45,7 +47,7 @@ a chapter object, so all this is in a hypothetical chapter "1". Try to imagine o
                         {% for curr_id in valid_children_orders|get_by_index:forloop.counter0 %}
                         
                             <!-- single loop forloop -->
-                            <!-- An attmpt at storing value in a variable in template --> 
+                            <!-- An attmpt at storing value in a variable in template -->
                             {% for curr_strip in scene.strip_set.all|get_by_id:curr_id %}
                                 <span class="thumb">
                                     <img src="{{ curr_strip.frame_set.first.frame_image.thumb.url }}" width='200px'/>

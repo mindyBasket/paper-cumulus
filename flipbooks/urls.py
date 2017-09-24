@@ -11,8 +11,10 @@ from . import views
 urlpatterns = [
     #note: "/" = "{proj}/flipbooks"
     
+    # Scene CRUD
     url(r'^$', views.SceneListView.as_view(), name="home"),
     url(r'^scenes/$', views.SceneListView.as_view(), name="scene-list"),
+    url(r'^scene/(?P<pk>\d+)/flip/$', views.SceneDetailView.as_view(), name='scene-detail'),
     
     # url(r'^search/$', views.ChatterListView.as_view(), name='list'),
     # url(r'^create/$', views.ChatterCreateView.as_view(), name='create'),
@@ -20,11 +22,10 @@ urlpatterns = [
     # url(r'^(?P<pk>\d+)/update/$', views.ChatterUpdateView.as_view(), name='update'),
     # url(r'^(?P<pk>\d+)/delete/$', views.ChatterDeleteView.as_view(), name='delete'),
     
-    
-    url(r'^scene/(?P<scene_pk>\d+)/flip/$', views.StripListView.as_view(), name='strip-list'),
+    url(r'^scene/(?P<scene_pk>\d+)/flip_old/$', views.StripListView.as_view(), name='strip-list'),
     #url(r'^objects/page(?P<page>[0-9]+)/$', PaginatedView.as_view()),
     
-    #create strip
+    # Strip CRUD
     url(r'^strips/create/$', views.StripCreateView.as_view(), name='strip-create'),
     url(r'^strips/(?P<pk>\d+)/update/$', views.StripUpdateView.as_view(), name='strip-update'),
 

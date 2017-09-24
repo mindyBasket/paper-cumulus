@@ -52,7 +52,6 @@ def get_last_order(strip_instance):
 
 
     
-    
 def recatalog_order(scene_instance, target_strip_id, insert_at):
     scene = scene_instance
     new_children_orders = []
