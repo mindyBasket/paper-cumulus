@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load thumbnail %}
+{% load flipbooks_custom_tags %}
 
 {% block title %} {{block.super}} | Scenes{% endblock title %}
 
@@ -36,17 +37,36 @@ a chapter object, so all this is in a hypothetical chapter "1". Try to imagine o
                     <!-- {- if forloop.counter0  < 2 -}
                         Unfortunately, there is no "break" in Django. 
                         Truncate the _set instead. -->
-                    {% for strip in scene.strip_set.all|slice:":5" %}
 
-                        <!--<img src="{- thumbnail strip.frame_set.first.frame_image 200x200 autocrop -}"/>-->
-                       
-                        <span class="thumb">
-                            <img src="{{ strip.frame_set.first.frame_image.thumb.url }}" width='200px'/>
-                            <a href="{% url 'flipbooks:strip-update' pk=strip.id %}" class="mini_menu edit">edit</a>
-                        </span>
+                    <!-- valid_children_orders? -->
+                    {% if valid_children_orders|get_by_index:forloop.counter0 %}
                         
-                
-                    {% endfor %}
+                        <!-- retrieve strip by id referedin valid_children_orders -->
+                        {% for curr_id in valid_children_orders|get_by_index:forloop.counter0 %}
+                        
+                            <!-- single loop forloop -->
+                            <!-- An attmpt at storing value in a variable in template --> 
+                            {% for curr_strip in scene.strip_set.all|get_by_id:curr_id %}
+                                <span class="thumb">
+                                    <img src="{{ curr_strip.frame_set.first.frame_image.thumb.url }}" width='200px'/>
+                                    <a href="{% url 'flipbooks:strip-update' pk=curr_strip.id %}" class="mini_menu edit">edit</a>
+                                </span>
+                            {% endfor %}
+                        {% endfor %}
+                        
+                    {% else %}
+                        {% for strip in scene.strip_set.all|slice:":5" %}
+    
+                            <!--<img src="{- thumbnail strip.frame_set.first.frame_image 200x200 autocrop -}"/>-->
+                           
+                            <span class="thumb">
+                                <img src="{{ strip.frame_set.first.frame_image.thumb.url }}" width='200px'/>
+                                <a href="{% url 'flipbooks:strip-update' pk=strip.id %}" class="mini_menu edit">edit</a>
+                            </span>
+                            
+                    
+                        {% endfor %}
+                    {% endif %}
                 </div>
                 
             </p>

@@ -55,11 +55,11 @@ def getOrderChoices(scene_instance, curr_strip_id=-1):
         
         for i, strip_id in enumerate(strip_in_order):
             #make tuple
-            if strip_id == curr_strip_id:
+            if int(strip_id) == int(curr_strip_id):
                 #is current instance's order
-                order_select = ((i+1), "{}(id#{}) - CURRENT".format(i+1,strip_id)) 
+                order_select = (i, "{}(id#{}) - CURRENT".format(i+1,strip_id)) 
             else:
-                order_select = ((i+1), "{}(id#{}) - taken".format(i+1,strip_id)) 
+                order_select = (i, "{}(id#{}) - taken".format(i+1,strip_id)) 
             order_choices.append(order_select)
             
             last_order=i+1

@@ -24,6 +24,8 @@ from .models import (
     
 from . import forms
 
+#custom helper functions 
+from .helpermodule import helpers
 
 
 
@@ -63,11 +65,44 @@ class FrameListView(generic.ListView):
         # here, "self" = FrameListView, not the Frame object
         # think of this context like the stuff for the WHOLE view, not the individual model.
         return context
-        
+    
+
+
+
+
+# .................................................. 
+# .................................................. 
+#                   Scene Views
+# .................................................. 
+# .................................................. 
         
 class SceneListView(generic.ListView):
     
     queryset = Scene.objects.order_by('order')
+    
+    
+    def get_context_data(self, *args, **kwargs):
+
+        context = super(SceneListView, self).get_context_data(*args, **kwargs)
+        # Default contexts
+        # - object_list, is_paginated, paginator, page_obj
+
+        # Check what's in context like this
+        # print("------------{}".format(context))
+        
+        # Convert children_orders to iterable list, or mark it with "False"
+        valid_children_orders = []
+        for obj in context['object_list']:
+            if obj.children_orders == "":
+                #has_valid_children_orders.append(False if obj.children_orders == "" else True)
+                valid_children_orders.append(False)
+            else:
+                valid_children_orders.append(helpers.string2List(obj.children_orders))
+
+        context["valid_children_orders"] = valid_children_orders
+
+        return context
+    
 
 
 # .................................................. 
