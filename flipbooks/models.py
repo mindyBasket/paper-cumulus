@@ -73,7 +73,7 @@ def recatalog_order(scene_instance, target_strip_id, insert_at):
     print("-- Swapping {} to index {}...".format(target_strip_id, insert_at))
     print("------------initate re-order. BEFORE: {}".format(new_children_orders))
     new_children_orders.remove(str(target_strip_id))
-    new_children_orders.insert(int(insert_at)-1, str(target_strip_id))
+    new_children_orders.insert(int(insert_at), str(target_strip_id))
     print("------------AFTER: {}".format(new_children_orders))
  
     
