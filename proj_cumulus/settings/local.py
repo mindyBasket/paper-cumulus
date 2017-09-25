@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     'easy_thumbnails',
+    'rest_framework',
     
     'flipbooks',
 ]
