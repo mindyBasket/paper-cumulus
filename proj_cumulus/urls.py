@@ -37,7 +37,11 @@ urlpatterns = [
     url(r'^$', SceneListView.as_view(), name='home'), 
     
     #flipbooks include
-    url(r'^flipbooks/', include('flipbooks.urls', namespace='flipbooks'))
+    url(r'^flipbooks/', include('flipbooks.urls', namespace='flipbooks')),
+    
+    #restful api
+    #serializer
+    url(r'^api/flipbooks/', include('flipbooks.api.urls', namespace='flipbooks-api'))
 ]
 
 if settings.DEBUG == True:
