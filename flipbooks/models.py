@@ -14,6 +14,40 @@ from django.db import models
 # thumbnail signal handler
 saved_file.connect(generate_aliases_global)
 
+
+# -------------------------------------------------
+# -------------------------------------------------
+#               Chapter and Book
+# -------------------------------------------------
+# -------------------------------------------------
+
+class Book(models.Model):
+    
+    title = models.CharField(max_length=50, blank=True, default="Untitled Book")
+    
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
+    
+    
+class Chapter(models.Model):
+    
+    number = models.IntegerField(default="0") 
+    title = models.CharField(max_length=50, blank=True, default="Untitled")
+    
+    # relationship
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
+
+
+
+# -------------------------------------------------
+# -------------------------------------------------
+#                     Scene
+# -------------------------------------------------
+# -------------------------------------------------
+
 # Scene: holds multiple strips. In convensional web-comic sense, this is like a "page"
 class Scene(models.Model):
     
@@ -23,9 +57,8 @@ class Scene(models.Model):
     name = models.CharField(max_length=50, blank=True, default="")
     description = models.TextField(max_length=100, blank=True, default="")
     
-    
-    
-    #chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE)
+    # TODO: make this NOT CASCADE. Kinda dangerous
+    chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE, default="0")
     
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)

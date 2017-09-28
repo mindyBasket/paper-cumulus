@@ -103,10 +103,8 @@ class SceneListView(generic.ListView):
 
         return context
         
-    
+
 # This one "plays" the frames.
-# NOTE, TODO: this is a duplicate of StripListView, which likely will be deleted.
-# I made this to simplify url 
 
 # It loads all the strip under a scene here, but when this view first loads
 # only a few strips will be loaded. Rest will be loaded using ajax calls.
@@ -194,30 +192,8 @@ class StripUpdateView(SuccessMessageMixin, generic.UpdateView):
         return super(StripUpdateView, self).form_valid(form)
         
   
-    
-    
-# This one "plays" the frames.
-# It loads all the strip under a scene here, but when this view first loads
-# only a few strips will be loaded. Rest will be loaded using ajax calls.
-class StripListView(generic.ListView):
-    
-    queryset = Strip.objects.all()
-    template_name = "flipbooks/strip_play.html"
-    queryset_scene = ""
-    strip_json = {}
-    #context_object_name = "strip_list"  # default is 'object_list' if you don't like that
-
-    def get_queryset(self):
-        self.scene = get_object_or_404(Scene, pk=self.kwargs['scene_pk'])
-        
-        #if you need it to be more specific, use .filter(scene__order=1)
-        self.queryset_scene = Strip.objects.filter(scene=self.scene)
-        return self.queryset_scene
-        
-    # def get_context_data(self, *args, **kwargs):
-    #     context = super(StripListView, self).get_context_data(*args, **kwargs)
-    #     return context
-        
+  
+  
 
 
 # .................................................. 

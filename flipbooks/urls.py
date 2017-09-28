@@ -22,8 +22,8 @@ urlpatterns = [
     # url(r'^(?P<pk>\d+)/update/$', views.ChatterUpdateView.as_view(), name='update'),
     # url(r'^(?P<pk>\d+)/delete/$', views.ChatterDeleteView.as_view(), name='delete'),
     
-    url(r'^scene/(?P<scene_pk>\d+)/flip_old/$', views.StripListView.as_view(), name='strip-list'),
-    #url(r'^objects/page(?P<page>[0-9]+)/$', PaginatedView.as_view()),
+    # url(r'^scene/(?P<scene_pk>\d+)/flip_old/$', views.StripListView.as_view(), name='strip-list'),
+    # url(r'^objects/page(?P<page>[0-9]+)/$', PaginatedView.as_view()),
     
     # Strip CRUD
     url(r'^strips/create/$', views.StripCreateView.as_view(), name='strip-create'),

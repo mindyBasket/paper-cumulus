@@ -39,6 +39,8 @@ class FrameModelAdmin(admin.ModelAdmin):
 
 
 # Register your models here.
+admin.site.register(models.Book)
+admin.site.register(models.Chapter)
 admin.site.register(models.Scene, SceneModelAdmin)
 admin.site.register(models.Strip, StripModelAdmin)
 admin.site.register(models.Frame, FrameModelAdmin)
