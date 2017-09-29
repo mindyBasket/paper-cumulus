@@ -33,10 +33,8 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     
     #standalone homepage
-    #url(r'^$', home, name='home'),
+    url(r'^$', home, name='home'),
     
-    # home
-    #url(r'^$', SceneListView.as_view(), name='home'), 
     # This doesn't work!
     # url(r'^.*$', RedirectView.as_view(url='flipbooks/chapter/0/', permanent=False), name='index'),
     
