@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+{% load flipbooks_custom_tags %}
+
+{% block title %} {{block.super}} | Scenes{% endblock title %}
+
+{% block content %}
+
+
+<div class="row">
+    <!-- left side container -->
+    <div class="col-md-2">
+        <h3>Scenes Under Chapter {{object.number}}</h3>
+        
+        <p>
+            from Book : {{object.book.title}}
+        </p>
+    </div>
+    <!-- right side container -->
+    <div class="col-md-10">
+        
+        
+
+        <p>This is a page listing all the scenes in a chapter. Currently I don't have 
+        a chapter object, so all this is in a hypothetical chapter "1". Try to imagine one 
+        "scene" = "page" in a comic book sense. Thus, viewing a scene should start "playing".</p>
+
+
+        <div>
+    
+            <ul class="list inline">
+                <li><a href="{% url 'flipbooks:strip-create' %}">create new strip</a></li>
+                <li><a href="{% url 'flipbooks-api:list' %}">View api</a></li>
+            </ul>
+            
+        </div>
+        
+        <h3>Scene list</h3>
+        <ul>
+            {% for scene in object.scene_set.all %}
+                <li>
+                    Order: {{scene.order}} (id: {{scene.id}}) | {{scene.description}}
+                
+                    <p>
+                        {% url 'flipbooks:strip-list' scene_pk=scene.pk as strip_url %}
+                        <form action="{{strip_url}}">
+        
+                            <a href="{% url 'flipbooks:scene-detail' pk=scene.pk %}">link</a>
+                            
+                            <button type="submit" class="btn btn-default btn-md">
+                              View <span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span>
+                             </button>
+                        </form>
+                        
+                        <div class="frame_thumbs stacked">
+                            <!-- {- if forloop.counter0  < 2 -}
+                                Unfortunately, there is no "break" in Django. 
+                                Truncate the _set instead. -->
+        
+                            <!-- valid_children_orders? -->
+                            {% if valid_children_orders and valid_children_orders|get_by_index:forloop.counter0 %}
+                                
+                                <!-- retrieve strip by id referedin valid_children_orders -->
+                                {% for curr_id in valid_children_orders|get_by_index:forloop.counter0 %}
+                                
+                                    <!-- single loop forloop -->
+                                    <!-- An attmpt at storing value in a variable in template -->
+                                    {% for curr_strip in scene.strip_set.all|get_by_id:curr_id %}
+                                        <span class="thumb">
+                                            <img src="{{ curr_strip.frame_set.first.frame_image.thumb.url }}" width='200px'/>
+                                            <a href="{% url 'flipbooks:strip-update' pk=curr_strip.id %}" class="mini_menu edit">edit</a>
+                                        </span>
+                                    {% endfor %}
+                                {% endfor %}
+                                
+                            {% else %}
+                                {% for strip in scene.strip_set.all|slice:":5" %}
+            
+                                    <!--<img src="{- thumbnail strip.frame_set.first.frame_image 200x200 autocrop -}"/>-->
+                                   
+                                    <span class="thumb">
+                                        <img src="{{ strip.frame_set.first.frame_image.thumb.url }}" width='200px'/>
+                                        <a href="{% url 'flipbooks:strip-update' pk=strip.id %}" class="mini_menu edit">edit</a>
+                                    </span>
+                                    
+                            
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        
+                    </p>
+                        
+        
+                </li>
+            {% empty %}
+                <p>No strips could be found</p>
+            
+            {% endfor %}
+            
+        </ul>
+        
+    
+    <!-- end: right side container -->    
+    </div>
+    
+
+
+
+
+
+
+<!-- end: class=row -->
+</div>
+
+
+
+
+<div class="message_container">
+    <div class="message">
+        <h3>Message</h3>
+        {% if messages %}
+            Message recieved:
+            <ul>
+                {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            
+            </ul>
+        {% else %}
+            No message
+        {% endif %}
+    </div>
+   
+</div>
+
+    {% verbatim %}
+    {% debug %}
+    {% endverbatim %}
+
+{% endblock content %}

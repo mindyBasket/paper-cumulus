@@ -18,9 +18,11 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.generic.base import RedirectView
 
 from .views import home
 from flipbooks.views import (
+    ChapterDetailView,
     FrameListView,
     SceneListView
 )
@@ -34,7 +36,9 @@ urlpatterns = [
     #url(r'^$', home, name='home'),
     
     # home
-    url(r'^$', SceneListView.as_view(), name='home'), 
+    #url(r'^$', SceneListView.as_view(), name='home'), 
+    # This doesn't work!
+    # url(r'^.*$', RedirectView.as_view(url='flipbooks/chapter/0/', permanent=False), name='index'),
     
     #flipbooks include
     url(r'^flipbooks/', include('flipbooks.urls', namespace='flipbooks')),

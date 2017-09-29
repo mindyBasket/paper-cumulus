@@ -11,8 +11,11 @@ from . import views
 urlpatterns = [
     #note: "/" = "{proj}/flipbooks"
     
-    # Scene CRUD
-    url(r'^$', views.SceneListView.as_view(), name="home"),
+    # Chapter Urls
+    url(r'^chapter/(?P<number>\d+)/$', views.ChapterDetailView.as_view(), name='chapter-detail'),
+    
+    # Scene Urls
+    #url(r'^$', views.SceneListView.as_view(), name="home"),
     url(r'^scenes/$', views.SceneListView.as_view(), name="scene-list"),
     url(r'^scene/(?P<pk>\d+)/flip/$', views.SceneDetailView.as_view(), name='scene-detail'),
     
@@ -25,11 +28,10 @@ urlpatterns = [
     # url(r'^scene/(?P<scene_pk>\d+)/flip_old/$', views.StripListView.as_view(), name='strip-list'),
     # url(r'^objects/page(?P<page>[0-9]+)/$', PaginatedView.as_view()),
     
-    # Strip CRUD
+    # Strip Urls
     url(r'^strips/create/$', views.StripCreateView.as_view(), name='strip-create'),
     url(r'^strips/(?P<pk>\d+)/update/$', views.StripUpdateView.as_view(), name='strip-update'),
 
-    
     #ajax calls
     url(r'^ajax/load_more_strips/$', views.load_more_strips, name='load_more_strips'),
     url(r'^ajax/retrieve_scene__strip/$', views.retrieve_scene__strip, name='retrieve_scene__strip'),

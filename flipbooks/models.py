@@ -28,6 +28,10 @@ class Book(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
     
+    def __str__(self):
+        # https://docs.python.org/2/library/stdtypes.html#str.format
+        return "Book: {}".format(self.title)
+    
     
 class Chapter(models.Model):
     
@@ -39,6 +43,10 @@ class Chapter(models.Model):
     
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        # https://docs.python.org/2/library/stdtypes.html#str.format
+        return "Chapter {}: {}".format(self.number, self.title)
 
 
 
@@ -52,13 +60,13 @@ class Chapter(models.Model):
 class Scene(models.Model):
     
     order = models.IntegerField(default="0") 
-    children_orders = models.TextField(max_length=200, default="")
+    children_orders = models.TextField(max_length=200, blank=True, default="")
     
     name = models.CharField(max_length=50, blank=True, default="")
     description = models.TextField(max_length=100, blank=True, default="")
     
     # TODO: make this NOT CASCADE. Kinda dangerous
-    chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE, default="0")
+    chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE, default=0)
     
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)

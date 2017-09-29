@@ -17,6 +17,8 @@ from easy_thumbnails.files import get_thumbnailer
 
 #import your models
 from .models import (
+        Book,
+        Chapter,
         Scene,
         Strip,
         Frame
@@ -30,45 +32,41 @@ from .helpermodule import helpers
 
 
 
-class FrameDetailView(generic.DetailView):
-    
-    #I don't need this for detail view, do I?
-    #queryset = Frame.objects.all()
-    
-    def get_object(self):
-        #print("-------------output: ", self.kwargs)
-        pk = self.kwargs.get("pk") # primary key
-        return Frame.objects.get(id=pk)
-        #return get_object_or_404(Chatter, id=pk)
-    
-    # NOT THE SAME AS ListView's get_context_data()
-    def get_context_data(self, **kwargs):
 
-        context = super(FrameDetailView, self).get_context_data(**kwargs)
-        # Default contexts
-        # - object, context_object_name
-        
-        return context
-        
     
-class FrameListView(generic.ListView):
 
-    queryset = Frame.objects.all() 
 
+
+# .................................................. 
+# .................................................. 
+#                  Chapter Views
+# .................................................. 
+# .................................................. 
+
+# Previously "SceneListView"
+class ChapterDetailView(generic.TemplateView):
+    # NOTE: the reason this is using TemplateView instead of DetailView
+    #       is because this not retrieving chapter by pk but instead
+    #       by its number property
+    
+    model = Chapter
+    
+    queryset = Chapter.objects.all()
+    template_name = "flipbooks/chapter_detail.html"
+    
     def get_context_data(self, *args, **kwargs):
 
-        context = super(FrameListView, self).get_context_data(*args, **kwargs)
-        # Default contexts
-        # - object_list, is_paginated, paginator, page_obj
+        context = super(ChapterDetailView, self).get_context_data(*args, **kwargs)
         
-        #context['frame_image'] = self.frame_image #doesn't work like that
-        # here, "self" = FrameListView, not the Frame object
-        # think of this context like the stuff for the WHOLE view, not the individual model.
-        return context
+        # TODO: should also take its Book number into account.
+        #       Chapter number is not unique!
+        context['object'] = Chapter.objects.filter(number=kwargs['number'])[0]
     
-
-
-
+        print("*--------------Get scene set {}".format(context['object'].scene_set.all()))
+        
+        
+        
+        return context
 
 # .................................................. 
 # .................................................. 
@@ -79,7 +77,6 @@ class FrameListView(generic.ListView):
 class SceneListView(generic.ListView):
     
     queryset = Scene.objects.order_by('order')
-    
     
     def get_context_data(self, *args, **kwargs):
 
@@ -186,7 +183,9 @@ class StripUpdateView(SuccessMessageMixin, generic.UpdateView):
     # There is no instance information here
     # def __init__(self, *args, **kwargs):
     #     print("-----------is there kwargs?: {}".format(kwargs))
-        
+    
+    # See StripUpdateForm in forms.py for dynamic field information
+    
     def form_valid(self, form):
         messages.success(self.request, self.success_message)
         return super(StripUpdateView, self).form_valid(form)
@@ -198,7 +197,7 @@ class StripUpdateView(SuccessMessageMixin, generic.UpdateView):
 
 # .................................................. 
 # .................................................. 
-#                     AJAX calls 
+#              AJAX calls (for Strip)
 # .................................................. 
 # .................................................. 
 
@@ -269,4 +268,48 @@ def retrieve_scene__strip(request):
     return JsonResponse(data)
     
     
+
+
+
+
+# .................................................. 
+# .................................................. 
+#                     Frames
+# .................................................. 
+# .................................................. 
+
+class FrameDetailView(generic.DetailView):
     
+    #I don't need this for detail view, do I?
+    #queryset = Frame.objects.all()
+    
+    def get_object(self):
+        #print("-------------output: ", self.kwargs)
+        pk = self.kwargs.get("pk") # primary key
+        return Frame.objects.get(id=pk)
+        #return get_object_or_404(Chatter, id=pk)
+    
+    # NOT THE SAME AS ListView's get_context_data()
+    def get_context_data(self, **kwargs):
+
+        context = super(FrameDetailView, self).get_context_data(**kwargs)
+        # Default contexts
+        # - object, context_object_name
+        
+        return context
+        
+    
+class FrameListView(generic.ListView):
+
+    queryset = Frame.objects.all() 
+
+    def get_context_data(self, *args, **kwargs):
+
+        context = super(FrameListView, self).get_context_data(*args, **kwargs)
+        # Default contexts
+        # - object_list, is_paginated, paginator, page_obj
+        
+        #context['frame_image'] = self.frame_image #doesn't work like that
+        # here, "self" = FrameListView, not the Frame object
+        # think of this context like the stuff for the WHOLE view, not the individual model.
+        return context
