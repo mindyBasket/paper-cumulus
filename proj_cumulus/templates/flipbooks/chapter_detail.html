@@ -37,7 +37,7 @@
         
         <h3>Scene list</h3>
         <ul>
-            {% for scene in object.scene_set.all %}
+            {% for scene in object_scene_list %}
                 <li>
                     Order: {{scene.order}} (id: {{scene.id}}) | {{scene.description}}
                 

@@ -11,8 +11,11 @@ from . import views
 urlpatterns = [
     #note: "/" = "{proj}/flipbooks"
     
+    # Book Urls
+    # none
+    
     # Chapter Urls
-    url(r'^chapter/(?P<number>\d+)/$', views.ChapterDetailView.as_view(), name='chapter-detail'),
+    url(r'^(?P<book_pk>\d+)/chapter/(?P<number>\d+)/$', views.ChapterDetailView.as_view(), name='chapter-detail'),
     
     # Scene Urls
     #url(r'^$', views.SceneListView.as_view(), name="home"),

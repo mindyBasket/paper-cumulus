@@ -58,9 +58,12 @@ class ChapterDetailView(generic.TemplateView):
 
         context = super(ChapterDetailView, self).get_context_data(*args, **kwargs)
         
-        # TODO: should also take its Book number into account.
-        #       Chapter number is not unique!
-        context['object'] = Chapter.objects.filter(number=kwargs['number'])[0]
+        # Get book
+        book = Book.objects.get(pk=kwargs['book_pk'])
+    
+        # make context for the Chapter and its Scenes        
+        context['object'] = book.chapter_set.filter(number=kwargs['number'])[0]
+        context['object_scene_list'] = context['object'].scene_set.order_by('order')
     
         print("*--------------Get scene set {}".format(context['object'].scene_set.all()))
         
