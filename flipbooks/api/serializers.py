@@ -6,12 +6,22 @@ from ..models import (
     Frame
 )
 
+
+class StripModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Strip
+        fields = ['id', 'order']
+        
 class SceneModelSerializer(serializers.ModelSerializer):
+    
+    # strips = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    strips = StripModelSerializer(many=True, read_only=True, source='strip_set')
     
     class Meta:
         model = Scene
         fields = [
             'id',
             'children_orders',
-            'name'
+            'name',
+            'strips'
         ]
