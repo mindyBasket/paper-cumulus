@@ -11,11 +11,16 @@ from . import views
 urlpatterns = [
     #note: "/" = "{proj}/flipbooks"
     
+    # Flipbooks homepage
+    # I don't have anything planned for flipbooks app's homepage. So it is set to
+    # project homepage for now
+    # url(r'^$', home, name='home'),
+    
     # Book Urls
-    # none
+    url(r'^books/$', views.BookListView.as_view(), name='book-list'),
     
     # Chapter Urls
-    url(r'^(?P<book_pk>\d+)/chapter/(?P<number>\d+)/$', views.ChapterDetailView.as_view(), name='chapter-detail'),
+    url(r'^(?P<book_pk>\d+)/chapter/(?P<chapter_number>\d+)/$', views.ChapterDetailView.as_view(), name='chapter-detail'),
     
     # Scene Urls
     #url(r'^$', views.SceneListView.as_view(), name="home"),

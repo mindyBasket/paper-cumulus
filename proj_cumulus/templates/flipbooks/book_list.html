@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %} {{block.super}} | Books{% endblock title %}
+
+{% block content %}
+
+
+<div class="row">
+
+    <h3>Books</h3>
+
+    <p>List of books. A book can be an arc, "season", or a whole different project.</p>
+
+
+    <ul class="book-list">
+        {% for book in object_list %}
+            <li>
+                <a class="card-link wide" href="{% url 'flipbooks:chapter-detail' book_pk=book.id chapter_number=0 %}">
+                    <span> #{{book.id}}</span>
+                    <span>{{book.title}}</span>
+                </a>
+                
+            </li>
+            
+            <!-- Remove below when book count > 1. These are placeholders --> 
+            <li>
+                <a class="card-link wide" inActive='true'>
+                    <span>#2</span>
+                    <span>Placeholder Book</span>
+                </a>
+                
+            </li>
+            
+            <li>
+                <a class="card-link wide" inActive='true'>
+                    <span> #3</span>
+                    <span>Placeholder Book</span>
+                </a>
+                
+            </li>
+            <!-- end: remove later --> 
+        {% empty %}
+            <p>No book could be found</p>
+        
+        {% endfor %}
+    </ul>
+
+    
+
+
+
+
+
+
+<!-- end: class=row -->
+</div>
+
+
+    {% verbatim %}
+    {% debug %}
+    {% endverbatim %}
+
+{% endblock content %}

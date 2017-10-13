@@ -3,6 +3,58 @@ body{
 }
 
 
+
+/* -------------------------------------- */
+/* -------------------------------------- */
+/*          generic views stuff           */
+/* -------------------------------------- */
+/* -------------------------------------- */
+
+.book-list{
+    padding: 0;
+}
+
+.book-list li{
+    list-style: none;
+    
+    margin: 5px 0 0 0;
+    
+}
+
+.book-list .card-link.wide{ 
+    /*the <a>*/
+    
+    display: block;
+    height: 150px;
+    background-color: PaleTurquoise;
+}
+
+.book-list .card-link.wide:hover{
+    background-color: #baf4f4;
+}
+
+.book-list .card-link.wide span:nth-of-type(1){
+    display:inline-block;
+    
+    background-color: DarkTurquoise;
+    height: 100%;
+    padding: 0 20px 0 15px;
+    font-size: 2em;
+    
+    -webkit-clip-path: polygon(0 0, 100% 0%, 70% 100%, 0% 100%);
+    clip-path: polygon(0 0, 100% 0%, 70% 100%, 0% 100%);
+}
+
+.book-list .card-link.wide[inActive='true']{
+    background-color: LightGray;
+}    
+
+/* -------------------------------------- */
+/* -------------------------------------- */
+/*         frame player related           */
+/* -------------------------------------- */
+/* -------------------------------------- */
+
 .letterbox{
     display: block;
     width: 100%;

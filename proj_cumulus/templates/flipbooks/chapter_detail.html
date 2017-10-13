@@ -68,7 +68,7 @@
                                     {% for curr_strip in scene.strip_set.all|get_by_id:curr_id %}
                                         <span class="thumb">
                                             <img src="{{ curr_strip.frame_set.first.frame_image.thumb.url }}" width='200px'/>
-                                            <a href="{% url 'flipbooks:strip-update' pk=curr_strip.id %}" class="mini_menu edit">edit</a>
+                                            <a href="{% url 'flipbooks:strip-update' pk=curr_strip.id %}" class="mini_menu edit">[{{curr_strip.id}}] edit</a>
                                         </span>
                                     {% endfor %}
                                 {% endfor %}

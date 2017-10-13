@@ -43,7 +43,8 @@ urlpatterns = [
     
     #restful api
     #serializer
-    url(r'^api/flipbooks/', include('flipbooks.api.urls', namespace='flipbooks-api'))
+    url(r'^api/', include('flipbooks.api.urls', namespace='flipbooks-api'))
+    
 ]
 
 if settings.DEBUG == True:

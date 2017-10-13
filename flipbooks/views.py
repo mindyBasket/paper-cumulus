@@ -31,8 +31,16 @@ from .helpermodule import helpers
 
 
 
+# .................................................. 
+# .................................................. 
+#                  Book Views
+# .................................................. 
+# .................................................. 
 
-
+class BookListView(generic.ListView):
+    
+    queryset = Book.objects.all()
+    
     
 
 
@@ -43,11 +51,12 @@ from .helpermodule import helpers
 # .................................................. 
 # .................................................. 
 
+
 # Previously "SceneListView"
 class ChapterDetailView(generic.TemplateView):
     # NOTE: the reason this is using TemplateView instead of DetailView
     #       is because this not retrieving chapter by pk but instead
-    #       by its number property
+    #       by its 'number' property
     
     model = Chapter
     
@@ -62,12 +71,21 @@ class ChapterDetailView(generic.TemplateView):
         book = Book.objects.get(pk=kwargs['book_pk'])
     
         # make context for the Chapter and its Scenes        
-        context['object'] = book.chapter_set.filter(number=kwargs['number'])[0]
+        context['object'] = book.chapter_set.filter(number=kwargs['chapter_number'])[0]
         context['object_scene_list'] = context['object'].scene_set.order_by('order')
     
         print("*--------------Get scene set {}".format(context['object'].scene_set.all()))
         
-        
+        valid_children_orders = []
+        for obj in context['object_scene_list']:
+            if obj.children_orders == "":
+                #has_valid_children_orders.append(False if obj.children_orders == "" else True)
+                valid_children_orders.append(False)
+            else:
+                valid_children_orders.append(helpers.string2List(obj.children_orders))
+
+        context["valid_children_orders"] = valid_children_orders
+
         
         return context
 
@@ -179,20 +197,32 @@ class StripUpdateView(SuccessMessageMixin, generic.UpdateView):
     
     template_name = "flipbooks/strip_update.html"
     form_class = forms.StripUpdateForm
-    success_url = reverse_lazy('flipbooks:scene-list')
-    
+    #success_url = *see get_success_url below*
+
     success_message = "Strip was updated successfully"
     
     # There is no instance information here
     # def __init__(self, *args, **kwargs):
     #     print("-----------is there kwargs?: {}".format(kwargs))
     
+    
     # See StripUpdateForm in forms.py for dynamic field information
     
+    def get_success_url(self, **kwargs):
+        # flipbooks:chapter-detail url look like this: flipbooks/{book_pk}/chapter/{chapter_pk}/
+
+        return reverse_lazy(
+            'flipbooks:chapter-detail', 
+            kwargs = {
+                'book_pk': self.object.scene.chapter.book.id,
+                'chapter_number': self.object.scene.chapter.number
+            })
+
+            
     def form_valid(self, form):
         messages.success(self.request, self.success_message)
         return super(StripUpdateView, self).form_valid(form)
-        
+
   
   
   
