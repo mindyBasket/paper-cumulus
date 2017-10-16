@@ -24,7 +24,7 @@ from .views import home
 from flipbooks.views import (
     ChapterDetailView,
     FrameListView,
-    SceneListView
+
 )
 
 

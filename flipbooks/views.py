@@ -94,33 +94,37 @@ class ChapterDetailView(generic.TemplateView):
 #                   Scene Views
 # .................................................. 
 # .................................................. 
-        
-class SceneListView(generic.ListView):
+
+
+# class SceneListView(generic.ListView):
     
-    queryset = Scene.objects.order_by('order')
+#     queryset = Scene.objects.order_by('order')
     
-    def get_context_data(self, *args, **kwargs):
+#     def get_context_data(self, *args, **kwargs):
 
-        context = super(SceneListView, self).get_context_data(*args, **kwargs)
-        # Default contexts
-        # - object_list, is_paginated, paginator, page_obj
+#         context = super(SceneListView, self).get_context_data(*args, **kwargs)
+#         # Default contexts
+#         # - object_list, is_paginated, paginator, page_obj
 
-        # Check what's in context like this
-        # print("------------{}".format(context))
+#         # Check what's in context like this
+#         # print("------------{}".format(context))
         
-        # Convert children_orders to iterable list, or mark it with "False"
-        valid_children_orders = []
-        for obj in context['object_list']:
-            if obj.children_orders == "":
-                #has_valid_children_orders.append(False if obj.children_orders == "" else True)
-                valid_children_orders.append(False)
-            else:
-                valid_children_orders.append(helpers.string2List(obj.children_orders))
+#         # Convert children_orders to iterable list, or mark it with "False"
+#         valid_children_orders = []
+#         for obj in context['object_list']:
+#             if obj.children_orders == "":
+#                 #has_valid_children_orders.append(False if obj.children_orders == "" else True)
+#                 valid_children_orders.append(False)
+#             else:
+#                 valid_children_orders.append(helpers.string2List(obj.children_orders))
 
-        context["valid_children_orders"] = valid_children_orders
+#         context["valid_children_orders"] = valid_children_orders
 
-        return context
+#         return context
         
+
+
+
 
 # This one "plays" the frames.
 
@@ -166,6 +170,7 @@ class SceneDetailView(generic.DetailView):
 
 class StripCreateView(SuccessMessageMixin, generic.CreateView):
     
+    model = Strip
     template_name = "flipbooks/strip_create.html"
     form_class = forms.StripCreateForm
     #login_url = '/admin/'
@@ -173,7 +178,24 @@ class StripCreateView(SuccessMessageMixin, generic.CreateView):
     
     success_url = reverse_lazy('flipbooks:scene-list')
     success_message = "Strip was created successfully"
-  
+    
+    # filled after request
+    # _scene_pk = ''
+    
+    # def get(self, request, *args, **kwargs):
+    #     # print("-----uh...request?: {}".format(dir(request)))
+    #     # print("-----{}".format([request.body, request.path, request.get_raw_uri()]))
+    #     self._scene_pk = self.kwargs['scene_pk'] if 'scene_pk' in self.kwargs else '1'
+    #     return super(StripCreateView, self).get(self, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(StripCreateView, self).get_context_data(**kwargs)
+        _scene_pk = self.kwargs['scene_pk'] if 'scene_pk' in self.kwargs else '1'
+        context['scene_obj'] = Scene.objects.filter(id = _scene_pk)[0]
+        
+        return context
+        
+        
     def form_valid(self, form):
         # Validate order:
         #   Currently, saving with order=0 will automatically become adjusted
@@ -192,6 +214,8 @@ class StripCreateView(SuccessMessageMixin, generic.CreateView):
         return self.success_message
         
 
+
+
 class StripUpdateView(SuccessMessageMixin, generic.UpdateView):
     queryset = Strip.objects.all()
     
@@ -202,7 +226,7 @@ class StripUpdateView(SuccessMessageMixin, generic.UpdateView):
     success_message = "Strip was updated successfully"
     
     # There is no instance information here
-    # def __init__(self, *args, **kwargs):
+    #def __init__(self, *args, **kwargs):
     #     print("-----------is there kwargs?: {}".format(kwargs))
     
     
