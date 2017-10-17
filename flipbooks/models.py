@@ -156,9 +156,12 @@ class Strip(models.Model):
 
         
         
-        
-        
-        
+# -------------------------------------------------
+# -------------------------------------------------
+#                     Frame
+# -------------------------------------------------
+# -------------------------------------------------
+
 def frame_upload_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/scene_<order>/strip_<order>-<order>.<ext>
     
@@ -187,10 +190,8 @@ class Frame(models.Model):
         upload_to = frame_upload_path,
         #resize_source=dict(size=(100, 100)),
         #thumbnail_storage='frame_images/thumbTest/thumbs/', #I don't know how to use this
-        blank=True
+        blank=False
     )
-    
-    
     
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)

@@ -35,11 +35,6 @@
             
         </div>
         
-        <div>
-            <b>Add new frame:</b>
-            {% include "flipbooks/includes/form_new_frame.html" with form=frame_create_form action_url=frame_create_url btn_title='Add Frame to Strip 4' %}
-        </div>
-        
         <h3>Scene list</h3>
         <ul>
             {% for scene in object_scene_list %}

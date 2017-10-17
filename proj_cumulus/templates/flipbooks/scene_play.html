@@ -7,7 +7,8 @@
 {% block content %}
 <h3>Flip through Strips</h3>
 
-<a href="{% url 'flipbooks:scene-list' %}"><< Return</a>
+
+<a href="{% url 'flipbooks:chapter-detail' book_pk=scene.chapter.book.id chapter_number=scene.chapter.number%}">< return </a>
 
 <p>Dev note: This page starts playing the frames inside each strip. When populating strips, 
 consider one scene equivalent to a "page" of a comic book.</p>

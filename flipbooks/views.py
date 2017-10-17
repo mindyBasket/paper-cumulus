@@ -85,7 +85,10 @@ class ChapterDetailView(generic.TemplateView):
                 valid_children_orders.append(helpers.string2List(obj.children_orders))
 
         context["valid_children_orders"] = valid_children_orders
-
+        
+        
+        context["frame_create_form"] = forms.FrameCreateForm
+        context['frame_create_url'] = reverse_lazy("flipbooks:frame-create", kwargs={'strip_pk':4})
         
         return context
 
@@ -370,3 +373,66 @@ class FrameListView(generic.ListView):
         # here, "self" = FrameListView, not the Frame object
         # think of this context like the stuff for the WHOLE view, not the individual model.
         return context
+        
+        
+class FrameCreateView(generic.CreateView):
+    
+    model = Frame
+    template_name = "flipbooks/includes/form_new_frame.html"
+    form_class = forms.FrameCreateForm
+
+    success_url = reverse_lazy('flipbooks:book-list')
+
+    def get_context_data(self, **kwargs):
+        context = super(FrameCreateView, self).get_context_data(**kwargs)
+        _strip_pk = self.kwargs['strip_pk'] if 'strip_pk' in self.kwargs else '1'
+        context['strip_obj'] = Strip.objects.filter(id = _strip_pk)[0]
+        
+        return context
+        
+
+    def form_valid(self, form):
+        return super(FrameCreateView, self).form_valid(form)
+    
+    # def form_invalid(self, form):
+    #     # can you make it fail better? redirect??
+    #     return JsonResponse(form.errors, status=400)
+ 
+        
+# .................................................. 
+# .................................................. 
+#              AJAX calls (for RESTFul api)
+# .................................................. 
+# .................................................. 
+
+def spawn_create_scene(request, **kwargs):
+    # Create response:
+
+    
+    # # extract incoming param from request
+    # scene_id = request.GET.get('scene_id', None)
+    # strip_set_of_scene = Strip.objects.filter(scene__id=scene_id)
+    
+    # #send responses as Json
+    # strip_set_str_li = [];
+    # strip_set_frame_li = [];
+    # for strip in strip_set_of_scene:
+    #     strip_set_str_li+=[strip.id]
+        
+    #     # Get first frame of each strip. 
+    #     # Extract thumbnail instead of default frame_image.url
+    #     # strip_set_frame_li+=[strip.frame_set.all()[0].frame_image.cell.url]
+    #     if strip.frame_set.all():
+    #         strip_set_frame_li+=[strip.frame_set.all()[0].frame_image['cell'].url]
+    #     else:
+    #         # no frames under this strip. Add placeholder
+    #         strip_set_frame_li+=["placeholder"]
+
+    # data = {
+    #     #'is_taken': User.objects.filter(username__iexact=username).exists()
+    #     'strip_ids':strip_set_str_li,
+    #     "strip_frames": strip_set_frame_li,
+    # }
+    
+    data = {}
+    return JsonResponse(data)
