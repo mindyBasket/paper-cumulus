@@ -51,7 +51,7 @@ body{
 
 /* -------------------------------------- */
 /* -------------------------------------- */
-/*         frame player related           */
+/*         frame / thumb related          */
 /* -------------------------------------- */
 /* -------------------------------------- */
 
@@ -70,8 +70,6 @@ body{
     
     margin-right: -50px;
 }
-
-
 
 .frame_thumbs.stacked .thumb:nth-of-type(1){z-index:5;}
 .frame_thumbs.stacked .thumb:nth-of-type(2){z-index:4;}
@@ -105,6 +103,13 @@ body{
     
 }    
 
+.thumb.placeholder{
+    /* style for .thumb box that has no image */
+    width: 150px;
+    height: 100px;
+    border: 4px dashed #a8a8a8;
+    background-color: #ededed;
+}
 
 
 

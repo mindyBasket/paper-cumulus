@@ -5,7 +5,7 @@
 
 console.log("restful_api.js ----------* v0.1");
 
-function ajaxSpawnAddFrame(){
+function load_more_strips(){
     
     $.ajax({
         url: '/flipbooks/ajax/spawn/create_scene/1/',

@@ -11,6 +11,9 @@ from easy_thumbnails.signal_handlers import generate_aliases_global
 from django.db import models
 
 
+#custom helper functions 
+from .helpermodule import helpers
+
 # thumbnail signal handler
 saved_file.connect(generate_aliases_global)
 
@@ -87,6 +90,9 @@ class Scene(models.Model):
 # -------------------------------------------------
 
 #helper 
+
+# Note: I wrote this before I began using stringy list to record order.
+#        Quite possible I no longer have use for this.
 def get_last_order(strip_instance):
     scene = strip_instance.scene
     return len(scene.strip_set.all())+1
@@ -111,12 +117,19 @@ def recatalog_order(scene_instance, target_strip_id, insert_at):
     # all strips. This means I need to know which strip wants to move,
     # and move to where. 
     print("-- Swapping {} to index {}...".format(target_strip_id, insert_at))
-    print("------------initate re-order. BEFORE: {}".format(new_children_orders))
-    new_children_orders.remove(str(target_strip_id))
-    new_children_orders.insert(int(insert_at), str(target_strip_id))
+    print("------------BEFORE: {}".format(new_children_orders))
+    
+    # Check if id is already there. Then you have to swap
+    if str(target_strip_id) in new_children_orders:
+         new_children_orders.remove(str(target_strip_id))
+        
+    if insert_at < 0:
+        new_children_orders.append(str(target_strip_id))
+    else:
+        new_children_orders.insert(int(insert_at), str(target_strip_id))   
+        
     print("------------AFTER: {}".format(new_children_orders))
  
-    
     #turn it back to stringy list
     return ','.join(str(order) for order in new_children_orders)
         
@@ -125,7 +138,7 @@ def recatalog_order(scene_instance, target_strip_id, insert_at):
 # Strip: holds multiple frames. Used for viewing frames.
 class Strip(models.Model):
     
-    order = models.IntegerField(default="0")
+    order = models.IntegerField(default="-1")
     
     description = models.TextField(max_length=100, blank=True, default="")
     
@@ -142,16 +155,14 @@ class Strip(models.Model):
     #     return reverse("chatter:detail", kwargs={"pk":self.pk})
     
     def save(self):
-        #add better order if it is set 0
-        insert_index = int(self.order) #returns string
         
-        super(Strip, self).save()
-        
-        #update children_orders of its scene (parent)
         scene = self.scene
-        scene.children_orders = recatalog_order(self.scene, self.id, insert_index)
-        print("------new order list:{}".format(scene.children_orders))
-        scene.save()
+        _insert_at = int(self.order) #get order in string
+      
+        super(Strip, self).save() # save Strip!
+        #update children_orders of its scene (parent)
+        scene.children_orders = recatalog_order(self.scene, self.id, _insert_at)
+        scene.save() # save parent(Scene)!
         
 
         

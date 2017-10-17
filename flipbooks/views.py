@@ -171,7 +171,20 @@ class SceneDetailView(generic.DetailView):
 # .................................................. 
 # .................................................. 
 
-class StripCreateView(SuccessMessageMixin, generic.CreateView):
+class GetStripSuccessUrlMixin(object):
+    
+    def get_success_url(self, **kwargs):
+        # flipbooks:chapter-detail url look like this: flipbooks/{book_pk}/chapter/{chapter_pk}/
+
+        return reverse_lazy(
+            'flipbooks:chapter-detail', 
+            kwargs = {
+                'book_pk': self.object.scene.chapter.book.id,
+                'chapter_number': self.object.scene.chapter.number
+            })
+            
+
+class StripCreateView(SuccessMessageMixin, GetStripSuccessUrlMixin, generic.CreateView):
     
     model = Strip
     template_name = "flipbooks/strip_create.html"
@@ -179,7 +192,6 @@ class StripCreateView(SuccessMessageMixin, generic.CreateView):
     #login_url = '/admin/'
     # success_url = "/flipbooks/"
     
-    success_url = reverse_lazy('flipbooks:scene-list')
     success_message = "Strip was created successfully"
     
     # filled after request
@@ -219,7 +231,7 @@ class StripCreateView(SuccessMessageMixin, generic.CreateView):
 
 
 
-class StripUpdateView(SuccessMessageMixin, generic.UpdateView):
+class StripUpdateView(SuccessMessageMixin, GetStripSuccessUrlMixin, generic.UpdateView):
     queryset = Strip.objects.all()
     
     template_name = "flipbooks/strip_update.html"
@@ -235,17 +247,6 @@ class StripUpdateView(SuccessMessageMixin, generic.UpdateView):
     
     # See StripUpdateForm in forms.py for dynamic field information
     
-    def get_success_url(self, **kwargs):
-        # flipbooks:chapter-detail url look like this: flipbooks/{book_pk}/chapter/{chapter_pk}/
-
-        return reverse_lazy(
-            'flipbooks:chapter-detail', 
-            kwargs = {
-                'book_pk': self.object.scene.chapter.book.id,
-                'chapter_number': self.object.scene.chapter.number
-            })
-
-            
     def form_valid(self, form):
         messages.success(self.request, self.success_message)
         return super(StripUpdateView, self).form_valid(form)

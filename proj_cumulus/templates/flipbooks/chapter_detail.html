@@ -47,7 +47,6 @@
                     Order: {{scene.order}} (id: {{scene.id}}) | {{scene.description}}
                 
                     <p>
-                        {% url 'flipbooks:strip-list' scene_pk=scene.pk as strip_url %}
                         <form action="{{strip_url}}">
         
                             <a href="{% url 'flipbooks:scene-detail' pk=scene.pk %}">link</a>
@@ -71,10 +70,18 @@
                                     <!-- single loop forloop -->
                                     <!-- An attmpt at storing value in a variable in template -->
                                     {% for curr_strip in scene.strip_set.all|get_by_id:curr_id %}
-                                        <span class="thumb">
-                                            <img src="{{ curr_strip.frame_set.first.frame_image.thumb.url }}" width='200px'/>
-                                            <a href="{% url 'flipbooks:strip-update' pk=curr_strip.id %}" class="mini_menu edit">[{{curr_strip.id}}] edit</a>
-                                        </span>
+                                        {% if curr_strip.frame_set is None or curr_strip.frame_set.first.frame_image is None %} 
+                                            <span class="thumb placeholder">
+                                                <a href="{% url 'flipbooks:strip-update' pk=curr_strip.id %}" class="mini_menu edit">
+                                                    [{{curr_strip.id}}] edit
+                                                </a>
+                                            </span>
+                                        {% else %} 
+                                            <span class="thumb">
+                                                <img src="{{ curr_strip.frame_set.first.frame_image.thumb.url }}" width='200px'/>
+                                                <a href="{% url 'flipbooks:strip-update' pk=curr_strip.id %}" class="mini_menu edit">[{{curr_strip.id}}] edit</a>
+                                            </span>
+                                        {% endif %} 
                                     {% endfor %}
                                 {% endfor %}
                                 
