@@ -1,0 +1,59 @@
+/* -------------------------------------- */
+/* -------------------------------------- */
+/*               stripe lists             */
+/* -------------------------------------- */
+/* -------------------------------------- */
+
+ul.list_strips{
+    padding: 0;
+    counter-reset: stripNum;
+}
+
+
+
+ul.list_strips li{
+    counter-increment: stripNum;   
+    display: block;
+
+}
+
+
+ul.list_strips .strip_flex_container{
+    display:flex;
+    flex-direction: row;
+    align-items: stretch;
+    
+    margin-bottom: 20px;
+    background-color: #fcfcfc;
+    border-bottom: 5px solid #c9c9c9;
+
+}
+
+ul.list_strips .strip_flex_container .header{
+    height: auto;
+    background-color:#c9ffdd;
+    padding: 10px;
+    margin-right: 10px;
+
+}
+
+
+/*flex item*/
+/* .thumb is already defined in main.css */
+ul.list_strips .strip_flex_container .thumb{
+    margin: 10px 5px 10px 5px;
+    
+    /*nothing for now*/
+}
+
+ul.list_strips .strip_flex_container .thumb.numbered::before{
+    
+}
+ 
+
+.thumb.placeholder2{
+    display: inline-block;
+    border:5px dashed #d8abab;
+    width: 100px;
+    height: auto;
+}

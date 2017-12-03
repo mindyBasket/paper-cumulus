@@ -177,7 +177,6 @@ class ScenePlayView(generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super(ScenePlayView, self).get_context_data(**kwargs)
         context['scene'] = context['object']
-        
         # Convert children_orders to iterable list, or mark it with "False"
         stringy_children_orders = context['object'].children_orders
         valid_children_orders = False if stringy_children_orders =="" else helpers.string2List(stringy_children_orders) 

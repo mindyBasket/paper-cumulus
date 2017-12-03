@@ -22,7 +22,9 @@
     <!-- right side container -->
     <div class="col-md-10">
         
-        <p></p>
+        <p>
+            <h3>{{object.name}}</h3>
+        </p>
 
 
         <div>
@@ -41,30 +43,38 @@
         <h3>Scene id {{object.id}}</h3>
         <p>description: {{object.description}}</p>
         <p>Contains: {{object.children_orders}}</p>
-        <ul>
+        <p>{{ordered_strip_set}}</p>
+        <ul class="list_strips">
             {% if valid_children_orders == False %} 
                 order reference could not be found.
             {% endif %}
             
             {% for strip in ordered_strip_set %}
                 <li>
-                    <div class="list_stripes">
+                    <div class="strip_flex_container">
+                        <div class="header">
+                            <h2>{{forloop.counter}}</h2>
+                            <br>
+                            
+                            {{strip.id}}
+                        </div>
+                        
                         {% for frame in strip.frame_set.all %} 
-                           
-                            <!-- % if frame is None or frame.frame_image is None or frame.frame_image|length is 0 % -->
                             {% if frame|is_displayable:"frame" %} 
-                                <span class="thumb placeholder">
+                            <!-- % if frame is None or frame.frame_image is None or frame.frame_image|length is 0 % -->
+                               
+                                <div class="thumb placeholder2">
                                     <a href="" class="mini_menu edit">
                                         add image
                                     </a>
-                                </span>
+                                </div>
                             {% else %} 
-                                <span class="thumb">
+                                <div class="thumb">
                                     <img src="{{ frame.frame_image.thumb.url }}" width='200px'/>
                                     <a href="" class="mini_menu edit">frame [{{frame.id}}]</a>
-                                </span>
+                                 </div> 
                             {% endif %}
-                        
+                               
                         {% empty %}
                             <span>
                                 No frames in this strip
@@ -73,6 +83,8 @@
                                 </a>
                             </span>
                         {% endfor %}
+                        
+                        
                         
                     </div>
                         
