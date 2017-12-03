@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+{% load flipbooks_custom_tags %}
+
+{% block title %} {{block.super}} | Scene Detail{% endblock title %}
+
+{% block content %}
+
+
+<div class="row">
+    <!-- left side container -->
+    <div class="col-md-2">
+        <h3>Scenes Under Chapter {{object.chapter.number}}</h3>
+        
+        <p>
+            from Book : {{object.chapter.book.title}}
+        </p>
+        
+        <p><a href="{% url 'flipbooks:chapter-detail' book_pk=object.chapter.book.id chapter_number=object.chapter.number %}">< Chapter detail</a></p>
+
+    </div>
+    <!-- right side container -->
+    <div class="col-md-10">
+        
+        <p></p>
+
+
+        <div>
+            <ul class="list inline">
+                <li><a href="{% url 'flipbooks:strip-create' scene_pk=1 %}">create new strip</a></li>
+                <li><a href="{% url 'flipbooks-api:list' %}">View api</a></li>
+            </ul>
+            
+        </div>
+        
+        <div>
+            <b>Add new frame:</b>
+            {% include "flipbooks/includes/form_new_frame.html" with form=frame_create_form action_url=frame_create_url btn_title='Add Frame to Strip 4(hardcoded)' %}
+        </div>
+        
+        <h3>Scene id {{object.id}}</h3>
+        <p>description: {{object.description}}</p>
+        <p>Contains: {{object.children_orders}}</p>
+        <ul>
+            {% if valid_children_orders == False %} 
+                order reference could not be found.
+            {% endif %}
+            
+            {% for strip in ordered_strip_set %}
+                <li>
+                    <div class="list_stripes">
+                        {% for frame in strip.frame_set.all %} 
+                           
+                            <!-- % if frame is None or frame.frame_image is None or frame.frame_image|length is 0 % -->
+                            {% if frame|is_displayable:"frame" %} 
+                                <span class="thumb placeholder">
+                                    <a href="" class="mini_menu edit">
+                                        add image
+                                    </a>
+                                </span>
+                            {% else %} 
+                                <span class="thumb">
+                                    <img src="{{ frame.frame_image.thumb.url }}" width='200px'/>
+                                    <a href="" class="mini_menu edit">frame [{{frame.id}}]</a>
+                                </span>
+                            {% endif %}
+                        
+                        {% empty %}
+                            <span>
+                                No frames in this strip
+                                <a href="" class="mini_menu edit">
+                                    
+                                </a>
+                            </span>
+                        {% endfor %}
+                        
+                    </div>
+                        
+                </li>
+            {% empty %}
+            
+                <p>No strips could be found</p>
+            
+            {% endfor %}
+            
+        </ul>
+        
+    
+    <!-- end: right side container -->    
+    </div>
+    
+
+
+
+
+
+
+<!-- end: class=row -->
+</div>
+
+{% endblock content %}
+
+
+    
+{% block extra_js %}
+    {% load static %}
+    <script src="{% static 'js/restful_api.js' %}"></script>
+{% endblock extra_js %}

@@ -37,8 +37,11 @@ strip has been loaded -->
                     {% if strip != None %}
                         <span class="strip">
                             {% for fr in strip.frame_set.all %} 
-                                <img src="{{fr.frame_image.url}}" class="frame_item"/>
-        
+                                {% if fr is None or fr.frame_image is None or fr.frame_image|length is 0%} 
+                                    BAD
+                                {% else %}
+                                    <img src="{{fr.frame_image.url}}" class="frame_item"/>
+                                {% endif %}
                             {% endfor %}
                         </span>
                     {% else %}
@@ -51,7 +54,6 @@ strip has been loaded -->
                     <span class="strip">
                         {% for fr in strip.frame_set.all %} 
                             <img src="{{fr.frame_image.url}}" class="frame_item"/>
-    
                         {% endfor %}
                     </span>
                 {% endfor %}
@@ -81,10 +83,15 @@ strip has been loaded -->
         {% for strip in ordered_strip_set %}
             {% if strip != None %}
                 {% for fr in strip.frame_set.all %}
-                    <img src="{{ fr.frame_image.cell.url }}"/>
+                    {% if fr is None or fr.frame_image is None or fr.frame_image|length is 0 %} 
+                        Image not found
+                    {% else %}
+                        <img src="{{ fr.frame_image.cell.url }}"/>
+                    {% endif %}
                 {% endfor %}
+                
             {% else %}
-                <b>NOT FOUND</b>
+                <b>STRIP NOT FOUND</b>
             {% endif %}
         {% endfor %}
     
@@ -92,7 +99,9 @@ strip has been loaded -->
          <p style="color:red;">Warning: error retrieving strip order reference. Strips has been rendered in id of order.</p>
          {% for strip in scene.strip_set.all %}
             {% for fr in strip.frame_set.all %}
-                <img src="{{ fr.frame_image.cell.url }}"/>
+                {% verbatim %}
+                    <img src="{{ fr.frame_image.cell.url }}"/>
+                {% endverbatim %}
             {% endfor %}
         {% endfor %}
     {% endif %} 

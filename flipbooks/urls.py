@@ -24,17 +24,15 @@ urlpatterns = [
     
     # Scene Urls
     # url(r'^scenes/$', views.SceneListView.as_view(), name="scene-list"),
-    url(r'^scene/(?P<pk>\d+)/flip/$', views.SceneDetailView.as_view(), name='scene-detail'),
-    
-    # url(r'^objects/page(?P<page>[0-9]+)/$', PaginatedView.as_view()),
+    url(r'^scene/(?P<pk>\d+)/flip/$', views.ScenePlayView.as_view(), name='scene-play'), #play!
+    url(r'^scene/(?P<pk>\d+)/$', views.SceneDetailView.as_view(), name='scene-detail'),
     
     # Strip Urls
     url(r'^scene/(?P<scene_pk>\d+)/strip/create/$', views.StripCreateView.as_view(), name='strip-create'),
     url(r'^strips/(?P<pk>\d+)/update/$', views.StripUpdateView.as_view(), name='strip-update'),
-    
+
     # Frame Urls
     url(r'^strip/(?P<strip_pk>\d+)/frame/create/$', views.FrameCreateView.as_view(), name='frame-create'),
-
 
     #ajax calls
     url(r'^ajax/spawn/create_scene/(?P<scene_pk>\d+)/$', views.spawn_create_scene, name='spawn__create_scene'), 

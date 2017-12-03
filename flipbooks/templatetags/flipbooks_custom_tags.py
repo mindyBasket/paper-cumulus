@@ -23,6 +23,33 @@ def get_by_id(obj_li, ref_id):
     return [False]
 
 
+# Returns true if the frame object is displayable.
+# Similar to checking if the object is valid, but the model_level validation
+# does not take care of possibility of a strip with a blank frame because it is
+# not filled out yet.
+
+# Note: it only works for frame for now, but could make it work for other objects
+# Note: Used like this: {% if frame|is_displayable:"frame" %} 
+@register.filter(name='is_displayable')
+def is_displayable(obj, validation_type=''):
+    
+    if validation_type=='':
+        #type not specified
+        return False
+    elif validation_type=='frame':
+        frame = obj
+        # Below works in template language, but does not work in python
+        # print(len(frame.frame_image) is 0)
+        
+        # Alternative empty image test
+        #print(str(frame.frame_image) is "")
+    
+        return (frame is None) or (frame.frame_image is None) or (str(frame.frame_image) is "")
+        
+    
+
+
+
 # Note: there is a duplicate of this function in helpers.py
 @register.filter(name='order_by_id_ref')
 def order_by_id_ref(obj_li, ref_id_li):
@@ -35,3 +62,4 @@ def order_by_id_ref(obj_li, ref_id_li):
         obj_li_ordered[order_position] = obj
 
     return obj_li_ordered
+

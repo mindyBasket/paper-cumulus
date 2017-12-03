@@ -67,7 +67,7 @@ class ChapterDetailView(generic.TemplateView):
 
         context = super(ChapterDetailView, self).get_context_data(*args, **kwargs)
         
-        # Get book
+        # Get book from URL
         book = Book.objects.get(pk=kwargs['book_pk'])
     
         # make context for the Chapter and its Scenes        
@@ -125,7 +125,37 @@ class ChapterDetailView(generic.TemplateView):
 
 #         return context
         
+class SceneDetailView(generic.DetailView):
+    model = Scene
+    queryset = Scene.objects.all()
 
+    def get_context_data(self, *args, **kwargs):
+
+        context = super(SceneDetailView, self).get_context_data(*args, **kwargs)
+        
+        # order strips by id ref'd by children_orders
+        
+        # Convert children_orders to iterable list, or mark it with "False"
+        stringy_children_orders = context['object'].children_orders
+        valid_children_orders = False if stringy_children_orders =="" else helpers.string2List(stringy_children_orders) 
+            
+        context["valid_children_orders"] = valid_children_orders
+        
+        # Reorder strip basedon valid_children_orders
+        _scene = context['object']
+        
+        ordered_strip_set = []
+        if valid_children_orders:
+            ordered_strip_set = helpers.order_by_id_ref(_scene.strip_set.all(), valid_children_orders)
+        else:
+            # no valid chidlren_orders found.
+            # Retrieve strip by its natural order (id)
+            ordered_strip_set = _scene.strip_set.all()
+        
+        context['ordered_strip_set'] = ordered_strip_set
+        
+        
+        return context
 
 
 
@@ -133,7 +163,7 @@ class ChapterDetailView(generic.TemplateView):
 
 # It loads all the strip under a scene here, but when this view first loads
 # only a few strips will be loaded. Rest will be loaded using ajax calls.
-class SceneDetailView(generic.DetailView):
+class ScenePlayView(generic.DetailView):
     
     #detail view's model
     model = Scene 
@@ -145,7 +175,7 @@ class SceneDetailView(generic.DetailView):
     #context_object_name = "strip_list"  # default is 'object_list' if you don't like that
 
     def get_context_data(self, **kwargs):
-        context = super(SceneDetailView, self).get_context_data(**kwargs)
+        context = super(ScenePlayView, self).get_context_data(**kwargs)
         context['scene'] = context['object']
         
         # Convert children_orders to iterable list, or mark it with "False"
@@ -189,8 +219,8 @@ class StripCreateView(SuccessMessageMixin, GetStripSuccessUrlMixin, generic.Crea
     model = Strip
     template_name = "flipbooks/strip_create.html"
     form_class = forms.StripCreateForm
-    #login_url = '/admin/'
-    # success_url = "/flipbooks/"
+    # login_url = '/admin/'
+    # success_url = *see GetStripSuccessUrlMixin*
     
     success_message = "Strip was created successfully"
     
@@ -236,7 +266,7 @@ class StripUpdateView(SuccessMessageMixin, GetStripSuccessUrlMixin, generic.Upda
     
     template_name = "flipbooks/strip_update.html"
     form_class = forms.StripUpdateForm
-    #success_url = *see get_success_url below*
+    # success_url = *see GetStripSuccessUrlMixin*
 
     success_message = "Strip was updated successfully"
     

@@ -1,3 +1,5 @@
+# See examples of these functions being used in views.py 
+
 def string2List(stringyList):
     # assumes items are listed with "," only (for now)
     li = stringyList.split(",")
