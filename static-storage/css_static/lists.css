@@ -40,20 +40,39 @@ ul.list_strips .strip_flex_container .header{
 
 /*flex item*/
 /* .thumb is already defined in main.css */
-ul.list_strips .strip_flex_container .thumb{
-    margin: 10px 5px 10px 5px;
+ul.list_strips .strip_flex_container .thumb,
+ul.list_strips .strip_flex_container .tile{
+    display: flex;
+    align-items: center;
+    justify-content: center;
     
+    margin: 10px 5px 10px 5px;
+    height: auto;
     /*nothing for now*/
 }
 
-ul.list_strips .strip_flex_container .thumb.numbered::before{
-    
-}
- 
 
-.thumb.placeholder2{
-    display: inline-block;
-    border:5px dashed #d8abab;
-    width: 100px;
+
+/*modified thumb or tile*/
+
+.strip_flex_container .thumb.placeholder2{
+    
+    border:3px solid #d8abab;
+    background-color: #ffe8e0;
+    
+    width: 120px;
     height: auto;
+}
+
+.strip_flex_container .thumb.placeholder2 span{
+    color: #af6262;
+}
+
+.strip_flex_container .tile[displaytype="add"]{
+    border:3px solid #bcbcbc;
+    background-color: #bcbcbc;
+    
+    width: 60px;
+    height: auto;
+    color: white;
 }

@@ -141,7 +141,7 @@ class SceneDetailView(generic.DetailView):
             
         context["valid_children_orders"] = valid_children_orders
         
-        # Reorder strip basedon valid_children_orders
+        # Reorder strip based on valid_children_orders
         _scene = context['object']
         
         ordered_strip_set = []

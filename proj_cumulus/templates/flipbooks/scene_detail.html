@@ -64,8 +64,9 @@
                             <!-- % if frame is None or frame.frame_image is None or frame.frame_image|length is 0 % -->
                                
                                 <div class="thumb placeholder2">
+                                <span>Missing Image</span>
                                     <a href="" class="mini_menu edit">
-                                        add image
+                                        Add image
                                     </a>
                                 </div>
                             {% else %} 
@@ -76,12 +77,19 @@
                             {% endif %}
                                
                         {% empty %}
-                            <span>
-                                No frames in this strip
-                                <a href="" class="mini_menu edit">
-                                    
-                                </a>
-                            </span>
+                            {% if strip is None %}
+                                <div class="tile">
+                                    <span style="color:#898989">Invalid Strip</span>
+                                </div>
+                            {% else %}
+                                <div class="tile" displaytype="add">
+                                    <span style="font-size:4em">+</span>
+                                    <a href="" class="mini_menu edit"></a>
+                                </div>
+                                <div class="tile">
+                                    <span>Add frames</span>
+                                </div>
+                            {% endif %}
                         {% endfor %}
                         
                         
