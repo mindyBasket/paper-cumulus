@@ -22,6 +22,7 @@ class StripModelSerializer(serializers.ModelSerializer):
             'id',
             'scene',
             'order',
+            'description',
             'frame_set'
             ]
       

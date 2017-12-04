@@ -3,7 +3,7 @@
 // '$' is an undefined variable
 
 $(document).ready(function(){
-    console.log("ajax_crud.js ---------- * v0.1.3");
+    console.log("ajax_crud.js ---------- * v0.1.4");
     
     var scenePk = $('#strip_form').find('select#id_scene').val()
     //------------------------------------
@@ -23,13 +23,21 @@ $(document).ready(function(){
             method: 'POST',
             success: function (data) {
                 console.log("sucessfully posted new strip");
-                console.log(data);
+                addNewStrip(data);
             },
             error: function (data) {
                 console.error(data);
                 console.log(data.status);
             }
         });
+    });
+    
+ 
+    $('#createTest').click(function(){
+        
+        console.log("dummy create");
+        addNewStrip();
+        
     });
 
 
@@ -47,6 +55,32 @@ $(document).ready(function(){
 /*-----------------------------------------------------------------
 -----------------------------helpers-------------------------------
 -------------------------------------------------------------------*/
+
+
+// animation test
+function addNewStrip(data){
+  
+    
+    var stripObj = data
+    
+    var stripList = $('ul.list_strips');
+    
+    var stripTemplate = stripList.children('li').last().clone();
+    
+    stripTemplate.appendTo(stripList);
+    stripTemplate.toggle();
+    
+    //update index
+    var last_index = stripTemplate.find(".header").children('span').eq(0).text();
+    stripTemplate.find(".header").children('span').eq(0).text(Number(last_index)+1);
+    
+    //update id
+    var id_span = stripTemplate.find(".header").children('span').eq(1);
+    id_span.text("id:" + stripObj.id)
+
+    stripTemplate.slideToggle( "slow" );
+    
+}
 
 
 // Requests more strip through a function-view.

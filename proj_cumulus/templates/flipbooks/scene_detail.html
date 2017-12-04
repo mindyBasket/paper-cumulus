@@ -59,7 +59,7 @@
                         <div class="header">
                             <span class="bigtext-1">{{forloop.counter}}</span>
                             <br>
-                            id: {{strip.id}}
+                            <span>id: {{strip.id}}</span>
                         </div>
                         
                         {% for frame in strip.frame_set.all %} 
@@ -104,8 +104,10 @@
             
             {% endfor %}
             
+            
         </ul>
         
+
         <div>
             <b>Add New Strip (to be hidden):</b>
             {% include "flipbooks/includes/form_dynamic.html" with form=strip_create_form action_url=strip_create_url form_id="strip_form" btn_title='+Strip' %}
