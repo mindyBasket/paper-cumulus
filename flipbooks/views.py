@@ -155,6 +155,11 @@ class SceneDetailView(generic.DetailView):
         context['ordered_strip_set'] = ordered_strip_set
         
         
+        # For Ajax-API-Editing
+        context["strip_create_form"] = forms.StripCreateForm(initial={'scene': self.kwargs['pk']})
+        context['strip_create_url'] = reverse_lazy("flipbooks:strip-create", kwargs={'scene_pk':self.kwargs['pk'] })
+        
+        
         return context
 
 
@@ -204,14 +209,19 @@ class GetStripSuccessUrlMixin(object):
     
     def get_success_url(self, **kwargs):
         # flipbooks:chapter-detail url look like this: flipbooks/{book_pk}/chapter/{chapter_pk}/
-
+        # flipbooks:scene-detail url look like this: flipbooks/scene/{scene_pk}/
+        
         return reverse_lazy(
-            'flipbooks:chapter-detail', 
+            'flipbooks:scene-detail', 
             kwargs = {
-                'book_pk': self.object.scene.chapter.book.id,
-                'chapter_number': self.object.scene.chapter.number
+                'pk': self.object.scene.id
             })
             
+        # I can't remember what I planend before, but you set the kwargs like this:
+        # kwargs = {
+        #         'book_pk': self.object.scene.chapter.book.id,
+        #         'chapter_number': self.object.scene.chapter.number
+        #     }
 
 class StripCreateView(SuccessMessageMixin, GetStripSuccessUrlMixin, generic.CreateView):
     

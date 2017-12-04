@@ -76,7 +76,7 @@ class Scene(models.Model):
     
     def __str__(self):
         # https://docs.python.org/2/library/stdtypes.html#str.format
-        return "Scene order: {}".format(self.order)
+        return "Scene #{} [order: {}, name: {} ]".format(self.pk, self.order, self.name)
         
         # >>> gender= "male"
         # >>> print "At least, that's what %s told me." %("he" if gender == "male" else "she")

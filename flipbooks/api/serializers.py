@@ -13,7 +13,9 @@ from ..models import (
 # .................................................. 
 # .................................................. 
 
+    
 class StripModelSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Strip
         fields = [
@@ -21,6 +23,7 @@ class StripModelSerializer(serializers.ModelSerializer):
             'order',
             'frame_set'
             ]
+      
         
 class SceneModelSerializer(serializers.ModelSerializer):
     

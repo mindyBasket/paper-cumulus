@@ -10,10 +10,17 @@
 <div class="row">
     <!-- left side container -->
     <div class="col-md-2">
-        <h3>Scenes Under Chapter {{object.chapter.number}}</h3>
+        <h3>{{object.name}}</h3>
+        <!--<h3>Scene Under Chapter {{object.chapter.number}}</h3>-->
         
         <p>
-            from Book : {{object.chapter.book.title}}
+            
+            <b>Book</b> : {{object.chapter.book.title}}
+            </br>
+            <b>Chapter</b>: {{object.chapter.number}}
+            </br>
+            <b>Scene id</b>: {{object.id}}
+            
         </p>
         
         <p><a href="{% url 'flipbooks:chapter-detail' book_pk=object.chapter.book.id chapter_number=object.chapter.number %}">< Chapter detail</a></p>
@@ -23,27 +30,24 @@
     <div class="col-md-10">
         
         <p>
-            <h3>{{object.name}}</h3>
+        
         </p>
 
 
         <div>
             <ul class="list inline">
-                <li><a href="{% url 'flipbooks:strip-create' scene_pk=1 %}">create new strip</a></li>
+                <li><a href="{% url 'flipbooks:strip-create' scene_pk=object.id %}">Create new strip onto scene {{object.id}}</a></li>
+                <li><a href="#">Create new strip onto scene {{object.id}} (AJAX)</a></li>
                 <li><a href="{% url 'flipbooks-api:list' %}">View api</a></li>
+                <li><a href="{% url 'flipbooks-api:detail-scene' pk=object.id%}">View scene api</a></li>
+                <li><a href="{% url 'flipbooks-api:create-strip-under-scene' pk=object.id%}">Create strip to scene {{object.id}}</a></li>
             </ul>
             
         </div>
         
-        <div>
-            <b>Add new frame:</b>
-            {% include "flipbooks/includes/form_new_frame.html" with form=frame_create_form action_url=frame_create_url btn_title='Add Frame to Strip 4(hardcoded)' %}
-        </div>
-        
+
         <h3>Scene id {{object.id}}</h3>
         <p>description: {{object.description}}</p>
-        <p>Contains: {{object.children_orders}}</p>
-        <p>{{ordered_strip_set}}</p>
         <ul class="list_strips">
             {% if valid_children_orders == False %} 
                 order reference could not be found.
@@ -53,10 +57,9 @@
                 <li>
                     <div class="strip_flex_container">
                         <div class="header">
-                            <h2>{{forloop.counter}}</h2>
+                            <span class="bigtext-1">{{forloop.counter}}</span>
                             <br>
-                            
-                            {{strip.id}}
+                            id: {{strip.id}}
                         </div>
                         
                         {% for frame in strip.frame_set.all %} 
@@ -91,9 +94,7 @@
                                 </div>
                             {% endif %}
                         {% endfor %}
-                        
-                        
-                        
+
                     </div>
                         
                 </li>
@@ -105,6 +106,11 @@
             
         </ul>
         
+        <div>
+            <b>Add New Strip (to be hidden):</b>
+            {% include "flipbooks/includes/form_dynamic.html" with form=strip_create_form action_url=strip_create_url form_id="strip_form" btn_title='+Strip' %}
+            
+        </div>
     
     <!-- end: right side container -->    
     </div>
@@ -125,4 +131,5 @@
 {% block extra_js %}
     {% load static %}
     <script src="{% static 'js/restful_api.js' %}"></script>
+    <script src="{% static 'js/ajax_crud.js' %}"></script>
 {% endblock extra_js %}

@@ -112,3 +112,9 @@ strip has been loaded -->
 </div>
 
 {% endblock content_2 %}
+
+{% block extra_js %}
+    {% load static %}
+    <script src="{% static 'js/restful_api.js' %}"></script>
+    <script src="{% static 'js/flip.js' %}"></script>
+{% endblock extra_js %}

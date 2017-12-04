@@ -35,10 +35,7 @@
             
         </div>
         
-        <div>
-            <b>Add new frame:</b>
-            {% include "flipbooks/includes/form_new_frame.html" with form=frame_create_form action_url=frame_create_url btn_title='Add Frame to Strip 4' %}
-        </div>
+        
         
         <h3>Scene list</h3>
         <ul>
@@ -51,7 +48,7 @@
         
                             <a href="{% url 'flipbooks:scene-play' pk=scene.pk %}">play</a>
                             | 
-                            <a href="{% url 'flipbooks:scene-detail' pk=scene.pk %}">detail</a>
+                            <a href="{% url 'flipbooks:scene-detail' pk=scene.pk %}">Edit</a>
                         </form>
                         
                         <div class="frame_thumbs stacked">
