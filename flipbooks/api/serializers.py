@@ -19,7 +19,8 @@ class StripModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Strip
         fields = [
-            'id', 
+            'id',
+            'scene',
             'order',
             'frame_set'
             ]

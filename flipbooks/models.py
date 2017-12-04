@@ -154,9 +154,10 @@ class Strip(models.Model):
     # def get_absolute_url(self):
     #     return reverse("chatter:detail", kwargs={"pk":self.pk})
     
-    def save(self):
+    def save(self, **kwargs):
         
         scene = self.scene
+
         _insert_at = int(self.order) #get order in string
       
         super(Strip, self).save() # save Strip!

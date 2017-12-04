@@ -256,6 +256,9 @@ class StripCreateView(SuccessMessageMixin, GetStripSuccessUrlMixin, generic.Crea
         #   when save() [check models.py]
         
         #   Should also check if the order is duplicate.
+        print("------------------- ")
+        print("FORM : {}".format(form))
+        print("------------------- ")
         messages.error(self.request, self.success_message)
         return super(StripCreateView, self).form_valid(form)
 

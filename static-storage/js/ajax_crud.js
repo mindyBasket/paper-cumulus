@@ -3,7 +3,7 @@
 // '$' is an undefined variable
 
 $(document).ready(function(){
-    console.log("ajax_crud.js ---------- * v0.1.2");
+    console.log("ajax_crud.js ---------- * v0.1.3");
     
     var scenePk = $('#strip_form').find('select#id_scene').val()
     //------------------------------------
@@ -14,7 +14,7 @@ $(document).ready(function(){
         event.preventDefault();
         
         //prep form data
-        var formData = $(this).serialize()
+        var formData = $(this).serialize();
 
         //ajax call
         $.ajax({
