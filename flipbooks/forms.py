@@ -30,9 +30,20 @@ class FrameCreateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(FrameCreateForm, self).__init__(*args, **kwargs)
 
+        # Currently, custom arg being passed from SceneDetailView().
+        # Unsure if this will interfere with anything. Investigate
+        # usage of *args and **kwargs like this more.
+        
+        arg_dict = {}
+        for arg in args:
+            if arg:
+                arg_dict = arg
+                
         # Limit possible strip choice by the scene it belongs to.
-        # it will be harded coded as under scene[id=4] for now. 
-        self.fields['strip'].queryset = Strip.objects.filter(scene__id=4)
+        if 'scene_pk' in arg_dict:
+            self.fields['strip'].queryset = Strip.objects.filter(scene__id=arg_dict['scene_pk'])
+        else:
+            self.fields['strip'].queryset = Strip.objects.all()
 
     
     class Meta:
@@ -42,7 +53,7 @@ class FrameCreateForm(forms.ModelForm):
         model = Frame
         fields = ['strip', 'frame_image']
         labels = {
-            'strip': 'Under strip[id=4]:'
+            'strip': 'Under Scene[id=?]:'
         }
         
     

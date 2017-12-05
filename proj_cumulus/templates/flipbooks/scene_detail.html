@@ -55,7 +55,7 @@
             
             {% for strip in ordered_strip_set %}
                 <li>
-                    <div class="strip_flex_container">
+                    <div class="strip_flex_container" stripid="{{strip.id}}">
                         <div class="header">
                             <span class="bigtext-1">{{forloop.counter}}</span>
                             <br>
@@ -85,13 +85,13 @@
                                     <span style="color:#898989">Invalid Strip</span>
                                 </div>
                             {% else %}
-                                <div class="tile" displaytype="add">
+                            
+                                <!-- open frame_form -->
+                                <div class="tile frame_form" displaytype="add" for="strip_{{strip.id}}">
                                     <span style="font-size:4em">+</span>
-                                    <a href="" class="mini_menu edit"></a>
+                                    Add Frames
                                 </div>
-                                <div class="tile">
-                                    <span>Add frames</span>
-                                </div>
+     
                             {% endif %}
                         {% endfor %}
 
@@ -111,6 +111,12 @@
         <div>
             <b>Add New Strip (to be hidden):</b>
             {% include "flipbooks/includes/form_dynamic.html" with form=strip_create_form action_url=strip_create_url form_id="strip_form" btn_title='+Strip' %}
+            
+        </div>
+        
+        <div>
+            <b>Add New Frame:</b>
+            {% include "flipbooks/includes/form_dynamic.html" with form=frame_create_form action_url=frame_create_url form_id="frame_form" btn_title='+Frame' %}
             
         </div>
     

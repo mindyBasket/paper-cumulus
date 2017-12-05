@@ -2,7 +2,7 @@
     enctype="multipart/form-data" 
     action="{% if action_url %} {{action_url}} {% endif %}" 
     id="{% if form_id %}{{form_id}}{% else %}{% endif %}">
-    
+    {% if form_id %}<b>#{{form_id}}</b>{% endif %}
     {% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="{% if btn_title %} {{btn_title}} {% else %} submit {% endif %}" />

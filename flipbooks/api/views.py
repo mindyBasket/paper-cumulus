@@ -1,7 +1,10 @@
 from rest_framework import generics
+from rest_framework.parsers import FormParser,MultiPartParser,FileUploadParser
+
 from .serializers import (
     SceneModelSerializer,
-    StripModelSerializer
+    StripModelSerializer,
+    FrameModelSerializer,
 )
 
 from ..models import (
@@ -10,8 +13,6 @@ from ..models import (
     Frame
 )
 
-#class StripCreateAPIView(generics.CreateAPIView):
-    
 
 class FlipbookAPIListView(generics.ListAPIView):
     queryset = Scene.objects.all()
@@ -39,3 +40,41 @@ class SceneAPIDetailView(generics.RetrieveAPIView):
     
 class StripCreateAPIView(generics.CreateAPIView):
     serializer_class = StripModelSerializer
+    
+
+class FrameCreateAPIView(generics.CreateAPIView):
+    serializer_class = FrameModelSerializer
+    parser_classes = (MultiPartParser,FormParser,FileUploadParser,)
+    
+    # def post(self, request, format=None, *args, **kwargs):
+    #     serializer = FrameModelSerializer(data=request.data)
+    #     print("--------------post ------------------")
+    #     print(request.data)
+    #     print("-------------------------------------")
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        
+    def create(self, request, *args, **kwargs):
+        print("------------ - create --------------")
+        print(request.FILES)
+        print(request.data)
+        #test = self.request.FILES['frame_image']
+        #print("image?: {}".format(test))
+        print("-------------------------------------")
+        
+        return super(FrameCreateAPIView, self).create(request, *args, **kwargs)
+    
+    
+    
+    def perform_create(self, serializer):
+        
+        #print(self.request.data)
+     
+        if self.request.data.get('frame_image') is not None:
+            frame_image = self.request.data.get('frame_image')
+            serializer.save(frame_image=frame_image)
+        else:
+            serializer.save()

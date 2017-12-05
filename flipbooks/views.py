@@ -158,7 +158,9 @@ class SceneDetailView(generic.DetailView):
         # For Ajax-API-Editing
         context["strip_create_form"] = forms.StripCreateForm(initial={'scene': self.kwargs['pk']})
         context['strip_create_url'] = reverse_lazy("flipbooks:strip-create", kwargs={'scene_pk':self.kwargs['pk'] })
-        
+
+        context["frame_create_form"] = forms.FrameCreateForm({"scene_pk": self.kwargs['pk']})
+        context['frame_create_url'] = reverse_lazy("flipbooks:frame-create", kwargs={'strip_pk': 1 })
         
         return context
 
@@ -256,9 +258,6 @@ class StripCreateView(SuccessMessageMixin, GetStripSuccessUrlMixin, generic.Crea
         #   when save() [check models.py]
         
         #   Should also check if the order is duplicate.
-        print("------------------- ")
-        print("FORM : {}".format(form))
-        print("------------------- ")
         messages.error(self.request, self.success_message)
         return super(StripCreateView, self).form_valid(form)
 
@@ -422,8 +421,9 @@ class FrameCreateView(generic.CreateView):
     
     model = Frame
     template_name = "flipbooks/includes/form_new_frame.html"
-    form_class = forms.FrameCreateForm
+    form_class = forms.FrameCreateForm()
 
+    # Will be replaced by ajax submit.
     success_url = reverse_lazy('flipbooks:book-list')
 
     def get_context_data(self, **kwargs):
@@ -435,6 +435,11 @@ class FrameCreateView(generic.CreateView):
         
 
     def form_valid(self, form):
+        print (" ------------------------------- ")
+        print (" THIS FORM VALID?")
+        print (" ------------------------------- ")
+        
+        
         return super(FrameCreateView, self).form_valid(form)
     
     # def form_invalid(self, form):

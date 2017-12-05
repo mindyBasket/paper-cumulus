@@ -149,7 +149,7 @@ class Strip(models.Model):
     
     def __str__(self):
         # https://docs.python.org/2/library/stdtypes.html#str.format
-        return "Sn:{} - Order:{}".format(self.scene.order, self.order)
+        return "id #{} [in Sn_{}, order:{}]".format(self.id, self.scene.order, self.order)
     
     # def get_absolute_url(self):
     #     return reverse("chatter:detail", kwargs={"pk":self.pk})

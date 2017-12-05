@@ -43,12 +43,13 @@ ul.list_strips .strip_flex_container .header{
 ul.list_strips .strip_flex_container .thumb,
 ul.list_strips .strip_flex_container .tile{
     display: flex;
+    position: relative; /*allows mini menu*/
     align-items: center;
     justify-content: center;
     
     margin: 10px 5px 10px 5px;
-    height: auto;
-    /*nothing for now*/
+    height: auto; /*stretches to fit the flex container */
+
 }
 
 
@@ -69,10 +70,18 @@ ul.list_strips .strip_flex_container .tile{
 }
 
 .strip_flex_container .tile[displaytype="add"]{
-    border:3px solid #bcbcbc;
-    background-color: #bcbcbc;
+
+    background-color: #D1D1D1;
     
-    width: 60px;
+    /*width: 60px;*/
+    padding: 0 10px;
     height: auto;
-    color: white;
+    color: #545454;
+    
+    cursor: pointer;
+}
+
+.strip_flex_container .tile[displaytype="add"]:hover{
+    
+    background-color: #bcbcbc;
 }
