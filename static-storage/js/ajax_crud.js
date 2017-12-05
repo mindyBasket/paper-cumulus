@@ -3,7 +3,7 @@
 // '$' is an undefined variable
 
 $(document).ready(function(){
-    console.log("ajax_crud.js ---------- * v0.1.7");
+    console.log("ajax_crud.js ---------- * v0.1.8");
     
     bindButtons($(this));
     
@@ -39,7 +39,7 @@ $(document).ready(function(){
     //------------------------------------
     // on frame_form submit
     //------------------------------------
-    $('#frame_form').submit(function(event){
+    $('#frame_form_disabled').submit(function(event){
         // disable default form action
         event.preventDefault();
         

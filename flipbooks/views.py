@@ -421,7 +421,7 @@ class FrameCreateView(generic.CreateView):
     
     model = Frame
     template_name = "flipbooks/includes/form_new_frame.html"
-    form_class = forms.FrameCreateForm()
+    form_class = forms.FrameCreateForm
 
     # Will be replaced by ajax submit.
     success_url = reverse_lazy('flipbooks:book-list')
