@@ -18,8 +18,10 @@ ul.list_strips li{
 }
 
 
-ul.list_strips .strip_flex_container{
+.strip_flex_container{
+    /*Main flex container for a single srip*/
     display:flex;
+    flex-wrap: wrap;
     flex-direction: row;
     align-items: stretch;
     
@@ -56,6 +58,11 @@ ul.list_strips .strip_flex_container .tile{
 
 /*modified thumb or tile*/
 
+.strip_flex_container .thumb.slender{
+    width: 50px;
+    overflow: hidden;
+    
+}
 .strip_flex_container .thumb.placeholder2{
     
     border:3px solid #d8abab;

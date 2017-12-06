@@ -176,7 +176,7 @@ class Strip(models.Model):
 
 def frame_upload_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/scene_<order>/strip_<order>-<order>.<ext>
-    
+
     return 'frame_images/scene_{0}_{1}/strip_{2}-{3}.{4}'.format(
         instance.strip.scene.id, 
         instance.strip.scene.name,
@@ -184,6 +184,16 @@ def frame_upload_path(instance, filename):
         instance.order,
         filename.split(".")[-1]
         )
+ 
+def frame_upload_path2(instance, filename):
+
+    return 'frame_images2/scene_{0}/str{1}_{2}'.format(
+            instance.strip.scene.id,
+            instance.strip.id,
+            filename
+        )
+        
+  
         
         
 #Frame: holds individual frames
@@ -202,8 +212,15 @@ class Frame(models.Model):
         upload_to = frame_upload_path,
         #resize_source=dict(size=(100, 100)),
         #thumbnail_storage='frame_images/thumbTest/thumbs/', #I don't know how to use this
-        blank=False
+        blank=True
     )
+    
+    #frame images, using Django native imagefield
+    frame_image_native = models.ImageField(
+        upload_to = frame_upload_path2,
+        blank=False
+        )
+    
     
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)

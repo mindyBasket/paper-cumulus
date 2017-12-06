@@ -44,7 +44,7 @@ def is_displayable(obj, validation_type=''):
         # Alternative empty image test
         #print(str(frame.frame_image) is "")
     
-        return (frame is None) or (frame.frame_image is None) or (str(frame.frame_image) is "")
+        return not((frame is None) or (frame.frame_image is None) or (str(frame.frame_image) is ""))
         
     
 

@@ -51,9 +51,10 @@ class FrameCreateForm(forms.ModelForm):
         #                if the form element does not have 
         #                enctype="multipart/form-data"!
         model = Frame
-        fields = ['strip', 'frame_image']
+        fields = ['strip', 'frame_image', 'frame_image_native']
         labels = {
-            'strip': 'Under Scene[id=?]:'
+            'frame_image_native': 'by ImageField:',
+            
         }
         
     

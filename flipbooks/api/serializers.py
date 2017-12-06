@@ -50,6 +50,7 @@ class FrameModelSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'strip',
-            'frame_image'
+            'frame_image',
+            'frame_image_native'
             ]
         #read_only_fields = ('frame_image',)

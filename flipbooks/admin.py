@@ -31,7 +31,7 @@ class FrameModelAdmin(admin.ModelAdmin):
         else:
             return ("%d-%d" % (obj.strip.order, obj.order))
         
-    list_display = ("id", "frame_order", 'note', 'frame_image', 'date_created',)
+    list_display = ("id", "frame_order", 'note', 'frame_image', 'frame_image_native', 'date_created',)
     empty_value_display = 'unknown'
     
     #testing custom form

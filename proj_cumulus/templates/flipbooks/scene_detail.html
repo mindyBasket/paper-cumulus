@@ -63,20 +63,30 @@
                         </div>
                         
                         {% for frame in strip.frame_set.all %} 
+                        
                             {% if frame|is_displayable:"frame" %} 
                             <!-- % if frame is None or frame.frame_image is None or frame.frame_image|length is 0 % -->
+                               <!-- Frame image may not be valid -->
                                
-                                <div class="thumb placeholder2">
-                                <span>Missing Image</span>
-                                    <a href="" class="mini_menu edit">
-                                        Add image
-                                    </a>
-                                </div>
+                                   <div class="thumb slender">
+                                        <img src="{{ frame.frame_image.thumb.url }}" width='200px'/>
+                                        <a href="" class="mini_menu edit">frame [{{frame.id}}]</a>
+                                   </div> 
                             {% else %} 
-                                <div class="thumb">
-                                    <img src="{{ frame.frame_image.thumb.url }}" width='200px'/>
-                                    <a href="" class="mini_menu edit">frame [{{frame.id}}]</a>
-                                 </div> 
+                                {% if frame.frame_image_native.url != None %}
+                                    <!-- fallback to native ImageField -->
+                                   <div class="thumb">
+                                        <img src="{{ frame.frame_image_native|thumbnail_url:'thumb' }}" width='200px'/>
+                                        <a href="" class="mini_menu edit">frame [{{frame.id}}]</a>
+                                   </div> 
+                                {% else %} 
+                                    <div class="thumb placeholder2">
+                                    <span>Missing Image</span>
+                                        <a href="" class="mini_menu edit">
+                                            Add image
+                                        </a>
+                                    </div>
+                                {% endif %}
                             {% endif %}
                                
                         {% empty %}
@@ -119,7 +129,12 @@
             {% include "flipbooks/includes/form_dynamic.html" with form=frame_create_form action_url=frame_create_url form_id="frame_form" btn_title='+Frame' %}
             
         </div>
-    
+        
+        <div>
+            Reference
+            
+            
+        </div>
     <!-- end: right side container -->    
     </div>
     
