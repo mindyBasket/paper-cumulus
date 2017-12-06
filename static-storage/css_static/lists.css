@@ -12,11 +12,25 @@ ul.list_strips{
 
 
 ul.list_strips li{
-    counter-increment: stripNum;   
-    display: block;
-
+    display:flex;
+    align-items: stretch;
+    
+    counter-increment: stripNum;
+    
 }
 
+
+ul.list_strips li > .header{
+    width: 60px;
+    height: auto;
+    
+    flex-shrink: 0;
+    background-color:#DAF5E4;
+    padding: 10px;
+    margin: 0 0 20px 0;
+    border-bottom: 5px solid #c9c9c9;
+    
+}
 
 .strip_flex_container{
     /*Main flex container for a single srip*/
@@ -26,18 +40,11 @@ ul.list_strips li{
     align-items: stretch;
     
     margin-bottom: 20px;
-    background-color: #fcfcfc;
+    background-color: #FAFAFA;
     border-bottom: 5px solid #c9c9c9;
 
 }
 
-ul.list_strips .strip_flex_container .header{
-    height: auto;
-    background-color:#c9ffdd;
-    padding: 10px;
-    margin-right: 10px;
-
-}
 
 
 /*flex item*/
@@ -49,7 +56,7 @@ ul.list_strips .strip_flex_container .tile{
     align-items: center;
     justify-content: center;
     
-    margin: 10px 5px 10px 5px;
+    margin: 10px 10px 10px 10px;
     height: auto; /*stretches to fit the flex container */
 
 }

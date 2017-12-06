@@ -1,5 +1,5 @@
 body{
-    background-color: #ededed;
+    background-color: #E8E8E8;
 }
 
 /* -------------------------------------- */
@@ -89,6 +89,10 @@ body{
 .thumb{
     position:relative;
 }
+
+/*....................*/
+/* mini menu style */
+
 .thumb .mini_menu{
     /*small menu that pops up when you hover over .thumb*/
     position:absolute;
@@ -113,6 +117,57 @@ body{
     transition: opacity 0.3s;
     
 }    
+
+.thumb .popup_menu{
+    position: absolute;
+    top: -90px; left: 50%;
+    transform: translate(-50%, 0);
+    width: 90%;
+    background-color: #5C5C5C;
+    border-radius: 5px;
+    
+    color: white;
+}
+
+.thumb .popup_menu:focus{
+    outline: none;
+}
+
+.thumb .popup_menu > ul{
+    padding: 0;
+}
+
+.thumb .popup_menu > ul > li{
+    padding: 10px;
+}
+
+.thumb .popup_menu > ul > li.header{
+    border-radius: 5px 5px 0 0;
+    border-bottom: 1px solid #474747;
+    background-color: #3D3D3D;
+    padding: 6px;
+    color: #C4C4C4;
+}
+
+.thumb .popup_menu > ul > li a{
+    color: white;
+}
+
+.thumb .popup_menu .tickmark{
+    position:absolute;
+    
+    bottom: -15px; left: 50%;
+    width: 0; 
+    height: 0; 
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+  
+    border-top: 15px solid #636363;
+}
+
+
+
+
 
 .thumb.placeholder{
     /* style for .thumb box that has no image */

@@ -54,13 +54,15 @@
             {% endif %}
             
             {% for strip in ordered_strip_set %}
-                <li>
+                <li class="flex_list">
+                    <div class="header">
+                        <span class="bigtext-1">{{forloop.counter}}</span>
+                        <br>
+                        <span>id: {{strip.id}}</span>
+                    </div>
+                        
                     <div class="strip_flex_container" stripid="{{strip.id}}">
-                        <div class="header">
-                            <span class="bigtext-1">{{forloop.counter}}</span>
-                            <br>
-                            <span>id: {{strip.id}}</span>
-                        </div>
+
                         
                         {% for frame in strip.frame_set.all %} 
                         
@@ -75,7 +77,7 @@
                             {% else %} 
                                 {% if frame.frame_image_native.url != None %}
                                     <!-- fallback to native ImageField -->
-                                   <div class="thumb">
+                                   <div class="thumb" frameid="{{frame.id}}">
                                         <img src="{{ frame.frame_image_native|thumbnail_url:'thumb' }}" width='200px'/>
                                         <a href="" class="mini_menu edit">frame [{{frame.id}}]</a>
                                    </div> 

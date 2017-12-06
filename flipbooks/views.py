@@ -5,13 +5,12 @@ from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, get_object_or_404
 from django.core.urlresolvers import reverse_lazy
+
 from django.views import generic
+import django.forms as f # Not to be conflicted with forms.py
 
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
-
-from django.contrib import messages
-
 
 from easy_thumbnails.files import get_thumbnailer
 
@@ -160,6 +159,13 @@ class SceneDetailView(generic.DetailView):
         context['strip_create_url'] = reverse_lazy("flipbooks:strip-create", kwargs={'scene_pk':self.kwargs['pk'] })
 
         context["frame_create_form"] = forms.FrameCreateForm({"scene_pk": self.kwargs['pk']})
+        print("------------attempting to hide a field")
+        print(context["frame_create_form"].fields)
+        
+        #context["frame_create_form"].fields['strip'].widget.attrs['disabled'] = True
+        # I wanted to "lock" this field but it seems disabling it does more than just locking it.
+        
+        context["frame_create_form"].fields['frame_image'].widget = f.HiddenInput()
         context['frame_create_url'] = reverse_lazy("flipbooks:frame-create", kwargs={'strip_pk': 1 })
         
         return context
@@ -400,7 +406,7 @@ class FrameDetailView(generic.DetailView):
         
         return context
         
-    
+# Currently not being used
 class FrameListView(generic.ListView):
 
     queryset = Frame.objects.all() 
@@ -446,13 +452,19 @@ class FrameCreateView(generic.CreateView):
     #     # can you make it fail better? redirect??
     #     return JsonResponse(form.errors, status=400)
  
-        
+class FrameDelete(generic.DeleteView):
+    model = Frame
+    success_url = reverse_lazy('book-list')
+    
+    
 # .................................................. 
 # .................................................. 
 #              AJAX calls (for RESTFul api)
 # .................................................. 
 # .................................................. 
 
+# Currently not being used
+# Most likely going to be replaced by AJAX-submit on an rendered form
 def spawn_create_scene(request, **kwargs):
     # Create response:
 

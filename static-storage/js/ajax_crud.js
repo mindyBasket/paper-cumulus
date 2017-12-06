@@ -1,11 +1,15 @@
 /* global $ */
+/* global jQuery */
 // Above line is to prevent cloud9 from thinking 
 // '$' is an undefined variable
 
 $(document).ready(function(){
-    console.log("ajax_crud.js ---------- * v0.2.5");
+    console.log("ajax_crud.js ---------- * v0.2.12");
     
+    // Bind events
     bindButtons($(this));
+    //bindFocusOuts($(this));
+    
     
     var scenePk = $('#strip_form').find('select#id_scene').val()
     
@@ -91,14 +95,14 @@ $(document).ready(function(){
 -----------------------------helpers-------------------------------
 -------------------------------------------------------------------*/
 
+// -----------------------------
 // Basic button binding function
-
+// -----------------------------
 function bindButtons($doc){
     
     $doc.find('.strip_flex_container').each(function(){
         
-        
-        // Button that open new frame form ----------- 
+        // 1. Button that open new frame form ----------- 
         $(this).find(".frame_form").click(function(){
             // In the template, the dynamic form for frame-create should exist.
             // Relocate the form into the appropriate strip container
@@ -109,7 +113,9 @@ function bindButtons($doc){
             // Warning: this assumes the button is located only a single depth into the 
             //          .strip_flex_container, but it may not be the case in the future. 
             var currStripContainer = $(this).parent();
-            var targetForm = $doc.find("#frame_form").eq(0)
+            var targetForm = $doc.find("#frame_form").eq(0);
+            targetForm.hide()
+            targetForm.slideToggle();
             targetForm.appendTo(currStripContainer);
             
             //auto-fill the form
@@ -130,7 +136,61 @@ function bindButtons($doc){
         
     }); 
     
+    // 2. Bind mini menu
+    bindButtons_miniMenu($doc);
 }
+
+
+function bindButtons_miniMenu($doc, $targetOptional){
+    var $target = $targetOptional
+    
+    if ($target == null){
+        //do for all mini menus if target not specified
+        $target = $doc.find('.thumb .mini_menu.edit');
+    } else if ($targetOptional instanceof jQuery == false){
+        console.error("Cannot bind mini menu even to non-Jquery object.");
+        return false;
+    }
+    
+    $target.click(function(event){
+        event.preventDefault();
+        
+        //append menu if there isn't one
+        if ($(this).parent().find('.popup_menu').length < 1){
+            
+            var $popupEditMenu = $(popupEditMenuTemplate);
+            $popupEditMenu.appendTo($(this).parent());
+            
+            var popupHeader = $popupEditMenu.find("ul li.header");
+            var headerSegs = popupHeader.text().split('{{frame.id}}');
+            popupHeader.text(headerSegs[0] + $(this).parent().attr("frameid") + headerSegs[1]);
+            
+            $popupEditMenu.focusout(function(){
+                console.error("out");
+                $(this).hide();
+            });
+        } else {
+            //event.stopPropagation();
+            var $popupEditMenu = $(this).parent().find('.popup_menu');
+            $popupEditMenu.show();
+        }
+        
+        $popupEditMenu.focus();
+    });
+    
+}
+
+
+
+var popupEditMenuTemplate = `
+<div href="" class="popup_menu edit" tabindex="2">
+    <span class="tickmark"></span>
+    <ul>
+        <li class="header">Frame: {{frame.id}}</li>
+        <li><a>Delete</a></li>
+    </ul>
+</div>
+`
 
 var stripTemplate = `
 <div class="strip_flex_container" stripid="{{strip.id}}">
