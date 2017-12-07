@@ -454,6 +454,7 @@ class FrameCreateView(generic.CreateView):
  
 class FrameDelete(generic.DeleteView):
     model = Frame
+    template_name = "flipbooks/includes/delete_form.html"
     success_url = reverse_lazy('book-list')
     
     

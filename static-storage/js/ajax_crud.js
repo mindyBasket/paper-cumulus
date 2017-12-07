@@ -4,12 +4,11 @@
 // '$' is an undefined variable
 
 $(document).ready(function(){
-    console.log("ajax_crud.js ---------- * v0.2.12");
+    console.log("ajax_crud.js ---------- * v0.3.0");
     
     // Bind events
-    bindButtons($(this));
-    //bindFocusOuts($(this));
-    
+    bindEvents_main($(this));
+
     
     var scenePk = $('#strip_form').find('select#id_scene').val()
     
@@ -81,6 +80,16 @@ $(document).ready(function(){
         });
     });
     
+    //------------------------------------
+    // on frame delete 
+    //------------------------------------
+    
+    // Because this isn't rendered into the template, this will have to be 
+    // binded upon append. Delete button/link is appended at bind_miniMenu().
+    // See list of binding functions below.
+    
+    
+    
 });
 
 
@@ -92,13 +101,13 @@ $(document).ready(function(){
 
 
 /*-----------------------------------------------------------------
------------------------------helpers-------------------------------
+----------------------- binding functions -------------------------
 -------------------------------------------------------------------*/
 
 // -----------------------------
 // Basic button binding function
 // -----------------------------
-function bindButtons($doc){
+function bindEvents_main($doc){
     
     $doc.find('.strip_flex_container').each(function(){
         
@@ -137,11 +146,11 @@ function bindButtons($doc){
     }); 
     
     // 2. Bind mini menu
-    bindButtons_miniMenu($doc);
+    bind_miniMenu($doc);
 }
 
 
-function bindButtons_miniMenu($doc, $targetOptional){
+function bind_miniMenu($doc, $targetOptional){
     var $target = $targetOptional
     
     if ($target == null){
@@ -163,12 +172,36 @@ function bindButtons_miniMenu($doc, $targetOptional){
             
             var popupHeader = $popupEditMenu.find("ul li.header");
             var headerSegs = popupHeader.text().split('{{frame.id}}');
-            popupHeader.text(headerSegs[0] + $(this).parent().attr("frameid") + headerSegs[1]);
+            var frameid = $(this).parent().attr("frameid");
+            popupHeader.text(headerSegs[0] + frameid + headerSegs[1]);
+            
+            // append done. Bind events to the buttons and elements 
             
             $popupEditMenu.focusout(function(){
                 console.error("out");
                 $(this).hide();
             });
+            
+            $popupEditMenu.find('.action.delete').click(function(){
+                event.preventDefault();
+                console.log("DELETE");
+                //ajax call
+                $.ajax({
+                    url: '/flipbooks/frame/'+ frameid +'/delete/',
+                    method: 'GET',
+                    success: function (data) {
+                        console.log("response: ");
+                        console.log(data);
+                    },
+                    error: function (data) {
+                        console.error(data);
+                        console.log(data.status);
+                    }
+                });
+                        
+            });
+            
+            
         } else {
             //event.stopPropagation();
             var $popupEditMenu = $(this).parent().find('.popup_menu');
@@ -182,12 +215,25 @@ function bindButtons_miniMenu($doc, $targetOptional){
 
 
 
+
+
+
+
+
+
+
+
+/*-----------------------------------------------------------------
+---------------------- rendering functions ------------------------
+-------------------------------------------------------------------*/
+
+
 var popupEditMenuTemplate = `
 <div href="" class="popup_menu edit" tabindex="2">
     <span class="tickmark"></span>
     <ul>
         <li class="header">Frame: {{frame.id}}</li>
-        <li><a>Delete</a></li>
+        <li><a class="action delete">Delete</a></li>
     </ul>
 </div>
 `

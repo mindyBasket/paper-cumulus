@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     
     'easy_thumbnails',
     'rest_framework',
+    'widget_tweaks',
     
     'flipbooks',
 ]

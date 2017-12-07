@@ -151,6 +151,7 @@ body{
 
 .thumb .popup_menu > ul > li a{
     color: white;
+    cursor: pointer;
 }
 
 .thumb .popup_menu .tickmark{
