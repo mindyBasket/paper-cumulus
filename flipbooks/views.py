@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, get_object_or_404
 from django.core.urlresolvers import reverse_lazy
+from django.template.loader import render_to_string
 
 from django.views import generic
 import django.forms as f # Not to be conflicted with forms.py
@@ -452,10 +453,40 @@ class FrameCreateView(generic.CreateView):
     #     # can you make it fail better? redirect??
     #     return JsonResponse(form.errors, status=400)
  
+ 
+ 
+ # This is attempted ClassBased view for Frame-delete. May not be used.
 class FrameDelete(generic.DeleteView):
     model = Frame
     template_name = "flipbooks/includes/delete_form.html"
     success_url = reverse_lazy('book-list')
+    
+
+# This is FunctionBased view for Frame-delete. Meant to replace the Classbased
+# one right above.
+# This function view behaviors two different way upon "GET" and "POST" request.
+# GET: responds with confirm form
+# POST: actually deletes upon confirm 
+def frame_delete(request, pk):
+    
+    frame = get_object_or_404(Frame, pk=pk)
+    data = dict()
+    
+    if request.method == 'POST':
+        
+        frame.delete() # Unfortunately no easy way to check if this is successful
+        data['deleted'] = True
+        
+    else: #most likely request.method == "GET"
+
+        #Render into delete-confirm template
+        context = {'frame': frame }
+        data['html_form'] = render_to_string('flipbooks/includes/delete_frame_confirm.html',
+            context,
+            request=request,
+        )
+    
+    return JsonResponse(data)
     
     
 # .................................................. 

@@ -1,0 +1,9 @@
+<form method="post" action="{% url 'flipbooks:frame-delete' frame.id %}" id="delete-confirm">
+    {% csrf_token %}
+
+    <div class="header">Are you sure you want to delete?</li>
+    <div>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</a>
+        <button type="submit" class="btn btn-danger">Delete Frame</a>
+    </div>
+</form>

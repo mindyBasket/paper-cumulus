@@ -33,7 +33,7 @@ urlpatterns = [
 
     # Frame Urls
     url(r'^strip/(?P<strip_pk>\d+)/frame/create/$', views.FrameCreateView.as_view(), name='frame-create'),
-    url(r'^frame/(?P<pk>\d+)/delete/$', views.FrameDelete.as_view(), name='frame-delete'),
+    url(r'^frame/(?P<pk>\d+)/delete/$', views.frame_delete, name='frame-delete'), #function view
 
     #ajax calls
     url(r'^ajax/spawn/create_scene/(?P<scene_pk>\d+)/$', views.spawn_create_scene, name='spawn__create_scene'), 

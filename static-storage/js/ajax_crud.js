@@ -4,13 +4,13 @@
 // '$' is an undefined variable
 
 $(document).ready(function(){
-    console.log("ajax_crud.js ---------- * v0.3.0");
+    console.log("ajax_crud.js ---------- * v0.3.8");
     
     // Bind events
     bindEvents_main($(this));
 
     
-    var scenePk = $('#strip_form').find('select#id_scene').val()
+    var scenePk = $('#strip_form').find('select#id_scene').val();
     
     //------------------------------------
     // on strip_form submit
@@ -78,6 +78,7 @@ $(document).ready(function(){
                 console.log(data.status);
             }
         });
+        
     });
     
     //------------------------------------
@@ -177,21 +178,32 @@ function bind_miniMenu($doc, $targetOptional){
             
             // append done. Bind events to the buttons and elements 
             
+            // a. Bind close event. The popup menu closes when you are out of focus. 
             $popupEditMenu.focusout(function(){
                 console.error("out");
-                $(this).hide();
+                //$(this).hide();
             });
             
+            // b. Bind 'delete' action
             $popupEditMenu.find('.action.delete').click(function(){
                 event.preventDefault();
-                console.log("DELETE");
+                
                 //ajax call
                 $.ajax({
                     url: '/flipbooks/frame/'+ frameid +'/delete/',
                     method: 'GET',
+                    dataType: 'json',
+                    beforeSend: function () {
+                        console.log("DELETE");
+                    },
                     success: function (data) {
-                        console.log("response: ");
-                        console.log(data);
+                        //show form
+                        addDeleteConfirmForm(data, $popupEditMenu);
+                        $popupEditMenu.find('#delete-confirm').submit(function(event){
+                            event.preventDefault();
+                            //event.stopPropagation();
+                            return ajax_frame_delete($(this), frameid);
+                        });
                     },
                     error: function (data) {
                         console.error(data);
@@ -199,8 +211,15 @@ function bind_miniMenu($doc, $targetOptional){
                     }
                 });
                         
-            });
+            }); //end: bind 'delete'
             
+            // c. Bind 'delete CONFIRM' button
+            // Sepatate function because this button is dynamically generated
+            // $popupEditMenu.find('.action.delete-confirm').click(function(){
+            //     return ajax_frame_delete_test(frameid);
+            // });
+            
+
             
         } else {
             //event.stopPropagation();
@@ -215,9 +234,42 @@ function bind_miniMenu($doc, $targetOptional){
 
 
 
+var ajax_frame_delete = function($form, frameid){ 
+    
+    $.ajax({
+        url: '/flipbooks/frame/'+ frameid +'/delete/',
+        method: 'POST',
+        data: $form.serialize(),
+        dataType: 'json',
+        beforeSend: function () {
+            console.log("Actual Deletion in progress");
+        },
+        success: function (data) {
+            //show animation of deletion
+            $(document).find('.thumb[frameid='+ frameid +']').animate({
+                opacity: 0,
+            }, 300, function() {
+                //actually delete
+                $(this).remove();
+            });
+        },
+        error: function (data) {
+            console.error(data);
+            console.log(data.status);
+        }
+    });
+}
 
-
-
+var ajax_frame_delete_test = function(frameid){
+    //animation test
+    console.log("actual deletion");
+    $(document).find('.thumb[frameid='+ frameid +']').animate({
+        opacity: 0,
+    }, 300, function() {
+        //actually delete
+        $(this).remove();
+    });
+}
 
 
 
@@ -314,3 +366,10 @@ function addNewFrame(data, stripId){
     newFrameThumb.slideToggle( "fast" );
 }
 
+
+function addDeleteConfirmForm(data, $container){
+    //the data should be already-rendered form
+    console.log(data);
+    $container.html(data['html_form']);
+   
+}
