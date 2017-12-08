@@ -4,18 +4,20 @@
 // '$' is an undefined variable
 
 $(document).ready(function(){
-    console.log("ajax_crud.js ---------- * v0.3.8");
+    console.log("ajax_crud.js ---------- * v0.3.9");
     
     // Bind events
     bindEvents_main($(this));
-
+    
+    
+    
     
     var scenePk = $('#strip_form').find('select#id_scene').val();
-    
     //------------------------------------
     // on strip_form submit
     //------------------------------------
     $('#strip_form').submit(function(event){
+        
         // disable default form action
         event.preventDefault();
         
@@ -181,7 +183,7 @@ function bind_miniMenu($doc, $targetOptional){
             // a. Bind close event. The popup menu closes when you are out of focus. 
             $popupEditMenu.focusout(function(){
                 console.error("out");
-                //$(this).hide();
+                $(this).hide();
             });
             
             // b. Bind 'delete' action
@@ -199,10 +201,14 @@ function bind_miniMenu($doc, $targetOptional){
                     success: function (data) {
                         //show form
                         addDeleteConfirmForm(data, $popupEditMenu);
-                        $popupEditMenu.find('#delete-confirm').submit(function(event){
+                        $popupEditMenu.find('#delete-confirm-button').click(function(event){
+                            // Note: #delete-confirm-button is a <a> that acts
+                            //       like a submit() for the form 
+                            //       #delete-confirm.
+                            
                             event.preventDefault();
-                            //event.stopPropagation();
-                            return ajax_frame_delete($(this), frameid);
+                            var $deleteForm = $popupEditMenu.find('#delete-confirm');
+                            return ajax_frame_delete($deleteForm, frameid);
                         });
                     },
                     error: function (data) {
