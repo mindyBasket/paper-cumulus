@@ -133,6 +133,32 @@ def recatalog_order(scene_instance, target_strip_id, insert_at):
     #turn it back to stringy list
     return ','.join(str(order) for order in new_children_orders)
         
+
+# Removes an id out of the children_orders of a Scene object
+def remove_order(scene_instance, target_strip_id):
+    
+    scene = scene_instance
+    new_children_orders = []
+    
+    if scene.children_orders == "":
+        #no choice but to order the scene by id
+        for strip in scene.strip_set.all():
+            new_children_orders.append(str(strip.id)) #match with stringy list
+    else: 
+        new_children_orders = scene.children_orders.split(",")
+    
+    print("-- Removing {}...".format(target_strip_id))
+    print("------------BEFORE: {}".format(new_children_orders))
+    
+    # Check if id is already there. Then you have to swap
+    if str(target_strip_id) in new_children_orders:
+         new_children_orders.remove(str(target_strip_id))
+    
+    print("------------AFTER: {}".format(new_children_orders))
+    
+    #turn it back to stringy list
+    return ','.join(str(order) for order in new_children_orders)
+    
     
 
 # Strip: holds multiple frames. Used for viewing frames.
@@ -157,16 +183,23 @@ class Strip(models.Model):
     def save(self, **kwargs):
         
         scene = self.scene
-
         _insert_at = int(self.order) #get order in string
       
         super(Strip, self).save() # save Strip!
         #update children_orders of its scene (parent)
         scene.children_orders = recatalog_order(self.scene, self.id, _insert_at)
         scene.save() # save parent(Scene)!
+    
+    
+    def delete(self, **kwargs):
         
+        scene = self.scene
 
         
+        # update children_orders of its scene (parent), but it's removal
+        scene.children_orders = remove_order(self.scene, self.id)
+        scene.save() # save parent(Scene)!
+        super(Strip, self).delete() #delete Strip!
         
 # -------------------------------------------------
 # -------------------------------------------------

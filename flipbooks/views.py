@@ -294,6 +294,7 @@ class StripUpdateView(SuccessMessageMixin, GetStripSuccessUrlMixin, generic.Upda
     
     
     # See StripUpdateForm in forms.py for dynamic field information
+    # See Strip(Model) to see what happens upon save()
     
     def form_valid(self, form):
         messages.success(self.request, self.success_message)
