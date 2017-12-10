@@ -3,13 +3,20 @@
 // Above line is to prevent cloud9 from thinking 
 // '$' is an undefined variable
 
-$(document).ready(function(){
-    console.log("ajax_crud.js ---------- * v0.3.9");
+
+$(function() { //Short hand for $(document).ready(function(){
+
+    console.log("ajax_crud.js ---------- * v0.4.3");
     
-    // Bind events
-    bindEvents_main($(this));
+    // "+frame" button appends frame create form
+    bind_frameCreateFormButton($(document));
     
+    // mini_menu link opens popup_menu
+    bind_miniMenu($(document));
     
+    // Append forms
+    $('#frame_create_form').hide();
+    // form #frame_create_form is rendered through template. 
     
     
     var scenePk = $('#strip_form').find('select#id_scene').val();
@@ -31,7 +38,7 @@ $(document).ready(function(){
             method: 'POST',
             success: function (data) {
                 console.log("sucessfully posted new strip");
-                addNewStrip(data);
+                addStripContainer(data);
             },
             error: function (data) {
                 console.error(data);
@@ -52,7 +59,7 @@ $(document).ready(function(){
     //------------------------------------
     // on frame_form submit
     //------------------------------------
-    $('#frame_form').submit(function(event){
+    $('#frame_create_form').submit(function(event){
         // disable default form action
         event.preventDefault();
         
@@ -60,9 +67,7 @@ $(document).ready(function(){
         //var formData = $(this).serialize();
         var formData = new FormData($(this)[0]);
         var stripPk = $(this).find('select#id_strip').val();
-        
-        console.log($(this))
-    
+
         //ajax call
         $.ajax({
             url: '/api/strip/'+stripPk+'/frame/create/',
@@ -73,7 +78,7 @@ $(document).ready(function(){
             contentType: false,
             success: function (data) {
                 console.log("sucessfully created frame strip");
-                addNewFrame(data, stripPk);
+                addStripContainer(data, stripPk);
             },
             error: function (data) {
                 console.error(data);
@@ -108,48 +113,60 @@ $(document).ready(function(){
 -------------------------------------------------------------------*/
 
 // -----------------------------
-// Basic button binding function
+// Basic button binding function:
+//  $targetOptional allows this function to be used for entire document
+//  as well as for specific target
 // -----------------------------
-function bindEvents_main($doc){
+function bind_frameCreateFormButton($doc, $targetOptional){
+   
+    var $target = $targetOptional
     
-    $doc.find('.strip_flex_container').each(function(){
-        
-        // 1. Button that open new frame form ----------- 
-        $(this).find(".frame_form").click(function(){
-            // In the template, the dynamic form for frame-create should exist.
-            // Relocate the form into the appropriate strip container
-            
-            $doc.find('.frame_form').show();
-            $(this).toggle();
-            
-            // Warning: this assumes the button is located only a single depth into the 
-            //          .strip_flex_container, but it may not be the case in the future. 
-            var currStripContainer = $(this).parent();
-            var targetForm = $doc.find("#frame_form").eq(0);
-            targetForm.hide()
-            targetForm.slideToggle();
-            targetForm.appendTo(currStripContainer);
-            
-            //auto-fill the form
-            var currStripId = $(this).attr("for").split("strip_")[1]; 
-            console.log("curr strip id: " + currStripId);
-            targetForm.find('#id_strip').val(currStripId);
-            
-        });
-        
-        
-        //test
-        // $(this).find(".frame_form").click(function(){
-            
-        //     var data = {'id': 12, 'frame_image_native':"/media/frame_images/scene_4_/strip_1-1.png.300x300_q85_autocrop.png"};
-        //     addNewFrame(data, 33);
-            
-        // });
-        
-    }); 
+    if ($target == null){
+        //do for all mini menus if target not specified
+        console.log("binding form create for whole page");
+        $target = $doc.find('.strip_flex_container .frame_form');
+    } else if ($targetOptional instanceof jQuery == false){
+        console.error("Cannot bind mini menu even to non-Jquery object.");
+        return false;
+    }
     
-    // 2. Bind mini menu
-    bind_miniMenu($doc);
+    $target.click(function(){
+        // In the template, the dynamic form for frame-create should exist.
+        // Relocate the form into the appropriate strip container
+        // (Replace this using partial)
+        
+        // Hide only the current form request button
+        var $formRequestBtn_ = $(this);
+        $doc.find('.frame_form').show();
+        $formRequestBtn_.hide();
+        
+        var stripid = $formRequestBtn_.attr("for");
+        
+        // Form is already appended into the page. Move it around to 
+        // the appropriate strip container
+        var currStripContainer = $('.strip_flex_container[stripid='+stripid+']');
+        var targetForm = $doc.find("#frame_create_form").eq(0); //the one and only
+        targetForm.hide();
+        targetForm.slideToggle();
+        targetForm.appendTo(currStripContainer);
+        
+        //auto-fill the form
+        console.log("curr strip id: " + stripid);
+        targetForm.find('#id_strip').val(stripid);
+        
+    });
+    
+    
+    //test
+    // $(this).find(".frame_form").click(function(){
+        
+    //     var data = {'id': 12, 'frame_image_native':"/media/frame_images/scene_4_/strip_1-1.png.300x300_q85_autocrop.png"};
+    //     addNewFrame(data, 33);
+        
+    // });
+        
+    
+
 }
 
 
@@ -286,8 +303,9 @@ var ajax_frame_delete_test = function(frameid){
 -------------------------------------------------------------------*/
 
 
+
 var popupEditMenuTemplate = `
-<div href="" class="popup_menu edit" tabindex="2">
+<div href="" class="popup_menu edit" tabindex="1">
     <span class="tickmark"></span>
     <ul>
         <li class="header">Frame: {{frame.id}}</li>
@@ -296,48 +314,46 @@ var popupEditMenuTemplate = `
 </div>
 `
 
-var stripTemplate = `
-<div class="strip_flex_container" stripid="{{strip.id}}">
-    <div class="header">
-        <span class="bigtext-1">{{forloop.counter}}</span>
-        <br>
-        <span>id: {{strip.id}}</span>
-        </div>
-        
-    <!-- open frame_form -->
-    <div class="tile frame_form" displaytype="add" for="strip_{{strip.id}}">
-        <span style="font-size:4em">+</span>
-        Add Frames
-    </div>
-</div>
-`
-
-function addNewStrip(data){
+// Uses json_partial view to load html template for a strip container
+function addStripContainer(data){
   
-    
     var stripObj = data
+    var $stripList = $('ul.list_strips');
     
-    var stripList = $('ul.list_strips');
-    
-    //var stripTemplate = stripList.children('li').last().clone();
-    //Grab template, fill in {{strip.id}}
-    var templateSegments = stripTemplate.split("{{strip.id}}");
-    var templateConcated = templateSegments[0];
-    for (var i=1;i<templateSegments.length;i++){
-        templateConcated += stripObj.id + templateSegments[i];
-    }
-
-    var newStrip = $(templateConcated)
-    
-    newStrip.appendTo(stripList);
-    newStrip.toggle();
-    
-    //update index
-    var last_index = $(document).find("ul.list_strips").find(".strip_flex_container").length;
-    newStrip.find(".header").children('span').eq(0).text(Number(last_index)+1);
-    
-    // Show
-    newStrip.slideToggle( "slow" );
+    //json_partial
+    $.ajax({
+        url: '/flipbooks/json_partials/strip_container/'+stripObj.id,
+        method: 'GET',
+        dataType: 'json',
+        beforeSend: function () {
+            //empty
+        },
+        success: function (data_partial) {
+            // append the template
+            // $(document).find('.thumb[frameid='+ frameid +']').animate({
+            //     opacity: 0,
+            // }, 300, function() {
+            //     //actually delete
+            //     $(this).remove();
+            // });
+            var $newStripContainer = $(data_partial['html_template']);
+            $newStripContainer.appendTo($stripList);
+            $newStripContainer.hide();
+            
+            // Bind Button Events
+            bind_frameCreateFormButton($(document), $newStripContainer.find('.frame_form'));
+            
+            // Show
+            $newStripContainer.slideToggle( "slow" );
+            
+            
+        },
+        
+        error: function (data) {
+            console.error(data);
+            console.log(data.status);
+        }
+    });
     
 }
 

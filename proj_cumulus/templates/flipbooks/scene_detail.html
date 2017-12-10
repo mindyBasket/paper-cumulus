@@ -40,7 +40,6 @@
                 <li><a href="#">Create new strip onto scene {{object.id}} (AJAX)</a></li>
                 <li><a href="{% url 'flipbooks-api:list' %}">View api</a></li>
                 <li><a href="{% url 'flipbooks-api:detail-scene' pk=object.id%}">View scene api</a></li>
-                <li><a href="{% url 'flipbooks-api:create-strip-under-scene' pk=object.id%}">Create strip to scene {{object.id}}</a></li>
             </ul>
             
         </div>
@@ -101,7 +100,7 @@
                         
                         {% if strip != None %}
                             <!-- open frame_form -->
-                            <div class="tile frame_form" displaytype="add" for="strip_{{strip.id}}">
+                            <div class="tile frame_form" displaytype="add" for="{{strip.id}}">
                                 <span style="font-size:4em">+</span>
                                 Add Frames
                             </div>
@@ -126,17 +125,12 @@
             
         </div>
         
-        <div>
-            <b>Add New Frame:</b>
-            {% include "flipbooks/includes/form_dynamic.html" with form=frame_create_form action_url=frame_create_url form_id="frame_form" btn_title='+Frame' %}
-            
-        </div>
+        <!-- form/partial/other interactives pre-load -->
         
-        <div>
-            Reference
-            
-            
-        </div>
+        <!-- frame_create_form ready to move-->
+        {% include "flipbooks/includes/form_dynamic.html" with form=frame_create_form action_url=frame_create_url form_id="frame_create_form" btn_title='+Frame' %}
+      
+
     <!-- end: right side container -->    
     </div>
     

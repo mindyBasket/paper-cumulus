@@ -7,6 +7,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from . import views
+from . import views_jsonpr
 
 urlpatterns = [
     #note: "/" = "{proj}/flipbooks"
@@ -39,6 +40,9 @@ urlpatterns = [
     url(r'^ajax/spawn/create_scene/(?P<scene_pk>\d+)/$', views.spawn_create_scene, name='spawn__create_scene'), 
     url(r'^ajax/load_more_strips/$', views.load_more_strips, name='load_more_strips'),
     url(r'^ajax/retrieve_scene__strip/$', views.retrieve_scene__strip, name='retrieve_scene__strip'),
+    
+    # returns json objects
+    url(r'^json_partials/strip_container/(?P<pk>\d+)/$', views_jsonpr.return_strip_container_tmplt, name='json_partial__strip_container'), 
 ]
 
 if settings.DEBUG == True:

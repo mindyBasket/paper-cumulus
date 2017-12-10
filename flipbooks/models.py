@@ -195,10 +195,12 @@ class Strip(models.Model):
         
         scene = self.scene
 
-        
+        print("--------------- STRIP DELETE")
+        print(scene.children_orders)
         # update children_orders of its scene (parent), but it's removal
         scene.children_orders = remove_order(self.scene, self.id)
         scene.save() # save parent(Scene)!
+        print(scene.children_orders)
         super(Strip, self).delete() #delete Strip!
         
 # -------------------------------------------------
