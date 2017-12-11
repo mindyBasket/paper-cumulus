@@ -6,7 +6,7 @@
 
 $(function() { //Short hand for $(document).ready(function(){
 
-    console.log("ajax_crud.js ---------- * v0.4.3");
+    console.log("ajax_crud.js ---------- * v0.4.4");
     
     // "+frame" button appends frame create form
     bind_frameCreateFormButton($(document));
@@ -19,11 +19,11 @@ $(function() { //Short hand for $(document).ready(function(){
     // form #frame_create_form is rendered through template. 
     
     
-    var scenePk = $('#strip_form').find('select#id_scene').val();
+    var scenePk = $('#strip_create_form').find('select#id_scene').val();
     //------------------------------------
     // on strip_form submit
     //------------------------------------
-    $('#strip_form').submit(function(event){
+    $('#strip_create_form').submit(function(event){
         
         // disable default form action
         event.preventDefault();
@@ -48,7 +48,7 @@ $(function() { //Short hand for $(document).ready(function(){
     });
     
     // //Animation test
-    // $('#strip_form').submit(function(event){
+    // $('#strip_create_form').submit(function(event){
     //     event.preventDefault();
         
     //     addNewStrip({'id':0});
@@ -62,6 +62,7 @@ $(function() { //Short hand for $(document).ready(function(){
     $('#frame_create_form').submit(function(event){
         // disable default form action
         event.preventDefault();
+        var $frameForm = $(this);
         
         //prep form data
         //var formData = $(this).serialize();
@@ -78,7 +79,10 @@ $(function() { //Short hand for $(document).ready(function(){
             contentType: false,
             success: function (data) {
                 console.log("sucessfully created frame strip");
-                addStripContainer(data, stripPk);
+                //Hide the form and return add button
+                $frameForm.hide();
+                $('.frame_form').show();
+                addFrameContainer(data, stripPk);
             },
             error: function (data) {
                 console.error(data);
@@ -365,14 +369,13 @@ var thumbTemplate_ = `
 </div>
 `
 
-function addNewFrame(data, stripId){
+function addFrameContainer(data, stripId){
     
     var frameObj = data;
     
     //need to add it in the right place
     var newFrameThumb = $(thumbTemplate_);
    
-    
     //fill in id
     var id_label = newFrameThumb.children('a').text();
     id_label = id_label.split("{}")[0] + frameObj.id + id_label.split("{}")[1]

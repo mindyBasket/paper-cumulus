@@ -1,0 +1,4 @@
+form select[invisible],
+form textarea[invisible]{
+    display:none;
+}

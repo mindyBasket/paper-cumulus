@@ -1,5 +1,6 @@
 {% load static %}
 
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -19,9 +20,10 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
     
-    <!-- custom -->
+    <!-- custom css -->
     <link href="{% static 'css_static/main.css' %}" rel="stylesheet">
     <link href="{% static 'css_static/lists.css' %}" rel="stylesheet">
+    <link href="{% static 'css_static/forms.css' %}" rel="stylesheet">
   </head>
 
   <body>
@@ -41,9 +43,11 @@
       {% block content_2 %}
       {% endblock %}
     </div>
+
+    <div class='container-fluid footer'>
+      Project Cumulus | built by MindJ. Powered by Django
+    </div>
     
-
-
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
