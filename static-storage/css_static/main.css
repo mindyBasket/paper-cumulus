@@ -137,8 +137,10 @@ body{
 
 .thumb .popup_menu{
     position: absolute;
-    top: -90px; left: 50%;
-    transform: translate(-50%, 0);
+    top: -20px; left: 50%;
+    
+    transform-origin: bottom left;
+    transform: translate(-50%, -100%);
     width: 90%;
     background-color: #5C5C5C;
     border-radius: 5px;
@@ -155,7 +157,7 @@ body{
 }
 
 .thumb .popup_menu > ul > li{
-    padding: 10px;
+    padding: 4px 20px;
 }
 
 .thumb .popup_menu > ul > li.header{

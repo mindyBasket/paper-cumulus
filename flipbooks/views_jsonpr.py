@@ -18,8 +18,7 @@ from .models import (
 from . import forms
 
 
-# Decided to not use. 
-# But keeping it as reference.
+
 def return_strip_container_tmplt(request, *args, **kwargs):
     
     stripObj = get_object_or_404(Strip, pk=kwargs['pk'])
@@ -36,3 +35,4 @@ def return_strip_container_tmplt(request, *args, **kwargs):
     )
     
     return JsonResponse({'html_template': html_template})
+    

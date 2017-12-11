@@ -6,7 +6,7 @@
 
 $(function() { //Short hand for $(document).ready(function(){
 
-    console.log("ajax_crud.js ---------- * v0.4.4");
+    console.log("ajax_crud.js ---------- * v0.4.5");
     
     // "+frame" button appends frame create form
     bind_frameCreateFormButton($(document));
@@ -14,8 +14,12 @@ $(function() { //Short hand for $(document).ready(function(){
     // mini_menu link opens popup_menu
     bind_miniMenu($(document));
     
+    // elements inside the popup_menu
+    bind_popupMenu_elems($(document).find(".popup_menu.edit").eq(0));
+    
     // Append forms
     $('#frame_create_form').hide();
+    $(".popup_menu.edit").hide();
     // form #frame_create_form is rendered through template. 
     
     
@@ -107,20 +111,13 @@ $(function() { //Short hand for $(document).ready(function(){
 
 
 
-
-
-
-
-
 /*-----------------------------------------------------------------
 ----------------------- binding functions -------------------------
 -------------------------------------------------------------------*/
 
-// -----------------------------
-// Basic button binding function:
-//  $targetOptional allows this function to be used for entire document
-//  as well as for specific target
-// -----------------------------
+// ................................................
+// Button for opening frame create form in a desginated strip container
+// ................................................
 function bind_frameCreateFormButton($doc, $targetOptional){
    
     var $target = $targetOptional
@@ -135,10 +132,7 @@ function bind_frameCreateFormButton($doc, $targetOptional){
     }
     
     $target.click(function(){
-        // In the template, the dynamic form for frame-create should exist.
-        // Relocate the form into the appropriate strip container
-        // (Replace this using partial)
-        
+
         // Hide only the current form request button
         var $formRequestBtn_ = $(this);
         $doc.find('.frame_form').show();
@@ -174,6 +168,9 @@ function bind_frameCreateFormButton($doc, $targetOptional){
 }
 
 
+// ................................................
+// Button for opening frame create form in a desginated strip container
+// ................................................
 function bind_miniMenu($doc, $targetOptional){
     var $target = $targetOptional
     
@@ -188,77 +185,95 @@ function bind_miniMenu($doc, $targetOptional){
     $target.click(function(event){
         event.preventDefault();
         
-        //append menu if there isn't one
-        if ($(this).parent().find('.popup_menu').length < 1){
-            
-            var $popupEditMenu = $(popupEditMenuTemplate);
-            $popupEditMenu.appendTo($(this).parent());
-            
-            var popupHeader = $popupEditMenu.find("ul li.header");
-            var headerSegs = popupHeader.text().split('{{frame.id}}');
-            var frameid = $(this).parent().attr("frameid");
-            popupHeader.text(headerSegs[0] + frameid + headerSegs[1]);
-            
-            // append done. Bind events to the buttons and elements 
-            
-            // a. Bind close event. The popup menu closes when you are out of focus. 
-            $popupEditMenu.focusout(function(){
-                console.error("out");
-                $(this).hide();
-            });
-            
-            // b. Bind 'delete' action
-            $popupEditMenu.find('.action.delete').click(function(){
-                event.preventDefault();
-                
-                //ajax call
-                $.ajax({
-                    url: '/flipbooks/frame/'+ frameid +'/delete/',
-                    method: 'GET',
-                    dataType: 'json',
-                    beforeSend: function () {
-                        console.log("DELETE");
-                    },
-                    success: function (data) {
-                        //show form
-                        addDeleteConfirmForm(data, $popupEditMenu);
-                        $popupEditMenu.find('#delete-confirm-button').click(function(event){
-                            // Note: #delete-confirm-button is a <a> that acts
-                            //       like a submit() for the form 
-                            //       #delete-confirm.
-                            
-                            event.preventDefault();
-                            var $deleteForm = $popupEditMenu.find('#delete-confirm');
-                            return ajax_frame_delete($deleteForm, frameid);
-                        });
-                    },
-                    error: function (data) {
-                        console.error(data);
-                        console.log(data.status);
-                    }
-                });
-                        
-            }); //end: bind 'delete'
-            
-            // c. Bind 'delete CONFIRM' button
-            // Sepatate function because this button is dynamically generated
-            // $popupEditMenu.find('.action.delete-confirm').click(function(){
-            //     return ajax_frame_delete_test(frameid);
-            // });
-            
-
-            
-        } else {
-            //event.stopPropagation();
-            var $popupEditMenu = $(this).parent().find('.popup_menu');
-            $popupEditMenu.show();
-        }
+        // popup_menu is a partial already included in the template
+        // Append it to the current thumb location
+        var $popupMenu = $doc.find(".popup_menu.edit").eq(0);
+        $popupMenu.appendTo($(this).parent());
+        $popupMenu.show();
         
-        $popupEditMenu.focus();
+        // Tag information about current frame
+        var frameid = $(this).parent().attr("frameid");
+        $popupMenu.attr("for", frameid);
+        $popupMenu.find("li.header > span").text(frameid);
+        
+        // This allows popupMenu to disappear when you click else where
+        $popupMenu.focus();
     });
     
 }
 
+
+// ................................................
+// Various behaviors and buttons on the popup menu
+// ................................................
+var popupTemplate = `
+<div href="" class="popup_menu edit" tabindex="1" for="-1">
+    <span class="tickmark"></span>
+</div>
+`
+
+function bind_popupMenu_elems($popupMenu){
+    
+    // a. Bind close event. The popup menu closes when you are out of focus. 
+    $popupMenu.focusout(function(){
+        $(this).hide();
+    });
+    
+    // b. Bind 'delete' action
+    $popupMenu.find('.action.delete').click(function(){
+        event.preventDefault();
+        
+        // Retrieve frame information
+        var frameid = $popupMenu.attr("for");
+        console.log("popup menu for frame id: " + frameid);
+        
+        if (frameid=="-1"){return;} //STOP, if frameid is not set.
+        
+        //ajax call: GET delete confirm
+        $.ajax({
+            url: '/flipbooks/frame/'+ frameid +'/delete/',
+            method: 'GET',
+            dataType: 'json',
+            beforeSend: function () {
+                console.log("DELETE");
+                //hide the popup edit menu 
+                $popupMenu.focusout();
+            },
+            success: function (data) {
+                //new popup for the (actual) delete form
+                var $popupDelete = $(popupTemplate);
+                $popupDelete.appendTo($popupMenu.parent());
+                
+                addDeleteConfirmForm(data, $popupDelete);
+                
+                // Bind "confirm" button
+                $popupDelete.find('#delete-confirm-button').click(function(event){
+                    // Note: #delete-confirm-button is a <a> that acts
+                    //       like a submit() for the form  #delete-confirm.
+                    
+                    event.preventDefault();
+                    var $deleteForm = $popupDelete.find('#delete-confirm');
+                    return ajax_frame_delete($deleteForm, frameid);
+                });
+                
+                // Bind "cancel" button
+                $popupDelete.find('#delete-cancel-button').click(function(event){
+                    event.preventDefault();
+                    var $deleteForm = $popupDelete.find('#delete-confirm');
+                    $popupDelete.remove();
+                });
+                
+                
+            },
+            error: function (data) {
+                console.error(data);
+                console.log(data.status);
+            }
+        });
+                
+    }); //end: bind 'delete'
+
+}
 
 
 var ajax_frame_delete = function($form, frameid){ 
@@ -333,13 +348,7 @@ function addStripContainer(data){
             //empty
         },
         success: function (data_partial) {
-            // append the template
-            // $(document).find('.thumb[frameid='+ frameid +']').animate({
-            //     opacity: 0,
-            // }, 300, function() {
-            //     //actually delete
-            //     $(this).remove();
-            // });
+
             var $newStripContainer = $(data_partial['html_template']);
             $newStripContainer.appendTo($stripList);
             $newStripContainer.hide();
@@ -349,7 +358,6 @@ function addStripContainer(data){
             
             // Show
             $newStripContainer.slideToggle( "slow" );
-            
             
         },
         
@@ -392,9 +400,9 @@ function addFrameContainer(data, stripId){
 }
 
 
-function addDeleteConfirmForm(data, $container){
-    //the data should be already-rendered form
-    console.log(data);
-    $container.html(data['html_form']);
+function addDeleteConfirmForm(data, $popup){
+    
+    var combinedHtmlContent = $popup.html() + "<p>" +data['html_form'] + "</p>";
+    $popup.html(combinedHtmlContent);
    
 }

@@ -155,21 +155,16 @@ class SceneDetailView(generic.DetailView):
         context['ordered_strip_set'] = ordered_strip_set
         
         
-        # For Ajax-API-Editing
+        # For AJAX submits
         strip_create_form = forms.StripCreateForm(initial={'scene': self.kwargs['pk']})
         strip_create_form.fields['scene'].widget.attrs['invisible'] = True #hiding by css
         strip_create_form.fields['scene'].label = ''
         strip_create_form.fields['description'].widget.attrs['invisible'] = True #hiding by css
         strip_create_form.fields['description'].label = ''
-        
-        
         context["strip_create_form"] = strip_create_form
         context['strip_create_url'] = reverse_lazy("flipbooks:strip-create", kwargs={'scene_pk':self.kwargs['pk'] })
 
-        
         frame_create_form = forms.FrameCreateForm({"scene_pk": self.kwargs['pk']})
-        print("------------attempting to hide a field")
-        print(frame_create_form.fields)
         frame_create_form.fields['strip'].widget.attrs['invisible'] = True #hiding by css
         frame_create_form.fields['frame_image'].widget = f.HiddenInput()
         context['frame_create_form'] = frame_create_form
