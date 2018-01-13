@@ -28,6 +28,15 @@ body{
 
 
 
+#light_box_cover{
+    position: fixed;
+    top:0; left:0;
+    display:block;
+    width: 100%; height: 100%;
+    
+    background-color:rgba(0, 0, 0, 0.5);
+}
+
 
 /* -------------------------------------- */
 /* -------------------------------------- */
@@ -156,12 +165,16 @@ body{
     outline: none;
 }
 
+.thumb .popup_menu > .content{
+    padding: 0 10px;
+}
+
 .thumb .popup_menu ul{
     padding: 0;
 }
 
 .thumb .popup_menu ul li{
-    padding: 4px 20px;
+    padding: 5px 5px;
 }
 
 .thumb .popup_menu > .header{

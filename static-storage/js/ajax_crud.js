@@ -211,13 +211,20 @@ function bind_miniMenu($doc, $targetOptional){
 // Various behaviors and buttons on the popup menu
 // ................................................
 
+var lightboxCover = `
+<div id="light_box_cover">
+</div>
+`
+
 function bind_popupMenu_elems($popupMenu){
     
     // a. Bind close event. The popup menu closes when you are out of focus. 
     $popupMenu.focusout(function(){
+        console.log("popupmenu focus out!");
         $(this).hide();
     });
     
+
     // b. Bind 'delete' action
     $popupMenu.find('.action.delete').click(function(){
         event.preventDefault();
@@ -240,30 +247,45 @@ function bind_popupMenu_elems($popupMenu){
                 $popupMenu.focusout();
             },
             success: function (data) {
+                
+                // ...............
                 //new popup for the (actual) delete form
-                // var $popupDelete = $(popupTemplate); // using template variable
+                // ...............
                 var $popupDelete = $popupMenu.clone().appendTo($popupMenu.parent()); //This might be slow
                 
-                $popupDelete.children('.content').html('');
-                $popupDelete.attr('style','');
+                $popupDelete.children('.content').html(''); //clear unnecessary cloned content
+                
+                //make objects to appear above lightbox
+                $popupDelete.attr('style','z-index:1000');
+                $popupMenu.parent().children('img').attr('style','z-index:1000');
+                
                 addDeleteConfirmForm(data, $popupDelete, $popupDelete.children('.content'));
                 
-                
+                //a lightbox cover, that acts as a giant "close" button
+                var $lbCover = $(lightboxCover)
+                $lbCover.appendTo('body');
+                $lbCover.click(function(){
+                    $popupDelete.find('#delete-cancel-button').click();
+                })
+       
                 // Bind "confirm" button
                 $popupDelete.find('#delete-confirm-button').click(function(event){
                     // Note: #delete-confirm-button is a <a> that acts
                     //       like a submit() for the form  #delete-confirm.
                     
                     event.preventDefault();
+                    $popupDelete.find('#delete-cancel-button').click(); //clean up
                     var $deleteForm = $popupDelete.find('#delete-confirm');
                     return ajax_frame_delete($deleteForm, frameid);
                 });
                 
                 // Bind "cancel" button
                 $popupDelete.find('#delete-cancel-button').click(function(event){
-                    event.preventDefault();
-                    var $deleteForm = $popupDelete.find('#delete-confirm');
+                    
+                    //clean up
                     $popupDelete.remove();
+                    $lbCover.remove(); //don't forget the lightbox cover
+                    $popupMenu.parent().children('img').attr('style','');
                 });
                 
                 
