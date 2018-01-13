@@ -6,7 +6,7 @@
 
 $(function() { //Short hand for $(document).ready(function(){
 
-    console.log("ajax_crud.js ---------- * v0.4.5");
+    console.log("ajax_crud.js ---------- * v0.4.6");
     
     // "+frame" button appends frame create form
     bind_frameCreateFormButton($(document));
@@ -18,7 +18,7 @@ $(function() { //Short hand for $(document).ready(function(){
     bind_popupMenu_elems($(document).find(".popup_menu.edit").eq(0));
     
     // Append forms
-    $('#frame_create_form').hide();
+    //$('#frame_create_form').hide();
     $(".popup_menu.edit").hide();
     // form #frame_create_form is rendered through template. 
     
@@ -182,6 +182,9 @@ function bind_miniMenu($doc, $targetOptional){
         return false;
     }
     
+    // ...............
+    // open mini menu
+    // ...............
     $target.click(function(event){
         event.preventDefault();
         
@@ -194,7 +197,8 @@ function bind_miniMenu($doc, $targetOptional){
         // Tag information about current frame
         var frameid = $(this).parent().attr("frameid");
         $popupMenu.attr("for", frameid);
-        $popupMenu.find("li.header > span").text(frameid);
+        console.log($popupMenu.children(".header").html());
+        $popupMenu.children(".header").children("span").text(frameid);
         
         // This allows popupMenu to disappear when you click else where
         $popupMenu.focus();
@@ -206,11 +210,6 @@ function bind_miniMenu($doc, $targetOptional){
 // ................................................
 // Various behaviors and buttons on the popup menu
 // ................................................
-var popupTemplate = `
-<div href="" class="popup_menu edit" tabindex="1" for="-1">
-    <span class="tickmark"></span>
-</div>
-`
 
 function bind_popupMenu_elems($popupMenu){
     
@@ -230,6 +229,7 @@ function bind_popupMenu_elems($popupMenu){
         if (frameid=="-1"){return;} //STOP, if frameid is not set.
         
         //ajax call: GET delete confirm
+        //           To see POST delete, see ajax_frame_delete()
         $.ajax({
             url: '/flipbooks/frame/'+ frameid +'/delete/',
             method: 'GET',
@@ -241,10 +241,13 @@ function bind_popupMenu_elems($popupMenu){
             },
             success: function (data) {
                 //new popup for the (actual) delete form
-                var $popupDelete = $(popupTemplate);
-                $popupDelete.appendTo($popupMenu.parent());
+                // var $popupDelete = $(popupTemplate); // using template variable
+                var $popupDelete = $popupMenu.clone().appendTo($popupMenu.parent()); //This might be slow
                 
-                addDeleteConfirmForm(data, $popupDelete);
+                $popupDelete.children('.content').html('');
+                $popupDelete.attr('style','');
+                addDeleteConfirmForm(data, $popupDelete, $popupDelete.children('.content'));
+                
                 
                 // Bind "confirm" button
                 $popupDelete.find('#delete-confirm-button').click(function(event){
@@ -323,15 +326,15 @@ var ajax_frame_delete_test = function(frameid){
 
 
 
-var popupEditMenuTemplate = `
-<div href="" class="popup_menu edit" tabindex="1">
-    <span class="tickmark"></span>
-    <ul>
-        <li class="header">Frame: {{frame.id}}</li>
-        <li><a class="action delete">Delete</a></li>
-    </ul>
-</div>
-`
+// var popupEditMenuTemplate = `
+// <div href="" class="popup_menu edit" tabindex="1">
+//     <span class="tickmark"></span>
+//     <ul>
+//         <li class="header">Frame: {{frame.id}}</li>
+//         <li><a class="action delete">Delete</a></li>
+//     </ul>
+// </div>
+// `
 
 // Uses json_partial view to load html template for a strip container
 function addStripContainer(data){
@@ -400,9 +403,22 @@ function addFrameContainer(data, stripId){
 }
 
 
-function addDeleteConfirmForm(data, $popup){
+function addDeleteConfirmForm(data, $popup, $targetOptional){
     
-    var combinedHtmlContent = $popup.html() + "<p>" +data['html_form'] + "</p>";
-    $popup.html(combinedHtmlContent);
+    var $target = $targetOptional
+    if ($target == null){
+        // Select whole content of $popup
+        $target=$popup
+    } else if ($targetOptional instanceof jQuery == false){
+        console.error("Cannot append delete form to a non-Jquery object.");
+        return false;
+    }
+
+    //var combinedHtmlContent = $popup.html() + "<p>" +data['html_form'] + "</p>";
+    $target.append($("<p>" +data['html_form'] + "</p>"));
+    // $popup.html(combinedHtmlContent);
+    
+    
+    
    
 }
