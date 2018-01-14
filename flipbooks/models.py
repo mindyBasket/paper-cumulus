@@ -84,6 +84,17 @@ class Scene(models.Model):
         # >>> print "At least, that's what %s told me." %("he" if gender == "male" else "she")
         # At least, that's what he told me.
 
+    # def save(self, **kwargs):
+        
+    #     scene = self.scene
+    #     _insert_at = int(self.order) #get order in string
+        
+    #     if self.children_orders == '':
+    #         print("WARNING. children_orders on this strip is empty. Refreshing children_orders.")
+    #         new_children_li = helpers.refresh_children_li(self)
+    #         if new_children_li:
+    #             self.children_orders = new_children_li
+    #     super(Strip, self).save() # save Strip!
 
 # -------------------------------------------------
 # -------------------------------------------------
@@ -99,71 +110,6 @@ class Scene(models.Model):
 #     scene = strip_instance.scene
 #     return len(scene.strip_set.all())+1
 
-
-def recatalog_order(scene_instance, target_strip_id, insert_at):
-    
-    # if isinstance(scene_instance, Scene):
-
-    scene = scene_instance
-    new_children_orders = []
-    
-    # if scene.order_list is empty, it means it was never initialized
-    # or there is a problem
-    if scene.children_orders == "":
-        #no choice but to order the scene by id
-        for strip in scene.strip_set.all():
-            new_children_orders.append(str(strip.id)) #match with stringy list
-        print(new_children_orders)
-    else: 
-        new_children_orders = scene.children_orders.split(",")
-
-    # because this function runs after "save()", new_children_orders contains
-    # all strips. This means I need to know which strip wants to move,
-    # and move to where. 
-    print("-- Swapping {} to index {}...".format(target_strip_id, insert_at))
-    print("------------BEFORE: {}".format(new_children_orders))
-    
-    # Check if id is already there. Then you have to swap
-    if str(target_strip_id) in new_children_orders:
-         new_children_orders.remove(str(target_strip_id))
-        
-    if insert_at < 0:
-        new_children_orders.append(str(target_strip_id))
-    else:
-        new_children_orders.insert(int(insert_at), str(target_strip_id))   
-        
-    print("------------AFTER: {}".format(new_children_orders))
- 
-    #turn it back to stringy list
-    return ','.join(str(order) for order in new_children_orders)
-        
-
-# Removes an id out of the children_orders of a Scene object
-def remove_order(scene_instance, target_strip_id):
-    
-    scene = scene_instance
-    new_children_orders = []
-    
-    if scene.children_orders == "":
-        #no choice but to order the scene by id
-        for strip in scene.strip_set.all():
-            new_children_orders.append(str(strip.id)) #match with stringy list
-    else: 
-        new_children_orders = scene.children_orders.split(",")
-    
-    print("-- Removing {}...".format(target_strip_id))
-    print("------------BEFORE: {}".format(new_children_orders))
-    
-    # Check if id is already there. Then you have to swap
-    if str(target_strip_id) in new_children_orders:
-         new_children_orders.remove(str(target_strip_id))
-    
-    print("------------AFTER: {}".format(new_children_orders))
-    
-    #turn it back to stringy list
-    return ','.join(str(order) for order in new_children_orders)
-    
-    
 
 # Strip: holds multiple frames. Used for viewing frames.
 class Strip(models.Model):
@@ -192,13 +138,14 @@ class Strip(models.Model):
         
         if self.children_orders == '':
             print("WARNING. children_orders on this strip is empty. Refreshing children_orders.")
-            new_children_li = helpers.refresh_children_order(self)
+            new_children_li = helpers.refresh_children_li(self)
             if new_children_li:
                 self.children_orders = new_children_li
+        
         super(Strip, self).save() # save Strip!
         
         #update children_orders of its scene (parent)
-        scene.children_orders = recatalog_order(self.scene, self.id, _insert_at)
+        scene.children_orders = helpers.update_children_li(self.scene, self.id, _insert_at)
         scene.save() # save parent(Scene)!
     
     
@@ -206,13 +153,14 @@ class Strip(models.Model):
         
         scene = self.scene
 
-        print("--------------- STRIP DELETE")
-        print(scene.children_orders)
         # update children_orders of its scene (parent), but it's removal
-        scene.children_orders = remove_order(self.scene, self.id)
+        scene.children_orders = helpers.remove_order(self.scene, self.id)
         scene.save() # save parent(Scene)!
-        print(scene.children_orders)
         super(Strip, self).delete() #delete Strip!
+        
+        
+        
+        
         
 # -------------------------------------------------
 # -------------------------------------------------
@@ -245,7 +193,7 @@ def frame_upload_path2(instance, filename):
 #Frame: holds individual frames
 class Frame(models.Model):
     
-    order = models.IntegerField(default="0") 
+    order = models.IntegerField(default="-1") 
 
     note = models.CharField(
         max_length=100, blank=True, default="", help_text="This note will not be visible for viewers. It's just for the creator"
@@ -276,7 +224,26 @@ class Frame(models.Model):
     def __str__(self):
         return ("%d : %s" % (self.id, self.note))
 
-
+    def save(self, **kwargs):
+        
+        super(Frame, self).save() # save Strip!
+        
+        #update children_orders of its strip (parent)
+        strip = self.strip
+        _insert_at = int(self.order) #get order in string
+        strip.children_orders = helpers.update_children_li(self.strip, self.id, _insert_at)
+        strip.save() # save parent(Strip)!
+        
+        
+    def delete(self, **kwargs):
+        
+        # update children_orders of its parent, but removal
+        strip = self.strip
+        strip.children_orders = helpers.remove_order(self.strip, self.id)
+        strip.save() # save parent(Scene)!
+        
+        super(Frame, self).delete() #delete Frame!
+    
 
 #custom helper functions 
 from .helpermodule import helpers

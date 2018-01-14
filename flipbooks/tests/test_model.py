@@ -107,6 +107,13 @@ class StripModelTestCase(TestCase):
         self.strip2.save()
         self.assertEqual(self.scene.children_orders, '1,4,3,2')
         
+        ''' Test if children list refresh when list is empty '''
+        self.scene.children_orders = ''
+        self.scene.save()
+        self.strip1.order = 0
+        self.strip1.save() # The refresh currently only happens by Strip.save()
+        self.assertEqual(self.scene.children_orders, '1,2,3,4')
+        
         
     def test_children_order_valid_on_delete(self):
 
@@ -133,9 +140,79 @@ class StripModelTestCase(TestCase):
         self.strip5 = Strip(scene=self.scene, order=2)
         self.strip5.save()
         
-        print('CHILDREN ORDER OUTPUT: {}'.format(sc.children_orders))
         self.assertEqual(sc.children_orders, '1,2,5,3,4')
        
         
+
+# The same as above, but for Frames
+class FrameModelTestCase(TestCase):
+    
+    def setUp(self):
+        """Define the test client and other test variables."""
+        self.book = Book(title="Test Book")
+        self.book.save()
+        self.chapter = Chapter(number=1, book=self.book)
+        self.chapter.save()
+        self.scene = Scene(description="Test scene", chapter=self.chapter)
+        self.scene.save()
+        self.strip = Strip(description="Test strip", scene=self.scene)
+        self.strip.save()
         
+        self.frame1 = Frame(strip=self.strip)
+        self.frame2 = Frame(strip=self.strip)
+        self.frame3 = Frame(strip=self.strip)
+        self.frame4 = Frame(strip=self.strip)
+        
+        self.frameList = [self.frame1, self.frame2, self.frame3, self.frame4]
+        
+        print(">> SETUP ENDED <<")
+
+
+    #note: all test case must start with "test_"
+    def test_frames_on_update(self):
+        
+        for frObject in self.frameList:
+            frObject.save()
+        
+        """ Test if the children_orders generate properly """
+        self.assertEqual(self.strip.children_orders, '1,2,3,4')
+        
+        """ Test order swaps """
+        self.frame4.order = 0
+        self.frame4.save()
+        self.assertEqual(self.strip.children_orders, '4,1,2,3')
+    
+        self.frame1.order = 10
+        self.frame1.save()
+        self.assertEqual(self.strip.children_orders, '4,2,3,1')
+        
+        ''' Test if children list refresh when parent list is empty '''
+        self.strip.children_orders = ''
+        self.strip.save()
+        self.assertEqual(self.strip.children_orders, '1,2,3,4')
+        
+        
+    def test_frames_on_delete(self):
+
+        for frObject in self.frameList:
+            frObject.save()
+            
+        """ Test if removing a strip also removes ref from children_orders """
+        self.frame3.delete()
+        self.assertEqual(self.strip.children_orders, '1,2,4')
+        self.frame1.delete()
+        self.assertEqual(self.strip.children_orders, '2,4')
+        
+        
+    def test_children_order_valid_on_create(self):
+
+        for frObject in self.frameList:
+            frObject.save()
+            
+
+        """ Testing creation of frame at a specific order. """
+        self.frame5 = Frame(strip=self.strip, order=2)
+        self.frame5.save()
+        
+        self.assertEqual(self.strip.children_orders, '1,2,5,3,4')
     

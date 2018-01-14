@@ -18,7 +18,7 @@ from ..models import (
                       separate files. """
 
 
-class FrameModelTestCase(TestCase):
+class DuplicateTestCase(TestCase):
     
     def setUp(self):
         """Define the test client and other test variables."""
