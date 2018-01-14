@@ -76,15 +76,15 @@ class ChapterDetailView(generic.TemplateView):
     
         print("*--------------Get scene set {}".format(context['object'].scene_set.all()))
         
-        valid_children_orders = []
+        valid_children_li = []
         for obj in context['object_scene_list']:
-            if obj.children_orders == "":
-                #has_valid_children_orders.append(False if obj.children_orders == "" else True)
-                valid_children_orders.append(False)
+            if obj.children_li == "":
+                #has_valid_children_li.append(False if obj.children_li == "" else True)
+                valid_children_li.append(False)
             else:
-                valid_children_orders.append(helpers.string2List(obj.children_orders))
+                valid_children_li.append(helpers.string2List(obj.children_li))
 
-        context["valid_children_orders"] = valid_children_orders
+        context["valid_children_li"] = valid_children_li
         
         
         context["frame_create_form"] = forms.FrameCreateForm
@@ -112,16 +112,16 @@ class ChapterDetailView(generic.TemplateView):
 #         # Check what's in context like this
 #         # print("------------{}".format(context))
         
-#         # Convert children_orders to iterable list, or mark it with "False"
-#         valid_children_orders = []
+#         # Convert children_li to iterable list, or mark it with "False"
+#         valid_children_li = []
 #         for obj in context['object_list']:
-#             if obj.children_orders == "":
-#                 #has_valid_children_orders.append(False if obj.children_orders == "" else True)
-#                 valid_children_orders.append(False)
+#             if obj.children_li == "":
+#                 #has_valid_children_li.append(False if obj.children_li == "" else True)
+#                 valid_children_li.append(False)
 #             else:
-#                 valid_children_orders.append(helpers.string2List(obj.children_orders))
+#                 valid_children_li.append(helpers.string2List(obj.children_li))
 
-#         context["valid_children_orders"] = valid_children_orders
+#         context["valid_children_li"] = valid_children_li
 
 #         return context
         
@@ -133,20 +133,20 @@ class SceneDetailView(generic.DetailView):
 
         context = super(SceneDetailView, self).get_context_data(*args, **kwargs)
         
-        # order strips by id ref'd by children_orders
+        # order strips by id ref'd by children_li
         
-        # Convert children_orders to iterable list, or mark it with "False"
-        stringy_children_orders = context['object'].children_orders
-        valid_children_orders = False if stringy_children_orders =="" else helpers.string2List(stringy_children_orders) 
+        # Convert children_li to iterable list, or mark it with "False"
+        stringy_children_li = context['object'].children_li
+        valid_children_li = False if stringy_children_li =="" else helpers.string2List(stringy_children_li) 
             
-        context["valid_children_orders"] = valid_children_orders
+        context["valid_children_li"] = valid_children_li
         
-        # Reorder strip based on valid_children_orders
+        # Reorder strip based on valid_children_li
         _scene = context['object']
         
         ordered_strip_set = []
-        if valid_children_orders:
-            ordered_strip_set = helpers.order_by_id_ref(_scene.strip_set.all(), valid_children_orders)
+        if valid_children_li:
+            ordered_strip_set = helpers.order_by_id_ref(_scene.strip_set.all(), valid_children_li)
         else:
             # no valid chidlren_orders found.
             # Retrieve strip by its natural order (id)
@@ -192,16 +192,16 @@ class ScenePlayView(generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super(ScenePlayView, self).get_context_data(**kwargs)
         context['scene'] = context['object']
-        # Convert children_orders to iterable list, or mark it with "False"
-        stringy_children_orders = context['object'].children_orders
-        valid_children_orders = False if stringy_children_orders =="" else helpers.string2List(stringy_children_orders) 
+        # Convert children_li to iterable list, or mark it with "False"
+        stringy_children_li = context['object'].children_li
+        valid_children_li = False if stringy_children_li =="" else helpers.string2List(stringy_children_li) 
             
-        context["valid_children_orders"] = valid_children_orders
+        context["valid_children_li"] = valid_children_li
         
         #might benefit just putting reordered strip into context
         ordered_strip_set = []
-        if valid_children_orders:
-            ordered_strip_set = helpers.order_by_id_ref(context['scene'].strip_set.all(), valid_children_orders)
+        if valid_children_li:
+            ordered_strip_set = helpers.order_by_id_ref(context['scene'].strip_set.all(), valid_children_li)
         
         context['ordered_strip_set'] = ordered_strip_set
         

@@ -50,10 +50,6 @@ from ..models import (
 # -------------------------------------------
 # -------------------------------------------
 
-''' Note: I am planning to make children_orders -> children_li
-          The original name is not intuitive.
-'''
-
 ''' The children_order may be blank or invalid. 
 Use this function refresh/recreate the order based on
 the order the children appears in db'''
@@ -66,7 +62,7 @@ def refresh_children_li(obj):
     elif isinstance(obj, Scene):
         children_li = obj.strip_set.all()
     else:
-        print("Not a valid object to extract children_orders")
+        print("Not a valid object to extract children_li")
         return False
         
     #retrieve children
@@ -83,11 +79,11 @@ def update_children_li(obj, target_child_id, insert_at):
     
     # if object's order_list is empty, 
     # it means it was never initialized or there is a problem
-    if obj.children_orders == "":
+    if obj.children_li == "":
         new_children_li = refresh_children_li(obj) #Make new list by id
         new_children_li = new_children_li.split(",")
     else: 
-        new_children_li = obj.children_orders.split(",")
+        new_children_li = obj.children_li.split(",")
         
 
     print("-- Swapping {} to index {}...".format(target_child_id, insert_at))
@@ -109,18 +105,18 @@ def update_children_li(obj, target_child_id, insert_at):
     
 
         
-''' Removes an id out of the children_orders '''
-def remove_order(obj, target_child_id):
+''' Removes an id out of the children_li '''
+def remove_child(obj, target_child_id):
     
     new_children_li = []
     
     # if object's order_list is empty, 
     # it means it was never initialized or there is a problem
-    if obj.children_orders == "":
+    if obj.children_li == "":
         new_children_li = refresh_children_li(obj) #Make new list by id
         new_children_li = new_children_li.split(",")
     else: 
-        new_children_li = obj.children_orders.split(",")
+        new_children_li = obj.children_li.split(",")
     
     print("-- Removing {}...".format(target_child_id))
     print("------------BEFORE: {}".format(new_children_li))

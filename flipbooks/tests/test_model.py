@@ -95,24 +95,24 @@ class StripModelTestCase(TestCase):
         for stripObject in self.stripList:
             stripObject.save()
         
-        """ Test if the children_orders generate properly """
-        self.assertEqual(self.scene.children_orders, '1,2,3,4')
+        """ Test if the children_li generate properly """
+        self.assertEqual(self.scene.children_li, '1,2,3,4')
         
         """ Test order swaps """
         self.strip4.order = 1
         self.strip4.save()
-        self.assertEqual(self.scene.children_orders, '1,4,2,3')
+        self.assertEqual(self.scene.children_li, '1,4,2,3')
     
         self.strip2.order = 10
         self.strip2.save()
-        self.assertEqual(self.scene.children_orders, '1,4,3,2')
+        self.assertEqual(self.scene.children_li, '1,4,3,2')
         
         ''' Test if children list refresh when list is empty '''
-        self.scene.children_orders = ''
+        self.scene.children_li = ''
         self.scene.save()
         self.strip1.order = 0
         self.strip1.save() # The refresh currently only happens by Strip.save()
-        self.assertEqual(self.scene.children_orders, '1,2,3,4')
+        self.assertEqual(self.scene.children_li, '1,2,3,4')
         
         
     def test_children_order_valid_on_delete(self):
@@ -122,11 +122,11 @@ class StripModelTestCase(TestCase):
             
         sc = self.scene
         
-        """ Test if removing a strip also removes ref from children_orders """
+        """ Test if removing a strip also removes ref from children_li """
         self.strip3.delete()
-        self.assertEqual(self.scene.children_orders, '1,2,4')
+        self.assertEqual(self.scene.children_li, '1,2,4')
         self.strip1.delete()
-        self.assertEqual(self.scene.children_orders, '2,4')
+        self.assertEqual(self.scene.children_li, '2,4')
         
         
     def test_children_order_valid_on_create(self):
@@ -140,7 +140,7 @@ class StripModelTestCase(TestCase):
         self.strip5 = Strip(scene=self.scene, order=2)
         self.strip5.save()
         
-        self.assertEqual(sc.children_orders, '1,2,5,3,4')
+        self.assertEqual(sc.children_li, '1,2,5,3,4')
        
         
 
@@ -174,22 +174,22 @@ class FrameModelTestCase(TestCase):
         for frObject in self.frameList:
             frObject.save()
         
-        """ Test if the children_orders generate properly """
-        self.assertEqual(self.strip.children_orders, '1,2,3,4')
+        """ Test if the children_li generate properly """
+        self.assertEqual(self.strip.children_li, '1,2,3,4')
         
         """ Test order swaps """
         self.frame4.order = 0
         self.frame4.save()
-        self.assertEqual(self.strip.children_orders, '4,1,2,3')
+        self.assertEqual(self.strip.children_li, '4,1,2,3')
     
         self.frame1.order = 10
         self.frame1.save()
-        self.assertEqual(self.strip.children_orders, '4,2,3,1')
+        self.assertEqual(self.strip.children_li, '4,2,3,1')
         
         ''' Test if children list refresh when parent list is empty '''
-        self.strip.children_orders = ''
+        self.strip.children_li = ''
         self.strip.save()
-        self.assertEqual(self.strip.children_orders, '1,2,3,4')
+        self.assertEqual(self.strip.children_li, '1,2,3,4')
         
         
     def test_frames_on_delete(self):
@@ -197,11 +197,11 @@ class FrameModelTestCase(TestCase):
         for frObject in self.frameList:
             frObject.save()
             
-        """ Test if removing a strip also removes ref from children_orders """
+        """ Test if removing a strip also removes ref from children_li """
         self.frame3.delete()
-        self.assertEqual(self.strip.children_orders, '1,2,4')
+        self.assertEqual(self.strip.children_li, '1,2,4')
         self.frame1.delete()
-        self.assertEqual(self.strip.children_orders, '2,4')
+        self.assertEqual(self.strip.children_li, '2,4')
         
         
     def test_children_order_valid_on_create(self):
@@ -214,5 +214,5 @@ class FrameModelTestCase(TestCase):
         self.frame5 = Frame(strip=self.strip, order=2)
         self.frame5.save()
         
-        self.assertEqual(self.strip.children_orders, '1,2,5,3,4')
+        self.assertEqual(self.strip.children_li, '1,2,5,3,4')
     

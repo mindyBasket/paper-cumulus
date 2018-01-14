@@ -65,7 +65,7 @@ class Chapter(models.Model):
 class Scene(models.Model):
     
     order = models.IntegerField(default="0") 
-    children_orders = models.TextField(max_length=200, blank=True, default="")
+    children_li = models.TextField(max_length=200, blank=True, default="")
     
     name = models.CharField(max_length=50, blank=True, default="")
     description = models.TextField(max_length=100, blank=True, default="")
@@ -89,11 +89,11 @@ class Scene(models.Model):
     #     scene = self.scene
     #     _insert_at = int(self.order) #get order in string
         
-    #     if self.children_orders == '':
-    #         print("WARNING. children_orders on this strip is empty. Refreshing children_orders.")
+    #     if self.children_li == '':
+    #         print("WARNING. children_li on this strip is empty. Refreshing children_li.")
     #         new_children_li = helpers.refresh_children_li(self)
     #         if new_children_li:
-    #             self.children_orders = new_children_li
+    #             self.children_li = new_children_li
     #     super(Strip, self).save() # save Strip!
 
 # -------------------------------------------------
@@ -115,7 +115,7 @@ class Scene(models.Model):
 class Strip(models.Model):
     
     order = models.IntegerField(default="-1")
-    children_orders = models.TextField(max_length=500, blank=True, default="")
+    children_li = models.TextField(max_length=500, blank=True, default="")
     
     description = models.TextField(max_length=100, blank=True, default="")
     
@@ -136,16 +136,16 @@ class Strip(models.Model):
         scene = self.scene
         _insert_at = int(self.order) #get order in string
         
-        if self.children_orders == '':
-            print("WARNING. children_orders on this strip is empty. Refreshing children_orders.")
+        if self.children_li == '':
+            print("WARNING. children_li on this strip is empty. Refreshing children_li.")
             new_children_li = helpers.refresh_children_li(self)
             if new_children_li:
-                self.children_orders = new_children_li
+                self.children_li = new_children_li
         
         super(Strip, self).save() # save Strip!
         
-        #update children_orders of its scene (parent)
-        scene.children_orders = helpers.update_children_li(self.scene, self.id, _insert_at)
+        #update children_li of its scene (parent)
+        scene.children_li = helpers.update_children_li(self.scene, self.id, _insert_at)
         scene.save() # save parent(Scene)!
     
     
@@ -153,8 +153,8 @@ class Strip(models.Model):
         
         scene = self.scene
 
-        # update children_orders of its scene (parent), but it's removal
-        scene.children_orders = helpers.remove_order(self.scene, self.id)
+        # update children_li of its scene (parent), but it's removal
+        scene.children_li = helpers.remove_child(self.scene, self.id)
         scene.save() # save parent(Scene)!
         super(Strip, self).delete() #delete Strip!
         
@@ -228,18 +228,18 @@ class Frame(models.Model):
         
         super(Frame, self).save() # save Strip!
         
-        #update children_orders of its strip (parent)
+        #update children_li of its strip (parent)
         strip = self.strip
         _insert_at = int(self.order) #get order in string
-        strip.children_orders = helpers.update_children_li(self.strip, self.id, _insert_at)
+        strip.children_li = helpers.update_children_li(self.strip, self.id, _insert_at)
         strip.save() # save parent(Strip)!
         
         
     def delete(self, **kwargs):
         
-        # update children_orders of its parent, but removal
+        # update children_li of its parent, but removal
         strip = self.strip
-        strip.children_orders = helpers.remove_order(self.strip, self.id)
+        strip.children_li = helpers.remove_child(self.strip, self.id)
         strip.save() # save parent(Scene)!
         
         super(Frame, self).delete() #delete Frame!

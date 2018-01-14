@@ -14,13 +14,13 @@ from . import models
 
 class SceneModelAdmin(admin.ModelAdmin):
 
-    list_display = ("id", "__str__", "name", "children_orders")
+    list_display = ("id", "__str__", "name", "children_li")
 
     
     
 class StripModelAdmin(admin.ModelAdmin):
 
-    list_display = ("id", "__str__", "scene", "children_orders", "description")
+    list_display = ("id", "__str__", "scene", "children_li", "description")
     empty_value_display = 'unknown'
     
 
