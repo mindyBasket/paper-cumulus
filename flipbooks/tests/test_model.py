@@ -189,12 +189,16 @@ class FrameModelTestCase(TestCase):
         self.frame1.save()
         self.assertEqual(self.strip.children_li, '4,2,3,1')
         
+        self.frame3.order = 0 # NO CHANGE IN ORDER
+        self.frame3.save()
+        self.assertEqual(self.strip.children_li, '4,2,3,1')
+        
         ''' Test if children list refresh when parent list is empty '''
         self.strip.children_li = ''
         self.strip.save()
         self.assertEqual(self.strip.children_li, '1,2,3,4')
         
-        
+
     def test_frames_on_delete(self):
 
         for frObject in self.frameList:

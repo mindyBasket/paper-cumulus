@@ -133,34 +133,31 @@ class Strip(models.Model):
     
     def save(self, *args, **kwargs):
         
-        scene = self.scene
-        _insert_at = int(self.order) #get order in string
+        _insert_at = int(self.order) 
+        self.order = 0 # reset to "do not change position unless specified"
         
+        # 1. Save instance 
         if self.children_li == '':
             print("WARNING. children_li on this strip is empty. Refreshing children_li.")
             new_children_li = helpers.refresh_children_li(self)
             if new_children_li:
                 self.children_li = new_children_li
-        
-        print("-----")
-        print("kwargs investigation: {}".format(kwargs))
-        print("-----")
-        
         super(Strip, self).save(*args, **kwargs) # save Strip!
         
-        #update children_li of its scene (parent)
-        scene.children_li = helpers.update_children_li(self.scene, self.id, _insert_at)
-        scene.save() # save parent(Scene)!
-    
-    
+        #2. Position update on children_li of its parent (scene)
+        self.scene.children_li = helpers.update_children_li(self.scene, self.id, _insert_at)
+        self.scene.save() # save parent!
+        
+
     def delete(self, **kwargs):
         
+        # position removal on children_li of its parent (scene)
         scene = self.scene
-
-        # update children_li of its scene (parent), but it's removal
         scene.children_li = helpers.remove_child(self.scene, self.id)
-        scene.save() # save parent(Scene)!
-        super(Strip, self).delete() #delete Strip!
+        scene.save() # save parent!
+        
+        #delete Strip!
+        super(Strip, self).delete() 
         
         
         
@@ -230,23 +227,28 @@ class Frame(models.Model):
 
     def save(self, *args, **kwargs):
         
-        super(Frame, self).save(*args, **kwargs) # save Strip!
+        _insert_at = int(self.order) 
+        self.order = 0 # reset to "do not change position unless specified"
         
-        #update children_li of its strip (parent)
-        strip = self.strip
-        _insert_at = int(self.order) #get order in string
-        strip.children_li = helpers.update_children_li(self.strip, self.id, _insert_at)
-        strip.save() # save parent(Strip)!
+        # 1. Save instanc
+        super(Frame, self).save(*args, **kwargs) # save Frame!
+        
+        # 2. position update on children_li of its parent (strip)
+        self.strip.children_li = helpers.update_children_li(self.strip, self.id, _insert_at)
+        self.strip.save() # save parent!
         
         
     def delete(self, **kwargs):
         
-        # update children_li of its parent, but removal
+        # position removal on children_li of its parent (strip)
         strip = self.strip
         strip.children_li = helpers.remove_child(self.strip, self.id)
-        strip.save() # save parent(Scene)!
+        strip.save() # save parent!
         
-        super(Frame, self).delete() #delete Frame!
+        #delete Frame!
+        super(Frame, self).delete() 
+        
+
     
 
 #custom helper functions 
