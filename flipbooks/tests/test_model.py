@@ -98,8 +98,11 @@ class StripModelTestCase(TestCase):
         """ Test if the children_li generate properly """
         self.assertEqual(self.scene.children_li, '1,2,3,4')
         
+        # Note: order = "position", starts from 1. 
+        #       Do not use it like an index, which starts from 0.
+        
         """ Test order swaps """
-        self.strip4.order = 1
+        self.strip4.order = 2
         self.strip4.save()
         self.assertEqual(self.scene.children_li, '1,4,2,3')
     
@@ -137,7 +140,7 @@ class StripModelTestCase(TestCase):
         sc = self.scene
         
         """ Testing creation of frame at a specific order. """
-        self.strip5 = Strip(scene=self.scene, order=2)
+        self.strip5 = Strip(scene=self.scene, order=3)
         self.strip5.save()
         
         self.assertEqual(sc.children_li, '1,2,5,3,4')
@@ -178,7 +181,7 @@ class FrameModelTestCase(TestCase):
         self.assertEqual(self.strip.children_li, '1,2,3,4')
         
         """ Test order swaps """
-        self.frame4.order = 0
+        self.frame4.order = 1
         self.frame4.save()
         self.assertEqual(self.strip.children_li, '4,1,2,3')
     
@@ -211,7 +214,7 @@ class FrameModelTestCase(TestCase):
             
 
         """ Testing creation of frame at a specific order. """
-        self.frame5 = Frame(strip=self.strip, order=2)
+        self.frame5 = Frame(strip=self.strip, order=3)
         self.frame5.save()
         
         self.assertEqual(self.strip.children_li, '1,2,5,3,4')

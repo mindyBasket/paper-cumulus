@@ -71,7 +71,12 @@ def refresh_children_li(obj):
 
 
 
-''' Updates children_li. This function most likely runs when save()'''
+''' Updates children_li. This function most likely runs when save()
+    Note: the insert_at number describes 'position', starts from 1.
+          Make sure to -1 when using as an index, which starts from 0.
+          
+          '-1' = append at end
+          '0' = no change in order'''
 
 def update_children_li(obj, target_child_id, insert_at):
     
@@ -84,21 +89,38 @@ def update_children_li(obj, target_child_id, insert_at):
         new_children_li = new_children_li.split(",")
     else: 
         new_children_li = obj.children_li.split(",")
-        
-
-    print("-- Swapping {} to index {}...".format(target_child_id, insert_at))
-    print("------------BEFORE: {}".format(new_children_li))
     
-    # Check if id is already there. Then you have to swap
-    if str(target_child_id) in new_children_li:
-         new_children_li.remove(str(target_child_id))
+    
+    if insert_at < 0: # append at the end
         
-    if insert_at < 0:
+        # Prevent duplicate
+        if str(target_child_id) in new_children_li:
+            new_children_li.remove(str(target_child_id))
+         
         new_children_li.append(str(target_child_id))
-    else:
-        new_children_li.insert(int(insert_at), str(target_child_id))   
+        print("------------APPENDED: {}".format(new_children_li))
         
-    print("------------AFTER: {}".format(new_children_li))
+    elif insert_at == 0: # no change
+
+        # But it is possible a new object is created with order '0'
+        # This should not happen, but just in case.
+        if not str(target_child_id) in new_children_li:
+            print("-----------no change, but this instance is new. Adding to Children_li")
+            new_children_li.append(str(target_child_id))
+            print("------------APPENDED: {}".format(new_children_li))
+            
+        print("-----------no change to children_li")
+        
+    else: # Insert at position
+        
+        # Prevent duplicate
+        if str(target_child_id) in new_children_li:
+            new_children_li.remove(str(target_child_id))
+            
+        print("-- Insert {} to position {}...".format(target_child_id, insert_at))
+        print("------------BEFORE: {}".format(new_children_li))
+        new_children_li.insert(int(insert_at-1), str(target_child_id)) 
+        print("------------AFTER: {}".format(new_children_li))
  
     #turn it back to stringy list
     return ','.join(str(order) for order in new_children_li)

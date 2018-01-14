@@ -233,6 +233,7 @@ class GetStripSuccessUrlMixin(object):
         #         'chapter_number': self.object.scene.chapter.number
         #     }
 
+
 class StripCreateView(SuccessMessageMixin, GetStripSuccessUrlMixin, generic.CreateView):
     
     model = Strip

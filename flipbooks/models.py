@@ -131,7 +131,7 @@ class Strip(models.Model):
     # def get_absolute_url(self):
     #     return reverse("chatter:detail", kwargs={"pk":self.pk})
     
-    def save(self, **kwargs):
+    def save(self, *args, **kwargs):
         
         scene = self.scene
         _insert_at = int(self.order) #get order in string
@@ -142,7 +142,11 @@ class Strip(models.Model):
             if new_children_li:
                 self.children_li = new_children_li
         
-        super(Strip, self).save() # save Strip!
+        print("-----")
+        print("kwargs investigation: {}".format(kwargs))
+        print("-----")
+        
+        super(Strip, self).save(*args, **kwargs) # save Strip!
         
         #update children_li of its scene (parent)
         scene.children_li = helpers.update_children_li(self.scene, self.id, _insert_at)
@@ -224,9 +228,9 @@ class Frame(models.Model):
     def __str__(self):
         return ("%d : %s" % (self.id, self.note))
 
-    def save(self, **kwargs):
+    def save(self, *args, **kwargs):
         
-        super(Frame, self).save() # save Strip!
+        super(Frame, self).save(*args, **kwargs) # save Strip!
         
         #update children_li of its strip (parent)
         strip = self.strip
