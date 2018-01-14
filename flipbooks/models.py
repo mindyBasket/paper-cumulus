@@ -11,8 +11,10 @@ from easy_thumbnails.signal_handlers import generate_aliases_global
 from django.db import models
 
 
+# -- This was moved to the end to prevent import timing conflict --
 #custom helper functions 
-from .helpermodule import helpers
+#from .helpermodule import helpers
+# -----------------------------------------------------------------
 
 # thumbnail signal handler
 saved_file.connect(generate_aliases_global)
@@ -93,13 +95,15 @@ class Scene(models.Model):
 
 # Note: I wrote this before I began using stringy list to record order.
 #        Quite possible I no longer have use for this.
-def get_last_order(strip_instance):
-    scene = strip_instance.scene
-    return len(scene.strip_set.all())+1
+# def get_last_order(strip_instance):
+#     scene = strip_instance.scene
+#     return len(scene.strip_set.all())+1
 
 
-    
 def recatalog_order(scene_instance, target_strip_id, insert_at):
+    
+    # if isinstance(scene_instance, Scene):
+
     scene = scene_instance
     new_children_orders = []
     
@@ -165,6 +169,7 @@ def remove_order(scene_instance, target_strip_id):
 class Strip(models.Model):
     
     order = models.IntegerField(default="-1")
+    children_orders = models.TextField(max_length=500, blank=True, default="")
     
     description = models.TextField(max_length=100, blank=True, default="")
     
@@ -184,8 +189,14 @@ class Strip(models.Model):
         
         scene = self.scene
         _insert_at = int(self.order) #get order in string
-      
+        
+        if self.children_orders == '':
+            print("WARNING. children_orders on this strip is empty. Refreshing children_orders.")
+            new_children_li = helpers.refresh_children_order(self)
+            if new_children_li:
+                self.children_orders = new_children_li
         super(Strip, self).save() # save Strip!
+        
         #update children_orders of its scene (parent)
         scene.children_orders = recatalog_order(self.scene, self.id, _insert_at)
         scene.save() # save parent(Scene)!
@@ -267,3 +278,5 @@ class Frame(models.Model):
 
 
 
+#custom helper functions 
+from .helpermodule import helpers

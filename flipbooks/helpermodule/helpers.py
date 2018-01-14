@@ -29,3 +29,40 @@ def order_by_id_ref(obj_li, ref_id_li):
 def shout():
     #for testing if this module is imported successfully
     print("Hello world!")
+    
+
+
+
+
+
+
+
+from ..models import (
+    Scene,
+    Strip,
+    Frame
+)
+
+
+# -------------------------------------------
+# -------------------------------------------
+#           children_order helpers
+# -------------------------------------------
+# -------------------------------------------
+
+''' The children_order may be blank or invalid. 
+Use this function refresh/recreate the order based on
+the order the children appears in db'''
+
+def refresh_children_order(obj):
+    
+    children_li = None
+    if isinstance(obj, Strip):
+        children_li = obj.frame_set.all()
+    else:
+        print("Not a valid object to extract children_orders")
+        return False
+        
+    #retrieve children
+    children_id_li = [ch_obj.id for ch_obj in children_li]
+    return ','.join(str(obj_id) for obj_id in children_id_li)

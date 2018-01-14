@@ -3,13 +3,14 @@ from __future__ import unicode_literals
 
 from django.test import TestCase
 
-from .models import (
+from ..models import (
     Book,
     Chapter,
     Scene,
     Strip,
     Frame
     )
+    
 # Create your tests here.
 
 # Run using 
@@ -121,7 +122,19 @@ class StripModelTestCase(TestCase):
         self.assertEqual(self.scene.children_orders, '2,4')
         
         
+    def test_children_order_valid_on_create(self):
+
+        for stripObject in self.stripList:
+            stripObject.save()
+            
+        sc = self.scene
         
+        """ Testing creation of frame at a specific order. """
+        self.strip5 = Strip(scene=self.scene, order=2)
+        self.strip5.save()
+        
+        print('CHILDREN ORDER OUTPUT: {}'.format(sc.children_orders))
+        self.assertEqual(sc.children_orders, '1,2,5,3,4')
        
         
         
