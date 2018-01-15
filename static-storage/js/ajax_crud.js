@@ -103,6 +103,18 @@ $(function() { //Short hand for $(document).ready(function(){
     // Because this isn't rendered into the template, this will have to be 
     // binded upon append. Delete button/link is appended at bind_miniMenu().
     // See list of binding functions below.
+
+    $('.strip_flex_container').each(function(){
+        $(this).sortable({
+            placeholder: "ui-sortable-placeholder",
+            items: ".thumb:not(.ui-state-disabled)" //cancel: ".ui-state-disabled"
+            
+        });
+        
+    })
+    
+  
+      
     
     
     

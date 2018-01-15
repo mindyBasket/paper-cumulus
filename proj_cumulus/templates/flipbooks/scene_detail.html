@@ -96,7 +96,7 @@
                                
                         {% empty %}
                             {% if strip is None %}
-                                <div class="tile">
+                                <div class="tile ui-state-disabled">
                                     <span style="color:#898989">Invalid Strip</span>
                                 </div>
                             {% endif %}
@@ -104,7 +104,7 @@
                         
                         {% if strip != None %}
                             <!-- open frame_form -->
-                            <div class="tile frame_form" displaytype="add" for="{{strip.id}}">
+                            <div class="tile frame_form ui-state-disabled" displaytype="add" for="{{strip.id}}">
                                 <span style="font-size:4em">+</span>
                                 Add Frames
                             </div>
