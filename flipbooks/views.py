@@ -133,22 +133,27 @@ class SceneDetailView(generic.DetailView):
 
         context = super(SceneDetailView, self).get_context_data(*args, **kwargs)
         
-        # Order strips by id ref'd by children_li:
-        # Convert children_li to iterable list, or mark it with "False"
-        stringy_children_li = context['object'].children_li
-        valid_children_li = False if stringy_children_li =="" else helpers.string2List(stringy_children_li) 
-        context["valid_children_li"] = valid_children_li
+        # ...
+        # The large commented code below is my noobish attempt to map Scene's strip_set 
+        # to its children_li. I made a template tag for it, so no longer need to do this.
+        # Delete once you feel confident this works well for other scenes.
+        
+        # # Order strips by id ref'd by children_li:
+        # # Convert children_li to iterable list, or mark it with "False"
+        # stringy_children_li = context['object'].children_li
+        # valid_children_li = False if stringy_children_li =="" else helpers.string2List(stringy_children_li) 
+        # context["valid_children_li"] = valid_children_li
 
-        # Reorder strip based on valid_children_li
-        _scene = context['object']
-        ordered_strip_set = []
-        if valid_children_li:
-            ordered_strip_set = helpers.order_by_id_ref(_scene.strip_set.all(), valid_children_li)
-        else:
-            # children_li not valid. Retrieve strip by its natural order (id)
-            # No way to store things in variables in template language. So it is done here.
-            ordered_strip_set = _scene.strip_set.all()
-        context['ordered_strip_set'] = ordered_strip_set
+        # # Reorder strip based on valid_children_li
+        # _scene = context['object']
+        # ordered_strip_set = []
+        # if valid_children_li:
+        #     ordered_strip_set = helpers.order_by_id_ref(_scene.strip_set.all(), valid_children_li)
+        # else:
+        #     # children_li not valid. Retrieve strip by its natural order (id)
+        #     # No way to store things in variables in template language. So it is done here.
+        #     ordered_strip_set = _scene.strip_set.all()
+        # context['ordered_strip_set'] = ordered_strip_set
         
         
         # ...

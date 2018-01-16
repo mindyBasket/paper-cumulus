@@ -47,13 +47,9 @@
         <h3>Scene id {{object.id}}</h3>
         <p>description: {{object.description}}</p>
         <ul class="list_strips">
-            {% if valid_children_li == False %} 
-                Order reference for this strip is not valid. You are viewing strip in order
-                they appear in the database. 
-            {% endif %}
-            
-            
-            {% for strip in ordered_strip_set %}
+
+           <!-- {- for strip in ordered_strip_set -}-->
+            {% for strip in object.strip_set.all|map_queryset:object.children_li %}
                 <li class="flex_list">
                     <div class="header">
                         <span class="bigtext-1">{{forloop.counter}}</span>
@@ -69,13 +65,14 @@
                         
                             {% if frame|is_displayable:"frame" %} 
                             <!-- % if frame is None or frame.frame_image is None or frame.frame_image|length is 0 % -->
-                               <!-- Frame image may not be valid -->
                                
                                    <div class="thumb slender" frameid="{{frame.id}}">
                                         <img src="{{ frame.frame_image.thumb.url }}" width='200px'/>
                                         <a href="" class="mini_menu edit">frame [{{frame.id}}]</a>
                                    </div> 
-                            {% else %} 
+                                   
+                            {% else %} <!-- Frame image may not be valid -->
+                                
                                 {% if frame.frame_image_native.url != None %}
                                     <!-- fallback to native ImageField -->
                                    <div class="thumb" frameid="{{frame.id}}">
@@ -85,9 +82,7 @@
                                 {% else %} 
                                     <div class="thumb placeholder2" frameid="{{frame.id}}">
                                     <span>Missing Image</span>
-                                        <a href="" class="mini_menu edit">
-                                            Add image
-                                        </a>
+                                        <a href="" class="mini_menu edit">frame [{{frame.id}}]</a>
                                     </div>
                                 {% endif %}
                             {% endif %}

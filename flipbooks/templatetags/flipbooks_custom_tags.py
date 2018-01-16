@@ -34,27 +34,22 @@ def get_by_id(obj_li, ref_id):
 @register.filter(name='map_queryset')
 def map_queryset(qs, ref_ids):
     
-    # print("..........{}".format(ref_ids.__class__))
+    print("------ref_id recieved-------")
+    print(ref_ids)
     
-    if not helpers.is_valid_children_li(ref_ids): return qs
-    
-    # Don't sort if ref_ids is not...valid
-    if isinstance(ref_ids, str) or isinstance(ref_ids, unicode):
-        # note, 'unicode' was renamed to 'str' in Python 3
-        if ref_ids == "": return qs
+    if helpers.is_valid_children_li(ref_ids): 
+        # checks for both stringy list and list
         ref_ids = ref_ids.split(",")
-
-    elif isinstance(ref_ids, list):
-        if len(ref_ids) == 0 or ''.join(ref_ids) == '': return qs
-        
-    else:
-        # Reference not valid. Leave the queryset alone
-        return qs
+        ref_ids = [int(stringy_id) for stringy_id in ref_ids]
+    else: return qs
     
     qs = list(qs)
-    qs.sort(key=lambda frame: ref_ids.index(str(frame.id))) 
-    
+    # Can you get into a problem where the id is not in the ref_ids?
+    qs.sort(key=lambda frame: ref_ids.index(frame.id) if frame.id in ref_ids else -1)
+  
     return qs
+
+
 
 ''' Returns true if the frame object is displayable. '''
 # Similar to checking if the object is valid, but the model_level validation

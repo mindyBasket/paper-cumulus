@@ -51,9 +51,18 @@ from ..models import (
 # -------------------------------------------
 
 ''' Checks if children_li is valid '''
+# Accepts children_li in form of stringy list or a list
 def is_valid_children_li(cli):
     
-    cli = cli.split(",")
+    if isinstance(cli, unicode) or isinstance(cli, str): # is it a string?
+        # note, 'unicode' was renamed to 'str' in Python 3
+        cli = cli.split(",")
+    elif isinstance(cli, list): # is it a list?
+        pass
+    else: 
+        return False
+        
+    
     cli = ''.join(cli)
     cli = cli.replace(" ","")
     if cli == '' : return False
