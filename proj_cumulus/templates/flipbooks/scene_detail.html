@@ -53,8 +53,10 @@
         <p>description: {{object.description}}</p>
         <ul class="list_strips">
             {% if valid_children_li == False %} 
-                order reference could not be found.
+                Order reference for this strip is not valid. You are viewing strip in order
+                they appear in the database. 
             {% endif %}
+            
             
             {% for strip in ordered_strip_set %}
                 <li class="flex_list">
@@ -67,13 +69,14 @@
                     <div class="strip_flex_container" stripid="{{strip.id}}">
 
                         
-                        {% for frame in strip.frame_set.all %} 
+                        <!-- {- for frame in strip.frame_set.all -}--> 
+                        {% for frame in strip.frame_set.all|map_queryset:strip.children_li %}
                         
                             {% if frame|is_displayable:"frame" %} 
                             <!-- % if frame is None or frame.frame_image is None or frame.frame_image|length is 0 % -->
                                <!-- Frame image may not be valid -->
                                
-                                   <div class="thumb slender">
+                                   <div class="thumb slender" frameid="{{frame.id}}">
                                         <img src="{{ frame.frame_image.thumb.url }}" width='200px'/>
                                         <a href="" class="mini_menu edit">frame [{{frame.id}}]</a>
                                    </div> 
@@ -85,7 +88,7 @@
                                         <a href="" class="mini_menu edit">frame [{{frame.id}}]</a>
                                    </div> 
                                 {% else %} 
-                                    <div class="thumb placeholder2">
+                                    <div class="thumb placeholder2" frameid="{{frame.id}}">
                                     <span>Missing Image</span>
                                         <a href="" class="mini_menu edit">
                                             Add image

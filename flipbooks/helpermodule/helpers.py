@@ -50,6 +50,18 @@ from ..models import (
 # -------------------------------------------
 # -------------------------------------------
 
+''' Checks if children_li is valid '''
+def is_valid_children_li(cli):
+    
+    cli = cli.split(",")
+    cli = ''.join(cli)
+    cli = cli.replace(" ","")
+    if cli == '' : return False
+    
+    return True
+        
+
+
 ''' The children_order may be blank or invalid. 
 Use this function refresh/recreate the order based on
 the order the children appears in db'''

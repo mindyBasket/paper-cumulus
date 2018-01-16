@@ -133,26 +133,28 @@ class SceneDetailView(generic.DetailView):
 
         context = super(SceneDetailView, self).get_context_data(*args, **kwargs)
         
-        # order strips by id ref'd by children_li
-        
+        # Order strips by id ref'd by children_li:
         # Convert children_li to iterable list, or mark it with "False"
         stringy_children_li = context['object'].children_li
         valid_children_li = False if stringy_children_li =="" else helpers.string2List(stringy_children_li) 
-            
         context["valid_children_li"] = valid_children_li
-        
+
         # Reorder strip based on valid_children_li
         _scene = context['object']
-        
         ordered_strip_set = []
         if valid_children_li:
             ordered_strip_set = helpers.order_by_id_ref(_scene.strip_set.all(), valid_children_li)
         else:
-            # no valid chidlren_orders found.
-            # Retrieve strip by its natural order (id)
+            # children_li not valid. Retrieve strip by its natural order (id)
+            # No way to store things in variables in template language. So it is done here.
             ordered_strip_set = _scene.strip_set.all()
-        
         context['ordered_strip_set'] = ordered_strip_set
+        
+        
+        # ...
+        # Strips also have children_li, which can be used to make ordered_frame_set,
+        # but this is done in the template using a custom template tag called 'map_queryset'
+        
         
         
         # For AJAX submits
@@ -381,6 +383,23 @@ def retrieve_scene__strip(request):
     
     
 
+def sort_children(request, *args, **kwargs):
+
+    # Is it possible to save an object here
+    frame_ids = request.GET.get('frame_ids', None)
+    
+    if frame_ids and isinstance(frame_ids, str):
+        frame_ids.replace("[","") # just in case
+        frame_ids.replace("]","")
+        
+    
+    # Can you retrieve Strip object
+    strip = Strip.objects.get(id=kwargs['pk']) 
+    strip.children_li = frame_ids #Basically a 'refresh' of children_li
+    strip.save()
+
+    # Response
+    return JsonResponse({'frame_ids': request.GET.get('frame_ids', None)})
 
 
 
