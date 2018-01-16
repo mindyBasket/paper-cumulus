@@ -390,14 +390,12 @@ def retrieve_scene__strip(request):
 
 def sort_children(request, *args, **kwargs):
 
-    # Is it possible to save an object here
     frame_ids = request.GET.get('frame_ids', None)
     
     if frame_ids and isinstance(frame_ids, str):
         frame_ids.replace("[","") # just in case
         frame_ids.replace("]","")
         
-    
     # Can you retrieve Strip object
     strip = Strip.objects.get(id=kwargs['pk']) 
     strip.children_li = frame_ids #Basically a 'refresh' of children_li

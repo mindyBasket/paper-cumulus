@@ -62,7 +62,6 @@ def is_valid_children_li(cli):
     else: 
         return False
         
-    
     cli = ''.join(cli)
     cli = cli.replace(" ","")
     if cli == '' : return False

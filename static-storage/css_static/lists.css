@@ -65,11 +65,23 @@ ul.list_strips .strip_flex_container .tile{
 
 /*modified thumb or tile*/
 
-.strip_flex_container .thumb.slender{
-    width: 50px;
-    overflow: hidden;
+.strip_flex_container .thumb.incompatible{
+
     
+    /* This was a quick and easy way to make the .thumb slender
+       but this also prevents popup menu from being visible*/
+    /* overflow: hidden;*/
+    
+    
+    
+    border-left: 5px solid red;
 }
+
+.strip_flex_container .thumb.incompatible img{
+    -webkit-filter: grayscale(1);
+    filter: grayscale(1);
+}
+
 .strip_flex_container .thumb.placeholder2{
     
     border:3px solid #d8abab;

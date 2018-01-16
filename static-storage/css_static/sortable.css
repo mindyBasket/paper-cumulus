@@ -5,7 +5,7 @@
     but you can use the same class as a custom container too*/
     
     width: 200px; /*Width of all thumb tiles*/
-    min-height: 120px;
+    min-height: 100px;
     margin: 10px; /*Margin around the tiles. See lists.css*/
     background-color: #a0a0a0;
 }
