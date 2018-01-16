@@ -36,3 +36,30 @@ def return_strip_container_tmplt(request, *args, **kwargs):
     
     return JsonResponse({'html_template': html_template})
     
+
+def return_frame_edit_form(request, *args, **kwargs):
+    
+    frame_instance = get_object_or_404(Frame, pk=kwargs['pk'])
+    frame_pk = kwargs['pk']
+    
+    # reference:
+    # form = frame_create_form 
+    # action_url = frame_create_url 
+    # form_id="frame_create_form"
+
+    frame_edit_form = forms.FrameEditForm()
+
+    context = {
+        "form": frame_edit_form,
+        "frame_instance": frame_instance
+    }
+    
+    html_template = render_to_string(
+        'flipbooks/partials/form_edit_frame.html',
+        context, 
+        request=request
+    )
+    
+    return JsonResponse({'html_template': html_template})
+    
+    

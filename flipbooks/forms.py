@@ -56,7 +56,19 @@ class FrameCreateForm(forms.ModelForm):
             'frame_image_native': 'by ImageField:',
             
         }
-        
+    
+class FrameEditForm(forms.ModelForm):
+
+    class Meta:
+        # Critical note: the "frame_image" field will not upload image 
+        #                if the form element does not have 
+        #                enctype="multipart/form-data"!
+        model = Frame
+        fields = ['order', 'note', 'frame_image', 'frame_image_native']
+        labels = {
+            'frame_image_native': 'by ImageField:',
+            
+        }
     
         
 

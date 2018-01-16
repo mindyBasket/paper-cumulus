@@ -260,7 +260,6 @@ function bind_miniMenu($doc, $targetOptional){
         // Tag information about current frame
         var frameid = $(this).parent().attr("frameid");
         $popupMenu.attr("for", frameid);
-        console.log($popupMenu.children(".header").html());
         $popupMenu.children(".header").children("span").text(frameid);
         
         // This allows popupMenu to disappear when you click else where
@@ -287,15 +286,44 @@ function bind_popupMenu_elems($popupMenu){
         $(this).hide();
     });
     
+    // b. Bind 'edit' action .........................
+    $popupMenu.find(".action.edit").click(function(){
+        // Retrieve frame information
+        var frameid = $popupMenu.attr("for");
+        if (frameid=="-1"){return;} //STOP, if frameid is not set.
+        
+        //json_partial 
+        $.ajax({
+            url: '/flipbooks/json_partials/frame_edit_form/'+frameid,
+            method: 'GET',
+            dataType: 'json',
+            beforeSend: function () {
+                //empty
+                console.log("Attempt to retrieve form partial")
+            },
+            success: function (data_partial) {
+    
+                var $frameEditForm = $(data_partial['html_template']);
+                console.log($frameEditForm)
+ 
+                $('.partial_tester').append($frameEditForm);
+                
+            },
+            
+            error: function (data) {
+                console.error(data);
+                console.log(data.status);
+            }
+        });
+    });
+    
 
-    // b. Bind 'delete' action
+    // d. Bind 'delete' action .........................
     $popupMenu.find('.action.delete').click(function(){
         event.preventDefault();
         
         // Retrieve frame information
         var frameid = $popupMenu.attr("for");
-        console.log("popup menu for frame id: " + frameid);
-        
         if (frameid=="-1"){return;} //STOP, if frameid is not set.
         
         //ajax call: GET delete confirm
