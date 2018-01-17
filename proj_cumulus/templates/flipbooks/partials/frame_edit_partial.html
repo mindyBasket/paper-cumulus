@@ -1,11 +1,15 @@
 {% load widget_tweaks %}
 
-<form method="POST" 
+<div class="header">
+  Frame #{{frame_instance.id}}
+</div>
+<div class="content">
+  <form method="POST" 
     enctype="multipart/form-data" 
     action="{% if action_url %} {{action_url}} {% endif %}" 
     id="{% if form_id %}{{form_id}}{% else %}{% endif %}">
     
-    <h3>For Frame {{frame_instance.id}}</h3>
+    
     
     {% csrf_token %}
     
@@ -31,6 +35,5 @@
     {% endfor %}
 
     <input type="submit" value="{% if btn_title %} {{btn_title}} {% else %} submit {% endif %}" />
-</form>
-
-
+  </form>
+</div>

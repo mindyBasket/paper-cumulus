@@ -108,65 +108,6 @@ $(function() { //Short hand for $(document).ready(function(){
     
     
     
-    //------------------------------------
-    // on sortable UI 
-    //------------------------------------
-
-    $('.strip_flex_container').each(function(){
-        $(this).sortable({
-            placeholder: "ui-sortable-placeholder",
-            items: ".thumb:not(.ui-state-disabled)" //cancel: ".ui-state-disabled"
-            
-        });
-        
-        //event setter when sorting finishes	
-        $(this).on( "sortdeactivate", function( event, ui ) {
-            console.error("Sorting stopped");
-
-            //retrieve new order. 
-            // Trying to see if I can get away with not using sortable's "serialize()"
-            
-            var frame_li = [];
-            $(this).find('.thumb').each(function(){
-                if($(this)[0].hasAttribute("frameid")){
-                    frame_li.push($(this).attr("frameid"));
-                }
-            })
-
-            var sortableData = {
-                'frame_ids': frame_li.join(",")
-            }
-            
-            //ajax call
-            // Can you unify this into one function or something
-            $.ajax({
-                url: '/flipbooks/ajax/strips/'+ $(this).attr("stripid") +'/sort-children/',
-                data: sortableData,
-                method: 'GET',
-                //enctype: 'multipart/form-data',
-                dataType: 'json',
-                // processData: false,
-                contentType: false,
-                success: function (data) {
-                    //success message
-                    console.log("sucessfully came back: " + data["frame_ids"]);
-                   
-                },
-                error: function (data) {
-                    console.error(data);
-                    console.log(data.status);
-                }
-            });
-        
-        
-        
-        });
-        
-    })
-    
-  
-      
-    
     
     
 });
@@ -277,6 +218,10 @@ var lightboxCover = `
 <div id="light_box_cover">
 </div>
 `
+var lightboxModal = `
+<div id="light_box_modal">
+</div>
+`
 
 function bind_popupMenu_elems($popupMenu){
     
@@ -292,6 +237,16 @@ function bind_popupMenu_elems($popupMenu){
         var frameid = $popupMenu.attr("for");
         if (frameid=="-1"){return;} //STOP, if frameid is not set.
         
+        //open modal
+        var $lbModal = $(lightboxModal);
+        var $lbCover = $(lightboxCover);
+        $lbCover.appendTo('body');
+        $lbModal.appendTo('body');
+        $lbCover.click(function(){
+            $(this).remove();
+            $lbModal.remove();
+        });
+        
         //json_partial 
         $.ajax({
             url: '/flipbooks/json_partials/frame_edit_form/'+frameid,
@@ -306,15 +261,19 @@ function bind_popupMenu_elems($popupMenu){
                 var $frameEditForm = $(data_partial['html_template']);
                 console.log($frameEditForm)
  
-                $('.partial_tester').append($frameEditForm);
+                $lbModal.append($frameEditForm);
                 
             },
-            
             error: function (data) {
                 console.error(data);
                 console.log(data.status);
             }
         });
+        
+        
+        
+        
+        
     });
     
 

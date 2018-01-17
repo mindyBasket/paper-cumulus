@@ -26,7 +26,11 @@ body{
     margin-top: 30px;
 }
 
-
+/* -------------------------------------- */
+/* -------------------------------------- */
+/*             Popups and Modals          */
+/* -------------------------------------- */
+/* -------------------------------------- */
 
 #light_box_cover{
     position: fixed;
@@ -37,6 +41,27 @@ body{
     background-color:rgba(0, 0, 0, 0.5);
 }
 
+#light_box_modal{
+    position: fixed;
+    top: 40px; left: 50%;
+    transform: translate(-50%, 0);
+    display:inline-block;
+    
+    width: 700px; height: 90%;
+    background-color: white;
+    border-radius: 6px;
+    
+}
+
+#light_box_modal .header{
+    font-size: 2em;
+    padding: 10px 30px;
+    border-bottom: 1px solid #d1d1d1;
+}
+
+#light_box_modal .content{
+    padding: 30px;
+}
 
 /* -------------------------------------- */
 /* -------------------------------------- */

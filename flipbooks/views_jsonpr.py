@@ -55,7 +55,7 @@ def return_frame_edit_form(request, *args, **kwargs):
     }
     
     html_template = render_to_string(
-        'flipbooks/partials/form_edit_frame.html',
+        'flipbooks/partials/frame_edit_partial.html',
         context, 
         request=request
     )
