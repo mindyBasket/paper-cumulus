@@ -3,25 +3,21 @@
 // Above line is to prevent cloud9 from thinking 
 // '$' is an undefined variable
 
+/*-----------------------------------------------------
+----------------------- MAIN  -------------------------
+-------------------------------------------------------*/
 
-$(function() { //Short hand for $(document).ready(function(){
+$(function() { 
 
-    console.log("ajax_crud.js ---------- * v0.4.8");
+    console.log("ajax_crud.js ---------- * v0.4.9");
     
     // "+frame" button appends frame create form
     bind_frameCreateFormButton($(document));
     
     // mini_menu link opens popup_menu
-    bind_miniMenu($(document));
-    
-    // elements inside the popup_menu
+    bind_openMiniMenu($(document)); 
+    // elements inside the popup_menu. Has Edit and Delete.
     bind_popupMenu_elems($(document).find(".popup_menu.edit").eq(0));
-    
-    // Append forms
-    //$('#frame_create_form').hide();
-    $(".popup_menu.edit").hide();
-    // form #frame_create_form is rendered through template. 
-    
     
     var scenePk = $('#strip_create_form').find('select#id_scene').val();
     //------------------------------------
@@ -104,11 +100,7 @@ $(function() { //Short hand for $(document).ready(function(){
     // binded upon append. Delete button/link is appended at bind_miniMenu().
     // See list of binding functions below.
     
-    
-    
-    
-    
-    
+    // ...
     
 });
 
@@ -173,9 +165,14 @@ function bind_frameCreateFormButton($doc, $targetOptional){
 
 
 // ................................................
-// Button for opening frame create form in a desginated strip container
+// bind link that opens mini menu
+//
+// This function assumes mini menu is included in the document. 
+// Currently done by including the snippet as a partial. Find it in
+// flipbooks/partials/popup_menu_partial.html
 // ................................................
-function bind_miniMenu($doc, $targetOptional){
+
+function bind_openMiniMenu($doc, $targetOptional){
     var $target = $targetOptional
     
     if ($target == null){
@@ -192,20 +189,22 @@ function bind_miniMenu($doc, $targetOptional){
     $target.click(function(event){
         event.preventDefault();
         
-        // popup_menu is a partial already included in the template
-        // Append it to the current thumb location
+        // Grab partial and append to the current thumb location
         var $popupMenu = $doc.find(".popup_menu.edit").eq(0);
         $popupMenu.appendTo($(this).parent());
         $popupMenu.show();
         
-        // Tag information about current frame
+        // Update tag information about current frame
         var frameid = $(this).parent().attr("frameid");
         $popupMenu.attr("for", frameid);
         $popupMenu.children(".header").children("span").text(frameid);
         
         // This allows popupMenu to disappear when you click else where
         $popupMenu.focus();
+        
     });
+    
+    
     
 }
 
@@ -231,7 +230,7 @@ function bind_popupMenu_elems($popupMenu){
         $(this).hide();
     });
     
-    // b. Bind 'edit' action .........................
+    // b. Bind 'EDIT' action .........................
     $popupMenu.find(".action.edit").click(function(){
         // Retrieve frame information
         var frameid = $popupMenu.attr("for");
@@ -253,16 +252,11 @@ function bind_popupMenu_elems($popupMenu){
             method: 'GET',
             dataType: 'json',
             beforeSend: function () {
-                //empty
-                console.log("Attempt to retrieve form partial")
+                console.log("Attempt to retrieve form partial");
             },
             success: function (data_partial) {
-    
                 var $frameEditForm = $(data_partial['html_template']);
-                console.log($frameEditForm)
- 
                 $lbModal.append($frameEditForm);
-                
             },
             error: function (data) {
                 console.error(data);
@@ -270,14 +264,10 @@ function bind_popupMenu_elems($popupMenu){
             }
         });
         
-        
-        
-        
-        
     });
     
 
-    // d. Bind 'delete' action .........................
+    // d. Bind 'DELETE' action .........................
     $popupMenu.find('.action.delete').click(function(){
         event.preventDefault();
         
@@ -322,7 +312,6 @@ function bind_popupMenu_elems($popupMenu){
                 $popupDelete.find('#delete-confirm-button').click(function(event){
                     // Note: #delete-confirm-button is a <a> that acts
                     //       like a submit() for the form  #delete-confirm.
-                    
                     event.preventDefault();
                     $popupDelete.find('#delete-cancel-button').click(); //clean up
                     var $deleteForm = $popupDelete.find('#delete-confirm');
@@ -377,16 +366,8 @@ var ajax_frame_delete = function($form, frameid){
     });
 }
 
-var ajax_frame_delete_test = function(frameid){
-    //animation test
-    console.log("actual deletion");
-    $(document).find('.thumb[frameid='+ frameid +']').animate({
-        opacity: 0,
-    }, 300, function() {
-        //actually delete
-        $(this).remove();
-    });
-}
+
+
 
 
 
@@ -396,17 +377,6 @@ var ajax_frame_delete_test = function(frameid){
 ---------------------- rendering functions ------------------------
 -------------------------------------------------------------------*/
 
-
-
-// var popupEditMenuTemplate = `
-// <div href="" class="popup_menu edit" tabindex="1">
-//     <span class="tickmark"></span>
-//     <ul>
-//         <li class="header">Frame: {{frame.id}}</li>
-//         <li><a class="action delete">Delete</a></li>
-//     </ul>
-// </div>
-// `
 
 // Uses json_partial view to load html template for a strip container
 function addStripContainer(data){
