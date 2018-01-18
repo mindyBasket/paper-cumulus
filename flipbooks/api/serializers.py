@@ -36,11 +36,12 @@ class SceneModelSerializer(serializers.ModelSerializer):
         model = Scene
         fields = [
             'id',
-            'children_orders',
+            'children_li',
             'name',
             'strips',
         ]
         
+
 
             
 class FrameModelSerializer(serializers.ModelSerializer):
@@ -49,6 +50,7 @@ class FrameModelSerializer(serializers.ModelSerializer):
         model = Frame
         fields = [
             'id',
+            'note',
             'strip',
             'frame_image',
             'frame_image_native'

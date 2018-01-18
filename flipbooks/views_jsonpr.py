@@ -51,7 +51,9 @@ def return_frame_edit_form(request, *args, **kwargs):
 
     context = {
         "form": frame_edit_form,
-        "frame_instance": frame_instance
+        "frame_instance": frame_instance,
+        "action_url": '',
+        "form_id": 'frame_update_form'
     }
     
     html_template = render_to_string(

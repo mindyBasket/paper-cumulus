@@ -40,7 +40,13 @@ class SceneAPIDetailView(generics.RetrieveAPIView):
     
 class StripCreateAPIView(generics.CreateAPIView):
     serializer_class = StripModelSerializer
-    
+
+
+# -------------------------------------------------
+# -------------------------------------------------
+#                     Frame
+# -------------------------------------------------
+# -------------------------------------------------
 
 class FrameCreateAPIView(generics.CreateAPIView):
     serializer_class = FrameModelSerializer
@@ -58,15 +64,14 @@ class FrameCreateAPIView(generics.CreateAPIView):
         
         
     def create(self, request, *args, **kwargs):
-        print("------------ - create --------------")
+        print("------------- create --------------")
         print(request.FILES)
         print(request.data)
         #test = self.request.FILES['frame_image']
         #print("image?: {}".format(test))
-        print("-------------------------------------")
+        print("-----------------------------------")
         
         return super(FrameCreateAPIView, self).create(request, *args, **kwargs)
-    
     
     
     def perform_create(self, serializer):
@@ -78,3 +83,34 @@ class FrameCreateAPIView(generics.CreateAPIView):
             serializer.save(frame_image=frame_image)
         else:
             serializer.save()
+
+class FrameDetailAPIView(generics.RetrieveAPIView):
+    
+    # queryset = Frame.objects.all()
+    serializer_class = FrameModelSerializer
+    
+    def get_queryset(self):
+        return Frame.objects.all()
+    
+    # def get(self, request, format=None):
+    #     """
+    #     Return a list of all users.
+    #     """
+    #     usernames = [user.username for user in User.objects.all()]
+    #     return Response(usernames)
+
+class FrameUpdateAPIView(generics.UpdateAPIView):
+    serializer_class = FrameModelSerializer
+    parser_classes = (MultiPartParser,FormParser,)
+    
+    def get_queryset(self):
+        return Frame.objects.all()
+    
+    #Hoping to achieve PATCH edit
+    # def put(self, request, *args, **kwargs):
+    #      
+         
+    def partial_update(self, request, *args, **kwargs):
+         print("------------- partial update [PATCH] --------------")
+         return super(FrameUpdateAPIView, self).partial_update(request, *args, **kwargs)
+    

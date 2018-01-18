@@ -4,13 +4,10 @@
   Frame #{{frame_instance.id}}
 </div>
 <div class="content">
-  <form method="POST" 
+  <form method="PATCH" 
     enctype="multipart/form-data" 
     action="{% if action_url %} {{action_url}} {% endif %}" 
     id="{% if form_id %}{{form_id}}{% else %}{% endif %}">
-    
-    
-    
     {% csrf_token %}
     
     {% for hidden in form.hidden_fields %}
@@ -18,22 +15,40 @@
     {% endfor %}
     
     {% if frame_instance.frame_image %}
-        <img src="{{ frame_instance.frame_image.thumb.url }}" width='200px'/>
+        <div class="alert alert-danger" role="alert">
+          <span class="glyphicon glyphicon-ban-circle" aria-hidden="true" style='font-size:2em'></span>
+          Using an old field that will be removed
+          <img src="{{ frame_instance.frame_image.url }}" width='400px'/>
+        </div>
+
     {% endif %}
     
-    
-    
-    
-    {% for field in form.visible_fields %}
-      <div class="form-group">
-        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-        {{ field }}
-        {% for error in field.errors %}
-          <span class="help-block">{{ error }}</span>
-        {% endfor %}
+    {% if frame_instance.frame_image_native %}
+      <div class="alert alert-success" role="alert">
+        <span class="glyphicon glyphicon-ok-circle" aria-hidden="true" style='font-size:2em'></span>
+        <img src="{{ frame_instance.frame_image_native.url }}" width='400px'/>
       </div>
-    {% endfor %}
+    {% else %}
+      <div class="alert alert-warning" role="alert">
+        <span class="glyphicon glyphicon-question-sign" aria-hidden="true" style='font-size:2em'></span>
+        Missing image
+      </div>
+    {% endif %}
+  
+    <p>
+      Note: {{frame_instance.note}}
+      
+    </p>
+    
+    <p>
+      <span class='glyphicon glyphicon-pencil' aria-hidden='true' style='font-size:1.5em'></span>
+      Change note:
+      {% render_field form.note class="form-control"%}
+    </p>
+    
+    
+    <button type="submit" class="btn btn-primary" >{% if btn_title %} {{btn_title}} {% else %} Submit {% endif %}</button>
+    
 
-    <input type="submit" value="{% if btn_title %} {{btn_title}} {% else %} submit {% endif %}" />
   </form>
 </div>

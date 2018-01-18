@@ -9,7 +9,7 @@
 
 $(function() { 
 
-    console.log("ajax_crud.js ---------- * v0.4.9");
+    console.log("ajax_crud.js ---------- * v0.4.10");
     
     // "+frame" button appends frame create form
     bind_frameCreateFormButton($(document));
@@ -19,10 +19,17 @@ $(function() {
     // elements inside the popup_menu. Has Edit and Delete.
     bind_popupMenu_elems($(document).find(".popup_menu.edit").eq(0));
     
-    var scenePk = $('#strip_create_form').find('select#id_scene').val();
+    
     //------------------------------------
+    // Form submit
+    //------------------------------------
+    
+    //......................
     // on strip_form submit
-    //------------------------------------
+    //.......................
+    var scenePk = $('#strip_create_form').find('select#id_scene').val();
+    
+    
     $('#strip_create_form').submit(function(event){
         
         // disable default form action
@@ -56,9 +63,9 @@ $(function() {
     // });
     
  
-    //------------------------------------
+    //......................
     // on frame_form submit
-    //------------------------------------
+    //.......................
     $('#frame_create_form').submit(function(event){
         // disable default form action
         event.preventDefault();
@@ -92,15 +99,24 @@ $(function() {
         
     });
     
+      
     //------------------------------------
     // on frame delete 
     //------------------------------------
     
     // Because this isn't rendered into the template, this will have to be 
     // binded upon append. Delete button/link is appended at bind_miniMenu().
-    // See list of binding functions below.
     
-    // ...
+    // See section 'd' at bind_popupMenu_elems()
+    
+    //......................
+    // on frame_update submit
+    //.......................  
+    
+    // Another one that is rendered by partial through ajax request.
+    
+    // See section 'b' at bind_popupMenu_elems()
+    
     
 });
 
@@ -257,6 +273,41 @@ function bind_popupMenu_elems($popupMenu){
             success: function (data_partial) {
                 var $frameEditForm = $(data_partial['html_template']);
                 $lbModal.append($frameEditForm);
+                
+                //bind submit button
+                $('#frame_update_form').submit(function(event){
+                    // disable default form action
+                    event.preventDefault();
+                    var $frameForm = $(this);
+                    
+                    //prep form data
+                    var formData = $(this).serialize();
+                   // var formData = new FormData($(this)[0]);
+
+                    //ajax call
+                    $.ajax({
+                        url: '/api/frame/'+frameid+'/update/',
+                        data: formData,
+                        method: 'PATCH',
+                        // enctype: 'multipart/form-data',
+                        // processData: false,
+                        // contentType: false,
+                        beforeSend: function(){
+                            console.log(formData);
+                        },
+                        success: function (data) {
+                            console.log("sucessfully updated frame");
+                            //close modal? update note? 
+                            
+                            console.log("updated note: " + data)
+                        },
+                        error: function (data) {
+                            console.error(data);
+                            console.log(data.status);
+                        }
+                    });
+                    
+                });
             },
             error: function (data) {
                 console.error(data);
@@ -265,6 +316,10 @@ function bind_popupMenu_elems($popupMenu){
         });
         
     });
+    
+    
+    // c. Make cover
+    // TODO: makes current frame as the "cover" for the Scene.
     
 
     // d. Bind 'DELETE' action .........................

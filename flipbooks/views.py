@@ -175,7 +175,8 @@ class SceneDetailView(generic.DetailView):
         frame_create_form.fields['strip'].widget.attrs['invisible'] = True #hiding by css
         frame_create_form.fields['frame_image'].widget = f.HiddenInput()
         context['frame_create_form'] = frame_create_form
-        context['frame_create_url'] = reverse_lazy("flipbooks:frame-create", kwargs={'strip_pk': 1 })
+        context['frame_create_url'] = reverse_lazy("flipbooks:frame-create", kwargs={'strip_pk': 1 }) # kwargs={'strip_pk':1} => strip_pk=1 ?
+        
         
         return context
 
@@ -432,23 +433,7 @@ class FrameDetailView(generic.DetailView):
         
         return context
         
-# Currently not being used
-class FrameListView(generic.ListView):
 
-    queryset = Frame.objects.all() 
-
-    def get_context_data(self, *args, **kwargs):
-
-        context = super(FrameListView, self).get_context_data(*args, **kwargs)
-        # Default contexts
-        # - object_list, is_paginated, paginator, page_obj
-        
-        #context['frame_image'] = self.frame_image #doesn't work like that
-        # here, "self" = FrameListView, not the Frame object
-        # think of this context like the stuff for the WHOLE view, not the individual model.
-        return context
-        
-        
 class FrameCreateView(generic.CreateView):
     
     model = Frame
@@ -478,9 +463,15 @@ class FrameCreateView(generic.CreateView):
     #     # can you make it fail better? redirect??
     #     return JsonResponse(form.errors, status=400)
  
- 
- 
- # This is attempted ClassBased view for Frame-delete. May not be used.
+
+class FrameUpdateView(generic.UpdateView):
+    # do this using restful API
+    pass
+
+
+
+
+# This is attempted ClassBased view for Frame-delete. May not be used.
 class FrameDelete(generic.DeleteView):
     model = Frame
     template_name = "flipbooks/includes/delete_form.html"
