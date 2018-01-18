@@ -242,7 +242,6 @@ function bind_popupMenu_elems($popupMenu){
     
     // a. Bind close event. The popup menu closes when you are out of focus. 
     $popupMenu.focusout(function(){
-        console.log("popupmenu focus out!");
         $(this).hide();
     });
     
@@ -274,8 +273,9 @@ function bind_popupMenu_elems($popupMenu){
                 var $frameEditForm = $(data_partial['html_template']);
                 $lbModal.append($frameEditForm);
                 
-                //bind submit button
-                $('#frame_update_form').submit(function(event){
+                // This form has each individual field as its own form
+                // Bind note submit button
+                $('#frame_note_form').submit(function(event){
                     // disable default form action
                     event.preventDefault();
                     var $frameForm = $(this);
@@ -292,23 +292,53 @@ function bind_popupMenu_elems($popupMenu){
                         // enctype: 'multipart/form-data',
                         // processData: false,
                         // contentType: false,
-                        beforeSend: function(){
-                            console.log(formData);
-                        },
                         success: function (data) {
-                            console.log("sucessfully updated frame");
-                            //close modal? update note? 
-                            
-                            console.log("updated note: " + data)
+                            $frameForm.find('#field_note').children('.field_value').text(data['note']);
                         },
                         error: function (data) {
                             console.error(data);
                             console.log(data.status);
                         }
                     });
-                    
                 });
+                
+                // Bind frame_image submit button
+                $('#frame_frame_image_form').submit(function(event){
+                    // disable default form action
+                    event.preventDefault();
+                    var $frameForm = $(this);
+                    
+                    //prep form data
+                    //var formData = $(this).serialize();
+                    var formData = new FormData($(this)[0]);
+
+                    //ajax call
+                    $.ajax({
+                        url: '/api/frame/'+frameid+'/update/',
+                        data: formData,
+                        method: 'PATCH',
+                        enctype: 'multipart/form-data',
+                        processData: false,
+                        contentType: false,
+                        beforeSend: function (){
+                            console.log($(this));
+                        },
+                        success: function (data) {
+                            var $frameImageContainer = $frameForm.find('#field_frame_image').children('.field_value');
+                            $frameImageContainer.html('');
+                            $frameImageContainer.append('<img src="' + data['frame_image_native']+ '"/>');
+                        },
+                        error: function (data) {
+                            console.error(data);
+                            console.log(data.status);
+                        }
+                    });
+                });
+                
+                
+                
             },
+            
             error: function (data) {
                 console.error(data);
                 console.log(data.status);

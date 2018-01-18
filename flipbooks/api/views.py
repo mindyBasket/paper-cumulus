@@ -101,7 +101,7 @@ class FrameDetailAPIView(generics.RetrieveAPIView):
 
 class FrameUpdateAPIView(generics.UpdateAPIView):
     serializer_class = FrameModelSerializer
-    parser_classes = (MultiPartParser,FormParser,)
+    parser_classes = (MultiPartParser,FormParser, FileUploadParser)
     
     def get_queryset(self):
         return Frame.objects.all()

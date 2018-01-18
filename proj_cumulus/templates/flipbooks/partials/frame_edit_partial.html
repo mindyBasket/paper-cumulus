@@ -1,43 +1,70 @@
 {% load widget_tweaks %}
 
 <div class="header">
-  Frame #{{frame_instance.id}}
+    Frame #{{frame_instance.id}}
 </div>
+
+
 <div class="content">
-  <form method="PATCH" 
-    enctype="multipart/form-data" 
-    action="{% if action_url %} {{action_url}} {% endif %}" 
-    id="{% if form_id %}{{form_id}}{% else %}{% endif %}">
-    {% csrf_token %}
-    
-    {% for hidden in form.hidden_fields %}
-      {{ hidden }}
-    {% endfor %}
-    
     {% if frame_instance.frame_image %}
         <div class="alert alert-danger" role="alert">
-          <span class="glyphicon glyphicon-ban-circle" aria-hidden="true" style='font-size:2em'></span>
-          Using an old field that will be removed
-          <img src="{{ frame_instance.frame_image.url }}" width='400px'/>
+            <span class="glyphicon glyphicon-ban-circle" aria-hidden="true" style='font-size:2em'></span>
+            Using an old field that will be removed
+            <img src="{{ frame_instance.frame_image.url }}" width='400px'/>
         </div>
-
     {% endif %}
     
+    
+    
+
+<!-- Editable fields -->
+
+<form method="PATCH" 
+    enctype="multipart/form-data" 
+    action="" 
+    id="frame_frame_image_form">
+    
+    {% csrf_token %}
+    
     {% if frame_instance.frame_image_native %}
-      <div class="alert alert-success" role="alert">
-        <span class="glyphicon glyphicon-ok-circle" aria-hidden="true" style='font-size:2em'></span>
-        <img src="{{ frame_instance.frame_image_native.url }}" width='400px'/>
-      </div>
+        <div class="alert alert-success" role="alert" id="field_frame_image">
+            <span class="glyphicon glyphicon-ok-circle" aria-hidden="true" style='font-size:2em'></span>
+            <span class='field_value'>
+                <img src="{{ frame_instance.frame_image_native.url }}" width='400px'/>
+            </span>
+        </div>
     {% else %}
-      <div class="alert alert-warning" role="alert">
-        <span class="glyphicon glyphicon-question-sign" aria-hidden="true" style='font-size:2em'></span>
-        Missing image
-      </div>
+        <div class="alert alert-warning" role="alert" id='field_frame_image'>
+            <span class="glyphicon glyphicon-question-sign" aria-hidden="true" style='font-size:2em'></span>
+            Missing image
+            <span class='field_value'>
+ 
+            </span>
+        </div>
     {% endif %}
-  
+    
     <p>
-      Note: {{frame_instance.note}}
-      
+      <span class='glyphicon glyphicon-pencil' aria-hidden='true' style='font-size:1.5em'></span>
+      Change image:
+      {% render_field form.frame_image_native class="form-control"%}
+    </p>
+    
+    <button type="submit" class="btn btn-primary" >{% if btn_title %} {{btn_title}} {% else %} Submit {% endif %}</button>
+
+</form>
+
+
+
+<form method="PATCH" 
+    enctype="multipart/form-data" 
+    action="{% if action_url %} {{action_url}} {% endif %}" 
+    id="frame_note_form">
+    
+    {% csrf_token %}
+    
+    <p id="field_note">
+      <span class="field_label">Note:</span>
+      <span class="field_value">{{frame_instance.note}}</span>
     </p>
     
     <p>
@@ -46,9 +73,10 @@
       {% render_field form.note class="form-control"%}
     </p>
     
-    
     <button type="submit" class="btn btn-primary" >{% if btn_title %} {{btn_title}} {% else %} Submit {% endif %}</button>
-    
 
   </form>
+  
+
+
 </div>
