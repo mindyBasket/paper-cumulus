@@ -12,7 +12,7 @@
 
 $(function() { 
 
-    console.log("ajax_crud.js ---------- * v0.4.11");
+    console.log("ajax_crud.js ---------- * v0.5.0");
     
     // "+frame" button appends frame create form
     bind_frameCreateFormButton($(document));
@@ -48,6 +48,14 @@ $(function() {
             success: function (data) {
                 console.log("CREATED: Successfully created a new strip [id=" + data.id + "]");
                 renderStripContainer(data);
+                
+                // I decided to leave the strip_id field in frame_create_form as select.
+                // So I have to add new option after a Strip is created.
+                var $frameCreateForm = $(document).find("#frame_create_form").eq(0); //the one and only
+                $frameCreateForm.find("#id_strip").append($('<option>', {
+                    value: data.id,
+                    text: 'ajaxly created strip #' + data.id
+                }));
             },
             error: function (data) {
                 window.flipbookLib.showGenericAJAXErrors(data, $(this).url);
@@ -93,8 +101,7 @@ $(function() {
                 addFrameContainer(data, stripPk);
             },
             error: function (data) {
-                console.error(data);
-                console.log(data.status);
+                window.flipbookLib.showGenericAJAXErrors(data, $(this).url);
             }
         });
         
