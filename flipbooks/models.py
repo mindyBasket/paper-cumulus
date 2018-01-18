@@ -181,7 +181,12 @@ def frame_upload_path(instance, filename):
         )
  
 def frame_upload_path2(instance, filename):
-
+    
+    print("------ instance check -------")
+    print(instance.id)
+    print(instance.strip)
+    print("-----------------------------")
+    
     return 'frame_images2/scene_{0}/str{1}_{2}'.format(
             instance.strip.scene.id,
             instance.strip.id,
@@ -230,7 +235,13 @@ class Frame(models.Model):
         _insert_at = int(self.order) 
         self.order = 0 # reset to "do not change position unless specified"
         
-        # 1. Save instanc
+        print("-------- Saving Frame ----------")
+        print(args)
+        print(kwargs)
+        print(self.strip.id)
+        print("--------------------------------")
+        
+        # 1. Save instance
         super(Frame, self).save(*args, **kwargs) # save Frame!
         
         # 2. position update on children_li of its parent (strip)

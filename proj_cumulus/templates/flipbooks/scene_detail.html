@@ -14,13 +14,11 @@
         <!--<h3>Scene Under Chapter {{object.chapter.number}}</h3>-->
         
         <p>
-            
             <b>Book</b> : {{object.chapter.book.title}}
             </br>
             <b>Chapter</b>: {{object.chapter.number}}
             </br>
             <b>Scene id</b>: {{object.id}}
-            
         </p>
         
         <p><a href="{% url 'flipbooks:chapter-detail' book_pk=object.chapter.book.id chapter_number=object.chapter.number %}">< Chapter detail</a></p>
@@ -30,7 +28,8 @@
     <div class="col-md-10">
         
         <p>
-        
+            <h3>Test site:</h3>
+            <button type="button" class="btn btn-warning" id="test-btn">CLick here to add strip</button>
         </p>
 
 
@@ -129,11 +128,6 @@
         
     <!-- end: right side container -->    
     </div>
-    
-    <div class="partial_tester">
-        Test your partials here
-    </div>
-
 
 
 

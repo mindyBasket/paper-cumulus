@@ -175,7 +175,8 @@ class SceneDetailView(generic.DetailView):
         frame_create_form.fields['strip'].widget.attrs['invisible'] = True #hiding by css
         frame_create_form.fields['frame_image'].widget = f.HiddenInput()
         context['frame_create_form'] = frame_create_form
-        context['frame_create_url'] = reverse_lazy("flipbooks:frame-create", kwargs={'strip_pk': 1 }) # kwargs={'strip_pk':1} => strip_pk=1 ?
+        # context['frame_create_url'] = reverse_lazy("flipbooks:frame-create", kwargs={'strip_pk': 1 })
+        # This doesn't do anything since form submit is intercepted by an API call
         
         
         return context

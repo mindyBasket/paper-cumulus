@@ -41,11 +41,11 @@ class SceneModelSerializer(serializers.ModelSerializer):
             'strips',
         ]
         
-
-
-            
+        
 class FrameModelSerializer(serializers.ModelSerializer):
-
+    
+    # strip = serializers.PrimaryKeyRelatedField(source='strip', read_only=True, required=True)
+    
     class Meta:
         model = Frame
         fields = [

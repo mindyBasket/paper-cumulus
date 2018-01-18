@@ -3,13 +3,16 @@
 // Above line is to prevent cloud9 from thinking 
 // '$' is an undefined variable
 
+// Project specific libraries
+// window.flipbookLib
+
 /*-----------------------------------------------------
 ----------------------- MAIN  -------------------------
 -------------------------------------------------------*/
 
 $(function() { 
 
-    console.log("ajax_crud.js ---------- * v0.4.10");
+    console.log("ajax_crud.js ---------- * v0.4.11");
     
     // "+frame" button appends frame create form
     bind_frameCreateFormButton($(document));
@@ -37,19 +40,17 @@ $(function() {
         
         //prep form data
         var formData = $(this).serialize();
-
-        //ajax call
+        
         $.ajax({
             url: '/api/scene/'+scenePk+'/strip/create/',
             data: formData,
             method: 'POST',
             success: function (data) {
-                console.log("sucessfully posted new strip");
-                addStripContainer(data);
+                console.log("CREATED: Successfully created a new strip [id=" + data.id + "]");
+                renderStripContainer(data);
             },
             error: function (data) {
-                console.error(data);
-                console.log(data.status);
+                window.flipbookLib.showGenericAJAXErrors(data, $(this).url);
             }
         });
     });
@@ -74,7 +75,7 @@ $(function() {
         //prep form data
         //var formData = $(this).serialize();
         var formData = new FormData($(this)[0]);
-        var stripPk = $(this).find('select#id_strip').val();
+        var stripPk = $(this).parent().attr("stripid");
 
         //ajax call
         $.ajax({
@@ -85,7 +86,7 @@ $(function() {
             processData: false,
             contentType: false,
             success: function (data) {
-                console.log("sucessfully created frame strip");
+                console.log("sucessfully created frame");
                 //Hide the form and return add button
                 $frameForm.hide();
                 $('.frame_form').show();
@@ -136,7 +137,6 @@ function bind_frameCreateFormButton($doc, $targetOptional){
     
     if ($target == null){
         //do for all mini menus if target not specified
-        console.log("binding form create for whole page");
         $target = $doc.find('.strip_flex_container .frame_form');
     } else if ($targetOptional instanceof jQuery == false){
         console.error("Cannot bind mini menu even to non-Jquery object.");
@@ -144,11 +144,11 @@ function bind_frameCreateFormButton($doc, $targetOptional){
     }
     
     $target.click(function(){
-
+        
         // Hide only the current form request button
+        $doc.find('.frame_form').show(); //show all
         var $formRequestBtn_ = $(this);
-        $doc.find('.frame_form').show();
-        $formRequestBtn_.hide();
+        $formRequestBtn_.hide(); //hide this
         
         var stripid = $formRequestBtn_.attr("for");
         
@@ -157,13 +157,13 @@ function bind_frameCreateFormButton($doc, $targetOptional){
         var currStripContainer = $('.strip_flex_container[stripid='+stripid+']');
         var targetForm = $doc.find("#frame_create_form").eq(0); //the one and only
         targetForm.hide();
-        targetForm.slideToggle();
         targetForm.appendTo(currStripContainer);
+        targetForm.slideToggle();
         
         //auto-fill the form
         console.log("curr strip id: " + stripid);
-        targetForm.find('#id_strip').val(stripid);
-        
+        targetForm.find('#id_strip').val(String(stripid));
+        console.log("changing field val: " + targetForm.find('#id_strip').val());
     });
     
     
@@ -284,7 +284,7 @@ function bind_popupMenu_elems($popupMenu){
                     var formData = $(this).serialize();
                    // var formData = new FormData($(this)[0]);
 
-                    //ajax call
+                    // Ajax API call
                     $.ajax({
                         url: '/api/frame/'+frameid+'/update/',
                         data: formData,
@@ -464,37 +464,23 @@ var ajax_frame_delete = function($form, frameid){
 
 
 // Uses json_partial view to load html template for a strip container
-function addStripContainer(data){
-  
+function renderStripContainer(data){
+    
     var stripObj = data
     var $stripList = $('ul.list_strips');
     
-    //json_partial
-    $.ajax({
-        url: '/flipbooks/json_partials/strip_container/'+stripObj.id,
-        method: 'GET',
-        dataType: 'json',
-        beforeSend: function () {
-            //empty
-        },
-        success: function (data_partial) {
-
-            var $newStripContainer = $(data_partial['html_template']);
-            $newStripContainer.appendTo($stripList);
-            $newStripContainer.hide();
-            
-            // Bind Button Events
-            bind_frameCreateFormButton($(document), $newStripContainer.find('.frame_form'));
-            
-            // Show
-            $newStripContainer.slideToggle( "slow" );
-            
-        },
+    var responce = window.flipbookLib.getJSONPartial(
+        '/flipbooks/json_partials/strip_container/'+stripObj.id,
+    );
+    responce.success(function(data_partial){
+        var $newStripContainer = $(data_partial['html_template']);
+        $newStripContainer.appendTo($stripList);
         
-        error: function (data) {
-            console.error(data);
-            console.log(data.status);
-        }
+        $newStripContainer.hide();
+        $newStripContainer.slideToggle( "slow" );
+        
+        // Bind Button Events
+        bind_frameCreateFormButton($(document), $newStripContainer.find('.frame_form'));
     });
     
 }
