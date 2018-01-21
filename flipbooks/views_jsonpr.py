@@ -29,7 +29,7 @@ def return_strip_container_tmplt(request, *args, **kwargs):
         'index': stripObj.scene.strip_set.count()
     }
     
-    html_template = render_to_string('flipbooks/includes/tmplt_stripContainer.html',
+    html_template = render_to_string('flipbooks/partials/strip_container.html',
         context,
         request=request,
     )

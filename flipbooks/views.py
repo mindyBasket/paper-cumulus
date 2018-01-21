@@ -470,18 +470,8 @@ class FrameUpdateView(generic.UpdateView):
     pass
 
 
-
-
-# This is attempted ClassBased view for Frame-delete. May not be used.
-class FrameDelete(generic.DeleteView):
-    model = Frame
-    template_name = "flipbooks/includes/delete_form.html"
-    success_url = reverse_lazy('book-list')
-    
-
-# This is FunctionBased view for Frame-delete. Meant to replace the Classbased
-# one right above.
-# This function view behaviors two different way upon "GET" and "POST" request.
+# This is FunctionBased view for Frame-delete. Decided not to go with ClassBased.
+# Two different behaviors depending on request:
 # GET: responds with confirm form
 # POST: actually deletes upon confirm 
 def frame_delete(request, pk):
@@ -498,7 +488,7 @@ def frame_delete(request, pk):
 
         #Render into delete-confirm template
         context = {'frame': frame }
-        data['html_form'] = render_to_string('flipbooks/includes/delete_frame_confirm.html',
+        data['html_form'] = render_to_string('flipbooks/forms/delete_frame_confirm.html',
             context,
             request=request,
         )

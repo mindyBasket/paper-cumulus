@@ -12,7 +12,7 @@
 
 $(function() { 
 
-    console.log("ajax_crud.js ---------- * v0.5.0");
+    console.log("ajax_crud.js ---------- * v0.5.2");
     
     // "+frame" button appends frame create form
     bind_frameCreateFormButton($(document));
@@ -46,8 +46,12 @@ $(function() {
             data: formData,
             method: 'POST',
             success: function (data) {
+                
                 console.log("CREATED: Successfully created a new strip [id=" + data.id + "]");
+                
+                /////// RENDER ///////
                 renderStripContainer(data);
+                //////////////////////
                 
                 // I decided to leave the strip_id field in frame_create_form as select.
                 // So I have to add new option after a Strip is created.
@@ -56,9 +60,10 @@ $(function() {
                     value: data.id,
                     text: 'ajaxly created strip #' + data.id
                 }));
+                
             },
             error: function (data) {
-                window.flipbookLib.showGenericAJAXErrors(data, $(this).url);
+                window.flipbookLib.logAJAXErrors(data, $(this).url);
             }
         });
     });
@@ -90,7 +95,7 @@ $(function() {
             url: '/api/strip/'+stripPk+'/frame/create/',
             data: formData,
             method: 'POST',
-            enctype: 'multipart/form-data',
+            //enctype: 'multipart/form-data',
             processData: false,
             contentType: false,
             success: function (data) {
@@ -98,10 +103,13 @@ $(function() {
                 //Hide the form and return add button
                 $frameForm.hide();
                 $('.frame_form').show();
-                addFrameContainer(data, stripPk);
+                
+                /////// RENDER ///////
+                renderFrameContainer(data, stripPk);
+                //////////////////////
             },
             error: function (data) {
-                window.flipbookLib.showGenericAJAXErrors(data, $(this).url);
+                window.flipbookLib.logAJAXErrors(data, $(this).url);
             }
         });
         
@@ -247,16 +255,22 @@ var lightboxModal = `
 
 function bind_popupMenu_elems($popupMenu){
     
-    // a. Bind close event. The popup menu closes when you are out of focus. 
+    // ............................
+    // a. Bind close event. 
+    // The popup menu closes when you are out of focus. 
+    // ............................
     $popupMenu.focusout(function(){
         $(this).hide();
     });
     
-    // b. Bind 'EDIT' action .........................
+    // ............................
+    // b. Bind 'EDIT' action 
+    // ............................
     $popupMenu.find(".action.edit").click(function(){
+        
         // Retrieve frame information
-        var frameid = $popupMenu.attr("for");
-        if (frameid=="-1"){return;} //STOP, if frameid is not set.
+        var frameId = $popupMenu.attr("for");
+        if (frameId=="-1"){return;} //STOP, if frameid is not set.
         
         //open modal
         var $lbModal = $(lightboxModal);
@@ -270,12 +284,10 @@ function bind_popupMenu_elems($popupMenu){
         
         //json_partial 
         $.ajax({
-            url: '/flipbooks/json_partials/frame_edit_form/'+frameid,
+            url: '/flipbooks/json_partials/frame_edit_form/'+frameId,
             method: 'GET',
             dataType: 'json',
-            beforeSend: function () {
-                console.log("Attempt to retrieve form partial");
-            },
+
             success: function (data_partial) {
                 var $frameEditForm = $(data_partial['html_template']);
                 $lbModal.append($frameEditForm);
@@ -286,28 +298,20 @@ function bind_popupMenu_elems($popupMenu){
                     // disable default form action
                     event.preventDefault();
                     var $frameForm = $(this);
-                    
-                    //prep form data
-                    var formData = $(this).serialize();
-                   // var formData = new FormData($(this)[0]);
 
-                    // Ajax API call
-                    $.ajax({
-                        url: '/api/frame/'+frameid+'/update/',
-                        data: formData,
-                        method: 'PATCH',
-                        // enctype: 'multipart/form-data',
-                        // processData: false,
-                        // contentType: false,
-                        success: function (data) {
-                            $frameForm.find('#field_note').children('.field_value').text(data['note']);
-                        },
-                        error: function (data) {
-                            console.error(data);
-                            console.log(data.status);
-                        }
+                    var editNoteResp = window.flipbookLib.submitFormAjaxly(
+                        $(this), 
+                        '/api/frame/'+frameId+'/update/', 
+                        {'method': 'PATCH'},
+                        function(){console.log("Attempt ajax edit note");});
+                    editNoteResp.success(function(data){
+                        
+                        /////// RENDER ///////
+                        $frameForm.find('#field_note').children('.field_value').text(data['note']);
+                        //////////////////////
                     });
                 });
+                
                 
                 // Bind frame_image submit button
                 $('#frame_frame_image_form').submit(function(event){
@@ -319,33 +323,29 @@ function bind_popupMenu_elems($popupMenu){
                     //var formData = $(this).serialize();
                     var formData = new FormData($(this)[0]);
 
-                    //ajax call
-                    $.ajax({
-                        url: '/api/frame/'+frameid+'/update/',
-                        data: formData,
-                        method: 'PATCH',
-                        enctype: 'multipart/form-data',
-                        processData: false,
-                        contentType: false,
-                        beforeSend: function (){
-                            console.log($(this));
+                    var editFrameResp = window.flipbookLib.submitFormAjaxly(
+                        $(this),
+                        '/api/frame/'+frameId+'/update/',
+                        {'method': 'PATCH',
+                         'processData': false,
+                         'contentType': false
                         },
-                        success: function (data) {
-                            var $frameImageContainer = $frameForm.find('#field_frame_image').children('.field_value');
+                        function(){console.log("Attempt ajax edit frame image");
+                    });
+                    editFrameResp.success(function(data){
+                        
+                        /////// RENDER ///////
+                        var $frameImageContainer = $frameForm.find('#field_frame_image').children('.field_value');
                             $frameImageContainer.html('');
                             $frameImageContainer.append('<img src="' + data['frame_image_native']+ '"/>');
-                        },
-                        error: function (data) {
-                            console.error(data);
-                            console.log(data.status);
-                        }
+                        //////////////////////
                     });
+
+                    
                 });
                 
-                
-                
-            },
-            
+
+            }, //end: success
             error: function (data) {
                 console.error(data);
                 console.log(data.status);
@@ -354,79 +354,39 @@ function bind_popupMenu_elems($popupMenu){
         
     });
     
-    
-    // c. Make cover
+    //............................
+    // c. Bind 'MAKE COVER' 
+    //
     // TODO: makes current frame as the "cover" for the Scene.
+    //............................
     
-
-    // d. Bind 'DELETE' action .........................
+    //.........................
+    // d. Bind 'DELETE' action 
+    //.........................
     $popupMenu.find('.action.delete').click(function(){
         event.preventDefault();
         
         // Retrieve frame information
-        var frameid = $popupMenu.attr("for");
-        if (frameid=="-1"){return;} //STOP, if frameid is not set.
+        var frameId = $popupMenu.attr("for");
+        if (frameId=="-1"){return;} //STOP, if frameid is not set.
         
-        //ajax call: GET delete confirm
-        //           To see POST delete, see ajax_frame_delete()
-        $.ajax({
-            url: '/flipbooks/frame/'+ frameid +'/delete/',
-            method: 'GET',
-            dataType: 'json',
-            beforeSend: function () {
-                console.log("DELETE");
-                //hide the popup edit menu 
-                $popupMenu.focusout();
-            },
-            success: function (data) {
-                
-                // ...............
-                //new popup for the (actual) delete form
-                // ...............
-                var $popupDelete = $popupMenu.clone().appendTo($popupMenu.parent()); //This might be slow
-                
-                $popupDelete.children('.content').html(''); //clear unnecessary cloned content
-                
-                //make objects to appear above lightbox
-                $popupDelete.attr('style','z-index:1000');
-                $popupMenu.parent().children('img').attr('style','z-index:1000');
-                
-                addDeleteConfirmForm(data, $popupDelete, $popupDelete.children('.content'));
-                
-                //a lightbox cover, that acts as a giant "close" button
-                var $lbCover = $(lightboxCover)
-                $lbCover.appendTo('body');
-                $lbCover.click(function(){
-                    $popupDelete.find('#delete-cancel-button').click();
-                })
-       
-                // Bind "confirm" button
-                $popupDelete.find('#delete-confirm-button').click(function(event){
-                    // Note: #delete-confirm-button is a <a> that acts
-                    //       like a submit() for the form  #delete-confirm.
-                    event.preventDefault();
-                    $popupDelete.find('#delete-cancel-button').click(); //clean up
-                    var $deleteForm = $popupDelete.find('#delete-confirm');
-                    return ajax_frame_delete($deleteForm, frameid);
-                });
-                
-                // Bind "cancel" button
-                $popupDelete.find('#delete-cancel-button').click(function(event){
-                    
-                    //clean up
-                    $popupDelete.remove();
-                    $lbCover.remove(); //don't forget the lightbox cover
-                    $popupMenu.parent().children('img').attr('style','');
-                });
-                
-                
-            },
-            error: function (data) {
-                console.error(data);
-                console.log(data.status);
-            }
+        // DELETE happens in 2 parts.
+        // First is GET, and then POST. To see POST delete, see ajax_frame_delete()
+        
+        var deleteResponce = window.flipbookLib.getJSONPartial(
+            '/flipbooks/frame/'+ frameId +'/delete/', 
+            'GET', 
+            'json',
+            function(){
+                console.log("DELETE CONFIRM");
+                $popupMenu.focusout()});
+        
+        deleteResponce.success(function(data){
+            /////// RENDER ///////
+            renderDeleteConfirm(data, frameId, {'popupMenu': $popupMenu});
+            /////////////////////
         });
-                
+        
     }); //end: bind 'delete'
 
 }
@@ -439,9 +399,6 @@ var ajax_frame_delete = function($form, frameid){
         method: 'POST',
         data: $form.serialize(),
         dataType: 'json',
-        beforeSend: function () {
-            console.log("Actual Deletion in progress");
-        },
         success: function (data) {
             //show animation of deletion
             $(document).find('.thumb[frameid='+ frameid +']').animate({
@@ -451,12 +408,10 @@ var ajax_frame_delete = function($form, frameid){
                 $(this).remove();
             });
         },
-        error: function (data) {
-            console.error(data);
-            console.log(data.status);
-        }
+        error: function (data) { window.flipbookLib.logAJAXErrors(data, $(this).url); }
     });
-}
+    
+} // end: ajax_frame_delete()
 
 
 
@@ -493,6 +448,7 @@ function renderStripContainer(data){
 }
 
 
+
 var thumbTemplate_ = `
 <div class='thumb'>
     <img src="" width='200px'/>
@@ -500,7 +456,7 @@ var thumbTemplate_ = `
 </div>
 `
 
-function addFrameContainer(data, stripId){
+function renderFrameContainer(data, stripId){
     
     var frameObj = data;
     
@@ -522,6 +478,62 @@ function addFrameContainer(data, stripId){
     newFrameThumb.slideToggle( "fast" );
 }
 
+
+function renderFrameEditForm(data, frameId, args){
+    //TODO:
+}
+
+
+function renderDeleteConfirm(data, frameId, args){
+    
+    var $popupMenu = args['popupMenu'];
+    var $popupDelete = $popupMenu.clone().appendTo($popupMenu.parent()); //This might be slow
+    
+    $popupDelete.children('.content').html(''); //clear unnecessary cloned content
+    
+    //make objects to appear above lightbox
+    $popupDelete.attr('style','z-index:1000');
+    $popupMenu.parent().children('img').attr('style','z-index:1000');
+    
+    // TODO:
+    // I don't think this benefits from being a function
+    addDeleteConfirmForm(data, $popupDelete, $popupDelete.children('.content'));
+    
+    //a lightbox cover, that acts as a giant "close" button
+    var $lbCover = $(lightboxCover)
+    $lbCover.appendTo('body');
+    $lbCover.click(function(){
+        $popupDelete.find('#delete-cancel-button').click();
+    })
+
+    // Bind "confirm" button
+    $popupDelete.find('#delete-confirm-button').click(function(event){
+        // Note: #delete-confirm-button is a <a> that acts
+        //       like a submit() for the form  #delete-confirm.
+        event.preventDefault();
+        $popupDelete.find('#delete-cancel-button').click(); //clean up
+        var $deleteForm = $popupDelete.find('#delete-confirm');
+        
+        /////////////////////
+        ajax_frame_delete($deleteForm, frameId);
+        /////////////////////
+        
+    });
+    
+    // Bind "cancel" button
+    $popupDelete.find('#delete-cancel-button').click(function(event){
+        
+        //clean up
+        $popupDelete.remove();
+        $lbCover.remove(); //don't forget the lightbox cover
+        $popupMenu.parent().children('img').attr('style','');
+    });
+        
+        
+    
+        
+
+}
 
 function addDeleteConfirmForm(data, $popup, $targetOptional){
     
