@@ -314,7 +314,7 @@ function bind_popupMenu_elems($popupMenu){
                 
                 
                 // Bind frame_image submit button
-                $('#frame_frame_image_form, #frame_image_form').submit(function(event){
+                $('#frame_image_form').submit(function(event){
                     // disable default form action
                     event.preventDefault();
                     var $frameForm = $(this);
@@ -338,7 +338,7 @@ function bind_popupMenu_elems($popupMenu){
                         console.log("rendering new image");
                         var $frameImageContainer = $('#frame_image_form').find('#field_frame_image').children('.field_value');
                             $frameImageContainer.html('');
-                            $frameImageContainer.append('<img src="' + data['frame_image_native']+ '"/>');
+                            $frameImageContainer.append('<img src="' + data['frame_image']+ '"/>');
                         //////////////////////
                     });
 

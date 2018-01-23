@@ -115,14 +115,15 @@ class FrameUpdateAPIView(generics.UpdateAPIView):
         print("for frame id#{}".format(kwargs['pk']) )
         
         if 'frame_image' in request.data:
-            print("Requesting to patch with: {}".format(request.data['frame_image']) )
-            
-        frame = Frame.objects.filter(pk=kwargs['pk'])[0]
-        print(frame.frame_image.path) 
-        for th in frame.frame_image.get_thumbnails():
-            print(th.path)
-        
-        frame.frame_image.delete_thumbnails() #only deletes the thumb, not the original image
+            print("patching frame_image: {}".format(request.data['frame_image']))
+            if request.data['frame_image'] is not None and request.data['frame_image'] != '':
+                
+                frame = Frame.objects.filter(pk=kwargs['pk'])[0]
+                print(frame.frame_image.path) 
+                for th in frame.frame_image.get_thumbnails():
+                    print(th.path)
+                
+                frame.frame_image.delete_thumbnails() #only deletes the thumb, not the original image
         
         return super(FrameUpdateAPIView, self).partial_update(request, *args, **kwargs)
     
