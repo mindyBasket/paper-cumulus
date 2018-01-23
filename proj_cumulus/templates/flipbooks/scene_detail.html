@@ -62,7 +62,7 @@
                             {% if frame|is_displayable:"frame" %} 
                             <!-- % if frame is None or frame.frame_image is None or frame.frame_image|length is 0 % -->
                                   
-                               <div class="thumb incompatible" frameid="{{frame.id}}">
+                               <div class="thumb" frameid="{{frame.id}}">
                                     <img src="{{ frame.frame_image.thumb.url }}" width='200px'/>
                                     <a href="" class="mini_menu edit">frame [{{frame.id}}]</a>
                                </div> 
@@ -71,7 +71,7 @@
                                 
                                 {% if frame.frame_image_native.url != None %}
                                     <!-- fallback to native ImageField -->
-                                   <div class="thumb" frameid="{{frame.id}}">
+                                   <div class="thumb incompatible" frameid="{{frame.id}}">
                                         <img src="{{ frame.frame_image_native|thumbnail_url:'thumb' }}" width='200px'/>
                                         <a href="" class="mini_menu edit">frame [{{frame.id}}]</a>
                                    </div> 

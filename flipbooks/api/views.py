@@ -119,7 +119,8 @@ class FrameUpdateAPIView(generics.UpdateAPIView):
             if request.data['frame_image'] is not None and request.data['frame_image'] != '':
                 
                 frame = Frame.objects.filter(pk=kwargs['pk'])[0]
-                print(frame.frame_image.path) 
+                if frame.frame_image: 
+                    print(frame.frame_image.path) 
                 for th in frame.frame_image.get_thumbnails():
                     print(th.path)
                 
