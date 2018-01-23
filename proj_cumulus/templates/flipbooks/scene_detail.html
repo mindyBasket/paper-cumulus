@@ -68,19 +68,12 @@
                                </div> 
                                    
                             {% else %} 
-                                
-                                {% if frame.frame_image_native.url != None %}
-                                    <!-- fallback to native ImageField -->
-                                   <div class="thumb incompatible" frameid="{{frame.id}}">
-                                        <img src="{{ frame.frame_image_native|thumbnail_url:'thumb' }}" width='200px'/>
-                                        <a href="" class="mini_menu edit">frame [{{frame.id}}]</a>
-                                   </div> 
-                                {% else %} 
-                                    <div class="thumb placeholder2" frameid="{{frame.id}}">
-                                    <span>Missing Image</span>
-                                        <a href="" class="mini_menu edit">frame [{{frame.id}}]</a>
-                                    </div>
-                                {% endif %}
+
+                                <div class="thumb placeholder2" frameid="{{frame.id}}">
+                                <span>Missing Image</span>
+                                    <a href="" class="mini_menu edit">frame [{{frame.id}}]</a>
+                                </div>
+                         
                             {% endif %}
                                
                         {% empty %}

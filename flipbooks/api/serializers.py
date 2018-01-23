@@ -52,7 +52,6 @@ class FrameModelSerializer(serializers.ModelSerializer):
             'id',
             'note',
             'strip',
-            'frame_image',
-            'frame_image_native'
+            'frame_image'
             ]
         #read_only_fields = ('frame_image',)

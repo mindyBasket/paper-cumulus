@@ -12,7 +12,7 @@
 
 $(function() { 
 
-    console.log("ajax_crud.js ---------- * v0.5.2");
+    console.log("ajax_crud.js ---------- * v0.5.4");
     
     // "+frame" button appends frame create form
     bind_frameCreateFormButton($(document));
@@ -405,8 +405,11 @@ var ajax_frame_delete = function($form, frameid){
             $(document).find('.thumb[frameid='+ frameid +']').animate({
                 opacity: 0,
             }, 300, function() {
-                //actually delete
-                $(this).remove();
+                // Problem: if you delete this, you are removing everything 
+                //          in it with it, like popup menu. ],: 
+                // Rescue the popup menu
+                $(this).find(".popup_menu.edit").eq(0).appendTo('body');
+                $(this).remove(); //actually delete
             });
         },
         error: function (data) { window.flipbookLib.logAJAXErrors(data, $(this).url); }
@@ -451,9 +454,9 @@ function renderStripContainer(data){
 
 
 var thumbTemplate_ = `
-<div class='thumb'>
+<div class='thumb' frameid="">
     <img src="" width='200px'/>
-    <a href="" class="mini_menu edit">frame[{}]</a>
+    <a href="" class="mini_menu edit">frame [{}]</a>
 </div>
 `
 
@@ -462,21 +465,26 @@ function renderFrameContainer(data, stripId){
     var frameObj = data;
     
     //need to add it in the right place
-    var newFrameThumb = $(thumbTemplate_);
+    var $newFrameThumb = $(thumbTemplate_);
    
     //fill in id
-    var id_label = newFrameThumb.children('a').text();
+    var id_label = $newFrameThumb.children('a').text();
     id_label = id_label.split("{}")[0] + frameObj.id + id_label.split("{}")[1]
-    newFrameThumb.children('a').text(id_label);
+    $newFrameThumb.children('a').text(id_label);
+    $newFrameThumb.attr("frameid", frameObj.id);
     //fill in image
-    newFrameThumb.children("img").attr("src", frameObj.frame_image_native);
+    $newFrameThumb.children("img").attr("src", frameObj.frame_image);
     
+    //insert 
     var targetStripContainer = $('.strip_flex_container[stripid='+stripId+']');
-    newFrameThumb.insertBefore(targetStripContainer.find('.frame_form'));
+    $newFrameThumb.insertBefore(targetStripContainer.find('.frame_form'));
+    
+    //bind mini menu
+    bind_openMiniMenu($(document), $newFrameThumb.find(".mini_menu.edit"));
     
     //animate
-    newFrameThumb.toggle();
-    newFrameThumb.slideToggle( "fast" );
+    $newFrameThumb.toggle();
+    $newFrameThumb.slideToggle( "fast" );
 }
 
 

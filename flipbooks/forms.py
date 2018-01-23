@@ -51,9 +51,9 @@ class FrameCreateForm(forms.ModelForm):
         #                if the form element does not have 
         #                enctype="multipart/form-data"!
         model = Frame
-        fields = ['strip', 'frame_image', 'frame_image_native']
+        fields = ['strip', 'frame_image']
         labels = {
-            'frame_image_native': 'by ImageField:',
+            'frame_image': 'Add image:',
             
         }
     
@@ -64,9 +64,9 @@ class FrameEditForm(forms.ModelForm):
         #                if the form element does not have 
         #                enctype="multipart/form-data"!
         model = Frame
-        fields = ['order', 'note', 'frame_image', 'frame_image_native']
+        fields = ['order', 'note', 'frame_image']
         labels = {
-            'frame_image_native': 'by ImageField:',
+            'frame_image': 'Add image:',
             
         }
     

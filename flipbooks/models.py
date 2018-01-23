@@ -169,25 +169,27 @@ class Strip(models.Model):
 # -------------------------------------------------
 # -------------------------------------------------
 
+# Issue: slightly unreliable since this function tries to "guess"
+#        instance's id before it is newly created in db
 def frame_upload_path(instance, filename):
-    # file will be uploaded to MEDIA_ROOT/scene_<order>/strip_<order>-<order>.<ext>
+    # file will be uploaded to MEDIA_ROOT/frame_images/s{id}/f{id}.{extension}
+    
+    max_frame_id = Frame.objects.all().order_by("-id")[0].id
+    frame_id = (int(max_frame_id)+1) if instance.id is None else instance.id
+   
+    return 'frame_images/s{0}/f{1}.{2}'.format(
+        instance.strip.scene.id, 
+        frame_id,
+        filename.split(".")[-1]
+        )
+ 
+def frame_upload_path2(instance, filename):
     # file will be uploaded to MEDIA_ROOT/frame_images/s{id}/f{id}.{extension}
     return 'frame_images/s{0}/f{1}.{2}'.format(
         instance.strip.scene.id, 
         instance.id,
         filename.split(".")[-1]
         )
- 
-def frame_upload_path2(instance, filename):
-
-    return 'frame_images2/scene_{0}/str{1}_{2}'.format(
-            instance.strip.scene.id,
-            instance.strip.id,
-            filename
-        )
-        
-  
-        
         
 #Frame: holds individual frames
 class Frame(models.Model):
@@ -205,14 +207,8 @@ class Frame(models.Model):
         upload_to = frame_upload_path,
         #resize_source=dict(size=(100, 100)),
         #thumbnail_storage='frame_images/thumbTest/thumbs/', #I don't know how to use this
-        blank=True
-    )
-    
-    #frame images, using Django native imagefield
-    frame_image_native = models.ImageField(
-        upload_to = frame_upload_path2,
         blank=False
-        )
+    )
     
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
