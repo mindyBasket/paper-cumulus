@@ -6,76 +6,104 @@
 
 
 <div class="content">
-    {% if frame_instance.frame_image %}
-        <div class="alert alert-danger" role="alert">
-            <span class="glyphicon glyphicon-ban-circle" aria-hidden="true" style='font-size:2em'></span>
-            Using an old field that will be removed
-            <img src="{{ frame_instance.frame_image.url }}" width='400px'/>
-        </div>
-    {% endif %}
-    
-    
-    
 
-<!-- Editable fields -->
+    
+    <!-- ///////////////////////// -->
+    <!-- easy-thumbnail field edit -->
+    <!-- ///////////////////////// -->
+    <form method="PATCH" 
+        enctype="multipart/form-data" 
+        action="" 
+        id="frame_image_form">
+        {% csrf_token %}
+        
+        {% if frame_instance.frame_image %}
+            <div class="alert alert-danger" role="alert" id='field_frame_image'>
+                <span class="glyphicon glyphicon-ban-circle" aria-hidden="true" style='font-size:2em'></span>
+                Using easy-thumbnail field
+                <span class='field_value'>
+                    <img src="{{ frame_instance.frame_image.url }}" width='400px'/>
+                </span>
+            </div>
+        {% else %}
+            <div class="alert alert-warning" role="alert" id='field_frame_image'>
+                <span class="glyphicon glyphicon-question-sign" aria-hidden="true" style='font-size:2em'></span>
+                Missing image
+                <span class='field_value'></span>
+            </div>
+        {% endif %}
+        
+        <p>
+          <span class='glyphicon glyphicon-pencil' aria-hidden='true' style='font-size:1.5em'></span>
+          Change image:
+          {% render_field form.frame_image class="form-control"%}
+        </p>
+        
+        <button type="submit" class="btn btn-primary" >{% if btn_title %} {{btn_title}} {% else %} Submit {% endif %}</button>
+    
+    </form>
 
-<form method="PATCH" 
-    enctype="multipart/form-data" 
-    action="" 
-    id="frame_frame_image_form">
+    <!-- ///////////////////////// -->
+    <!-- django native image field edit -->
+    <!-- ///////////////////////// -->
+    <form method="PATCH" 
+        enctype="multipart/form-data" 
+        action="" 
+        id="frame_frame_image_form">
+        
+        {% csrf_token %}
+        
+        {% if frame_instance.frame_image_native %}
+            <div class="alert alert-success" role="alert" id="field_frame_image">
+                <span class="glyphicon glyphicon-ok-circle" aria-hidden="true" style='font-size:2em'></span>
+                <span class='field_value'>
+                    <img src="{{ frame_instance.frame_image_native.url }}" width='400px'/>
+                </span>
+            </div>
+        {% else %}
+            <div class="alert alert-warning" role="alert" id='field_frame_image'>
+                <span class="glyphicon glyphicon-question-sign" aria-hidden="true" style='font-size:2em'></span>
+                Missing image
+                <span class='field_value'>
+     
+                </span>
+            </div>
+        {% endif %}
+        
+        <p>
+          <span class='glyphicon glyphicon-pencil' aria-hidden='true' style='font-size:1.5em'></span>
+          Change image:
+          {% render_field form.frame_image_native class="form-control"%}
+        </p>
+        
+        <button type="submit" class="btn btn-primary" >{% if btn_title %} {{btn_title}} {% else %} Submit {% endif %}</button>
     
-    {% csrf_token %}
+    </form>
     
-    {% if frame_instance.frame_image_native %}
-        <div class="alert alert-success" role="alert" id="field_frame_image">
-            <span class="glyphicon glyphicon-ok-circle" aria-hidden="true" style='font-size:2em'></span>
-            <span class='field_value'>
-                <img src="{{ frame_instance.frame_image_native.url }}" width='400px'/>
-            </span>
-        </div>
-    {% else %}
-        <div class="alert alert-warning" role="alert" id='field_frame_image'>
-            <span class="glyphicon glyphicon-question-sign" aria-hidden="true" style='font-size:2em'></span>
-            Missing image
-            <span class='field_value'>
- 
-            </span>
-        </div>
-    {% endif %}
+    <!-- ///////////////////////// -->
+    <!--frame note edit -->
+    <!-- ///////////////////////// -->
+    <form method="PATCH" 
+        enctype="multipart/form-data" 
+        action="{% if action_url %} {{action_url}} {% endif %}" 
+        id="frame_note_form">
+        
+        {% csrf_token %}
+        
+        <p id="field_note">
+          <span class="field_label">Note:</span>
+          <span class="field_value">{{frame_instance.note}}</span>
+        </p>
+        
+        <p>
+          <span class='glyphicon glyphicon-pencil' aria-hidden='true' style='font-size:1.5em'></span>
+          Change note:
+          {% render_field form.note class="form-control"%}
+        </p>
+        
+        <button type="submit" class="btn btn-primary" >{% if btn_title %} {{btn_title}} {% else %} Submit {% endif %}</button>
     
-    <p>
-      <span class='glyphicon glyphicon-pencil' aria-hidden='true' style='font-size:1.5em'></span>
-      Change image:
-      {% render_field form.frame_image_native class="form-control"%}
-    </p>
-    
-    <button type="submit" class="btn btn-primary" >{% if btn_title %} {{btn_title}} {% else %} Submit {% endif %}</button>
-
-</form>
-
-
-
-<form method="PATCH" 
-    enctype="multipart/form-data" 
-    action="{% if action_url %} {{action_url}} {% endif %}" 
-    id="frame_note_form">
-    
-    {% csrf_token %}
-    
-    <p id="field_note">
-      <span class="field_label">Note:</span>
-      <span class="field_value">{{frame_instance.note}}</span>
-    </p>
-    
-    <p>
-      <span class='glyphicon glyphicon-pencil' aria-hidden='true' style='font-size:1.5em'></span>
-      Change note:
-      {% render_field form.note class="form-control"%}
-    </p>
-    
-    <button type="submit" class="btn btn-primary" >{% if btn_title %} {{btn_title}} {% else %} Submit {% endif %}</button>
-
-  </form>
+    </form>
   
 
 

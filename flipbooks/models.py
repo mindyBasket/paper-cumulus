@@ -235,12 +235,33 @@ class Frame(models.Model):
         _insert_at = int(self.order) 
         self.order = 0 # reset to "do not change position unless specified"
         
-        print("-------- Saving Frame ----------")
-        print(args)
-        print(kwargs)
-        print(self.strip.id)
-        print("--------------------------------")
+        '''GOAL: get url of thumbnail'''
         
+        print("---------- FRAME SAVE ---------")
+        print("kwargs: {}".format(kwargs))
+        # print(self.frame_image) # incoming image
+        # print(self.frame_image.name) #upload name, not actual file path
+        print(self.frame_image.url) #/media/whiteTrip00.png
+        print(self.frame_image.path) #/home/ubuntu/workspace/media/whiteTrip00.png ?
+        
+        # Note: looks like 'path' is what I eventually want
+        
+        
+        self.frame_image.delete_thumbnails() #doesn't seem to do anything
+        
+        print("...... property check .....")
+        print(self.frame_image.file) #whiteTrip00.png
+        print(dir(self.frame_image))
+        # print(self.frame_image.source_storage.size) #doesn't look like something I can manipulate
+        print(".")
+        print(self.frame_image.storage.base_location)
+        print(self.frame_image.storage.location)
+        print(dir(self.frame_image.storage))
+        #print(self.frame_image.get_existing_thumbnail())
+        
+        #print(self.frame_image.get_thumbnail()) # this makes thumbnail. becareful
+        print("--------------------------------")
+
         # 1. Save instance
         super(Frame, self).save(*args, **kwargs) # save Frame!
         
