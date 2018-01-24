@@ -92,12 +92,24 @@ class ChapterDetailView(generic.TemplateView):
         
         return context
 
+
+
+# Make giant ascii text:
+# http://patorjk.com/software/taag/#p=display&f=Modular&t=Type%20Something%20
+
+#  _______  _______  _______  __    _  _______  
+# |       ||       ||       ||  |  | ||       | 
+# |  _____||       ||    ___||   |_| ||    ___| 
+# | |_____ |       ||   |___ |       ||   |___  
+# |_____  ||      _||    ___||  _    ||    ___| 
+#  _____| ||     |_ |   |___ | | |   ||   |___  
+# |_______||_______||_______||_|  |__||_______| 
+
 # .................................................. 
 # .................................................. 
 #                   Scene Views
 # .................................................. 
 # .................................................. 
-
 
 # class SceneListView(generic.ListView):
     
@@ -218,6 +230,15 @@ class ScenePlayView(generic.DetailView):
     
 
 
+
+#  _______  _______  ______    ___   _______    
+# |       ||       ||    _ |  |   | |       |   
+# |  _____||_     _||   | ||  |   | |    _  |   
+# | |_____   |   |  |   |_||_ |   | |   |_| |   
+# |_____  |  |   |  |    __  ||   | |    ___|   
+#  _____| |  |   |  |   |  | ||   | |   |       
+# |_______|  |___|  |___|  |_||___| |___|       
+
 # .................................................. 
 # .................................................. 
 #                   Strip Views
@@ -312,7 +333,32 @@ class StripUpdateView(SuccessMessageMixin, GetStripSuccessUrlMixin, generic.Upda
         return super(StripUpdateView, self).form_valid(form)
 
   
-  
+# This is FunctionBased view for Strip-delete.
+# Two different behaviors depending on request:
+# GET: responds with confirm form
+# POST: actually deletes upon confirm 
+def strip_delete(request, pk):
+    
+    strip = get_object_or_404(Strip, pk=pk)
+    data = dict()
+    
+    if request.method == 'POST':
+        
+        strip.delete() # Unfortunately no easy way to check if this is successful
+        data['deleted'] = True
+        
+    elif request.method == 'GET': 
+
+        #Render into delete-confirm template
+        context = {'strip': strip }
+        data['html_form'] = render_to_string('flipbooks/forms/delete_strip_confirm.html',
+            context,
+            request=request,
+        )
+    else:
+        return False
+        
+    return JsonResponse(data)
   
 
 
@@ -407,6 +453,15 @@ def sort_children(request, *args, **kwargs):
     return JsonResponse({'frame_ids': request.GET.get('frame_ids', None)})
 
 
+
+
+#  _______  ______    _______  __   __  _______ 
+# |       ||    _ |  |   _   ||  |_|  ||       |
+# |    ___||   | ||  |  |_|  ||       ||    ___|
+# |   |___ |   |_||_ |       ||       ||   |___ 
+# |    ___||    __  ||       ||       ||    ___|
+# |   |    |   |  | ||   _   || ||_|| ||   |___ 
+# |___|    |___|  |_||__| |__||_|   |_||_______|
 
 # .................................................. 
 # .................................................. 

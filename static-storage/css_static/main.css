@@ -142,8 +142,14 @@ body{
     position:relative;
 }
 
-/*....................*/
-/* mini menu style */
+
+
+
+
+
+/*.............................*/
+/*  mini menu for thumbnails   */
+/*.............................*/
 
 .thumb .mini_menu{
     /*small menu that pops up when you hover over .thumb*/
@@ -228,6 +234,52 @@ body{
     border-top: 15px solid #5C5C5C;
 }
 
+
+
+/*.............................*/
+/*     mini menu for strip     */
+/*.............................*/
+
+.pmenu_strip{
+    /* popup menu for strip */
+    position: absolute;
+    top: 0px; left: -10px;
+
+    transform-origin: top left;
+    transform: translate(-100%, 0%);
+   
+    background-color: white;
+    border-radius: 5px;
+    border:1px solid #e5e5e5;
+    
+    color: black;
+    
+    -webkit-box-shadow: 3px 3px 2px 0px rgba(0,0,0,0.25);
+    -moz-box-shadow: 3px 3px 2px 0px rgba(0,0,0,0.25);
+    box-shadow: 3px 3px 2px 0px rgba(0,0,0,0.25);
+    
+    z-index: 100;
+}
+
+.pmenu_strip:focus{
+    outline: none;
+}
+
+.pmenu_strip .tickmark{
+    position:absolute;
+    
+    top:  25px; right: -14px;
+    width: 0; 
+    height: 0; 
+    border-top: 15px solid transparent;
+    border-bottom: 15px solid transparent;
+    border-left: 15px solid white;
+}
+
+.menu_strip{ /*little button for opening menu*/
+    text-decoration: none;
+    cursor:pointer;
+}
 
 
 

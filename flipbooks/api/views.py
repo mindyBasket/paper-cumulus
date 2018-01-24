@@ -127,4 +127,3 @@ class FrameUpdateAPIView(generics.UpdateAPIView):
                 frame.frame_image.delete_thumbnails() #only deletes the thumb, not the original image
         
         return super(FrameUpdateAPIView, self).partial_update(request, *args, **kwargs)
-    

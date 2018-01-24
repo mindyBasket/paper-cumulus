@@ -30,7 +30,8 @@ urlpatterns = [
     
     # Strip Urls
     url(r'^scene/(?P<scene_pk>\d+)/strip/create/$', views.StripCreateView.as_view(), name='strip-create'),
-    url(r'^strips/(?P<pk>\d+)/update/$', views.StripUpdateView.as_view(), name='strip-update'),
+    url(r'^strip/(?P<pk>\d+)/update/$', views.StripUpdateView.as_view(), name='strip-update'),
+    url(r'^strip/(?P<pk>\d+)/delete/$', views.strip_delete, name='strip-delete'), #function view
     
     # Frame Urls
     url(r'^strip/(?P<strip_pk>\d+)/frame/create/$', views.FrameCreateView.as_view(), name='frame-create'),

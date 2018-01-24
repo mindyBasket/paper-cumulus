@@ -12,13 +12,16 @@
 
 $(function() { 
 
-    console.log("ajax_crud.js ---------- * v0.5.4");
+    console.log("ajax_crud.js ---------- * v0.6.0");
     
     // "+frame" button appends frame create form
     bind_frameCreateFormButton($(document));
     
     // mini_menu link opens popup_menu
-    bind_openMiniMenu($(document)); 
+    bind_openPMenu_frame($(document)); 
+    // popup menu for strip 
+    bind_openPMenu_strip($(document)); 
+    
     // elements inside the popup_menu. Has Edit and Delete.
     bind_popupMenu_elems($(document).find(".popup_menu.edit").eq(0));
     
@@ -203,7 +206,7 @@ function bind_frameCreateFormButton($doc, $targetOptional){
 // flipbooks/partials/popup_menu_partial.html
 // ................................................
 
-function bind_openMiniMenu($doc, $targetOptional){
+function bind_openPMenu_frame($doc, $targetOptional){
     var $target = $targetOptional
     
     if ($target == null){
@@ -235,10 +238,7 @@ function bind_openMiniMenu($doc, $targetOptional){
         
     });
     
-    
-    
 }
-
 
 // ................................................
 // Various behaviors and buttons on the popup menu
@@ -424,6 +424,99 @@ var ajax_frame_delete = function($form, frameid){
 
 
 
+//  _______  _______  ______    ___   _______    
+// |       ||       ||    _ |  |   | |       |   
+// |  _____||_     _||   | ||  |   | |    _  |   
+// | |_____   |   |  |   |_||_ |   | |   |_| |   
+// |_____  |  |   |  |    __  ||   | |    ___|   
+//  _____| |  |   |  |   |  | ||   | |   |       
+// |_______|  |___|  |___|  |_||___| |___|       
+
+// ................................................
+// bind link that opens popup menu for strip
+//
+// This function assumes popup menu is included in the document. 
+// Currently done by including the snippet as a partial. Find it in
+// flipbooks/partials/popup_menu_strip_partial.html
+// ................................................
+
+function bind_openPMenu_strip($doc, $targetOptional){
+    var $target = $targetOptional
+    
+    if ($target == null){
+        //do for all mini menus if target not specified
+        $target = $doc.find('.menu_strip');
+    } else if ($targetOptional instanceof jQuery == false){
+        console.error("Cannot bind mini menu even to non-Jquery object.");
+        return false;
+    }
+    
+    // ...............
+    // open mini menu
+    // ...............
+    var $popupMenu = $doc.find(".pmenu_strip").eq(0);
+    
+    $target.click(function(event){
+        event.preventDefault();
+        
+        // Grab partial and append to the current thumb location
+        $popupMenu.appendTo($(this).parent());
+        $popupMenu.show();
+        
+        // Update tag information about current object
+        var obj_id = $(this).parent().attr("stripid");
+        $popupMenu.attr("for", obj_id);
+        $popupMenu.children(".header").children("span").text(obj_id);
+        
+        // This allows popupMenu to disappear when you click else where
+        $popupMenu.focus();
+        
+    });
+    
+    
+    // ...............
+    // click events within the menu 
+    // ...............
+    
+    //.........................
+    // _. Bind Strip 'DELETE' action 
+    //.........................
+    $popupMenu.find('.action.delete').click(function(){
+        event.preventDefault();
+        
+        // Retrieve frame information
+        var stripId = $popupMenu.attr("for");
+        if (stripId=="-1"){return;} //STOP, if frameid is not set.
+        
+        // DELETE happens in 2 parts.
+        // First is GET, and then POST. To see POST delete, see ajax_frame_delete()
+        
+        var deleteResponce = window.flipbookLib.getJSONPartial(
+            '/flipbooks/strip/'+ stripId +'/delete/', 
+            'GET', 
+            'json',
+            function(){
+                console.log("DELETE CONFIRM");
+                $popupMenu.focusout()});
+        
+        deleteResponce.success(function(data){
+            
+            //////////////////////
+            /////// RENDER ///////
+            console.log("display confirm delete for strip");
+            renderStripDeleteConfirm(data, stripId, {'popupMenu': $popupMenu})
+            /////////////////////
+        });
+        
+    }); //end: bind 'delete'
+    
+}
+
+
+
+
+
+
 /*-----------------------------------------------------------------
 ---------------------- rendering functions ------------------------
 -------------------------------------------------------------------*/
@@ -480,7 +573,7 @@ function renderFrameContainer(data, stripId){
     $newFrameThumb.insertBefore(targetStripContainer.find('.frame_form'));
     
     //bind mini menu
-    bind_openMiniMenu($(document), $newFrameThumb.find(".mini_menu.edit"));
+    bind_openPMenu_frame($(document), $newFrameThumb.find(".mini_menu.edit"));
     
     //animate
     $newFrameThumb.toggle();
@@ -538,10 +631,6 @@ function renderDeleteConfirm(data, frameId, args){
         $popupMenu.parent().children('img').attr('style','');
     });
         
-        
-    
-        
-
 }
 
 function addDeleteConfirmForm(data, $popup, $targetOptional){
@@ -559,7 +648,74 @@ function addDeleteConfirmForm(data, $popup, $targetOptional){
     $target.append($("<p>" +data['html_form'] + "</p>"));
     // $popup.html(combinedHtmlContent);
     
-    
-    
-   
 }
+
+
+function renderStripDeleteConfirm(data, stripId, args){
+    
+    var $popupMenu = args['popupMenu'];
+    var $popupDelete = $popupMenu.clone().appendTo($popupMenu.parent()); //This might be slow
+    
+    $popupDelete.children('.content').html(''); //clear unnecessary cloned content
+    
+    //make objects to appear above lightbox
+    $popupDelete.attr('style','z-index:1000');
+    $popupMenu.parent().children('img').attr('style','z-index:1000');
+    
+    // TODO:
+    // I don't think this benefits from being a function
+    addDeleteConfirmForm(data, $popupDelete, $popupDelete.children('.content'));
+    
+    //a lightbox cover, that acts as a giant "close" button
+    var $lbCover = $(lightboxCover)
+    $lbCover.appendTo('body');
+    $lbCover.click(function(){
+        $popupDelete.find('#delete-cancel-button').click();
+    })
+
+    // Bind "confirm" button
+    $popupDelete.find('#delete-confirm-button').click(function(event){
+        // Note: #delete-confirm-button is a <a> that acts
+        //       like a submit() for the form  #delete-confirm.
+        event.preventDefault();
+        $popupDelete.find('#delete-cancel-button').click(); //clean up
+        var $deleteForm = $popupDelete.find('#delete-confirm');
+        
+        //>>>>>>>>>>>>>>>>>>>>
+        //>>>>>> SUBMIT >>>>>>
+        //ajax_strip_delete($deleteForm, stripId);
+        var deleteStripResp = window.flipbookLib.submitFormAjaxly(
+            $deleteForm,
+            '/flipbooks/strip/'+ stripId +'/delete/',
+            {'method': 'POST'},
+            function(){console.log("Attempt Ajax delete strip");});
+        deleteStripResp.success(function(data){
+            
+            /////// RENDER ///////
+            //show animation of deletion
+            $(document).find('.flex_list[stripid='+ stripId +']').animate({
+                opacity: 0,
+            }, 300, function() {
+                // Problem: if you delete this, you are removing everything 
+                //          in it with it, like popup menu. ],: 
+                // Rescue the popup menu
+                $(this).find(".pmenu_strip").eq(0).appendTo('body');
+                $(this).remove(); //actually delete
+            });
+            //////////////////////
+        });
+        //>>>>>>>>>>>>>>>>>>>>
+        
+    });
+    
+    // Bind "cancel" button
+    $popupDelete.find('#delete-cancel-button').click(function(event){
+        
+        //clean up
+        $popupDelete.remove();
+        $lbCover.remove(); //don't forget the lightbox cover
+        //$popupMenu.parent().children('img').attr('style','');
+    });
+        
+}
+
