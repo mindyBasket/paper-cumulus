@@ -23,7 +23,41 @@ var Item = makeStruct("id speaker country");
 var row = new Item(1, 'john', 'au');
 //alert(row.speaker); // displays: john
 
+// lightbox object
+class LightBox {
+    constructor() {
+        this.clickEventFunc = function(){console.log("lightbox clicked");};
+        console.log("function set: " + this.clickEventFunc);
+        this.template = `<div id="light_box_cover">
+                        </div>
+                        `;
+        var $lightBoxCover = $(this.template).appendTo('body');
+        
+        $lightBoxCover.click(function(){
+            var func = $(this).data("clickEventFunc");
+            func();
+        });
+        $lightBoxCover.data("clickEventFunc", this.clickEventFunc);
+        this.$obj = $lightBoxCover;
+        
+    }
 
+   // Getter
+//   get area() {
+//     return this.calcArea();
+//   }
+   
+    
+    // Method
+    setClickEventFunc(func){
+        this.$obj.data("clickEventFunc", func);
+        this.clickEventFunc = func;
+    }
+    turnOff() {
+        this.$obj.remove();
+    }
+
+}
 
 
 // Generic error message when making API call

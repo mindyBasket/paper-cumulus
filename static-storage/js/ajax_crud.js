@@ -3,6 +3,8 @@
 // Above line is to prevent cloud9 from thinking 
 // '$' is an undefined variable
 
+/* global LightBox*/
+
 // Project specific libraries
 // window.flipbookLib
 
@@ -460,7 +462,7 @@ function bind_openPMenu_strip($doc, $targetOptional){
         event.preventDefault();
         
         // Grab partial and append to the current thumb location
-        $popupMenu.appendTo($(this).parent());
+        $popupMenu.appendTo($(this));
         $popupMenu.show();
         
         // Update tag information about current object
@@ -666,12 +668,10 @@ function renderStripDeleteConfirm(data, stripId, args){
     // I don't think this benefits from being a function
     addDeleteConfirmForm(data, $popupDelete, $popupDelete.children('.content'));
     
-    //a lightbox cover, that acts as a giant "close" button
-    var $lbCover = $(lightboxCover)
-    $lbCover.appendTo('body');
-    $lbCover.click(function(){
+    var $lbCover = new LightBox();
+    $lbCover.setClickEventFunc(function(){
         $popupDelete.find('#delete-cancel-button').click();
-    })
+    });
 
     // Bind "confirm" button
     $popupDelete.find('#delete-confirm-button').click(function(event){
@@ -713,7 +713,7 @@ function renderStripDeleteConfirm(data, stripId, args){
         
         //clean up
         $popupDelete.remove();
-        $lbCover.remove(); //don't forget the lightbox cover
+        $lbCover.turnOff(); //don't forget the lightbox cover
         //$popupMenu.parent().children('img').attr('style','');
     });
         

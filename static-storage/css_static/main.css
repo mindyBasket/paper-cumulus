@@ -1,6 +1,8 @@
 body{
     background-color: #E8E8E8;
     height: 100%;
+    
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 /* -------------------------------------- */
@@ -236,6 +238,12 @@ body{
 
 
 
+
+/*   ______      _    */
+/*  / __/ /_____(_)__ */
+/* _\ \/ __/ __/ / _ \*/
+/*/___/\__/_/ /_/ .__/*/
+/*             /_/    */
 /*.............................*/
 /*     mini menu for strip     */
 /*.............................*/
@@ -244,19 +252,23 @@ body{
     /* popup menu for strip */
     position: absolute;
     top: 0px; left: -10px;
+    width: 150px;
 
     transform-origin: top left;
-    transform: translate(-100%, 0%);
+    transform: translate(-110%, -10%);
    
     background-color: white;
     border-radius: 5px;
     border:1px solid #e5e5e5;
+
+    color: #5b5b5b;
+    font-size: 0.5em;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     
-    color: black;
     
-    -webkit-box-shadow: 3px 3px 2px 0px rgba(0,0,0,0.25);
-    -moz-box-shadow: 3px 3px 2px 0px rgba(0,0,0,0.25);
-    box-shadow: 3px 3px 2px 0px rgba(0,0,0,0.25);
+    -webkit-box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.25);
+    -moz-box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.25);
+    box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.25);
     
     z-index: 100;
 }
@@ -268,18 +280,43 @@ body{
 .pmenu_strip .tickmark{
     position:absolute;
     
-    top:  25px; right: -14px;
+    top:  6px; right: -9px;
     width: 0; 
     height: 0; 
-    border-top: 15px solid transparent;
-    border-bottom: 15px solid transparent;
-    border-left: 15px solid white;
+    border-top: 11px solid transparent;
+    border-bottom: 11px solid transparent;
+    border-left: 11px solid white;
+
 }
 
 .menu_strip{ /*little button for opening menu*/
     text-decoration: none;
     cursor:pointer;
 }
+
+.pmenu_strip .header{ 
+    display:block;
+    padding: 10px;
+    border-bottom: 1px solid #dbdbdb;
+}
+.pmenu_strip .content{ 
+    padding: 10px;
+}
+
+
+.pmenu_strip ul{
+    padding: 0;
+}
+
+.pmenu_strip ul li{padding-top: 8px;}
+.pmenu_strip ul li:first-of-type{padding-top: 0px;}
+
+
+
+
+
+
+
 
 
 

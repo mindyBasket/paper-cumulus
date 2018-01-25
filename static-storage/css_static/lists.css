@@ -29,8 +29,11 @@ ul.list_strips li > .header{
     padding: 10px;
     margin: 0 0 20px 0;
     border-bottom: 5px solid #c9c9c9;
-    
 }
+ul.list_strips li > .header a{
+    text-decoration: none;
+}
+
 
 .strip_flex_container{
     /*Main flex container for a single srip*/
