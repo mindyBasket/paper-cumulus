@@ -26,19 +26,25 @@ var row = new Item(1, 'john', 'au');
 // lightbox object
 class LightBox {
     constructor() {
-        this.clickEventFunc = function(){console.log("lightbox clicked");};
+        this.clickEventFunc = function(){console.log("lightbox clicked")};
         console.log("function set: " + this.clickEventFunc);
+        
         this.template = `<div id="light_box_cover">
                         </div>
                         `;
         var $lightBoxCover = $(this.template).appendTo('body');
+        this.$obj = $lightBoxCover;
+        this.$obj.hide(); // hidden by default
         
         $lightBoxCover.click(function(){
+            $(this).data("obj").turnOff(); //default behavior
             var func = $(this).data("clickEventFunc");
             func();
         });
-        $lightBoxCover.data("clickEventFunc", this.clickEventFunc);
-        this.$obj = $lightBoxCover;
+        $lightBoxCover.data(
+            "obj", this,
+            "clickEventFunc", this.clickEventFunc);
+        
         
     }
 
@@ -53,8 +59,18 @@ class LightBox {
         this.$obj.data("clickEventFunc", func);
         this.clickEventFunc = func;
     }
+
+    turnOn(){
+        var $lb = this.$obj;
+        $lb.css( "opacity", 0);
+        $lb.fadeTo(200, 1);
+    }
+    
     turnOff() {
-        this.$obj.remove();
+        var $lb = this.$obj;
+        $lb.fadeTo(200, 0, function(){
+            $(this).hide();
+        })
     }
 
 }

@@ -12,6 +12,10 @@
 ----------------------- MAIN  -------------------------
 -------------------------------------------------------*/
 
+// init lightbox
+var $lbCover = new LightBox();
+
+
 $(function() { 
 
     console.log("ajax_crud.js ---------- * v0.6.0");
@@ -276,13 +280,14 @@ function bind_popupMenu_elems($popupMenu){
         
         //open modal
         var $lbModal = $(lightboxModal);
-        var $lbCover = $(lightboxCover);
-        $lbCover.appendTo('body');
         $lbModal.appendTo('body');
-        $lbCover.click(function(){
-            $(this).remove();
-            $lbModal.remove();
+ 
+        // turn on lightbox
+        $lbCover.setClickEventFunc(function(){
+            $lbModal.remove(); //close edit modal
         });
+        $lbCover.turnOn();
+        
         
         //json_partial 
         $.ajax({
@@ -348,11 +353,7 @@ function bind_popupMenu_elems($popupMenu){
                 });
                 
 
-            }, //end: success
-            error: function (data) {
-                console.error(data);
-                console.log(data.status);
-            }
+            } //end: success
         });
         
     });
@@ -604,11 +605,14 @@ function renderDeleteConfirm(data, frameId, args){
     addDeleteConfirmForm(data, $popupDelete, $popupDelete.children('.content'));
     
     //a lightbox cover, that acts as a giant "close" button
-    var $lbCover = $(lightboxCover)
-    $lbCover.appendTo('body');
-    $lbCover.click(function(){
+    //var $lbCover = $(lightboxCover)
+    //$lbCover.appendTo('body');
+    
+    $lbCover.turnOn();
+    
+    $lbCover.setClickEventFunc(function(){
         $popupDelete.find('#delete-cancel-button').click();
-    })
+    });
 
     // Bind "confirm" button
     $popupDelete.find('#delete-confirm-button').click(function(event){
@@ -629,7 +633,7 @@ function renderDeleteConfirm(data, frameId, args){
         
         //clean up
         $popupDelete.remove();
-        $lbCover.remove(); //don't forget the lightbox cover
+        $lbCover.turnOff(); //don't forget the lightbox cover
         $popupMenu.parent().children('img').attr('style','');
     });
         
@@ -660,18 +664,21 @@ function renderStripDeleteConfirm(data, stripId, args){
     
     $popupDelete.children('.content').html(''); //clear unnecessary cloned content
     
+    // Change click event to LightBox so that it closes Strip Delete Confirm form
+    $lbCover.setClickEventFunc(function(){
+        $popupDelete.find('#delete-cancel-button').click();
+    });
+    
+    $lbCover.turnOn();
+    
     //make objects to appear above lightbox
     $popupDelete.attr('style','z-index:1000');
-    $popupMenu.parent().children('img').attr('style','z-index:1000');
+    //$popupMenu.parent().attr('style','z-index:1000');
     
     // TODO:
     // I don't think this benefits from being a function
     addDeleteConfirmForm(data, $popupDelete, $popupDelete.children('.content'));
     
-    var $lbCover = new LightBox();
-    $lbCover.setClickEventFunc(function(){
-        $popupDelete.find('#delete-cancel-button').click();
-    });
 
     // Bind "confirm" button
     $popupDelete.find('#delete-confirm-button').click(function(event){
@@ -710,11 +717,9 @@ function renderStripDeleteConfirm(data, stripId, args){
     
     // Bind "cancel" button
     $popupDelete.find('#delete-cancel-button').click(function(event){
-        
         //clean up
         $popupDelete.remove();
         $lbCover.turnOff(); //don't forget the lightbox cover
-        //$popupMenu.parent().children('img').attr('style','');
     });
         
 }
