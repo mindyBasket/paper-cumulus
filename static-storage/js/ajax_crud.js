@@ -250,10 +250,12 @@ function bind_openPMenu_frame($doc, $targetOptional){
 // Various behaviors and buttons on the popup menu
 // ................................................
 
-var lightboxCover = `
-<div id="light_box_cover">
-</div>
-`
+// Moved to a class
+// var lightboxCover = `
+// <div id="light_box_cover">
+// </div>
+// `
+
 var lightboxModal = `
 <div id="light_box_modal">
 </div>
@@ -603,10 +605,6 @@ function renderDeleteConfirm(data, frameId, args){
     // TODO:
     // I don't think this benefits from being a function
     addDeleteConfirmForm(data, $popupDelete, $popupDelete.children('.content'));
-    
-    //a lightbox cover, that acts as a giant "close" button
-    //var $lbCover = $(lightboxCover)
-    //$lbCover.appendTo('body');
     
     $lbCover.turnOn();
     
