@@ -455,6 +455,8 @@ def sort_children(request, *args, **kwargs):
 
 
 
+
+
 #  _______  ______    _______  __   __  _______ 
 # |       ||    _ |  |   _   ||  |_|  ||       |
 # |    ___||   | ||  |  |_|  ||       ||    ___|
@@ -469,6 +471,9 @@ def sort_children(request, *args, **kwargs):
 # .................................................. 
 # .................................................. 
 
+# ---------------
+# Frame Detail 
+# ---------------
 class FrameDetailView(generic.DetailView):
     
     #I don't need this for detail view, do I?
@@ -490,6 +495,9 @@ class FrameDetailView(generic.DetailView):
         return context
         
 
+# ---------------
+# Frame Create 
+# ---------------
 class FrameCreateView(generic.CreateView):
     
     model = Frame
@@ -520,11 +528,18 @@ class FrameCreateView(generic.CreateView):
     #     return JsonResponse(form.errors, status=400)
  
 
+# ---------------
+# Frame Update 
+# ---------------
 class FrameUpdateView(generic.UpdateView):
-    # do this using restful API
+    # This is done through Rest API
+    # see api/views.py
     pass
 
 
+# ---------------
+# Frame Delete 
+# ---------------
 # This is FunctionBased view for Frame-delete. Decided not to go with ClassBased.
 # Two different behaviors depending on request:
 # GET: responds with confirm form

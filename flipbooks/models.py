@@ -175,6 +175,7 @@ class Strip(models.Model):
         
 
 
+
 # ███████╗██████╗  █████╗ ███╗   ███╗███████╗
 # ██╔════╝██╔══██╗██╔══██╗████╗ ████║██╔════╝
 # █████╗  ██████╔╝███████║██╔████╔██║█████╗  
@@ -263,6 +264,8 @@ class Frame(models.Model):
         strip = self.strip
         strip.children_li = helpers.remove_child(self.strip, self.id)
         strip.save() # save parent!
+        
+        # Remove thumbnails
         
         #delete Frame!
         super(Frame, self).delete() 
