@@ -532,7 +532,8 @@ class FrameCreateView(generic.CreateView):
 # Frame Update 
 # ---------------
 class FrameUpdateView(generic.UpdateView):
-    # This is done through Rest API
+    # This is done through Rest API to take advantage of
+    # partial update. 
     # see api/views.py
     pass
 

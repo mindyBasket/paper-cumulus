@@ -109,7 +109,9 @@ class FrameUpdateAPIView(generics.UpdateAPIView):
     #Hoping to achieve PATCH edit
     # def put(self, request, *args, **kwargs):
     #      
-         
+        
+    ''' Old image and thumbnails are deleted upon DELETE request.
+        Check the signal receivers in models.py '''
     def partial_update(self, request, *args, **kwargs):
         print("------------- partial update [PATCH] --------------")
         print("for frame id#{}".format(kwargs['pk']) )

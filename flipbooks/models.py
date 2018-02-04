@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+import os
 
 from django.contrib import messages
 
@@ -10,16 +11,39 @@ from easy_thumbnails.signal_handlers import generate_aliases_global
 
 from django.db import models
 
-
-# -- This was moved to the end to prevent import timing conflict --
+# ---------------------------------------------
+# This is moved to the end to 
+# prevent import timing conflict
+# ---------------------------------------------
 #custom helper functions 
 #from .helpermodule import helpers
-# -----------------------------------------------------------------
+# ---------------------------------------------
 
 # thumbnail signal handler
 saved_file.connect(generate_aliases_global)
 
 
+# Signals
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
+
+
+    
+    
+
+
+
+
+
+
+
+#  ██████╗██╗  ██╗ █████╗ ██████╗ ████████╗███████╗██████╗ 
+# ██╔════╝██║  ██║██╔══██╗██╔══██╗╚══██╔══╝██╔════╝██╔══██╗
+# ██║     ███████║███████║██████╔╝   ██║   █████╗  ██████╔╝
+# ██║     ██╔══██║██╔══██║██╔═══╝    ██║   ██╔══╝  ██╔══██╗
+# ╚██████╗██║  ██║██║  ██║██║        ██║   ███████╗██║  ██║
+#  ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝        ╚═╝   ╚══════╝╚═╝  ╚═╝
+                                                         
 # -------------------------------------------------
 # -------------------------------------------------
 #               Chapter and Book
@@ -54,6 +78,20 @@ class Chapter(models.Model):
         return "Chapter {}: {}".format(self.number, self.title)
 
 
+
+
+
+
+
+
+
+# ███████╗ ██████╗███████╗███╗   ██╗███████╗
+# ██╔════╝██╔════╝██╔════╝████╗  ██║██╔════╝
+# ███████╗██║     █████╗  ██╔██╗ ██║█████╗  
+# ╚════██║██║     ██╔══╝  ██║╚██╗██║██╔══╝  
+# ███████║╚██████╗███████╗██║ ╚████║███████╗
+# ╚══════╝ ╚═════╝╚══════╝╚═╝  ╚═══╝╚══════╝
+                                          
 
 # -------------------------------------------------
 # -------------------------------------------------
@@ -197,9 +235,10 @@ def frame_upload_path(instance, filename):
     max_frame_id = Frame.objects.all().order_by("-id")[0].id
     frame_id = (int(max_frame_id)+1) if instance.id is None else instance.id
    
-    return 'frame_images/s{0}/f{1}.{2}'.format(
+    return 'frame_images/s{0}/f{1}_{2}.{3}'.format(
         instance.strip.scene.id, 
         frame_id,
+        '%010x' % random.randrange(16**9, 16**10),
         filename.split(".")[-1]
         )
  
@@ -236,7 +275,10 @@ class Frame(models.Model):
     
     
     def __str__(self):
-        return ("%d : %s" % (self.id, self.note))
+        if self.id is not None:
+            return ("%d : %s" % (self.id, self.note))
+        else:
+            return("<id not assigned> : %s" % (self.note))
 
     def save(self, *args, **kwargs):
         
@@ -271,7 +313,60 @@ class Frame(models.Model):
         super(Frame, self).delete() 
         
 
+
+
+
+
+# Leaving this test function in for syntax memo
+# Currently turned off
+# @receiver(post_save, sender=Frame)
+def frame_post_save_test(sender, **kwargs):
     
+    created = None
+    opening_msg ="Frame saved. No kwarg 'created'."
+    if 'created' in kwargs:
+        created = kwargs['created']
+        opening_msg = "New frame created" if created else "Frame updated"
+  
+    print("======== Signal =========")
+    print(opening_msg)
+    print(kwargs)
+    print("Frame id is: {}, note is: {}".format(kwargs["instance"].id, kwargs["instance"].note))
+    print("=========================")
+
+
+
+
+# Actual frame_post_save signal receiver
+''' Old image and thumbnails are deleted upon PATCH request.
+    Check api/views.py '''
+@receiver(post_delete, sender=Frame)
+def frame_post_save(sender, **kwargs):
+    
+    print("======== Frame deleted =========")
+    
+    frame =''
+    if 'instance' in kwargs:
+        frame = kwargs['instance']
+    else:
+        return 
+    
+    # take care of thumbnails
+    if frame.frame_image: 
+        # delete thumbnail
+        frame.frame_image.delete_thumbnails() 
+        print("......thumbnails deleted")
+        # delete original uploaded image
+        image_path = frame.frame_image.path
+        print("......retrieve image path: {}".format(image_path))
+        if image_path and os.path.isfile(image_path):
+            os.remove(image_path)
+            print("......original image deleted")
+        
+    return True
+    
+
+
 
 #custom helper functions 
 from .helpermodule import helpers

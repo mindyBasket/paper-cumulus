@@ -148,6 +148,10 @@ class StripModelTestCase(TestCase):
         
 
 # The same as above, but for Frames
+
+# Run using 
+# python manage.py test flipbooks.tests.FrameModelTestCase
+
 class FrameModelTestCase(TestCase):
     
     def setUp(self):
@@ -222,4 +226,57 @@ class FrameModelTestCase(TestCase):
         self.frame5.save()
         
         self.assertEqual(self.strip.children_li, '1,2,5,3,4')
+
+
+
+# Run using 
+# python manage.py test flipbooks.tests.SignalsTestCase
+
+class SignalsTestCase(TestCase):
     
+    def setUp(self):
+        """Define the test client and other test variables."""
+        """This test case has no real assert. Check the console to check
+           if the signal reciever responds"""
+           
+        self.book = Book(title="Test Book")
+        self.book.save()
+        self.chapter = Chapter(number=1, book=self.book)
+        self.chapter.save()
+        self.scene = Scene(description="Test scene", chapter=self.chapter)
+        self.scene.save()
+        self.strip = Strip(description="Test strip", scene=self.scene)
+        self.strip.save()
+        
+        self.frame1 = Frame(strip=self.strip)
+        self.frame2 = Frame(strip=self.strip)
+        self.frame3 = Frame(strip=self.strip)
+        self.frame4 = Frame(strip=self.strip)
+        
+        self.frameList = [self.frame1, self.frame2, self.frame3, self.frame4]
+        
+        print(">> SETUP ENDED <<")
+        
+    
+    def test_signals_on_create(self):
+
+        self.frame1.note = "Frame number 1"
+        self.frame2.note = "Frame number 2"
+        self.frame3.note = "Frame number 3"
+        self.frame4.note = "Frame number 4"
+        
+        # save all test frame objects
+        for frObject in self.frameList:
+            frObject.save()
+
+        # Check console to see if the signal responds.
+        self.assertEqual(self.frame1.id, 1)
+        # Intersting the frame id is not 'None' here, but
+        # it is 'None' when inspected inside the signal.
+        
+
+        self.frame3.note = "Frame number 3 changed"
+        self.frame3.save()
+
+        # Check console to see if the signal responds.
+        self.assertEqual(self.frame3.id, 3)
