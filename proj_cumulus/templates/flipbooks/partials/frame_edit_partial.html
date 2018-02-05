@@ -23,6 +23,14 @@
                 <span class='field_value'>
                     <img src="{{ frame_instance.frame_image.url }}" width='400px'/>
                 </span>
+                <br/>
+            </div>
+            <div class="alert alert-success" role="alert" id="field_frame_image_file_name">
+                <span class="glyphicon glyphicon-picture" aria-hidden="true" style="font-size:2em"></span>
+                <span class="field_value">
+                    {{frame_instance.frame_image.width}} x {{frame_instance.frame_image.height}},
+                    {{frame_instance.frame_image.name}}
+                </span>
             </div>
         {% else %}
             <div class="alert alert-warning" role="alert" id='field_frame_image'>
