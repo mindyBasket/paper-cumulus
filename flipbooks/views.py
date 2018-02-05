@@ -516,11 +516,6 @@ class FrameCreateView(generic.CreateView):
         
 
     def form_valid(self, form):
-        print (" ------------------------------- ")
-        print (" THIS FORM VALID?")
-        print (" ------------------------------- ")
-        
-        
         return super(FrameCreateView, self).form_valid(form)
     
     # def form_invalid(self, form):

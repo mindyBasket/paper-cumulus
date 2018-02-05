@@ -1,3 +1,4 @@
+import os
 from rest_framework import generics
 from rest_framework.parsers import FormParser,MultiPartParser,FileUploadParser
 
@@ -121,11 +122,21 @@ class FrameUpdateAPIView(generics.UpdateAPIView):
             if request.data['frame_image'] is not None and request.data['frame_image'] != '':
                 
                 frame = Frame.objects.filter(pk=kwargs['pk'])[0]
-                if frame.frame_image: 
-                    print(frame.frame_image.path) 
-                for th in frame.frame_image.get_thumbnails():
-                    print(th.path)
                 
-                frame.frame_image.delete_thumbnails() #only deletes the thumb, not the original image
-        
+                # old image paths
+                # image_paths = []
+                # if frame.frame_image: 
+                #     image_paths.append(frame.frame_image.path) 
+                # for thumbnail in frame.frame_image.get_thumbnails():
+                #     image_paths.append(thumbnail.path)
+                # frame._old_image_paths = image_paths
+ 
+                # Remove old images
+                if frame.frame_image: 
+                    frame.frame_image.delete_thumbnails() 
+                    image_path = frame.frame_image.path
+                    if image_path and os.path.isfile(image_path):
+                        os.remove(image_path)
+             
         return super(FrameUpdateAPIView, self).partial_update(request, *args, **kwargs)
+     

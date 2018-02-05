@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-import os
+import os, random
 
 from django.contrib import messages
 
 from easy_thumbnails.fields import ThumbnailerImageField
 from easy_thumbnails.signals import saved_file
 from easy_thumbnails.signal_handlers import generate_aliases_global
-
 
 from django.db import models
 
@@ -24,18 +23,18 @@ saved_file.connect(generate_aliases_global)
 
 
 # Signals
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import pre_save, post_save, post_delete
 from django.dispatch import receiver
 
+import django.dispatch
+
 
     
-    
 
 
 
 
-
-
+# http://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=Strip 
 
 #  ██████╗██╗  ██╗ █████╗ ██████╗ ████████╗███████╗██████╗ 
 # ██╔════╝██║  ██║██╔══██╗██╔══██╗╚══██╔══╝██╔════╝██╔══██╗
@@ -136,7 +135,6 @@ class Scene(models.Model):
 
 
 
-# http://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=Strip 
 
 # ███████╗████████╗██████╗ ██╗██████╗ 
 # ██╔════╝╚══██╔══╝██╔══██╗██║██╔══██╗
@@ -235,7 +233,7 @@ def frame_upload_path(instance, filename):
     max_frame_id = Frame.objects.all().order_by("-id")[0].id
     frame_id = (int(max_frame_id)+1) if instance.id is None else instance.id
    
-    return 'frame_images/s{0}/f{1}_{2}.{3}'.format(
+    return 'frame_images/s{0}/f{1}__{2}.{3}'.format(
         instance.strip.scene.id, 
         frame_id,
         '%010x' % random.randrange(16**9, 16**10),
@@ -268,10 +266,14 @@ class Frame(models.Model):
         #thumbnail_storage='frame_images/thumbTest/thumbs/', #I don't know how to use this
         blank=False
     )
-    
+
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
     
+    # Temporary attributes used for signals
+    # Tried using this to manipulate behaviors in signals.
+    # Didn't quite work out but could come in handy later.
+    _is_image_update = False
     
     
     def __str__(self):
@@ -290,8 +292,8 @@ class Frame(models.Model):
         # print(self.frame_image.name) #upload name, not actual file path
         # print(self.frame_image.url) #/media/whiteTrip00.png
         # print(self.frame_image.path) #/home/ubuntu/workspace/media/whiteTrip00.png ?
-
-
+        # store old thumbnail information for deletion later
+        
         # 1. Save instance
         super(Frame, self).save(*args, **kwargs) # save Frame!
         
@@ -316,34 +318,19 @@ class Frame(models.Model):
 
 
 
+# ███████╗██╗ ██████╗ ███╗   ██╗ █████╗ ██╗     ███████╗
+# ██╔════╝██║██╔════╝ ████╗  ██║██╔══██╗██║     ██╔════╝
+# ███████╗██║██║  ███╗██╔██╗ ██║███████║██║     ███████╗
+# ╚════██║██║██║   ██║██║╚██╗██║██╔══██║██║     ╚════██║
+# ███████║██║╚██████╔╝██║ ╚████║██║  ██║███████╗███████║
+# ╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝  ╚═╝╚══════╝╚══════╝
+                                                      
 
-# Leaving this test function in for syntax memo
-# Currently turned off
-# @receiver(post_save, sender=Frame)
-def frame_post_save_test(sender, **kwargs):
-    
-    created = None
-    opening_msg ="Frame saved. No kwarg 'created'."
-    if 'created' in kwargs:
-        created = kwargs['created']
-        opening_msg = "New frame created" if created else "Frame updated"
-  
-    print("======== Signal =========")
-    print(opening_msg)
-    print(kwargs)
-    print("Frame id is: {}, note is: {}".format(kwargs["instance"].id, kwargs["instance"].note))
-    print("=========================")
-
-
-
-
-# Actual frame_post_save signal receiver
+# frame_post_save signal receiver
 ''' Old image and thumbnails are deleted upon PATCH request.
     Check api/views.py '''
 @receiver(post_delete, sender=Frame)
-def frame_post_save(sender, **kwargs):
-    
-    print("======== Frame deleted =========")
+def frame_post_delete(sender, **kwargs):
     
     frame =''
     if 'instance' in kwargs:
@@ -351,20 +338,14 @@ def frame_post_save(sender, **kwargs):
     else:
         return 
     
-    # take care of thumbnails
+    # remove uploaded images and associated thumbnails
     if frame.frame_image: 
-        # delete thumbnail
-        frame.frame_image.delete_thumbnails() 
-        print("......thumbnails deleted")
-        # delete original uploaded image
+        frame.frame_image.delete_thumbnails() # delete thumbnails 
         image_path = frame.frame_image.path
-        print("......retrieve image path: {}".format(image_path))
         if image_path and os.path.isfile(image_path):
-            os.remove(image_path)
-            print("......original image deleted")
-        
+            os.remove(image_path) # delete original image
+  
     return True
-    
 
 
 
