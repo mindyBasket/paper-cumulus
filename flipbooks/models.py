@@ -226,15 +226,15 @@ class Strip(models.Model):
 # Issue: slightly unreliable since this function tries to "guess"
 #        instance's id before it is newly created in db
 def frame_upload_path(instance, filename):
-    # file will be uploaded to MEDIA_ROOT/frame_images/s{id}/f{id}.{extension}
+    # file will be uploaded to MEDIA_ROOT/frame_images/s{id}/f{id}/f{id}__{hexcode}.{extension}
     
     max_frame_id = Frame.objects.all().order_by("-id")[0].id
     frame_id = (int(max_frame_id)+1) if instance.id is None else instance.id
-   
-    return 'frame_images/s{0}/f{1}__{2}.{3}'.format(
+    hexcode = '%010x' % random.randrange(16**9, 16**10)
+    return 'frame_images/s{0}/f{1}__{2}/f{1}__{2}.{3}'.format(
         instance.strip.scene.id, 
         frame_id,
-        '%010x' % random.randrange(16**9, 16**10),
+        hexcode,
         filename.split(".")[-1]
         )
  
@@ -337,15 +337,14 @@ def frame_post_delete(sender, **kwargs):
         return 
     
     # remove uploaded images and associated thumbnails
-    if frame and frame.frame_image: 
-        frame.frame_image.delete_thumbnails() # delete thumbnails 
-        image_path = frame.frame_image.path
-        if image_path and os.path.isfile(image_path):
-            os.remove(image_path) # delete original image
+    thumbnailer_helpers.delete_frame_images(frame)
   
     return True
 
 
+''' Generates thumbnails for Frame after it has been saved.
+    It uses get_thumbnailer(); it should just return existing
+    thumbnail if it already exists '''
 @receiver(post_save, sender=Frame)
 def frame_post_save(sender, **kwargs):
     print("")
@@ -357,7 +356,6 @@ def frame_post_save(sender, **kwargs):
         return 
     
     aliases_dict = settings.THUMBNAIL_ALIASES['']
-    print("getting aliases: {}".format(aliases_dict))
     for alias in aliases_dict:
         thumbnail_options = aliases_dict[alias]
         
@@ -369,9 +367,20 @@ def frame_post_save(sender, **kwargs):
             generate=True, 
             silent_template_exception=False
             )
+    
+    
 
     # This method doesn't actually store them as aliases onto the object. 
     # easy_th_files.generate_all_aliases(frame.frame_image, True)
+    
+    print("Thumbnail generated:")
+    frame = Frame.objects.filter(pk=frame.id)[0] # re-grab
+    # Wondering if the fact taht I am using get_thumbnails "connects"
+    # the thumbnail to the object?
+    for thumbnail in frame.frame_image.get_thumbnails():
+        print(thumbnail.path)
+    
+ 
     
     print("==================================================")
     print("")
@@ -383,3 +392,4 @@ def frame_post_save(sender, **kwargs):
 
 #custom helper functions 
 from .helpermodule import helpers
+from .helpermodule import thumbnailer_helpers

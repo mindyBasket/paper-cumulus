@@ -1,4 +1,4 @@
-import re
+import os, re
  
 ''' Takes path to thumbnail image and its dimension to 
     figure out what easy-thumbnail alias it is under.
@@ -31,3 +31,43 @@ def get_alias_dict(thumbnail_path, thumbnail_dimension, alias_dict):
             return False
         else:
             return {alias_match: thumbnail_path}
+            
+''' Assuming the image_path is valid and all the related images
+    and thumbnails are stored in a folder represending that 
+    frame object, clears all image and removes the folder. '''
+def delete_frame_images(frame):
+    
+    if frame and frame.frame_image: 
+        image_path = frame.frame_image.path
+        image_name = image_path.split("/")[-1].split(".")[0]
+        folder_name = image_path.split("/")[-2]
+        print("Removing folder: {} ==? {}".format(image_name, folder_name))
+        
+        if folder_name == image_name:
+            #remove contents of folder 
+            folder_path = "/".join(str(elem) for elem in image_path.split("/")[:-1])
+            if os.path.exists(folder_path):
+                # list all items 
+                # from os.path import isfile, join
+                # onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
+                for f in os.listdir(folder_path):
+                    f_path = os.path.join(folder_path, f)
+                    if os.path.isfile(f_path):
+                        os.remove(f_path)
+                
+                # should be empty now
+                os.rmdir(folder_path) 
+                ## TODO: does this a little naively. Need to add an exception
+    
+        else: 
+            # assume it is in an old upload path; no subfolder, just dumped
+            # in a large "reservoir". Do your best to remove them.
+            
+            frame.frame_image.delete_thumbnails() # not 100% successful
+            image_path = frame.frame_image.path
+            if image_path and os.path.isfile(image_path):
+                os.remove(image_path)
+                
+    else:
+        # frame object or image not valid
+        return False
