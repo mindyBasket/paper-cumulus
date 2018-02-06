@@ -116,12 +116,7 @@ class FrameUpdateAPIView(generics.UpdateAPIView):
     def get_queryset(self):
         return Frame.objects.all()
     
-    #Hoping to achieve PATCH edit
-    # def put(self, request, *args, **kwargs):
-    #      
-        
-    # Old image and thumbnails are deleted upon DELETE request.
-    # Check the signal receivers in models.py 
+ 
     def partial_update(self, request, *args, **kwargs):
         print("------------- partial update [PATCH] --------------")
         print("for frame id#{}".format(kwargs['pk']) )
@@ -141,6 +136,8 @@ class FrameUpdateAPIView(generics.UpdateAPIView):
                 # frame._old_image_paths = image_paths
  
                 # Remove old images
+                # Old image and thumbnails are deleted upon DELETE request.
+                # Check the signal receivers in models.py 
                 print("======= PATCH: removing old images =========")
                 if frame and frame.frame_image: 
                     print("does this frame has thumbnails?:")
@@ -153,48 +150,51 @@ class FrameUpdateAPIView(generics.UpdateAPIView):
                         os.remove(image_path)
 
 
-        # intercept!!
-        resp = super(FrameUpdateAPIView, self).partial_update(request, *args, **kwargs)
-        
-        
-        print("")
-        print("========= PATCH response ==========")
-        #print("Responce data: {}".format(resp.data))
-        
-        #resp.data.update({"thumbnail": 1})
-        
-        print("thumbnails on this object:")
-        
-        frame = Frame.objects.filter(pk=kwargs['pk'])[0] # <- I do have to re-retrieve
-        
-        frame_thumbnails = {}
-        for thumbnail in frame.frame_image.get_thumbnails():
-            # print(dir(thumbnail))
-            print("url: {}".format(thumbnail.url))
-            print("dimension: {}".format(thumbnail._get_image_dimensions()))
-            # print("__dict__: {}".format(dir(thumbnail)))
-            
-            # can't get alias?
-            # have to sort them into alias before using it
-            matched_alias = thumbnailer_helpers.get_alias_dict(
-                thumbnail.url, 
-                thumbnail._get_image_dimensions(),
-                settings.THUMBNAIL_ALIASES['']
-                )
-            if matched_alias:
-                frame_thumbnails.update(matched_alias)
+                # intercept!!
+                resp = super(FrameUpdateAPIView, self).partial_update(request, *args, **kwargs)
                 
+                
+                print("")
+                print("========= PATCH response ==========")
+                #print("Responce data: {}".format(resp.data))
+                
+                #resp.data.update({"thumbnail": 1})
+                
+                print("thumbnails on this object:")
+                
+                frame = Frame.objects.filter(pk=kwargs['pk'])[0] # <- I do have to re-retrieve
+                
+                frame_thumbnails = {}
+                for thumbnail in frame.frame_image.get_thumbnails():
+                    # print(dir(thumbnail))
+                    print("url: {}".format(thumbnail.url))
+                    print("dimension: {}".format(thumbnail._get_image_dimensions()))
+                    # print("__dict__: {}".format(dir(thumbnail)))
+                    
+                    # can't get alias?
+                    # have to sort them into alias before using it
+                    matched_alias = thumbnailer_helpers.get_alias_dict(
+                        thumbnail.url, 
+                        thumbnail._get_image_dimensions(),
+                        settings.THUMBNAIL_ALIASES['']
+                        )
+                    if matched_alias:
+                        frame_thumbnails.update(matched_alias)
+                        
+                    
+                # inject frame_thumbnails into the response
+                print("frame_thumbnails: {}".format(frame_thumbnails))
+                if frame_thumbnails != {}:
+                    resp.data["frame_thumbnails"] = frame_thumbnails
+                
+                print("===================================")
+                print("")
+                
+                return resp
             
-        # inject frame_thumbnails into the response
-        print("frame_thumbnails: {}".format(frame_thumbnails))
-        resp["frame_thumbnails"] = frame_thumbnails
-        
-        print("===================================")
-        print("")
-        
-        return resp
-        
-        
+        else:
+            # PATCH request that does not include frame_image
+            super(FrameUpdateAPIView, self).partial_update(request, *args, **kwargs)
         
 # custom helper functions 
 from ..helpermodule import thumbnailer_helpers
