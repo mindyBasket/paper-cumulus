@@ -315,7 +315,7 @@ function bind_popupMenu_elems($popupMenu){
                         function(){console.log("Attempt ajax edit note");});
                     editNoteResp.success(function(data){
                         
-                        /////// RENDER ///////
+                        /////// RENDER FIELD: note///////
                         $frameForm.find('#field_note').children('.field_value').text(data['note']);
                         //////////////////////
                     });
@@ -343,12 +343,18 @@ function bind_popupMenu_elems($popupMenu){
                     });
                     editFrameResp.success(function(data){
                         
-                        /////// RENDER ///////
-                        console.log("rendering new image");
+                        /////// RENDER FIELD: image///////
+                        console.log("rendering new image : " + JSON.stringify(data));
                         var $frameImageContainer = $('#frame_image_form').find('#field_frame_image').children('.field_value');
                             $frameImageContainer.html('');
-                            $frameImageContainer.append('<img src="' + data['frame_image']+ '"/>');
-                        //////////////////////
+                            $frameImageContainer.append('<img src="' + data['frame_image']+ '" width="400px"/>');
+                        var $frameImageInfoContainer = $('#frame_image_form').find('#field_frame_image_file_info').children('.field_value');
+                            $frameImageInfoContainer.html(data['frame_image']);
+                        /////////////////////////////////
+                        
+                        /////// RENDER thumbnail ///////
+                        
+                        ////////////////////////////////
                     });
 
                     

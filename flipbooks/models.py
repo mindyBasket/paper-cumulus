@@ -2,8 +2,10 @@
 from __future__ import unicode_literals
 import os, random
 
+from django.conf import settings
 from django.contrib import messages
 
+import easy_thumbnails.files as easy_th_files
 from easy_thumbnails.fields import ThumbnailerImageField
 from easy_thumbnails.signals import saved_file
 from easy_thumbnails.signal_handlers import generate_aliases_global
@@ -17,10 +19,6 @@ from django.db import models
 #custom helper functions 
 #from .helpermodule import helpers
 # ---------------------------------------------
-
-# thumbnail signal handler
-saved_file.connect(generate_aliases_global)
-
 
 # Signals
 from django.db.models.signals import pre_save, post_save, post_delete
@@ -332,14 +330,14 @@ class Frame(models.Model):
 @receiver(post_delete, sender=Frame)
 def frame_post_delete(sender, **kwargs):
     
-    frame =''
+    frame = None
     if 'instance' in kwargs:
         frame = kwargs['instance']
     else:
         return 
     
     # remove uploaded images and associated thumbnails
-    if frame.frame_image: 
+    if frame and frame.frame_image: 
         frame.frame_image.delete_thumbnails() # delete thumbnails 
         image_path = frame.frame_image.path
         if image_path and os.path.isfile(image_path):
@@ -348,6 +346,40 @@ def frame_post_delete(sender, **kwargs):
     return True
 
 
+@receiver(post_save, sender=Frame)
+def frame_post_save(sender, **kwargs):
+    print("")
+    print("========= post_save: Generate Thumbnails ==========")
+    frame = None
+    if 'instance' in kwargs:
+        frame = kwargs['instance']
+    else:
+        return 
+    
+    aliases_dict = settings.THUMBNAIL_ALIASES['']
+    print("getting aliases: {}".format(aliases_dict))
+    for alias in aliases_dict:
+        thumbnail_options = aliases_dict[alias]
+        
+        #get Thumbnailer object
+        thumbnailer = easy_th_files.get_thumbnailer(frame.frame_image) 
+        th = thumbnailer.get_thumbnail(
+            thumbnail_options, 
+            save=True, 
+            generate=True, 
+            silent_template_exception=False
+            )
+
+    # This method doesn't actually store them as aliases onto the object. 
+    # easy_th_files.generate_all_aliases(frame.frame_image, True)
+    
+    print("==================================================")
+    print("")
+
+# thumbnail signal handler
+# saved_file.connect(generate_aliases_global)
+
+# thumbnail_created.connect()
 
 #custom helper functions 
 from .helpermodule import helpers
