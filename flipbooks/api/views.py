@@ -172,7 +172,7 @@ class FrameUpdateAPIView(generics.UpdateAPIView):
                     
                 # inject frame_thumbnails into the response
                 print("frame_thumbnails: {}".format(frame_thumbnails))
-                resp["frame_thumbnails"] = frame_thumbnails
+                resp.data["frame_thumbnails"] = frame_thumbnails
                 
                 print("===================================")
                 print("")

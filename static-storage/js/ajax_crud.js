@@ -19,7 +19,7 @@ var spinnyObj = new Spinny();
 
 $(function() { 
 
-    console.log("ajax_crud.js ---------- * v0.6.2");
+    console.log("ajax_crud.js ---------- * v0.6.3");
     
     // "+frame" button appends frame create form
     bind_frameCreateFormButton($(document));
@@ -360,7 +360,11 @@ function bind_popupMenu_elems($popupMenu){
                         /////////////////////////////////
                         
                         /////// RENDER thumbnail (on main view) ///////
+                        var frameId = data['id'];
+                        var stripId = data['strip'];
                         
+                        var $frameThumb = $('.strip_flex_container[stripid=' + stripId + ']').find('.thumb[frameid='+ frameId +']');
+                            $frameThumb.children("img").attr("src", data['frame_thumbnails']['thumb']);
                         ///////////////////////////////////////////////
                     });
 
