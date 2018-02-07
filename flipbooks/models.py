@@ -368,8 +368,6 @@ def frame_post_save(sender, **kwargs):
             silent_template_exception=False
             )
     
-    
-
     # This method doesn't actually store them as aliases onto the object. 
     # easy_th_files.generate_all_aliases(frame.frame_image, True)
     

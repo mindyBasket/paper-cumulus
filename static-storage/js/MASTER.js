@@ -44,8 +44,6 @@ class LightBox {
         $lightBoxCover.data(
             "obj", this,
             "clickEventFunc", this.clickEventFunc);
-        
-        
     }
 
    // Getter
@@ -74,6 +72,43 @@ class LightBox {
     }
 
 }
+
+
+class Spinny {
+    constructor() {
+        this.template = `
+                            <div class="spinny">
+                                <span></span>
+                            </div>
+                        `
+        this.defaultBackground = "#e5e5e5"
+    }
+    
+    
+    
+    // Method
+    appendSpinnyTo($target, css_options, clearHtml){
+        if ($target instanceof jQuery == false){
+            console.error("Cannot append to non-Jquery object.");
+        }
+    
+        clearHtml = typeof(processData) === 'boolean' ? clearHtml : clearHtml || true;
+        if (clearHtml){
+            $target.html('');
+        }
+        
+        var $spinny = $(this.template);
+            $spinny.css(css_options);
+            // default css
+            $spinny.css("background-color", this.defaultBackground);
+            
+        $target.append($($spinny));
+    }
+
+}
+
+
+
 
 
 // Generic error message when making API call

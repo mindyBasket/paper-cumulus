@@ -4,6 +4,7 @@
 // '$' is an undefined variable
 
 /* global LightBox*/
+/* global Spinny*/
 
 // Project specific libraries
 // window.flipbookLib
@@ -12,13 +13,13 @@
 ----------------------- MAIN  -------------------------
 -------------------------------------------------------*/
 
-// init lightbox
+// init components
 var $lbCover = new LightBox();
-
+var spinnyObj = new Spinny();
 
 $(function() { 
 
-    console.log("ajax_crud.js ---------- * v0.6.0");
+    console.log("ajax_crud.js ---------- * v0.6.2");
     
     // "+frame" button appends frame create form
     bind_frameCreateFormButton($(document));
@@ -339,8 +340,14 @@ function bind_popupMenu_elems($popupMenu){
                          'processData': false,
                          'contentType': false
                         },
-                        function(){console.log("Attempt ajax edit frame image");
-                    });
+                        function(){
+                            //show loading animation
+                            var $frameImageContainer = $('#frame_image_form').find('#field_frame_image').children('.field_value');
+                            spinnyObj.appendSpinnyTo(
+                                $frameImageContainer, 
+                                {"min-width": "400px", "max-width": "400px", "min-height":"250px"});
+                        }
+                    );
                     editFrameResp.success(function(data){
                         
                         /////// RENDER FIELD: image///////
@@ -352,9 +359,9 @@ function bind_popupMenu_elems($popupMenu){
                             $frameImageInfoContainer.html(data['frame_image']);
                         /////////////////////////////////
                         
-                        /////// RENDER thumbnail ///////
+                        /////// RENDER thumbnail (on main view) ///////
                         
-                        ////////////////////////////////
+                        ///////////////////////////////////////////////
                     });
 
                     

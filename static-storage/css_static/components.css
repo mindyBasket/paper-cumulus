@@ -1,0 +1,49 @@
+.spinny{
+  position: relative;
+  display: flex;
+  
+  /* The setting below will be controlled by the 
+     class Spinny. See MASTER.js */
+  /*
+  min-width: 400px; max-width: 400px; 
+  min-height: 250px;
+  background-color:#e5e5e5;
+  */ 
+  
+  
+}
+
+.spinny span{
+  flex-grow: 1; /*there is only one span, so this shouldn't really matter. */
+  
+  display:inline-block;
+  position: absolute;
+  width: 30px; height: 30px;
+  background-color: white;
+
+  top:50%; left: 50%;
+  transform-origin: 50% 50%;
+  
+  
+  vertical-align: middle;
+  margin: 0 auto;
+  
+  /* animation */
+  animation-name: loading_square;
+  animation-duration: 0.4s;
+  animation-iteration-count: infinite;
+  animation-timing-function: "ease-in-out-quart";
+
+}
+
+
+/* -ms-transform: rotate(3deg); 
+    -webkit-transform: rotate(3deg); 
+    transform: rotate(3deg);
+  */
+@keyframes loading_square {
+    from {
+      transform: translate(-50%, -50%) rotate(0deg);}
+    to {
+      transform: translate(-50%, -50%) rotate(90deg);}
+}
