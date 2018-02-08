@@ -23,12 +23,7 @@ strip has been loaded -->
 {% block letterbox %}
     <div class="frame_view wide">
         
-        <!-- WELL I GUESS YOU CAN'T USE THIS -->
-        <!--{ for fr in object_list.first.frame_set.all }-->
-        <!--    <img src="{{fr.frame_image.url}}"/>-->
-        <!--{ endfor }-->
-        
-        <!-- this is where you load first batch of images -->
+        <!-- load first batch of images -->
         <!-- {{object_list|first}} -->
         <div class='frame_load'>
             {% if valid_children_orders %}

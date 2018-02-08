@@ -115,23 +115,36 @@ class Scene(models.Model):
         # https://docs.python.org/2/library/stdtypes.html#str.format
         return "Scene #{} [order: {}, name: {} ]".format(self.pk, self.order, self.name)
         
-        # >>> gender= "male"
-        # >>> print "At least, that's what %s told me." %("he" if gender == "male" else "she")
-        # At least, that's what he told me.
-
-    # def save(self, **kwargs):
+    def save(self, *args, **kwargs):
+    
+        # clean up children_li
+        unordered_children_li = [str(strip.id) for strip in Strip.objects.filter(scene=self)]
+        cleaned_children_li = []
         
-    #     scene = self.scene
-    #     _insert_at = int(self.order) #get order in string
+        children_li = self.children_li.split(",")
+        for child_id in children_li:
+            is_valid = False
+            child_id = str.strip(str(child_id))
+            
+            # Trial begins
+            if child_id != '' and child_id == str(int(child_id)): #check if it is a valid integer
+                if child_id in unordered_children_li:
+                    is_valid = True
+            
+            if is_valid: cleaned_children_li.append(child_id)
+                
+        self.children_li = ','.join(str(child_id) for child_id in cleaned_children_li)
+        super(Scene, self).save(*args, **kwargs)
         
-    #     if self.children_li == '':
-    #         print("WARNING. children_li on this strip is empty. Refreshing children_li.")
-    #         new_children_li = helpers.refresh_children_li(self)
-    #         if new_children_li:
-    #             self.children_li = new_children_li
-    #     super(Strip, self).save() # save Strip!
+        
+    # Custom functions
+    def ordered_strip_set(self):
+        strips = Strip.objects.filter(scene=self)
+        children_li = self.children_li
+        
+        
 
-
+        
 
 
 # ███████╗████████╗██████╗ ██╗██████╗ 
@@ -308,6 +321,7 @@ class Frame(models.Model):
         strip.save() # save parent!
         
         # Remove thumbnails
+        # Check post_save receiver!
         
         #delete Frame!
         super(Frame, self).delete() 

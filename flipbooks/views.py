@@ -219,12 +219,12 @@ class ScenePlayView(generic.DetailView):
             
         context["valid_children_li"] = valid_children_li
         
-        #might benefit just putting reordered strip into context
-        ordered_strip_set = []
-        if valid_children_li:
-            ordered_strip_set = helpers.order_by_id_ref(context['scene'].strip_set.all(), valid_children_li)
+        # Recommended to keep views and template as clean as possible
+        # ordered_strip_set = []
+        # if valid_children_li:
+        #     ordered_strip_set = helpers.order_by_id_ref(context['scene'].strip_set.all(), valid_children_li)
         
-        context['ordered_strip_set'] = ordered_strip_set
+        # context['ordered_strip_set'] = ordered_strip_set
         
         return context
     

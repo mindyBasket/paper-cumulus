@@ -12,8 +12,10 @@ def list2String(li):
 
 def order_by_id_ref(obj_li, ref_id_li):
     #note: ref_id_li: list with id in string. It's converted straight from string2List above.
-    
+
     #make array same size as the object list
+    print("ref_id_li: {}".format(ref_id_li))
+    print("obj_li: {}".format(obj_li))
     obj_li_ordered = [None] * len(obj_li)
     
     for obj in obj_li:
@@ -21,7 +23,14 @@ def order_by_id_ref(obj_li, ref_id_li):
         # If not, value will remain None
         if str(obj.id) in ref_id_li:
             order_position = ref_id_li.index(str(obj.id))
-            obj_li_ordered[order_position] = obj
+            try: 
+                obj_li_ordered[order_position] = obj
+            except IndexError as error:
+                print(error.args)
+                print("Trying to place obj#{} at index {} out of {}.".format(obj.id, order_position, len(obj_li_ordered)))
+                # if cannot handle: 
+                #     raise
+                raise
             
     return obj_li_ordered
     
