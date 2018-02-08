@@ -142,7 +142,8 @@ class Scene(models.Model):
         strips = Strip.objects.filter(scene=self)
         children_li = self.children_li
         
-        
+        return helpers.order_by_id_ref(strips, children_li)
+      
 
         
 

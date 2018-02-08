@@ -11,7 +11,9 @@ def list2String(li):
     return ','.join(str(item) for item in li)
 
 def order_by_id_ref(obj_li, ref_id_li):
-    #note: ref_id_li: list with id in string. It's converted straight from string2List above.
+   
+    if not isinstance(ref_id_li, list):
+        ref_id_li = string2List(ref_id_li)
 
     #make array same size as the object list
     print("ref_id_li: {}".format(ref_id_li))
