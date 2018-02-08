@@ -1,4 +1,5 @@
 import os, re
+from django.conf import settings
  
 ''' Takes path to thumbnail image and its dimension to 
     figure out what easy-thumbnail alias it is under.
@@ -8,7 +9,7 @@ import os, re
 # thumbnail_dimension: tuple of (width, height)
 # alias_dict: dictionary of format like this:
 #   {'cell': {'autocrop': True, 'size': (100, 100)}, 'thumb': {'autocrop': True, 'size': (300, 300)}}
-def get_alias_dict(thumbnail_path, thumbnail_dimension, alias_dict):
+def get_alias_dict(thumbnail_path, thumbnail_dimension):
     # get name of image
     last_slash = thumbnail_path.rfind("/")
     thumbnail_name = thumbnail_path[last_slash:]
@@ -21,6 +22,7 @@ def get_alias_dict(thumbnail_path, thumbnail_dimension, alias_dict):
     if len(di) == 2 and di[0] == di[1]:
         #find alias of this size
         alias_match = ''
+        alias_dict = settings.THUMBNAIL_ALIASES['']
         for alias in alias_dict:
             if int(alias_dict[alias]['size'][0]) == int(di[0]):
                 alias_match = alias

@@ -1,5 +1,4 @@
 import os, shutil
-from django.conf import settings
 from rest_framework import generics
 from rest_framework.parsers import FormParser,MultiPartParser,FileUploadParser
 
@@ -163,8 +162,7 @@ class FrameUpdateAPIView(generics.UpdateAPIView):
                     # have to sort them into alias before using it
                     matched_alias = thumbnailer_helpers.get_alias_dict(
                         thumbnail.url, 
-                        thumbnail._get_image_dimensions(),
-                        settings.THUMBNAIL_ALIASES['']
+                        thumbnail._get_image_dimensions()
                         )
                     if matched_alias:
                         frame_thumbnails.update(matched_alias)
