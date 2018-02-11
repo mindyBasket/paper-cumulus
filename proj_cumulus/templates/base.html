@@ -1,6 +1,5 @@
 {% load static %}
 
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -12,7 +11,8 @@
 
     <!-- Bootstrap -->
     <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
-    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">-->
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RY
+dg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">-->
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -26,9 +26,10 @@
     <link href="{% static 'css_static/forms.css' %}" rel="stylesheet">
     <link href="{% static 'css_static/sortable.css' %}" rel="stylesheet">
     <link href="{% static 'css_static/components.css' %}" rel="stylesheet">
+    <link href="{% static 'css_static/themes.css' %}" rel="stylesheet">
   </head>
 
-  <body>
+<body class="{% block body_class %}{% endblock body_class %}">
     <!-- include 'base_navbar.html' -->
 
     <div class='container'>
@@ -40,8 +41,8 @@
       {% block letterbox %}
       {% endblock %}
     </div>
-    
-    <div class='container'>
+
+<div class='container'>
       {% block content_2 %}
       {% endblock %}
     </div>
