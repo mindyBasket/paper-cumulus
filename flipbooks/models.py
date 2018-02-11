@@ -339,9 +339,7 @@ class Frame(models.Model):
 # ╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝  ╚═╝╚══════╝╚══════╝
                                                       
 
-# frame_post_save signal receiver
-''' Old image and thumbnails are deleted upon PATCH request.
-    Check api/views.py '''
+''' Deletes images and thumbnails after frame is deleted '''
 @receiver(post_delete, sender=Frame)
 def frame_post_delete(sender, **kwargs):
     
@@ -357,10 +355,16 @@ def frame_post_delete(sender, **kwargs):
     return True
 
 
+
+
+''' == CURRENTLY DEACTIVATED == '''
 ''' Generates thumbnails for Frame after it has been saved.
     It uses get_thumbnailer(); it should just return existing
-    thumbnail if it already exists '''
-@receiver(post_save, sender=Frame)
+    thumbnail if it already exists
+    As for the fate of old image and thumbnails, they are 
+    deleted upon PATCH request. Check api/views.py '''
+
+# @receiver(post_save, sender=Frame)
 def frame_post_save(sender, **kwargs):
     print("")
     print("========= post_save: Generate Thumbnails ==========")
@@ -393,16 +397,25 @@ def frame_post_save(sender, **kwargs):
     for thumbnail in frame.frame_image.get_thumbnails():
         print(thumbnail.path)
     
- 
-    
     print("==================================================")
     print("")
 
 # thumbnail signal handler
-# saved_file.connect(generate_aliases_global)
+saved_file.connect(generate_aliases_global)
 
-# thumbnail_created.connect()
 
+
+
+
+
+
+# ██╗███╗   ███╗██████╗  ██████╗ ██████╗ ████████╗███████╗
+# ██║████╗ ████║██╔══██╗██╔═══██╗██╔══██╗╚══██╔══╝██╔════╝
+# ██║██╔████╔██║██████╔╝██║   ██║██████╔╝   ██║   ███████╗
+# ██║██║╚██╔╝██║██╔═══╝ ██║   ██║██╔══██╗   ██║   ╚════██║
+# ██║██║ ╚═╝ ██║██║     ╚██████╔╝██║  ██║   ██║   ███████║
+# ╚═╝╚═╝     ╚═╝╚═╝      ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚══════╝
+                                                        
 #custom helper functions 
 from .helpermodule import helpers
 from .helpermodule import thumbnailer_helpers
