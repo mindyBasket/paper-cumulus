@@ -3,8 +3,8 @@
 // Above line is to prevent cloud9 from thinking 
 // '$' is an undefined variable
 
-/* global LightBox*/
-/* global Spinny*/
+
+
 
 // Project specific libraries
 // window.flipbookLib
@@ -14,8 +14,9 @@
 -------------------------------------------------------*/
 
 // init components
-var $lbCover = new LightBox();
-var spinnyObj = new Spinny();
+var $lbCover = new LightBox(); /* global LightBox*/
+var spinnyObj = new Spinny(); /* global Spinny*/
+var acHandler = new AJAXCRUDHandler($lbCover); /* global AJAXCRUDHandler */
 
 $(function() { 
 
@@ -27,7 +28,9 @@ $(function() {
     // mini_menu link opens popup_menu
     bind_openPMenu_frame($(document)); 
     // popup menu for strip 
-    bind_openPMenu_strip($(document)); 
+    bind_openPMenu_strip($(document));
+    // bind thumbnail click to edit each frame
+    bind_openFrameEdit($(document));
     
     // elements inside the popup_menu. Has Edit and Delete.
     bind_popupMenu_elems($(document).find(".popup_menu.edit").eq(0));
@@ -275,108 +278,10 @@ function bind_popupMenu_elems($popupMenu){
     // ............................
     // b. Bind 'EDIT' action 
     // ............................
-    $popupMenu.find(".action.edit").click(function(){
-        
-        // Retrieve frame information
-        var frameId = $popupMenu.attr("for");
-        if (frameId=="-1"){return;} //STOP, if frameid is not set.
-        
-        //open modal
-        var $lbModal = $(lightboxModal);
-        $lbModal.appendTo('body');
- 
-        // turn on lightbox
-        $lbCover.setClickEventFunc(function(){
-            $lbModal.remove(); //close edit modal
-        });
-        $lbCover.turnOn();
-        
-        
-        //json_partial 
-        $.ajax({
-            url: '/flipbooks/json_partials/frame_edit_form/'+frameId,
-            method: 'GET',
-            dataType: 'json',
-
-            success: function (data_partial) {
-                var $frameEditForm = $(data_partial['html_template']);
-                $lbModal.append($frameEditForm);
-                
-                // This form has each individual field as its own form
-                // Bind note submit button
-                $('#frame_note_form').submit(function(event){
-                    // disable default form action
-                    event.preventDefault();
-                    var $frameForm = $(this);
-
-                    var editNoteResp = window.flipbookLib.submitFormAjaxly(
-                        $(this), 
-                        '/api/frame/'+frameId+'/update/', 
-                        {'method': 'PATCH'},
-                        function(){console.log("Attempt ajax edit note");});
-                    editNoteResp.success(function(data){
-                        
-                        /////// RENDER FIELD: note///////
-                        $frameForm.find('#field_note').children('.field_value').text(data['note']);
-                        //////////////////////
-                    });
-                });
-                
-                
-                // Bind frame_image submit button
-                $('#frame_image_form').submit(function(event){
-                    // disable default form action
-                    event.preventDefault();
-                    var $frameForm = $(this);
-                    
-                    //prep form data
-                    //var formData = $(this).serialize();
-                    var formData = new FormData($(this)[0]);
-
-                    var editFrameResp = window.flipbookLib.submitFormAjaxly(
-                        $(this),
-                        '/api/frame/'+frameId+'/update/',
-                        {'method': 'PATCH',
-                         'processData': false,
-                         'contentType': false
-                        },
-                        function(){
-                            //show loading animation
-                            var $frameImageContainer = $('#frame_image_form').find('#field_frame_image').children('.field_value');
-                            spinnyObj.appendSpinnyTo(
-                                $frameImageContainer, 
-                                {"min-width": "400px", "max-width": "400px", "min-height":"250px"});
-                        }
-                    );
-                    editFrameResp.success(function(data){
-                        
-                        /////// RENDER FIELD: image///////
-                        console.log("rendering new image : " + JSON.stringify(data));
-                        var $frameImageContainer = $('#frame_image_form').find('#field_frame_image').children('.field_value');
-                            $frameImageContainer.html('');
-                            $frameImageContainer.append('<img src="' + data['frame_image']+ '" width="400px"/>');
-                        var $frameImageInfoContainer = $('#frame_image_form').find('#field_frame_image_file_info').children('.field_value');
-                            $frameImageInfoContainer.html(data['frame_image']);
-                        /////////////////////////////////
-                        
-                        /////// RENDER thumbnail (on main view) ///////
-                        var frameId = data['id'];
-                        var stripId = data['strip'];
-                        
-                        var $frameThumb = $('.strip_flex_container[stripid=' + stripId + ']').find('.thumb[frameid='+ frameId +']');
-                            $frameThumb.children("img").attr("src", data['frame_thumbnails']['thumb']);
-                        ///////////////////////////////////////////////
-                    });
-
-                    
-                });
-                
-
-            } //end: success
-        });
-        
-    });
-    
+    // Target changed to the frame image itself, not in the menu.
+    // This is because I suspect that edit menu will be used closer to 
+    // frame detail view, which would need to be accessed frequently.
+       
     //............................
     // c. Bind 'MAKE COVER' 
     //
@@ -440,6 +345,30 @@ var ajax_frame_delete = function($form, frameid){
 } // end: ajax_frame_delete()
 
 
+
+
+
+
+
+
+function bind_openFrameEdit($doc, $targetOptional){
+
+    var $target = $targetOptional;
+    
+    if ($target == null){
+        //do for all thumb images if target not specified
+        $target = $doc.find('.thumb .frame_image');
+    } else if ($targetOptional instanceof jQuery == false){
+        console.error("Cannot bind to non-Jquery object.");
+        return false;
+    }
+    
+    $target.click(function(event){
+        event.preventDefault();
+        console.log($(this).parent().attr("frameid"))
+        acHandler.ajax_frame_edit($(this).parent().attr("frameid"));
+    });
+}
 
 
 

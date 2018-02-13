@@ -141,23 +141,23 @@ body{
 .frame_thumbs.stacked .thumb:nth-of-type(5){z-index:1;}
 
 
-.thumb{
-    position:relative;
-}
-
-
-
 
 
 
 /*.............................*/
 /*  mini menu for thumbnails   */
 /*.............................*/
+.thumb{
+    position:relative;
+}
 
-.thumb .mini_menu{
-    /*small menu that pops up when you hover over .thumb*/
+.thumb .frame_image{
+    cursor: pointer;
+}
+
+.thumb .overlay_box{
     position:absolute;
-    top:0; left:0;
+    top:-20px; left:0;
     display: block;
     width: 100%;
     background-color: rgba(0,0,0,0.5);
@@ -165,19 +165,30 @@ body{
     
     padding: 5px 10px 5px 0;
     color: white;
-    font-size: 1.2em;
     
     opacity: 0;
-    transition: opacity 0.3s;
     
-}    
+    transition-property: opacity top;
+    transition-duration: 0.3s;
+    
+}
 
-.thumb:hover .mini_menu{
+.thumb:hover .overlay_box{
     /*small menu that pops up when you hover over .thumb*/
     opacity: 1;
-    transition: opacity 0.3s;
+    top: 0px;
+    
+    transition-property: opacity top;
+    transition-duration: 0.3s;
     
 }    
+.thumb .overlay_box .mini_menu{
+    /*small menu that pops up when you hover over .thumb*/
+   
+    font-size: 1.2em;
+}    
+
+
 
 .thumb .popup_menu{
     position: absolute;

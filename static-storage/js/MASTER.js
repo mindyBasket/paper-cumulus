@@ -32,6 +32,10 @@ class LightBox {
         this.template = `<div id="light_box_cover">
                         </div>
                         `;
+        this.modalTemplate = `<div id="light_box_modal">
+                              </div>
+                              `;
+        
         var $lightBoxCover = $(this.template).appendTo('body');
         this.$obj = $lightBoxCover;
         this.$obj.hide(); // hidden by default
