@@ -63,13 +63,21 @@
                             <!-- % if frame is None or frame.frame_image is None or frame.frame_image|length is 0 % -->
                                   
                                <div class="thumb" frameid="{{frame.id}}">
-                                    <a class="frame_image">
+                                   <div class="frame_image stretch">
+                                        <!-- opacity 0 -->
                                         <img src="{{ frame.frame_image.thumb.url }}" width='200px'/>
-                                    </a>
-                                    <span class="overlay_box">
-                                        <a href="" class="mini_menu edit">frame [{{frame.id}}]</a>
-                                        <!--<a class="glyphicon glyphicon-trash" aria-hidden="true" style='font-size:1em'></span>-->
-                                    </span>
+                                    </div>
+                                    
+                                    <div class="frame_image" 
+                                         style="background-image:url('{{ frame.frame_image.thumb.url }}');">
+                                        
+                                        <span class="overlay_box" frameid="{{frame.id}}">
+                                            <a>[{{frame.id}}]</a>
+                                            <a href="" class="frame_edit glyphicon glyphicon-pencil" aria-hidden="true" style='font-size:1.2em'></a>
+                                            <a class="glyphicon glyphicon-trash" aria-hidden="true" style='font-size:1.2em'></a>
+                                            <a href="" class="frame_options glyphicon glyphicon-option-horizontal" aria-hidden="true" style='font-size:1.2em'></a>
+                                        </span>
+                                    </div>
                                     
                                </div> 
                                    
@@ -141,6 +149,6 @@
 {% block extra_js %}
     {% load static %}
     <script src="{% static 'js/ajax_crud_actions.js' %}"></script>
-    <script src="{% static 'js/ajax_crud.js' %}"></script>
+    <script src="{% static 'js/scene_edit_master.js' %}"></script>
     <script src="{% static 'js/ajax_sortableUI.js' %}"></script>
 {% endblock extra_js %}

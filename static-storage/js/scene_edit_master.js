@@ -20,7 +20,7 @@ var acHandler = new AJAXCRUDHandler($lbCover, spinnyObj); /* global AJAXCRUDHand
 
 $(function() { 
 
-    console.log("ajax_crud.js ---------- * v0.6.3");
+    console.log("scene_edit_master.js ---------- * v0.6.3");
     
     // "+frame" button appends frame create form
     bind_frameCreateFormButton($(document));
@@ -216,12 +216,29 @@ function bind_frameCreateFormButton($doc, $targetOptional){
 // flipbooks/partials/popup_menu_partial.html
 // ................................................
 
+
+/* This function crawls up hiearchy until its parent's name is 
+   specified in argument classname */
+function crawlOutUntilClassname($start, classname){
+    
+    var $nextParent = $start.parent();
+    
+    while ($nextParent.is('body') != true){
+        if ($nextParent.attr("class") == classname || $nextParent.attr("class").indexOf(classname) !== -1){
+            return $nextParent;
+        } else {
+            $nextParent = $nextParent.parent();}
+    }
+    
+    return false;
+}
+
 function bind_openPMenu_frame($doc, $targetOptional){
     var $target = $targetOptional
     
     if ($target == null){
         //do for all mini menus if target not specified
-        $target = $doc.find('.thumb .mini_menu.edit');
+        $target = $doc.find('.thumb a.frame_options');
     } else if ($targetOptional instanceof jQuery == false){
         console.error("Cannot bind mini menu even to non-Jquery object.");
         return false;
@@ -232,11 +249,20 @@ function bind_openPMenu_frame($doc, $targetOptional){
     // ...............
     $target.click(function(event){
         event.preventDefault();
+        console.log("Popup menu for: " + $(this).parent().attr("frameid"));
         
-        // Grab partial and append to the current thumb location
+        // Grab partial
         var $popupMenu = $doc.find(".popup_menu.edit").eq(0);
-        $popupMenu.appendTo($(this).parent());
-        $popupMenu.show();
+        
+        // append to thumbnail base [div with ".thumb" class]
+        var $parentThumb = crawlOutUntilClassname($(this), "thumb");
+        if ($parentThumb) {
+            $popupMenu.appendTo($parentThumb);
+            $popupMenu.show();
+        } else {
+            console.log("Cannot find the thumbnail element in list of parents.");
+        }
+            
         
         // Update tag information about current frame
         var frameid = $(this).parent().attr("frameid");
@@ -357,7 +383,7 @@ function bind_openFrameEdit($doc, $targetOptional){
     
     if ($target == null){
         //do for all thumb images if target not specified
-        $target = $doc.find('.thumb .frame_image');
+        $target = $doc.find('.thumb a.frame_edit');
     } else if ($targetOptional instanceof jQuery == false){
         console.error("Cannot bind to non-Jquery object.");
         return false;
@@ -365,7 +391,6 @@ function bind_openFrameEdit($doc, $targetOptional){
     
     $target.click(function(event){
         event.preventDefault();
-        console.log($(this).parent().attr("frameid"))
         acHandler.ajax_frame_edit($(this).parent().attr("frameid"));
     });
 }

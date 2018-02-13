@@ -60,12 +60,11 @@ ul.list_strips .strip_flex_container .tile{
     justify-content: center;
     
     margin: 10px 10px 10px 10px;
-    border-radius: 5px;
     height: auto; /*stretches to fit the flex container */
     
     -webkit-box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.15);
--moz-box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.15);
-box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.15);
+    -moz-box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.15);
+    box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.15);
 
 }
 

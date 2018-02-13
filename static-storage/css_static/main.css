@@ -46,7 +46,7 @@ body{
 
 #light_box_modal{
     position: fixed;
-    overflow: scroll;
+    
     top: 40px; left: 50%;
     transform: translate(-50%, 0);
     display:inline-block;
@@ -153,23 +153,35 @@ body{
 
 .thumb .frame_image{
     cursor: pointer;
+    position: absolute;
+    top: 0; left:0;
+    width: 100%; height: 100%;
+    
+    overflow: hidden;
+    background-size: contain;
+}
+
+.thumb .frame_image.stretch{
+    /* used to stretch the container size to fit the thumbnail */
+    position: relative;
+    opacity: 0;
 }
 
 .thumb .overlay_box{
     position:absolute;
-    top:-20px; left:0;
+    top:-15px; left:0;
     display: block;
     width: 100%;
     background-color: rgba(0,0,0,0.5);
     text-align: right;
     
-    padding: 5px 10px 5px 0;
+    padding: 9px 10px 6px 0;
     color: white;
     
     opacity: 0;
     
     transition-property: opacity top;
-    transition-duration: 0.3s;
+    transition-duration: 0.2s;
     
 }
 
@@ -179,9 +191,17 @@ body{
     top: 0px;
     
     transition-property: opacity top;
-    transition-duration: 0.3s;
-    
+    transition-duration: 0.2s;
 }    
+
+.thumb:hover .overlay_box a{
+    color: white;
+}    
+.thumb:hover .overlay_box a:hover{
+    text-decoration: none;
+    color: #bcf2f2;
+}    
+
 .thumb .overlay_box .mini_menu{
     /*small menu that pops up when you hover over .thumb*/
    

@@ -31,6 +31,7 @@ class AJAXCRUDHandler {
         
         
         //json_partial 
+        
         $.ajax({
             url: '/flipbooks/json_partials/frame_edit_form/'+frameId,
             method: 'GET',
