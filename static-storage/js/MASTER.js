@@ -23,6 +23,77 @@ var Item = makeStruct("id speaker country");
 var row = new Item(1, 'john', 'au');
 //alert(row.speaker); // displays: john
 
+
+// Popup menu
+// This object relies on the fact that the popup menu is already on the page.
+// The HTML object that is the popup menu is useless/inactive until this 
+// object picks it up.
+
+class PopupMenu {
+    constructor($template, styleNum){
+        // if template is not provided, it will look for partial rendered
+        // right on the current page.
+        
+        if (!$template){
+            this.$menu = $(document).find(".popup_menu.edit").eq(0);
+            
+            // hide popup if user click else where
+            // This behavior is currently only for default partial popup
+            this.$menu.focusout(function(){
+                 $(this).hide();
+            });
+        } else {
+            //use template to make new one
+            console.log("using template to make new popup");
+            this.$menu = $template.clone();
+            this.$menu.css("z-index","1000");
+            
+        }
+        
+        
+        
+        this.active = this.$menu ? true : false;
+        this.style = styleNum ? styleNum : 1; 
+    }
+    
+    //methods
+    popupAt($target){
+        if (this.active){
+            if ($target instanceof jQuery == false){
+                console.error("Cannot target popup menu non-Jquery object.");
+            }
+        
+            // move it to the $target and show
+            this.$menu.appendTo($target);
+            this.$menu.show();
+            this.$menu.focus(); // allows it to disappear when you click else where
+            
+            // Update tag information about current frame
+            // TODO: currently assumes $target has attribute 'frameid'.
+            //       this is not useful for 'sceneid'.
+            
+            var frameid = $target.attr("frameid");
+            this.$menu.attr("for", frameid);
+            this.$menu.children(".header").children("span").text(frameid);
+        
+        } else { 
+            console.log("Popup menu currently not active");
+        }
+        
+    } //end: popupAt()å
+    
+    appendContent(content){
+        //just as it sounds, using jquery append();
+        this.$menu.children('.content').append(content);    
+    }
+    
+    cleanContent(){
+        // assuming popup menu comes with .content div, empty it.
+        this.$menu.children('.content').html('');
+    }
+}
+
+
 // lightbox object
 class LightBox {
     constructor() {
@@ -194,24 +265,22 @@ flipbookLib.submitFormAjaxly = function($form, url, settings, beforeSendFunc){
         error: function (data) {logAJAXErrors(data, url)}
     });
     
+    // $.ajax({
+    //     url: '/api/frame/'+frameId+'/update/',
+    //     data: formData,
+    //     method: 'PATCH',
+    //     //enctype: 'multipart/form-data',
+    //     processData: false,
+    //     contentType: false,
+    //     beforeSend: function (){
+    //         console.log($(this));
+    //     },
+    //     success: function (data) {
+    //         var $frameImageContainer = $frameForm.find('#field_frame_image').children('.field_value');
+    //         $frameImageContainer.html('');
+    //         $frameImageContainer.append('<img src="' + data['frame_image_native']+ '"/>');
+    //     }
+    // });
     
-    
-    
-    $.ajax({
-        url: '/api/frame/'+frameId+'/update/',
-        data: formData,
-        method: 'PATCH',
-        //enctype: 'multipart/form-data',
-        processData: false,
-        contentType: false,
-        beforeSend: function (){
-            console.log($(this));
-        },
-        success: function (data) {
-            var $frameImageContainer = $frameForm.find('#field_frame_image').children('.field_value');
-            $frameImageContainer.html('');
-            $frameImageContainer.append('<img src="' + data['frame_image_native']+ '"/>');
-        }
-    });
 }
 

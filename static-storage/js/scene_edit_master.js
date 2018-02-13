@@ -14,13 +14,14 @@
 -------------------------------------------------------*/
 
 // init components
+var _popupMenu = new PopupMenu(null); /* global PopupMenu */
 var $lbCover = new LightBox(); /* global LightBox*/
-var spinnyObj = new Spinny(); /* global Spinny*/
-var acHandler = new AJAXCRUDHandler($lbCover, spinnyObj); /* global AJAXCRUDHandler */
+var _spinnyObj = new Spinny(); /* global Spinny*/
+var acHandler = new AJAXCRUDHandler($lbCover, _spinnyObj); /* global AJAXCRUDHandler */
 
 $(function() { 
 
-    console.log("scene_edit_master.js ---------- * v0.6.3");
+    console.log("scene_edit_master.js ---------- * v0.6.4");
     
     // "+frame" button appends frame create form
     bind_frameCreateFormButton($(document));
@@ -54,41 +55,31 @@ $(function() {
         //prep form data
         var formData = $(this).serialize();
         
-        $.ajax({
-            url: '/api/scene/'+scenePk+'/strip/create/',
-            data: formData,
-            method: 'POST',
-            success: function (data) {
-                
-                console.log("CREATED: Successfully created a new strip [id=" + data.id + "]");
-                
-                /////// RENDER ///////
-                renderStripContainer(data);
-                //////////////////////
-                
-                // I decided to leave the strip_id field in frame_create_form as select.
-                // So I have to add new option after a Strip is created.
-                var $frameCreateForm = $(document).find("#frame_create_form").eq(0); //the one and only
-                $frameCreateForm.find("#id_strip").append($('<option>', {
-                    value: data.id,
-                    text: 'ajaxly created strip #' + data.id
-                }));
-                
-            },
-            error: function (data) {
-                window.flipbookLib.logAJAXErrors(data, $(this).url);
-            }
+        var createStripResp = window.flipbookLib.submitFormAjaxly(
+            $(this), 
+            '/api/scene/'+scenePk+'/strip/create/', 
+            {'method': 'POST'},
+            );
+            
+        createStripResp.success(function(data){
+            
+            console.log("CREATED: Successfully created a new strip [id=" + data.id + "]");
+            /////// RENDER ///////
+            renderStripContainer(data);
+            //////////////////////
+            
+            // I decided to leave the strip_id field in frame_create_form as select.
+            // So I have to add new option after a Strip is created.
+            var $frameCreateForm = $(document).find("#frame_create_form").eq(0); //the one and only
+            $frameCreateForm.find("#id_strip").append($('<option>', {
+                value: data.id,
+                text: 'ajaxly created strip #' + data.id
+            }));
         });
+   
     });
     
-    // //Animation test
-    // $('#strip_create_form').submit(function(event){
-    //     event.preventDefault();
-        
-    //     addNewStrip({'id':0});
-        
-    // });
-    
+  
  
     //......................
     // on frame_form submit
@@ -217,6 +208,10 @@ function bind_frameCreateFormButton($doc, $targetOptional){
 // ................................................
 
 
+// ┌─┐┌─┐┌─┐┬ ┬┌─┐  ┌─┐┌─┐┬─┐  ┌─┐┬─┐┌─┐┌┬┐┌─┐
+// ├─┘│ │├─┘│ │├─┘  ├┤ │ │├┬┘  ├┤ ├┬┘├─┤│││├┤ 
+// ┴  └─┘┴  └─┘┴    └  └─┘┴└─  └  ┴└─┴ ┴┴ ┴└─┘
+
 /* This function crawls up hiearchy until its parent's name is 
    specified in argument classname */
 function crawlOutUntilClassname($start, classname){
@@ -229,9 +224,9 @@ function crawlOutUntilClassname($start, classname){
         } else {
             $nextParent = $nextParent.parent();}
     }
-    
     return false;
-}
+} //end: crawlOutUntilClassname
+
 
 function bind_openPMenu_frame($doc, $targetOptional){
     var $target = $targetOptional
@@ -248,43 +243,26 @@ function bind_openPMenu_frame($doc, $targetOptional){
     // open mini menu
     // ...............
     $target.click(function(event){
+        
         event.preventDefault();
-        console.log("Popup menu for: " + $(this).parent().attr("frameid"));
-        
-        // Grab partial
-        var $popupMenu = $doc.find(".popup_menu.edit").eq(0);
-        
+
         // append to thumbnail base [div with ".thumb" class]
         var $parentThumb = crawlOutUntilClassname($(this), "thumb");
         if ($parentThumb) {
-            $popupMenu.appendTo($parentThumb);
-            $popupMenu.show();
+            _popupMenu.popupAt($parentThumb);
         } else {
             console.log("Cannot find the thumbnail element in list of parents.");
+            return;
         }
-            
-        
-        // Update tag information about current frame
-        var frameid = $(this).parent().attr("frameid");
-        $popupMenu.attr("for", frameid);
-        $popupMenu.children(".header").children("span").text(frameid);
-        
-        // This allows popupMenu to disappear when you click else where
-        $popupMenu.focus();
         
     });
     
-}
+} // end: bind_openPMenu_frame()
+
 
 // ................................................
 // Various behaviors and buttons on the popup menu
 // ................................................
-
-// Moved to a class
-// var lightboxCover = `
-// <div id="light_box_cover">
-// </div>
-// `
 
 var lightboxModal = `
 <div id="light_box_modal">
@@ -294,28 +272,18 @@ var lightboxModal = `
 function bind_popupMenu_elems($popupMenu){
     
     // ............................
-    // a. Bind close event. 
-    // The popup menu closes when you are out of focus. 
+    // a. Bind 'EDIT' action 
     // ............................
-    $popupMenu.focusout(function(){
-        $(this).hide();
-    });
-    
-    // ............................
-    // b. Bind 'EDIT' action 
-    // ............................
-    // Target changed to the frame image itself, not in the menu.
-    // This is because I suspect that edit menu will be used closer to 
-    // frame detail view, which would need to be accessed frequently.
+    // currently already on overlay menu. redundent?
        
     //............................
-    // c. Bind 'MAKE COVER' 
+    // b. Bind 'MAKE COVER' 
     //
     // TODO: makes current frame as the "cover" for the Scene.
     //............................
     
     //.........................
-    // d. Bind 'DELETE' action 
+    // c. Bind 'DELETE' action 
     //.........................
     $popupMenu.find('.action.delete').click(function(){
         event.preventDefault();
@@ -557,39 +525,37 @@ function renderFrameContainer(data, stripId){
 }
 
 
-function renderFrameEditForm(data, frameId, args){
-    //TODO:
-}
-
 
 function renderDeleteConfirm(data, frameId, args){
     
-    var $popupMenu = args['popupMenu'];
-    var $popupDelete = $popupMenu.clone().appendTo($popupMenu.parent()); //This might be slow
     
-    $popupDelete.children('.content').html(''); //clear unnecessary cloned content
+    var $popupMenu = args['popupMenu'];
+    var _popupDeleteMenu = new PopupMenu($popupMenu, 1);
+    
+    _popupDeleteMenu.cleanContent();
+    _popupDeleteMenu.popupAt($popupMenu.parent());
     
     //make objects to appear above lightbox
-    $popupDelete.attr('style','z-index:1000');
-    $popupMenu.parent().children('img').attr('style','z-index:1000');
+    //$popupDelete.attr('style','z-index:1000');
+    //$popupMenu.parent().children('img').attr('style','z-index:1000');
     
     // TODO:
     // I don't think this benefits from being a function
-    addDeleteConfirmForm(data, $popupDelete, $popupDelete.children('.content'));
+    //addDeleteConfirmForm(data, $popupDelete, $popupDelete.children('.content'));
+    _popupDeleteMenu.appendContent($("<p>" +data['html_form'] + "</p>"));
     
     $lbCover.turnOn();
-    
     $lbCover.setClickEventFunc(function(){
-        $popupDelete.find('#delete-cancel-button').click();
+        _popupDeleteMenu.$menu.find('#delete-cancel-button').click();
     });
 
     // Bind "confirm" button
-    $popupDelete.find('#delete-confirm-button').click(function(event){
+    _popupDeleteMenu.$menu.find('#delete-confirm-button').click(function(event){
         // Note: #delete-confirm-button is a <a> that acts
         //       like a submit() for the form  #delete-confirm.
         event.preventDefault();
-        $popupDelete.find('#delete-cancel-button').click(); //clean up
-        var $deleteForm = $popupDelete.find('#delete-confirm');
+        _popupDeleteMenu.$menu.find('#delete-cancel-button').click(); //close immediately
+        var $deleteForm = _popupDeleteMenu.$menu.find('#delete-confirm');
         
         /////////////////////
         ajax_frame_delete($deleteForm, frameId);
@@ -598,12 +564,11 @@ function renderDeleteConfirm(data, frameId, args){
     });
     
     // Bind "cancel" button
-    $popupDelete.find('#delete-cancel-button').click(function(event){
-        
+    _popupDeleteMenu.$menu.find('#delete-cancel-button').click(function(event){
         //clean up
-        $popupDelete.remove();
+        _popupDeleteMenu.$menu.remove();
         $lbCover.turnOff(); //don't forget the lightbox cover
-        $popupMenu.parent().children('img').attr('style','');
+        //$popupMenu.parent().children('img').attr('style','');
     });
         
 }
