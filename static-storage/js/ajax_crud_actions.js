@@ -3,8 +3,9 @@
 
 class AJAXCRUDHandler {
     
-    constructor(lightBoxObj) {
+    constructor(lightBoxObj, spinnyObj) {
         this.lightBox = lightBoxObj ? lightBoxObj : false;
+        this.spinny = spinnyObj ? spinnyObj : false;
     }
     
     // ------------------------------
@@ -17,6 +18,7 @@ class AJAXCRUDHandler {
         if (frameId=="-1"){return;} //STOP, if frameid is not set.
         
         //open modal
+        var spinny = this.spinny;
         var $lbCover = this.lightBox;
         var $lbModal = $(this.lightBox.modalTemplate);
         $lbModal.appendTo('body');
@@ -79,7 +81,7 @@ class AJAXCRUDHandler {
                         function(){
                             //show loading animation
                             var $frameImageContainer = $('#frame_image_form').find('#field_frame_image').children('.field_value');
-                            spinnyObj.appendSpinnyTo(
+                            spinny.appendSpinnyTo(
                                 $frameImageContainer, 
                                 {"min-width": "400px", "max-width": "400px", "min-height":"250px"});
                         }

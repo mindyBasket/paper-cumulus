@@ -16,7 +16,7 @@
 // init components
 var $lbCover = new LightBox(); /* global LightBox*/
 var spinnyObj = new Spinny(); /* global Spinny*/
-var acHandler = new AJAXCRUDHandler($lbCover); /* global AJAXCRUDHandler */
+var acHandler = new AJAXCRUDHandler($lbCover, spinnyObj); /* global AJAXCRUDHandler */
 
 $(function() { 
 
