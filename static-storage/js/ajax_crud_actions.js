@@ -6,8 +6,11 @@ class AJAXCRUDHandler {
     constructor(lightBoxObj, spinnyObj) {
         this.lightBox = lightBoxObj ? lightBoxObj : false;
         this.spinny = spinnyObj ? spinnyObj : false;
+        
+        this.popupMenu = '';
     }
     
+
     // ------------------------------
     // Methods
     // ------------------------------
@@ -113,7 +116,66 @@ class AJAXCRUDHandler {
     
             } //end: success
         });
-    }
+    } // end: ajax_frame_edit()
+    
+    
+    
+    ajaxFrameDeleteConfirm(frameId){
+
+        event.preventDefault();
+    
+        var $popupMenu = this.popupMenu;
+        
+        // Retrieve frame information
+        //var frameId = $popupMenu.attr("for");
+        if (frameId=="-1"){return;} //STOP, if frameid is not set.
+        
+        // DELETE happens in 2 parts.
+        // First is GET, and then POST. To see POST delete, see ajax_frame_delete()
+        
+        var deleteResponce = window.flipbookLib.getJSONPartial(
+            '/flipbooks/frame/'+ frameId +'/delete/', 
+            'GET', 
+            'json',
+            function(){
+                console.log("DELETE CONFIRM");
+                $popupMenu.focusout();
+                
+            });
+        
+        deleteResponce.success(function(data){
+            /////// RENDER ///////
+            // TODO: this function is back in scene_edit_master.js
+            renderDeleteFrameConfirm(data, frameId, {'popupMenu': $popupMenu});
+            /////////////////////
+        });
+        
+    } //end: ajaxFrameDeleteConfirm()
+    
+    
+    
+    
+    ajaxFrameDelete($form, frameid){ 
+        
+        var deleteFrameResp = window.flipbookLib.submitFormAjaxly(
+            $form,
+            '/flipbooks/frame/'+ frameid +'/delete/',
+            {'method': 'POST'}
+            );
+        deleteFrameResp.success(function(data){
+            //show animation of deletion
+            $(document).find('.thumb[frameid='+ frameid +']').animate({
+                opacity: 0,
+            }, 300, function() {
+                // Put popup menu elsewhere so that it doesn't 
+                // get deleted with the frame container.
+                this.popupMenu.dislodge(); 
+                $(this).remove(); //actually delete
+            });
+            
+        });
+        
+    } // end: ajaxFrameDelete()
     
 }
     

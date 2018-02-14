@@ -17,13 +17,14 @@
 var _popupMenu = new PopupMenu(null); /* global PopupMenu */
 var $lbCover = new LightBox(); /* global LightBox*/
 var _spinnyObj = new Spinny(); /* global Spinny*/
-var acHandler = new AJAXCRUDHandler($lbCover, _spinnyObj); /* global AJAXCRUDHandler */
+var _acHandler = new AJAXCRUDHandler($lbCover, _spinnyObj); /* global AJAXCRUDHandler */
 
 $(function() { 
 
     console.log("scene_edit_master.js ---------- * v0.6.4");
     
     // "+frame" button appends frame create form
+    // TODO: remove this form, and make one-click-submit
     bind_frameCreateFormButton($(document));
     
     // mini_menu link opens popup_menu
@@ -51,9 +52,6 @@ $(function() {
         
         // disable default form action
         event.preventDefault();
-        
-        //prep form data
-        var formData = $(this).serialize();
         
         var createStripResp = window.flipbookLib.submitFormAjaxly(
             $(this), 
@@ -185,16 +183,6 @@ function bind_frameCreateFormButton($doc, $targetOptional){
         console.log("changing field val: " + targetForm.find('#id_strip').val());
     });
     
-    
-    //test
-    // $(this).find(".frame_form").click(function(){
-        
-    //     var data = {'id': 12, 'frame_image_native':"/media/frame_images/scene_4_/strip_1-1.png.300x300_q85_autocrop.png"};
-    //     addNewFrame(data, 33);
-        
-    // });
-        
-    
 
 }
 
@@ -285,60 +273,11 @@ function bind_popupMenu_elems($popupMenu){
     //.........................
     // c. Bind 'DELETE' action 
     //.........................
-    $popupMenu.find('.action.delete').click(function(){
-        event.preventDefault();
-        
-        // Retrieve frame information
-        var frameId = $popupMenu.attr("for");
-        if (frameId=="-1"){return;} //STOP, if frameid is not set.
-        
-        // DELETE happens in 2 parts.
-        // First is GET, and then POST. To see POST delete, see ajax_frame_delete()
-        
-        var deleteResponce = window.flipbookLib.getJSONPartial(
-            '/flipbooks/frame/'+ frameId +'/delete/', 
-            'GET', 
-            'json',
-            function(){
-                console.log("DELETE CONFIRM");
-                $popupMenu.focusout()});
-        
-        deleteResponce.success(function(data){
-            /////// RENDER ///////
-            renderDeleteConfirm(data, frameId, {'popupMenu': $popupMenu});
-            /////////////////////
-        });
-        
-    }); //end: bind 'delete'
-
+     $popupMenu.find('.action.delete').click(function(){
+         _acHandler.popupMenu = $popupMenu; //add reference to the popupmenu
+         _acHandler.ajaxFrameDeleteConfirm($popupMenu.attr("for"));
+     });
 }
-
-
-var ajax_frame_delete = function($form, frameid){ 
-    
-    $.ajax({
-        url: '/flipbooks/frame/'+ frameid +'/delete/',
-        method: 'POST',
-        data: $form.serialize(),
-        dataType: 'json',
-        success: function (data) {
-            //show animation of deletion
-            $(document).find('.thumb[frameid='+ frameid +']').animate({
-                opacity: 0,
-            }, 300, function() {
-                // Problem: if you delete this, you are removing everything 
-                //          in it with it, like popup menu. ],: 
-                // Rescue the popup menu
-                $(this).find(".popup_menu.edit").eq(0).appendTo('body');
-                $(this).remove(); //actually delete
-            });
-        },
-        error: function (data) { window.flipbookLib.logAJAXErrors(data, $(this).url); }
-    });
-    
-} // end: ajax_frame_delete()
-
-
 
 
 
@@ -359,11 +298,9 @@ function bind_openFrameEdit($doc, $targetOptional){
     
     $target.click(function(event){
         event.preventDefault();
-        acHandler.ajax_frame_edit($(this).parent().attr("frameid"));
+        _acHandler.ajax_frame_edit($(this).parent().attr("frameid"));
     });
 }
-
-
 
 
 
@@ -433,7 +370,7 @@ function bind_openPMenu_strip($doc, $targetOptional){
         if (stripId=="-1"){return;} //STOP, if frameid is not set.
         
         // DELETE happens in 2 parts.
-        // First is GET, and then POST. To see POST delete, see ajax_frame_delete()
+        // First is GET, and then POST. To see POST delete
         
         var deleteResponce = window.flipbookLib.getJSONPartial(
             '/flipbooks/strip/'+ stripId +'/delete/', 
@@ -526,8 +463,9 @@ function renderFrameContainer(data, stripId){
 
 
 
-function renderDeleteConfirm(data, frameId, args){
-    
+
+
+function renderDeleteFrameConfirm(data, frameId, args){
     
     var $popupMenu = args['popupMenu'];
     var _popupDeleteMenu = new PopupMenu($popupMenu, 1);
@@ -536,12 +474,10 @@ function renderDeleteConfirm(data, frameId, args){
     _popupDeleteMenu.popupAt($popupMenu.parent());
     
     //make objects to appear above lightbox
-    //$popupDelete.attr('style','z-index:1000');
-    //$popupMenu.parent().children('img').attr('style','z-index:1000');
+    _popupDeleteMenu.relatedElement.push(crawlOutUntilClassname($popupMenu, "thumb").children(".frame_image.stretch"));
+    _popupDeleteMenu.highlightRelated();
     
-    // TODO:
-    // I don't think this benefits from being a function
-    //addDeleteConfirmForm(data, $popupDelete, $popupDelete.children('.content'));
+    // Fill out popup
     _popupDeleteMenu.appendContent($("<p>" +data['html_form'] + "</p>"));
     
     $lbCover.turnOn();
@@ -551,28 +487,31 @@ function renderDeleteConfirm(data, frameId, args){
 
     // Bind "confirm" button
     _popupDeleteMenu.$menu.find('#delete-confirm-button').click(function(event){
-        // Note: #delete-confirm-button is a <a> that acts
-        //       like a submit() for the form  #delete-confirm.
         event.preventDefault();
         _popupDeleteMenu.$menu.find('#delete-cancel-button').click(); //close immediately
         var $deleteForm = _popupDeleteMenu.$menu.find('#delete-confirm');
         
         /////////////////////
-        ajax_frame_delete($deleteForm, frameId);
+        _acHandler.ajaxFrameDelete($deleteForm, frameId);
         /////////////////////
         
     });
     
     // Bind "cancel" button
     _popupDeleteMenu.$menu.find('#delete-cancel-button').click(function(event){
-        //clean up
+        
         _popupDeleteMenu.$menu.remove();
         $lbCover.turnOff(); //don't forget the lightbox cover
-        //$popupMenu.parent().children('img').attr('style','');
+        _popupDeleteMenu.dehighlightRelated();
     });
         
 }
 
+
+
+// Function used to fillout delete confirm form, in the response data
+// from an ajax call to delete url. 
+// This function currently used for Strip.
 function addDeleteConfirmForm(data, $popup, $targetOptional){
     
     var $target = $targetOptional
@@ -584,10 +523,7 @@ function addDeleteConfirmForm(data, $popup, $targetOptional){
         return false;
     }
 
-    //var combinedHtmlContent = $popup.html() + "<p>" +data['html_form'] + "</p>";
     $target.append($("<p>" +data['html_form'] + "</p>"));
-    // $popup.html(combinedHtmlContent);
-    
 }
 
 

@@ -44,19 +44,43 @@ class PopupMenu {
             });
         } else {
             //use template to make new one
-            console.log("using template to make new popup");
             this.$menu = $template.clone();
             this.$menu.css("z-index","1000");
-            
         }
         
-        
-        
         this.active = this.$menu ? true : false;
-        this.style = styleNum ? styleNum : 1; 
+        this.popupStyle = styleNum ? styleNum : 1; 
+        this.relatedElement = [];
     }
     
+    
+ 
     //methods
+    highlightRelated(){
+        for(var i=0;i<this.relatedElement.length;i++){
+            var currElemDefaultStyle = {};
+            var currElem = this.relatedElement[i]
+                currElemDefaultStyle["z-index"] = currElem.css("z-index");
+                currElem.css("z-index",1000);
+            // element may have opacity applied
+            if (currElem.css("opacity") < 1) {
+                currElemDefaultStyle["opacity"] = currElem.css("opacity");
+                currElem.css("opacity", 1);
+            }
+            currElem.data(currElemDefaultStyle);
+        }
+    }
+    
+    dehighlightRelated(){
+        for(var i=0;i<this.relatedElement.length;i++){
+            var currElem = this.relatedElement[i];
+            // apply default style
+            $.each(currElem.data(),function(key,styleVal){ 
+                currElem.css(key, styleVal);
+            });
+        }
+    }
+    
     popupAt($target){
         if (this.active){
             if ($target instanceof jQuery == false){
@@ -80,7 +104,7 @@ class PopupMenu {
             console.log("Popup menu currently not active");
         }
         
-    } //end: popupAt()å
+    } //end: popupAt()
     
     appendContent(content){
         //just as it sounds, using jquery append();
@@ -91,6 +115,13 @@ class PopupMenu {
         // assuming popup menu comes with .content div, empty it.
         this.$menu.children('.content').html('');
     }
+    
+    dislodge(){
+        // Popup menu elements are nested inside delete-able containers.
+        // Before the element is deleted, make sure the popup menu is
+        // dislodged somewhere safe, like 'body'.
+        this.$menu.appendTo('body');
+    }
 }
 
 
@@ -98,7 +129,6 @@ class PopupMenu {
 class LightBox {
     constructor() {
         this.clickEventFunc = function(){console.log("lightbox clicked")};
-        console.log("function set: " + this.clickEventFunc);
         
         this.template = `<div id="light_box_cover">
                         </div>
