@@ -123,9 +123,9 @@ class AJAXCRUDHandler {
     ajaxFrameDeleteConfirm(frameId){
 
         event.preventDefault();
-    
         var $popupMenu = this.popupMenu;
-        
+        console.log("Examine $popupMenu: " + this.popupMenu.html());
+
         // Retrieve frame information
         //var frameId = $popupMenu.attr("for");
         if (frameId=="-1"){return;} //STOP, if frameid is not set.

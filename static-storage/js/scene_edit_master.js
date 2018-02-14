@@ -31,11 +31,19 @@ $(function() {
     bind_openPMenu_frame($(document)); 
     // popup menu for strip 
     bind_openPMenu_strip($(document));
+    // elements inside the popup_menu. Has Edit and Delete.
+    bind_popupMenu_elems($(document).find(".popup_menu.edit").eq(0));
+    
+    // popupMenu should be initialized at this point
+    _acHandler.popupMenu = $(document).find(".popup_menu.edit").eq(0); //add reference to the popupmenu
+    
     // bind thumbnail click to edit each frame
     bind_openFrameEdit($(document));
     
-    // elements inside the popup_menu. Has Edit and Delete.
-    bind_popupMenu_elems($(document).find(".popup_menu.edit").eq(0));
+    // bind elements that open frame delete
+    bind_frameDelete($(document));
+    
+    
     
     
     //------------------------------------
@@ -248,6 +256,8 @@ function bind_openPMenu_frame($doc, $targetOptional){
 } // end: bind_openPMenu_frame()
 
 
+
+
 // ................................................
 // Various behaviors and buttons on the popup menu
 // ................................................
@@ -274,7 +284,6 @@ function bind_popupMenu_elems($popupMenu){
     // c. Bind 'DELETE' action 
     //.........................
      $popupMenu.find('.action.delete').click(function(){
-         _acHandler.popupMenu = $popupMenu; //add reference to the popupmenu
          _acHandler.ajaxFrameDeleteConfirm($popupMenu.attr("for"));
      });
 }
@@ -303,7 +312,12 @@ function bind_openFrameEdit($doc, $targetOptional){
 }
 
 
-
+function bind_frameDelete(){
+    $(document).find(".thumb a.frame_delete").click(function(event){
+        event.preventDefault();
+        _acHandler.ajaxFrameDeleteConfirm($(this).parent().attr("frameid"));
+    });
+}
 
 //  _______  _______  ______    ___   _______    
 // |       ||       ||    _ |  |   | |       |   
@@ -385,7 +399,7 @@ function bind_openPMenu_strip($doc, $targetOptional){
             //////////////////////
             /////// RENDER ///////
             console.log("display confirm delete for strip");
-            renderStripDeleteConfirm(data, stripId, {'popupMenu': $popupMenu})
+            renderStripDeleteConfirm(data, stripId, {'popupMenu': $popupMenu});
             /////////////////////
         });
         
@@ -432,7 +446,7 @@ var thumbTemplate_ = `
     <img src="" width='200px'/>
     <a href="" class="mini_menu edit">frame [{}]</a>
 </div>
-`
+`;
 
 function renderFrameContainer(data, stripId){
     
@@ -443,7 +457,7 @@ function renderFrameContainer(data, stripId){
    
     //fill in id
     var id_label = $newFrameThumb.children('a').text();
-    id_label = id_label.split("{}")[0] + frameObj.id + id_label.split("{}")[1]
+    id_label = id_label.split("{}")[0] + frameObj.id + id_label.split("{}")[1];
     $newFrameThumb.children('a').text(id_label);
     $newFrameThumb.attr("frameid", frameObj.id);
     //fill in image
@@ -470,11 +484,20 @@ function renderDeleteFrameConfirm(data, frameId, args){
     var $popupMenu = args['popupMenu'];
     var _popupDeleteMenu = new PopupMenu($popupMenu, 1);
     
+    // WARNING: $popupMenu menu may not be inside a thumbnail container
+    //          for example, for "delete" icon, $popupMenu has not been
+    //          placed anywhere yet. 
+    
     _popupDeleteMenu.cleanContent();
     _popupDeleteMenu.popupAt($popupMenu.parent());
     
     //make objects to appear above lightbox
-    _popupDeleteMenu.relatedElement.push(crawlOutUntilClassname($popupMenu, "thumb").children(".frame_image.stretch"));
+    var thumbRoot = crawlOutUntilClassname($popupMenu, "thumb");
+    if (!thumbRoot){
+        console.error("Cannot find parent with class of 'thumb'");
+        return
+    }
+    _popupDeleteMenu.relatedElement.push(thumbRoot.children(".frame_image.stretch"));
     _popupDeleteMenu.highlightRelated();
     
     // Fill out popup
