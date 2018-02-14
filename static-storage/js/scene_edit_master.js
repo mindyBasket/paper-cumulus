@@ -441,6 +441,7 @@ function renderStripContainer(data){
 
 
 
+// TO DO: use a partial instead
 var thumbTemplate_ = `
 <div class='thumb' frameid="">
     <img src="" width='200px'/>
@@ -481,23 +482,18 @@ function renderFrameContainer(data, stripId){
 
 function renderDeleteFrameConfirm(data, frameId, args){
     
+    // Make a new popup with same style as original popupmenu
     var $popupMenu = args['popupMenu'];
     var _popupDeleteMenu = new PopupMenu($popupMenu, 1);
     
-    // WARNING: $popupMenu menu may not be inside a thumbnail container
-    //          for example, for "delete" icon, $popupMenu has not been
-    //          placed anywhere yet. 
-    
+    // Popup
+    var $targetThumbnail = $(document).find(".thumb[frameid="+frameId+"]");
+    console.log("$targetThumbnail count: " + $targetThumbnail.length);
     _popupDeleteMenu.cleanContent();
-    _popupDeleteMenu.popupAt($popupMenu.parent());
+    _popupDeleteMenu.popupAt($targetThumbnail);
     
     //make objects to appear above lightbox
-    var thumbRoot = crawlOutUntilClassname($popupMenu, "thumb");
-    if (!thumbRoot){
-        console.error("Cannot find parent with class of 'thumb'");
-        return
-    }
-    _popupDeleteMenu.relatedElement.push(thumbRoot.children(".frame_image.stretch"));
+    _popupDeleteMenu.relatedElement.push($targetThumbnail.children(".frame_image.stretch"));
     _popupDeleteMenu.highlightRelated();
     
     // Fill out popup
@@ -537,10 +533,10 @@ function renderDeleteFrameConfirm(data, frameId, args){
 // This function currently used for Strip.
 function addDeleteConfirmForm(data, $popup, $targetOptional){
     
-    var $target = $targetOptional
+    var $target = $targetOptional;
     if ($target == null){
         // Select whole content of $popup
-        $target=$popup
+        $target=$popup;
     } else if ($targetOptional instanceof jQuery == false){
         console.error("Cannot append delete form to a non-Jquery object.");
         return false;

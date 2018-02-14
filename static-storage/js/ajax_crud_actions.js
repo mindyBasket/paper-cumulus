@@ -157,6 +157,8 @@ class AJAXCRUDHandler {
     
     ajaxFrameDelete($form, frameid){ 
         
+        var $popupMenu = this.popupMenu;
+        
         var deleteFrameResp = window.flipbookLib.submitFormAjaxly(
             $form,
             '/flipbooks/frame/'+ frameid +'/delete/',
@@ -169,7 +171,7 @@ class AJAXCRUDHandler {
             }, 300, function() {
                 // Put popup menu elsewhere so that it doesn't 
                 // get deleted with the frame container.
-                this.popupMenu.dislodge(); 
+                $popupMenu.dislodge(); 
                 $(this).remove(); //actually delete
             });
             

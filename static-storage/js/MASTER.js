@@ -295,22 +295,5 @@ flipbookLib.submitFormAjaxly = function($form, url, settings, beforeSendFunc){
         error: function (data) {logAJAXErrors(data, url)}
     });
     
-    // $.ajax({
-    //     url: '/api/frame/'+frameId+'/update/',
-    //     data: formData,
-    //     method: 'PATCH',
-    //     //enctype: 'multipart/form-data',
-    //     processData: false,
-    //     contentType: false,
-    //     beforeSend: function (){
-    //         console.log($(this));
-    //     },
-    //     success: function (data) {
-    //         var $frameImageContainer = $frameForm.find('#field_frame_image').children('.field_value');
-    //         $frameImageContainer.html('');
-    //         $frameImageContainer.append('<img src="' + data['frame_image_native']+ '"/>');
-    //     }
-    // });
-    
 }
 
