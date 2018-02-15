@@ -30,8 +30,13 @@ ul.list_strips li > .header{
     margin: 0 0 20px 0;
     border-bottom: 5px solid #c9c9c9;
 }
+
 ul.list_strips li > .header a{
     text-decoration: none;
+}
+
+ul.list_strips li > .flex_body{
+    flex: 1;
 }
 
 
@@ -68,9 +73,22 @@ ul.list_strips .strip_flex_container .tile{
 
 }
 
-ul.list_strips .strip_flex_container .thumb img{
-    border-radius: 5px;
+
+.strip_flex_toolbar{
+    display:block;
+    
+    padding: 7px 15px;
+    height: 40px;
+    
+    text-align: right;
+    background-color: #fafafa;
+    border-bottom: 1px solid #ddd;
 }
+
+.strip_flex_toolbar a{ color: #859297;}
+.strip_flex_toolbar a:hover{ color: #545b5d; text-decoration: none;}
+
+
 
 /*modified thumb or tile*/
 
