@@ -24,105 +24,7 @@ var row = new Item(1, 'john', 'au');
 //alert(row.speaker); // displays: john
 
 
-// Popup menu
-// This object relies on the fact that the popup menu is already on the page.
-// The HTML object that is the popup menu is useless/inactive until this 
-// object picks it up.
 
-class PopupMenu {
-    constructor($template, styleNum){
-        // if template is not provided, it will look for partial rendered
-        // right on the current page.
-        
-        if (!$template){
-            this.$menu = $(document).find(".popup_menu.edit").eq(0);
-            
-            // hide popup if user click else where
-            // This behavior is currently only for default partial popup
-            this.$menu.focusout(function(){
-                 $(this).hide();
-            });
-        } else {
-            //use template to make new one
-            this.$menu = $template.clone();
-            this.$menu.css("z-index","1000");
-        }
-        
-        this.active = this.$menu ? true : false;
-        this.popupStyle = styleNum ? styleNum : 1; 
-        this.relatedElement = [];
-    }
-    
-    
- 
-    //methods
-    highlightRelated(){
-        for(var i=0;i<this.relatedElement.length;i++){
-            var currElemDefaultStyle = {};
-            var currElem = this.relatedElement[i]
-                currElemDefaultStyle["z-index"] = currElem.css("z-index");
-                currElem.css("z-index",1000);
-            // element may have opacity applied
-            if (currElem.css("opacity") < 1) {
-                currElemDefaultStyle["opacity"] = currElem.css("opacity");
-                currElem.css("opacity", 1);
-            }
-            currElem.data(currElemDefaultStyle);
-        }
-    }
-    
-    dehighlightRelated(){
-        for(var i=0;i<this.relatedElement.length;i++){
-            var currElem = this.relatedElement[i];
-            // apply default style
-            $.each(currElem.data(),function(key,styleVal){ 
-                currElem.css(key, styleVal);
-            });
-        }
-    }
-    
-    popupAt($target){
-        if (this.active){
-            if ($target instanceof jQuery == false){
-                console.error("Cannot target popup menu non-Jquery object.");
-            }
-        
-            // move it to the $target and show
-            this.$menu.appendTo($target);
-            this.$menu.show();
-            this.$menu.focus(); // allows it to disappear when you click else where
-            
-            // Update tag information about current frame
-            // TODO: currently assumes $target has attribute 'frameid'.
-            //       this is not useful for 'sceneid'.
-            
-            var frameid = $target.attr("frameid");
-            this.$menu.attr("for", frameid);
-            this.$menu.children(".header").children("span").text(frameid);
-        
-        } else { 
-            console.log("Popup menu currently not active");
-        }
-        
-    } //end: popupAt()
-    
-    appendContent(content){
-        //just as it sounds, using jquery append();
-        this.$menu.children('.content').append(content);    
-    }
-    
-    cleanContent(){
-        // assuming popup menu comes with .content div, empty it.
-        this.$menu.children('.content').html('');
-    }
-    
-    dislodge(){
-        // Popup menu elements are nested inside delete-able containers.
-        // Before the element is deleted, make sure the popup menu is
-        // dislodged somewhere safe, like 'body'.
-        this.$menu.appendTo('body');
-    }
-}
 
 
 // lightbox object
@@ -152,9 +54,9 @@ class LightBox {
     }
 
    // Getter
-//   get area() {
-//     return this.calcArea();
-//   }
+    //   get area() {
+    //     return this.calcArea();
+    //   }
    
     
     // Method
@@ -211,6 +113,141 @@ class Spinny {
     }
 
 }
+
+
+
+
+
+
+// Popup menu
+// This object relies on the fact that the popup menu is already on the page.
+// The HTML object that is the popup menu is useless/inactive until this 
+// object picks it up.
+
+class PopupMenu {
+    constructor($template){
+        // if template is not provided, it will look for partial rendered
+        // right on the current page.
+        
+        if (!$template){
+            this.$menu = $(document).find(".popup_menu.edit").eq(0);
+            
+            // hide popup if user click else where
+            // This behavior is currently only for default partial popup
+            this.$menu.focusout(function(){
+                 $(this).hide();
+            });
+        } else {
+            //use template to make new one
+            this.$menu = $template.clone();
+            this.$menu.css("z-index","1000");
+        }
+        
+        this.active = this.$menu ? true : false;
+        this.relatedElement = [];
+        
+        // lightbox relationship
+        this._lightBox;
+        
+    }
+    
+    // set _lightBox(lb){
+    //      Warning: anything set using setter doesn't work like a 
+    //      normal property. So you can't retrieve obj._lightbox.
+    // }
+ 
+    //methods
+    highlightRelated(){
+        for(var i=0;i<this.relatedElement.length;i++){
+            var currElemDefaultStyle = {};
+            var currElem = this.relatedElement[i]
+                currElemDefaultStyle["z-index"] = currElem.css("z-index");
+                currElem.css("z-index",1000);
+            // element may have opacity applied
+            if (currElem.css("opacity") < 1) {
+                currElemDefaultStyle["opacity"] = currElem.css("opacity");
+                currElem.css("opacity", 1);
+            }
+            currElem.data(currElemDefaultStyle);
+        }
+    }
+    
+    dehighlightRelated(){
+        for(var i=0;i<this.relatedElement.length;i++){
+            var currElem = this.relatedElement[i];
+            // apply default style
+            $.each(currElem.data(),function(key,styleVal){ 
+                currElem.css(key, styleVal);
+            });
+        }
+    }
+    
+    popupAt($target){
+        
+        var _lb = this._lightBox;
+        if (this.active){
+            if ($target instanceof jQuery == false){
+                console.error("Cannot target popup menu non-Jquery object.");
+                return;
+            }
+            
+            //Turn on lightbox, if applicable
+            if (this._lightBox && this._lightBox instanceof LightBox){
+                this._lightBox.turnOn();
+                this.highlightRelated();
+            }
+            
+            // move it to the $target and show
+            this.$menu.appendTo($target);
+            this.$menu.show();
+            this.$menu.focus(); // allows it to disappear when you click else where
+            
+            // Update tag information about current frame
+            // TODO: currently assumes $target has attribute 'frameid'.
+            //       this is not useful for 'sceneid'.
+            
+            var frameid = $target.attr("frameid");
+            this.$menu.attr("for", frameid);
+            this.$menu.children(".header").children("span").text(frameid);
+        
+        } else { 
+            console.log("Popup menu currently not active");
+        }
+        
+    } //end: popupAt()
+    
+    
+    removePopup(){
+        this.$menu.remove();
+        if (this._lightBox && this._lightBox instanceof LightBox){
+            this._lightBox.turnOff();
+        }
+        this.dehighlightRelated();
+    }
+    
+    
+    appendContent(content){
+        //just as it sounds, using jquery append();
+        this.$menu.children('.content').append(content);    
+    }
+    
+    cleanContent(){
+        // assuming popup menu comes with .content div, empty it.
+        this.$menu.children('.content').html('');
+    }
+    
+    dislodge(){
+        // Popup menu elements are nested inside delete-able containers.
+        // Before the element is deleted, make sure the popup menu is
+        // dislodged somewhere safe, like 'body'.
+        this.$menu.appendTo('body');
+    }
+}
+
+
+
+
+
 
 
 

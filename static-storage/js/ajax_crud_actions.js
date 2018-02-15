@@ -124,7 +124,6 @@ class AJAXCRUDHandler {
 
         event.preventDefault();
         var $popupMenu = this.popupMenu;
-        console.log("Examine $popupMenu: " + this.popupMenu.html());
 
         // Retrieve frame information
         //var frameId = $popupMenu.attr("for");

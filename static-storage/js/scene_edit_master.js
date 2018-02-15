@@ -486,20 +486,19 @@ function renderDeleteFrameConfirm(data, frameId, args){
     var $popupMenu = args['popupMenu'];
     var _popupDeleteMenu = new PopupMenu($popupMenu, 1);
     
-    // Popup
-    var $targetThumbnail = $(document).find(".thumb[frameid="+frameId+"]");
-    console.log("$targetThumbnail count: " + $targetThumbnail.length);
-    _popupDeleteMenu.cleanContent();
-    _popupDeleteMenu.popupAt($targetThumbnail);
-    
-    //make objects to appear above lightbox
-    _popupDeleteMenu.relatedElement.push($targetThumbnail.children(".frame_image.stretch"));
-    _popupDeleteMenu.highlightRelated();
-    
     // Fill out popup
+    _popupDeleteMenu.cleanContent();
     _popupDeleteMenu.appendContent($("<p>" +data['html_form'] + "</p>"));
     
-    $lbCover.turnOn();
+    //Register object that will be lit when lights out
+    var $targetThumbnail = $(document).find(".thumb[frameid="+frameId+"]");
+    _popupDeleteMenu.relatedElement.push($targetThumbnail.children(".frame_image.stretch"));
+
+    // ++++++ lights out ++++++
+    _popupDeleteMenu._lightBox = $lbCover;
+    _popupDeleteMenu.popupAt($targetThumbnail);
+    // ++++++++++++++++++++++++
+    
     $lbCover.setClickEventFunc(function(){
         _popupDeleteMenu.$menu.find('#delete-cancel-button').click();
     });
@@ -518,10 +517,7 @@ function renderDeleteFrameConfirm(data, frameId, args){
     
     // Bind "cancel" button
     _popupDeleteMenu.$menu.find('#delete-cancel-button').click(function(event){
-        
-        _popupDeleteMenu.$menu.remove();
-        $lbCover.turnOff(); //don't forget the lightbox cover
-        _popupDeleteMenu.dehighlightRelated();
+        _popupDeleteMenu.removePopup(); 
     });
         
 }
