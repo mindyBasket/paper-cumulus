@@ -35,7 +35,7 @@ $(function() {
     bind_popupMenu_elems($(document).find(".popup_menu.edit").eq(0));
     
     // popupMenu should be initialized at this point
-    _acHandler.popupMenu = $(document).find(".popup_menu.edit").eq(0); //add reference to the popupmenu
+    _acHandler.popupMenu = _popupMenu; //add reference to the popupmenu
     
     // bind thumbnail click to edit each frame
     bind_openFrameEdit($(document));
@@ -255,7 +255,10 @@ function bind_openPMenu_frame($doc, $targetOptional){
     
 } // end: bind_openPMenu_frame()
 
-
+function bind_buttonsOnFrame(){
+    // TODO: 
+    // Bind click event for edit, delete, and options
+}
 
 
 // ................................................
@@ -441,39 +444,27 @@ function renderStripContainer(data){
 
 
 
-// TO DO: use a partial instead
-var thumbTemplate_ = `
-<div class='thumb' frameid="">
-    <img src="" width='200px'/>
-    <a href="" class="mini_menu edit">frame [{}]</a>
-</div>
-`;
-
 function renderFrameContainer(data, stripId){
     
     var frameObj = data;
     
-    //need to add it in the right place
-    var $newFrameThumb = $(thumbTemplate_);
+    //Get new container
+    var thumbResp = window.flipbookLib.getJSONPartial(
+        '/flipbooks/json_partials/frame_container/'+frameObj.id,
+    );
+    thumbResp.success(function(data_partial){
+        var $newFrameContainer = $(data_partial['html_template']);
+        var targetStripContainer = $('.strip_flex_container[stripid='+stripId+']');
+            
+            $newFrameContainer.insertBefore(targetStripContainer.find('.frame_form'));
+            $newFrameContainer.hide();
+            $newFrameContainer.slideToggle( "fast" );
+    });
    
-    //fill in id
-    var id_label = $newFrameThumb.children('a').text();
-    id_label = id_label.split("{}")[0] + frameObj.id + id_label.split("{}")[1];
-    $newFrameThumb.children('a').text(id_label);
-    $newFrameThumb.attr("frameid", frameObj.id);
-    //fill in image
-    $newFrameThumb.children("img").attr("src", frameObj.frame_image);
-    
-    //insert 
-    var targetStripContainer = $('.strip_flex_container[stripid='+stripId+']');
-    $newFrameThumb.insertBefore(targetStripContainer.find('.frame_form'));
-    
     //bind mini menu
-    bind_openPMenu_frame($(document), $newFrameThumb.find(".mini_menu.edit"));
-    
-    //animate
-    $newFrameThumb.toggle();
-    $newFrameThumb.slideToggle( "fast" );
+    // TODO:
+    bind_buttonsOnFrame();
+
 }
 
 

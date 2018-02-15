@@ -7,7 +7,7 @@ class AJAXCRUDHandler {
         this.lightBox = lightBoxObj ? lightBoxObj : false;
         this.spinny = spinnyObj ? spinnyObj : false;
         
-        this.popupMenu = '';
+        this.popupMenu; //popup object set at beginning of scene_edit_master
     }
     
 
@@ -123,10 +123,9 @@ class AJAXCRUDHandler {
     ajaxFrameDeleteConfirm(frameId){
 
         event.preventDefault();
-        var $popupMenu = this.popupMenu;
+        var $popupMenu = this.popupMenu.$menu;
 
         // Retrieve frame information
-        //var frameId = $popupMenu.attr("for");
         if (frameId=="-1"){return;} //STOP, if frameid is not set.
         
         // DELETE happens in 2 parts.
@@ -137,9 +136,7 @@ class AJAXCRUDHandler {
             'GET', 
             'json',
             function(){
-                console.log("DELETE CONFIRM");
                 $popupMenu.focusout();
-                
             });
         
         deleteResponce.success(function(data){
@@ -156,7 +153,7 @@ class AJAXCRUDHandler {
     
     ajaxFrameDelete($form, frameid){ 
         
-        var $popupMenu = this.popupMenu;
+        var popupMenuObj = this.popupMenu;
         
         var deleteFrameResp = window.flipbookLib.submitFormAjaxly(
             $form,
@@ -170,7 +167,7 @@ class AJAXCRUDHandler {
             }, 300, function() {
                 // Put popup menu elsewhere so that it doesn't 
                 // get deleted with the frame container.
-                $popupMenu.dislodge(); 
+                popupMenuObj.dislodge(); 
                 $(this).remove(); //actually delete
             });
             

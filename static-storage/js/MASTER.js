@@ -130,6 +130,8 @@ class PopupMenu {
         // right on the current page.
         
         if (!$template){
+            
+            // Default: grabs the popup_menu element rendered using partial
             this.$menu = $(document).find(".popup_menu.edit").eq(0);
             
             // hide popup if user click else where
@@ -137,6 +139,7 @@ class PopupMenu {
             this.$menu.focusout(function(){
                  $(this).hide();
             });
+            
         } else {
             //use template to make new one
             this.$menu = $template.clone();
@@ -144,6 +147,7 @@ class PopupMenu {
         }
         
         this.active = this.$menu ? true : false;
+        if (!this.active) { console.warn("Popup menu could not initialize to be active."); }
         this.relatedElement = [];
         
         // lightbox relationship

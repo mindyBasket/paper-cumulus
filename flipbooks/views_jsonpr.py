@@ -64,4 +64,21 @@ def return_frame_edit_form(request, *args, **kwargs):
     
     return JsonResponse({'html_template': html_template})
     
+
+
+
+def return_thumbnail_partial(request, *args, **kwargs):
     
+    frame_instance = get_object_or_404(Frame, pk=kwargs['pk'])
+
+    context = {
+        "frame": frame_instance
+    }
+    
+    html_template = render_to_string(
+        'flipbooks/partials/thumbnail_partial.html',
+        context, 
+        request=request
+    )
+    
+    return JsonResponse({'html_template': html_template})
