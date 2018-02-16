@@ -21,31 +21,24 @@ var _acHandler = new AJAXCRUDHandler($lbCover, _spinnyObj); /* global AJAXCRUDHa
 
 $(function() { 
 
-    console.log("scene_edit_master.js ---------- * v0.6.4");
+    console.log("sceneEditBinds.js ---------- * v0.6.5");
     
     // "+frame" button appends frame create form
     // TODO: remove this form, and make one-click-submit
     bind_frameCreateFormButton($(document));
     
-    // mini_menu link opens popup_menu
-    bind_openPMenu_frame($(document)); 
-    // popup menu for strip 
-    bind_openPMenu_strip($(document));
-    // elements inside the popup_menu. Has Edit and Delete.
+    // Initialize popup menu partial
     bind_popupMenu_elems($(document).find(".popup_menu.edit").eq(0));
-    
-    // popupMenu should be initialized at this point
     _acHandler.popupMenu = _popupMenu; //add reference to the popupmenu
     
-    // bind thumbnail click to edit each frame
-    bind_openFrameEdit($(document));
+    // Bind features on frame/thumbnail container
+    bind_features_onFrameContainer();
+
+    // popup menu for strip 
+    bind_openPMenu_strip($(document));
+   
     
-    // bind elements that open frame delete
-    bind_frameDelete($(document));
-    
-    
-    
-    
+
     //------------------------------------
     // Form submit
     //------------------------------------
@@ -195,80 +188,12 @@ function bind_frameCreateFormButton($doc, $targetOptional){
 }
 
 
-// ................................................
-// bind link that opens mini menu
-//
-// This function assumes mini menu is included in the document. 
-// Currently done by including the snippet as a partial. Find it in
-// flipbooks/partials/popup_menu_partial.html
-// ................................................
+
 
 
 // ┌─┐┌─┐┌─┐┬ ┬┌─┐  ┌─┐┌─┐┬─┐  ┌─┐┬─┐┌─┐┌┬┐┌─┐
 // ├─┘│ │├─┘│ │├─┘  ├┤ │ │├┬┘  ├┤ ├┬┘├─┤│││├┤ 
 // ┴  └─┘┴  └─┘┴    └  └─┘┴└─  └  ┴└─┴ ┴┴ ┴└─┘
-
-/* This function crawls up hiearchy until its parent's name is 
-   specified in argument classname */
-function crawlOutUntilClassname($start, classname){
-    
-    var $nextParent = $start.parent();
-    
-    while ($nextParent.is('body') != true){
-        if ($nextParent.attr("class") == classname || $nextParent.attr("class").indexOf(classname) !== -1){
-            return $nextParent;
-        } else {
-            $nextParent = $nextParent.parent();}
-    }
-    return false;
-} //end: crawlOutUntilClassname
-
-
-function bind_openPMenu_frame($doc, $targetOptional){
-    var $target = $targetOptional
-    
-    if ($target == null){
-        //do for all mini menus if target not specified
-        $target = $doc.find('.thumb a.frame_options');
-    } else if ($targetOptional instanceof jQuery == false){
-        console.error("Cannot bind mini menu even to non-Jquery object.");
-        return false;
-    }
-    
-    // ...............
-    // open mini menu
-    // ...............
-    $target.click(function(event){
-        
-        event.preventDefault();
-
-        // append to thumbnail base [div with ".thumb" class]
-        var $parentThumb = crawlOutUntilClassname($(this), "thumb");
-        if ($parentThumb) {
-            _popupMenu.popupAt($parentThumb);
-        } else {
-            console.log("Cannot find the thumbnail element in list of parents.");
-            return;
-        }
-        
-    });
-    
-} // end: bind_openPMenu_frame()
-
-function bind_buttonsOnFrame(){
-    // TODO: 
-    // Bind click event for edit, delete, and options
-}
-
-
-// ................................................
-// Various behaviors and buttons on the popup menu
-// ................................................
-
-var lightboxModal = `
-<div id="light_box_modal">
-</div>
-`
 
 function bind_popupMenu_elems($popupMenu){
     
@@ -292,35 +217,113 @@ function bind_popupMenu_elems($popupMenu){
 }
 
 
-
-
-
-
-function bind_openFrameEdit($doc, $targetOptional){
-
-    var $target = $targetOptional;
+/* HELPER */
+/* This function crawls up hiearchy until its parent's name is 
+   specified in argument classname */
+function crawlOutUntilClassname($start, classname){
     
-    if ($target == null){
-        //do for all thumb images if target not specified
-        $target = $doc.find('.thumb a.frame_edit');
-    } else if ($targetOptional instanceof jQuery == false){
-        console.error("Cannot bind to non-Jquery object.");
-        return false;
+    var $nextParent = $start.parent();
+    
+    while ($nextParent.is('body') != true){
+        if ($nextParent.attr("class") == classname || $nextParent.attr("class").indexOf(classname) !== -1){
+            return $nextParent;
+        } else {
+            $nextParent = $nextParent.parent();}
     }
+    return false;
+} //end: crawlOutUntilClassname
+
+
+/* HELPER */
+/* Pass container with features, and selector describing element 
+    in the container to bind. Returns the object ready to be binded. 
+    Returns false if it could not find the object using the selector. 
+    
+    Can pass nothing for $targetContainer. It will assume $(document) */
+function getValidTarget($targetContainer, targetSelector){
+
+    $targetContainer = $targetContainer ? $targetContainer : $(document);
+
+    if ($targetContainer instanceof jQuery == false){
+        console.error("Bind target is not Jquery object.");
+        return false;
+    } else {
+        var $target = $targetContainer.find(targetSelector);
+        if ($target.length > 0){return $target;}
+        else { 
+            console.error("Could not find target in " + $targetContainer.attr("class"));
+            return false; 
+        } 
+    }
+        
+}
+
+
+/*  If isMultiTarget = true, it means it will bind to ALL .thumb under the container.
+    use isMultiTarget = false, if the container itself is a specific .thumb */  
+function bind_features_onFrameContainer($targetContainer, isMultiTarget){
+    
+    isMultiTarget = typeof(isMultiTarget) === 'boolean' ? isMultiTarget : isMultiTarget || true;
+    var t = isMultiTarget;
+    var targetArr = ['a.frame_edit', 'a.frame_delete', 'a.frame_options'];
+    
+    
+    //Bind "edit"
+    bind_openFrameEdit($targetContainer, (t ? ".thumb" : "")  + ' a.frame_edit');
+    //Bind "delete"
+    bind_frameDelete($targetContainer, (t ? ".thumb" : "") + ' a.frame_delete');
+    //Bind "options" (popup menu)
+    bind_openPMenu_frame($targetContainer, (t ? ".thumb" : "")  + ' a.frame_options'); 
+    
+}
+
+
+
+function bind_openFrameEdit($targetContainer, targetSelector){
+    
+    var $target = getValidTarget($targetContainer, targetSelector);
+    if (!$target) { return; }
     
     $target.click(function(event){
+        
         event.preventDefault();
         _acHandler.ajax_frame_edit($(this).parent().attr("frameid"));
     });
 }
 
 
-function bind_frameDelete(){
-    $(document).find(".thumb a.frame_delete").click(function(event){
+function bind_frameDelete($targetContainer, targetSelector){
+    
+    var $target = getValidTarget($targetContainer, targetSelector);
+    if (!$target) { return; }
+    
+    $target.click(function(event){
+        
         event.preventDefault();
         _acHandler.ajaxFrameDeleteConfirm($(this).parent().attr("frameid"));
     });
 }
+
+function bind_openPMenu_frame($targetContainer, targetSelector){
+    
+    var $target = getValidTarget($targetContainer, targetSelector);
+    if (!$target) { return; }
+   
+    $target.click(function(event){
+        
+        event.preventDefault();
+        // append to thumbnail base [div with ".thumb" class]
+        var $parentThumb = crawlOutUntilClassname($(this), "thumb");
+        if ($parentThumb) {
+            _popupMenu.popupAt($parentThumb);
+        } else {
+            console.log("Cannot find the thumbnail element in list of parents.");
+            return;
+        }
+        
+    });
+    
+} // end: bind_openPMenu_frame()
 
 //  _______  _______  ______    ___   _______    
 // |       ||       ||    _ |  |   | |       |   
@@ -459,11 +462,10 @@ function renderFrameContainer(data, stripId){
             $newFrameContainer.insertBefore(targetStripContainer.find('.frame_form'));
             $newFrameContainer.hide();
             $newFrameContainer.slideToggle( "fast" );
+            
+            //bind features
+            bind_features_onFrameContainer($newFrameContainer, false);
     });
-   
-    //bind mini menu
-    // TODO:
-    bind_buttonsOnFrame();
 
 }
 
