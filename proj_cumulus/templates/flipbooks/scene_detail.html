@@ -56,55 +56,59 @@
            <!-- {- for strip in ordered_strip_set -}-->
             {% for strip in object.strip_set.all|map_queryset:object.children_li %}
                 <li class="flex_list" stripid="{{strip.id}}">
-                    <div class="header" stripid="{{strip.id}}">
+                    <!--<div class="header" stripid="{{strip.id}}">
                         <span class="bigtext-1">{{forloop.counter}}</span>
                         <br>
                         <span>id: {{strip.id}}</span>
                         <a class="glyphicon glyphicon-menu-hamburger menu_strip" aria-hidden="true" style='font-size:2em'></a>
-                    </div>
-                    
-                    <div class="flex_body">
-                        <div class="strip_flex_toolbar">
+                    </div>-->
+                    <div class="strip_flex_toolbar">
+                        <div class="header">
+                            <span class="bigtext-2">{{forloop.counter}}</span>
+                            <span>id: {{strip.id}}</span>
+                        </div>
+                        <div class="tools">
                             <a class="glyphicon glyphicon-upload" aria-hidden="true" style='font-size:1.5em'></a>
                             <a class="glyphicon glyphicon-edit" aria-hidden="true" style='font-size:1.5em'></a>
                             <a class="glyphicon glyphicon-option-horizontal" aria-hidden="true" style='font-size:1.5em'></a>
-                            
-                            
                         </div>
-                        <div class="strip_flex_container" stripid="{{strip.id}}">
-                            <!-- {- for frame in strip.frame_set.all -}--> 
-                            {% for frame in strip.frame_set.all|map_queryset:strip.children_li %}
-                                {% if frame|is_displayable:"frame" %} 
-                                
-                                   {% include "flipbooks/partials/thumbnail_partial.html" with frame=frame %}
-                                       
-                                {% else %} 
-                                    <!-- Frame with invalid image -->
-                                    <div class="thumb placeholder2" frameid="{{frame.id}}">
-                                    <span>Missing Image</span>
-                                        <a href="" class="mini_menu edit">frame [{{frame.id}}]</a>
-                                    </div>
-                             
-                                {% endif %}
-                                   
-                            {% empty %}
-                                {% if strip is None %}
-                                    <div class="tile ui-state-disabled">
-                                        <span style="color:#898989">Invalid Strip</span>
-                                    </div>
-                                {% endif %}
-                            {% endfor %}
+                        
+                    </div>
+                    
+                    <div class="strip_flex_container" stripid="{{strip.id}}">
+                        <!-- {- for frame in strip.frame_set.all -}--> 
+                        {% for frame in strip.frame_set.all|map_queryset:strip.children_li %}
+                            {% if frame|is_displayable:"frame" %} 
                             
-                            {% if strip != None %}
-                                <!-- open frame_form -->
-                                <div class="tile frame_form ui-state-disabled" displaytype="add" for="{{strip.id}}">
-                                    <span style="font-size:4em">+</span>
-                                    Add Frames
+                               {% include "flipbooks/partials/thumbnail_partial.html" with frame=frame %}
+                                   
+                            {% else %} 
+                                <!-- Frame with invalid image -->
+                                <div class="thumb placeholder2" frameid="{{frame.id}}">
+                                <span>Missing Image</span>
+                                    <a href="" class="mini_menu edit">frame [{{frame.id}}]</a>
+                                </div>
+                         
+                            {% endif %}
+                               
+                        {% empty %}
+                            {% if strip is None %}
+                                <div class="tile ui-state-disabled">
+                                    <span style="color:#898989">Invalid Strip</span>
                                 </div>
                             {% endif %}
-    
-                        </div>
+                        {% endfor %}
+                        
+                        {% if strip != None %}
+                            <!-- open frame_form -->
+                            <div class="tile frame_form ui-state-disabled" displaytype="add" for="{{strip.id}}">
+                                <span style="font-size:4em">+</span>
+                                Add Frames
+                            </div>
+                        {% endif %}
+
                     </div>
+                   
                     
                         
                 </li>

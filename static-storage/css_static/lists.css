@@ -12,31 +12,15 @@ ul.list_strips{
 
 
 ul.list_strips li{
+    
     display:flex;
+    flex-direction: column;
     align-items: stretch;
+    
     position: relative;
+    
     counter-increment: stripNum;
     
-}
-
-
-ul.list_strips li > .header{
-    width: 60px;
-    height: auto;
-    
-    flex-shrink: 0;
-    background-color:#DAF5E4;
-    padding: 10px;
-    margin: 0 0 20px 0;
-    border-bottom: 5px solid #c9c9c9;
-}
-
-ul.list_strips li > .header a{
-    text-decoration: none;
-}
-
-ul.list_strips li > .flex_body{
-    flex: 1;
 }
 
 
@@ -75,18 +59,31 @@ ul.list_strips .strip_flex_container .tile{
 
 
 .strip_flex_toolbar{
-    display:block;
-    
-    padding: 7px 15px;
-    height: 40px;
-    
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+ 
+    padding: 5px 15px 5px 15px;
+
     text-align: right;
     background-color: #fafafa;
     border-bottom: 1px solid #ddd;
 }
 
+.flex_list .strip_flex_toolbar .tools{
+    opacity: 0.1;
+    
+    transition-property: opacity;
+    transition-duration: 0.2s;
+}
+
+.flex_list:hover .strip_flex_toolbar .tools{
+    opacity:1;
+}
+
 .strip_flex_toolbar a{ color: #859297;}
 .strip_flex_toolbar a:hover{ color: #545b5d; text-decoration: none;}
+
 
 
 
@@ -98,8 +95,6 @@ ul.list_strips .strip_flex_container .tile{
     /* This was a quick and easy way to make the .thumb slender
        but this also prevents popup menu from being visible*/
     /* overflow: hidden;*/
-    
-    
     
     border-left: 5px solid red;
 }
