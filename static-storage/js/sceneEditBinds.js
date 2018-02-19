@@ -36,6 +36,9 @@ $(function() {
 
     // popup menu for strip 
     bind_openPMenu_strip($(document));
+    
+    // drag and drop events
+    bind_dragAndDrop($(document), '.strip_flex_container');
    
     
 
@@ -602,3 +605,31 @@ function renderStripDeleteConfirm(data, stripId, args){
         
 }
 
+
+
+
+
+
+
+
+function bind_dragAndDrop($targetContainer, targetSelector){
+    
+    var $target = getValidTarget($targetContainer, targetSelector);
+    if (!$target) { return; }
+    
+    $target.on('drag dragstart dragend dragover dragenter dragleave drop', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    })
+    .on('dragover dragenter', function(event) {
+        console.log(event.type);
+        $(this).addClass('is-dragover');
+    })
+    .on('dragleave dragend drop', function(event) {
+        console.log(event.type);
+        $(this).removeClass('is-dragover');
+    });
+    // .on('drop', function(e) {
+    //     droppedFiles = e.originalEvent.dataTransfer.files;
+    // });
+}

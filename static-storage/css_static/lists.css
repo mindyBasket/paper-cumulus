@@ -26,6 +26,7 @@ ul.list_strips li{
 
 .strip_flex_container{
     /*Main flex container for a single srip*/
+    position: relative;
     display:flex;
     flex-wrap: wrap;
     flex-direction: row;
