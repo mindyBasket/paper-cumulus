@@ -1,18 +1,24 @@
-<div class="thumb" frameid="{{frame.id}}">
-   <div class="frame_image stretch">
-        <!-- opacity 0 -->
-        <img src="{{ frame.frame_image.thumb.url }}" width='180px'/>
-    </div>
-    
-    <div class="frame_image" 
-         style="background-image:url('{{ frame.frame_image.thumb.url }}');">
+<div class="thumb" frameid="{% if frame %}{{frame.id}}{% else %}loading{% endif %}">
+    {% if frame %}
+        <div class="frame_image stretch">
+            <!-- opacity 0 -->
+            <img src="{{ frame.frame_image.thumb.url }}" width='180px'/>
+        </div>
         
-        <span class="overlay_box" frameid="{{frame.id}}">
-            <a>[{{frame.id}}]</a>
-            <a class="frame_edit glyphicon glyphicon-pencil" aria-hidden="true" style='font-size:1.2em'></a>
-            <a class="frame_delete glyphicon glyphicon-trash" aria-hidden="true" style='font-size:1.2em'></a>
-            <a class="frame_options glyphicon glyphicon-option-horizontal" aria-hidden="true" style='font-size:1.2em'></a>
-        </span>
-    </div>
+        <div class="frame_image" 
+             style="background-image:url('{{ frame.frame_image.thumb.url }}');">
+            
+            <span class="overlay_box" frameid="{{frame.id}}">
+                <a>[{{frame.id}}]</a>
+                <a class="frame_edit glyphicon glyphicon-pencil" aria-hidden="true" style='font-size:1.2em'></a>
+                <a class="frame_delete glyphicon glyphicon-trash" aria-hidden="true" style='font-size:1.2em'></a>
+                <a class="frame_options glyphicon glyphicon-option-horizontal" aria-hidden="true" style='font-size:1.2em'></a>
+            </span>
+        </div>
+    {% else %}
+        <div class="frame_image stretch">
+            <img width='180px'/>
+        </div>
+    {% endif %}
     
 </div> 

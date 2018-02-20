@@ -47,6 +47,7 @@ urlpatterns = [
     # returns json objects
     url(r'^json_partials/strip_container/(?P<pk>\d+)/$', views_jsonpr.return_strip_container_tmplt, name='json_partial__strip_container'), 
     url(r'^json_partials/frame_edit_form/(?P<pk>\d+)/$', views_jsonpr.return_frame_edit_form, name='json_partial__frame_edit_form'), 
+    url(r'^json_partials/frame_container/empty/$',       views_jsonpr.return_empty_thumbnail_partial, name='json_partial__empty_thumb_container'), 
     url(r'^json_partials/frame_container/(?P<pk>\d+)/$', views_jsonpr.return_thumbnail_partial, name='json_partial__frame_thumb_container'), 
 ]
 

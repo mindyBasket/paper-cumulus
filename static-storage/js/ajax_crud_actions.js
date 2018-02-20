@@ -14,7 +14,43 @@ class AJAXCRUDHandler {
     // ------------------------------
     // Methods
     // ------------------------------
+    ajax_frame_create(stripId, args){
+        
+        console.log("StripId? : " + stripId);
+        if(!stripId || Number(stripId) < 0){return;}
+        
+        var spinny = this.spinny;
+        var formInfo = args["formData"]; // warning: could be $form, or formData
+        var $form = $(document).find("#frame_create_form");
+        
+        var frameCreateResp = window.flipbookLib.submitFormAjaxly(
+            formInfo,
+            '/api/strip/'+stripId+'/frame/create/',
+            {'method': 'POST',
+             'processData': false,
+             'contentType': false
+            },
+            function(){
+                console.log("ajax frame create!");
+                renderNewFrameContainer(stripId);
+                
+            });
+        frameCreateResp.success(function(data){
+            console.log("sucessfully created frame");
+            //Hide the form and return add button
+            $form.hide();
+            $('.frame_form').show();
+            
+            /////// RENDER ///////
+            renderFrameContainer(data, stripId);
+            //////////////////////
+        });
+        
+    }
     
+      
+        
+        
     ajax_frame_edit(frameId){
     
         // Verify valid frameId

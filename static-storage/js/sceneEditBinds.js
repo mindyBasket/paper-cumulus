@@ -441,7 +441,29 @@ function renderStripContainer(data){
     
 }
 
+// Renders empty frame container with a loading animation
+function renderNewFrameContainer(stripId){
+    
+    //Get new container
+    var thumbResp = window.flipbookLib.getJSONPartial(
+        '/flipbooks/json_partials/frame_container/empty',
+    );
+    thumbResp.success(function(data_partial){
+        var $emptyFrameContainer = $(data_partial['html_template']);
+        var targetStripContainer = $('.strip_flex_container[stripid='+stripId+']');
+            
+            $emptyFrameContainer.insertBefore(targetStripContainer.find('.frame_form'));
+            $emptyFrameContainer.hide();
+            $emptyFrameContainer.slideToggle( "fast" );
 
+        //show loading animation
+        _spinnyObj.appendSpinnyTo(
+            $emptyFrameContainer, 
+            {"min-width": "200px", "min-height":"120px"},
+            true);
+    });
+
+}
 
 function renderFrameContainer(data, stripId){
     
@@ -455,6 +477,7 @@ function renderFrameContainer(data, stripId){
         var $newFrameContainer = $(data_partial['html_template']);
         var targetStripContainer = $('.strip_flex_container[stripid='+stripId+']');
             
+            targetStripContainer.find(".thumb[frameid='loading']").remove();
             $newFrameContainer.insertBefore(targetStripContainer.find('.frame_form'));
             $newFrameContainer.hide();
             $newFrameContainer.slideToggle( "fast" );
@@ -621,35 +644,21 @@ function bind_dragAndDrop($targetContainer, targetSelector){
         $(this).removeClass('is-dragover');
     })
     .on('drop', function(e) {
+        
         var droppedFiles = e.originalEvent.dataTransfer.files;
+        
         var containerObj = crawlOutUntilClassname($(this), "flex_list");
-        var stripId = containerObj ? containerObj.attr("stripid") : "?"
-        var $form = $(document).find("#frame_create_form");
+        var stripId = containerObj ? containerObj.attr("stripid") : "-1"
+        
         
         containerObj.find(".frame_form").click();
         
         // manually append file information
-        var formData = new FormData($form[0]);
-        console.log(droppedFiles[0]);
-        formData.append("frame_image", droppedFiles[0]);
-        
-         var frameCreateResp = window.flipbookLib.submitFormAjaxly(
-            formData,
-            '/api/strip/'+stripId+'/frame/create/',
-            {'method': 'POST',
-             'processData': false,
-             'contentType': false
-            });
-        frameCreateResp.success(function(data){
-            console.log("sucessfully created frame");
-            //Hide the form and return add button
-            $form.hide();
-            $('.frame_form').show();
-            
-            /////// RENDER ///////
-            renderFrameContainer(data, stripId);
-            //////////////////////
-        });
+        var $form = $(document).find("#frame_create_form");
+        var moddedFormData = new FormData($form[0]);
+        moddedFormData.append("frame_image", droppedFiles[0]);
+    
+        _acHandler.ajax_frame_create(stripId, {"formData": moddedFormData});
         
     });
 }

@@ -82,3 +82,12 @@ def return_thumbnail_partial(request, *args, **kwargs):
     )
     
     return JsonResponse({'html_template': html_template})
+    
+    
+def return_empty_thumbnail_partial(request, *args, **kwargs):
+    
+    html_template = render_to_string(
+        'flipbooks/partials/thumbnail_partial.html',
+    )
+    
+    return JsonResponse({'html_template': html_template})

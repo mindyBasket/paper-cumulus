@@ -91,15 +91,13 @@ class Spinny {
         this.defaultBackground = "#e5e5e5"
     }
     
-    
-    
     // Method
     appendSpinnyTo($target, css_options, clearHtml){
         if ($target instanceof jQuery == false){
             console.error("Cannot append to non-Jquery object.");
         }
     
-        clearHtml = typeof(processData) === 'boolean' ? clearHtml : clearHtml || true;
+        clearHtml = typeof(clearHtml) === 'boolean' ? clearHtml : clearHtml || true;
         if (clearHtml){
             $target.html('');
         }
