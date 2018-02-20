@@ -90,35 +90,28 @@ $(function() {
         // disable default form action
         event.preventDefault();
         var $frameForm = $(this);
-        
-        //prep form data
-        //var formData = $(this).serialize();
-        var formData = new FormData($(this)[0]);
         var stripPk = $(this).parent().attr("stripid");
 
         //ajax call
-        $.ajax({
-            url: '/api/strip/'+stripPk+'/frame/create/',
-            data: formData,
-            method: 'POST',
-            //enctype: 'multipart/form-data',
-            processData: false,
-            contentType: false,
-            success: function (data) {
-                console.log("sucessfully created frame");
-                //Hide the form and return add button
-                $frameForm.hide();
-                $('.frame_form').show();
-                
-                /////// RENDER ///////
-                renderFrameContainer(data, stripPk);
-                //////////////////////
-            },
-            error: function (data) {
-                window.flipbookLib.logAJAXErrors(data, $(this).url);
-            }
-        });
-        
+        var frameCreateResp = window.flipbookLib.submitFormAjaxly(
+            $(this),
+            '/api/strip/'+stripPk+'/frame/create/',
+            {'method': 'POST',
+             'processData': false,
+             'contentType': false
+            });
+        frameCreateResp.success(function(data){
+            
+            console.log("sucessfully created frame");
+            //Hide the form and return add button
+            $frameForm.hide();
+            $('.frame_form').show();
+            
+            /////// RENDER ///////
+            renderFrameContainer(data, stripPk);
+            //////////////////////
+        });                
+
     });
     
       
@@ -616,20 +609,47 @@ function bind_dragAndDrop($targetContainer, targetSelector){
     
     var $target = getValidTarget($targetContainer, targetSelector);
     if (!$target) { return; }
-    
+
     $target.on('drag dragstart dragend dragover dragenter dragleave drop', function(e) {
         e.preventDefault();
         e.stopPropagation();
     })
-    .on('dragover dragenter', function(event) {
-        console.log(event.type);
+    .on('dragover dragenter', function() {
         $(this).addClass('is-dragover');
     })
-    .on('dragleave dragend drop', function(event) {
-        console.log(event.type);
+    .on('dragleave dragend drop', function() {
         $(this).removeClass('is-dragover');
+    })
+    .on('drop', function(e) {
+        var droppedFiles = e.originalEvent.dataTransfer.files;
+        var containerObj = crawlOutUntilClassname($(this), "flex_list");
+        var stripId = containerObj ? containerObj.attr("stripid") : "?"
+        var $form = $(document).find("#frame_create_form");
+        
+        containerObj.find(".frame_form").click();
+        
+        // manually append file information
+        var formData = new FormData($form[0]);
+        console.log(droppedFiles[0]);
+        formData.append("frame_image", droppedFiles[0]);
+        
+         var frameCreateResp = window.flipbookLib.submitFormAjaxly(
+            formData,
+            '/api/strip/'+stripId+'/frame/create/',
+            {'method': 'POST',
+             'processData': false,
+             'contentType': false
+            });
+        frameCreateResp.success(function(data){
+            console.log("sucessfully created frame");
+            //Hide the form and return add button
+            $form.hide();
+            $('.frame_form').show();
+            
+            /////// RENDER ///////
+            renderFrameContainer(data, stripId);
+            //////////////////////
+        });
+        
     });
-    // .on('drop', function(e) {
-    //     droppedFiles = e.originalEvent.dataTransfer.files;
-    // });
 }

@@ -310,9 +310,22 @@ flipbookLib.submitFormAjaxly = function($form, url, settings, beforeSendFunc){
     // Note: from observation, use '$(this).serialize()'' for text-based data, 
     //       use 'new FormData($(this)[0]);' for multipart. If not, it fails
     //       upon request. 
-    var formData = $form.serialize();
-    if (contentType == false || contentType == 'multipart/form-data'){
-        formData = new FormData($form[0]);
+    var formData;
+    if ($form instanceof jQuery){
+        formData = $form.serialize();
+        if (contentType == false || contentType == 'multipart/form-data'){
+            formData = new FormData($form[0]);
+        }
+    } else {
+        // Form data may be already serialized or extracted.
+        // This happens if something in the form had to be manually appended.
+        console.log("Manually appended form data");
+        formData = $form;
+    }
+    
+    if (!formData){
+        console.error("Could not submitFormAjaxly. Form data is empty.");
+        return;
     }
     
     console.log("Arg check: " + JSON.stringify({
