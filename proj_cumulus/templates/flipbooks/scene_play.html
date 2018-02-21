@@ -76,7 +76,7 @@ strip has been loaded -->
                     {% if fr is None or fr.frame_image is None or fr.frame_image|length is 0 %} 
                         Image not found
                     {% else %}
-                        <img src="{{ fr.frame_image.cell.url }}"/>
+                        <img src="{{fr.frame_image.cell.url}}"/>
                     {% endif %}
                 {% endfor %}
                 
