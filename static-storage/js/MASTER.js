@@ -123,29 +123,30 @@ class Spinny {
 // object picks it up.
 
 class PopupMenu {
-    constructor($template){
+    constructor($popupInitObj, popupObjType){
         // if template is not provided, it will look for partial rendered
         // right on the current page.
         
-        if (!$template){
+        if ($popupInitObj && $popupInitObj instanceof jQuery){
             
-            // Default: grabs the popup_menu element rendered using partial
-            this.$menu = $(document).find(".popup_menu.edit").eq(0);
-            
-            // hide popup if user click else where
-            // This behavior is currently only for default partial popup
-            this.$menu.focusout(function(){
-                 $(this).hide();
-            });
-            
-        } else {
-            //use template to make new one
-            this.$menu = $template.clone();
-            this.$menu.css("z-index","1000");
+            if (popupObjType === "partial"){
+                this.$menu = $popupInitObj;
+                // hide popup if user click else where
+                // This behavior is currently only for default partial popup
+                this.$menu.focusout(function(){ $(this).hide() });
+            } else
+            if (popupObjType === "template"){
+                //use template to make new one
+                this.$menu = $popupInitObj.clone();
+                this.$menu.css("z-index","1000");
+            }
+            else {
+                console.warn("Popup init object's type provided ("+popupObjType+") is not valid");
+            } 
         }
-        
+
         this.active = this.$menu ? true : false;
-        if (!this.active) { console.warn("Popup menu could not initialize to be active."); }
+        if (!this.active) { console.warn("Popup menu could not initialized to be active."); }
         this.relatedElement = [];
         
         // lightbox relationship
@@ -184,7 +185,7 @@ class PopupMenu {
         }
     }
     
-    popupAt($target){
+    popupAt($target, contentIdType){
         
         var _lb = this._lightBox;
         if (this.active){
@@ -208,9 +209,19 @@ class PopupMenu {
             // TODO: currently assumes $target has attribute 'frameid'.
             //       this is not useful for 'sceneid'.
             
-            var frameid = $target.attr("frameid");
-            this.$menu.attr("for", frameid);
-            this.$menu.children(".header").children("span").text(frameid);
+            var contentId = $target.attr("frameid");
+            if (contentIdType){
+                var parentWithContentId = crawlOutUntilAttribute($target, contentIdType);
+                if (parentWithContentId){
+                    contentId = parentWithContentId.attr(contentIdType);
+                }
+            }
+            
+            if (!contentId){
+                console.warn("Could not extract content id");
+            }
+            this.$menu.attr("for", contentId);
+            this.$menu.children(".header").children("span").text(contentId);
         
         } else { 
             console.log("Popup menu currently not active");
@@ -349,3 +360,16 @@ flipbookLib.submitFormAjaxly = function($form, url, settings, beforeSendFunc){
     
 }
 
+
+function crawlOutUntilAttribute($start, attrname){
+    
+    var $nextParent = $start.parent();
+    
+    while ($nextParent.is('body') != true){
+        if ($nextParent[0].hasAttribute(attrname)){
+            return $nextParent;
+        } else {
+            $nextParent = $nextParent.parent();}
+    }
+    return false;
+} //end: crawlOutUntilAttribute

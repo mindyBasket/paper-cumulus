@@ -14,7 +14,14 @@
 -------------------------------------------------------*/
 
 // init components
-var _popupMenu = new PopupMenu(null); /* global PopupMenu */
+/* global PopupMenu */
+var _popupMenu       = new PopupMenu(
+                            $(document).find(".popup_menu.edit").eq(0),
+                            "partial"); 
+var _popupMenu_strip = new PopupMenu(
+                            $(document).find(".pmenu_strip").eq(0),
+                            "partial");
+                            
 var $lbCover = new LightBox(); /* global LightBox*/
 var _spinnyObj = new Spinny(); /* global Spinny*/
 var _acHandler = new AJAXCRUDHandler($lbCover, _spinnyObj); /* global AJAXCRUDHandler */
@@ -28,14 +35,17 @@ $(function() {
     bind_frameCreateFormButton($(document));
     
     // Initialize popup menu partial
-    bind_popupMenu_elems($(document).find(".popup_menu.edit").eq(0));
+    bind_popupMenu_elems(_popupMenu.$menu);
     _acHandler.popupMenu = _popupMenu; //add reference to the popupmenu
+    bind_popupMenu_strip_elems(_popupMenu_strip.$menu);
+    _acHandler.popupMenu_strip = _popupMenu_strip;
     
-    // Bind features on frame/thumbnail container
+    // Bind features on each containers
     bind_features_onFrameContainer();
+    bind_features_onStripContainer();
 
     // popup menu for strip 
-    bind_openPMenu_strip($(document));
+    //bind_openPMenu_strip($(document));
     
     // drag and drop events
     bind_dragAndDrop($(document), '.strip_flex_container');
@@ -114,25 +124,6 @@ $(function() {
 
     });
     
-      
-    //------------------------------------
-    // on frame delete 
-    //------------------------------------
-    
-    // Because this isn't rendered into the template, this will have to be 
-    // binded upon append. Delete button/link is appended at bind_miniMenu().
-    
-    // See section 'd' at bind_popupMenu_elems()
-    
-    //......................
-    // on frame_update submit
-    //.......................  
-    
-    // Another one that is rendered by partial through ajax request.
-    
-    // See section 'b' at bind_popupMenu_elems()
-    
-    
 });
 
 
@@ -187,9 +178,13 @@ function bind_frameCreateFormButton($doc, $targetOptional){
 
 
 
-// ┌─┐┌─┐┌─┐┬ ┬┌─┐  ┌─┐┌─┐┬─┐  ┌─┐┬─┐┌─┐┌┬┐┌─┐
-// ├─┘│ │├─┘│ │├─┘  ├┤ │ │├┬┘  ├┤ ├┬┘├─┤│││├┤ 
-// ┴  └─┘┴  └─┘┴    └  └─┘┴└─  └  ┴└─┴ ┴┴ ┴└─┘
+//  _____ __   _ _____ _______                     
+//   |   | \  |   |      |                        
+//  __|__ |  \_| __|__    |                        
+                                                
+//   _____   _____   _____  _     _  _____  _______
+//  |_____] |     | |_____] |     | |_____] |______
+//  |       |_____| |       |_____| |       ______|
 
 function bind_popupMenu_elems($popupMenu){
     
@@ -212,6 +207,17 @@ function bind_popupMenu_elems($popupMenu){
      });
 }
 
+
+function bind_popupMenu_strip_elems($popupMenu){
+    
+    //.........................
+    // c. Bind 'DELETE' action 
+    //.........................
+    $popupMenu.find('.action.delete').click(function(){
+        _acHandler.ajax_strip_DeleteConfirm($popupMenu.attr("for"));
+    });
+}
+    
 
 /* HELPER */
 /* This function crawls up hiearchy until its parent's name is 
@@ -236,24 +242,41 @@ function crawlOutUntilClassname($start, classname){
     Returns false if it could not find the object using the selector. 
     
     Can pass nothing for $targetContainer. It will assume $(document) */
-function getValidTarget($targetContainer, targetSelector){
-
+function getValidTarget($targetContainer, targetSelector, name){
+    
     $targetContainer = $targetContainer ? $targetContainer : $(document);
 
     if ($targetContainer instanceof jQuery == false){
         console.error("Bind target is not Jquery object.");
         return false;
-    } else {
+    } else 
+    if (!targetSelector){
+        console.error((name ? "["+name+"] " : "") + "You must provide targetSelector to getValidTarget()");
+    } 
+    else {
         var $target = $targetContainer.find(targetSelector);
         if ($target.length > 0){return $target;}
         else { 
-            console.error("Could not find target in " + $targetContainer.attr("class"));
+            console.error((name ? "["+name+"] " : "") + "Could not find target in " + $targetContainer.attr("class") + ". Target container is " + $targetContainer.html());
             return false; 
         } 
     }
         
 }
 
+
+// http://patorjk.com/software/taag/#p=display&f=Cyberlarge&t=Frame
+//  _______  ______ _______ _______ _______
+//  |______ |_____/ |_____| |  |  | |______
+//  |       |    \_ |     | |  |  | |______
+ 
+//  ______  _____ __   _ ______                                    
+//  |_____]   |   | \  | |     \                                   
+//  |_____] __|__ |  \_| |_____/                                   
+                                                                
+//  _______ _______ _______ _______ _     _  ______ _______ _______
+//  |______ |______ |_____|    |    |     | |_____/ |______ |______
+//  |       |______ |     |    |    |_____| |    \_ |______ ______|
 
 /*  If isMultiTarget = true, it means it will bind to ALL .thumb under the container.
     use isMultiTarget = false, if the container itself is a specific .thumb */  
@@ -277,7 +300,7 @@ function bind_features_onFrameContainer($targetContainer, isMultiTarget){
 
 function bind_openFrameEdit($targetContainer, targetSelector){
     
-    var $target = getValidTarget($targetContainer, targetSelector);
+    var $target = getValidTarget($targetContainer, targetSelector, "frame edit");
     if (!$target) { return; }
     
     $target.click(function(event){
@@ -290,7 +313,7 @@ function bind_openFrameEdit($targetContainer, targetSelector){
 
 function bind_frameDelete($targetContainer, targetSelector){
     
-    var $target = getValidTarget($targetContainer, targetSelector);
+    var $target = getValidTarget($targetContainer, targetSelector, "frame delete");
     if (!$target) { return; }
     
     $target.click(function(event){
@@ -302,7 +325,7 @@ function bind_frameDelete($targetContainer, targetSelector){
 
 function bind_openPMenu_frame($targetContainer, targetSelector){
     
-    var $target = getValidTarget($targetContainer, targetSelector);
+    var $target = getValidTarget($targetContainer, targetSelector, "frame popup menu");
     if (!$target) { return; }
    
     $target.click(function(event){
@@ -321,14 +344,15 @@ function bind_openPMenu_frame($targetContainer, targetSelector){
     
 } // end: bind_openPMenu_frame()
 
-//  _______  _______  ______    ___   _______    
-// |       ||       ||    _ |  |   | |       |   
-// |  _____||_     _||   | ||  |   | |    _  |   
-// | |_____   |   |  |   |_||_ |   | |   |_| |   
-// |_____  |  |   |  |    __  ||   | |    ___|   
-//  _____| |  |   |  |   |  | ||   | |   |       
-// |_______|  |___|  |___|  |_||___| |___|       
 
+
+
+
+// http://patorjk.com/software/taag/#p=display&f=Cyberlarge&t=Strip
+//  _______ _______  ______ _____  _____ 
+//  |______    |    |_____/   |   |_____]
+//  ______|    |    |    \_ __|__ |      
+                                       
 // ................................................
 // bind link that opens popup menu for strip
 //
@@ -337,76 +361,56 @@ function bind_openPMenu_frame($targetContainer, targetSelector){
 // flipbooks/partials/popup_menu_strip_partial.html
 // ................................................
 
-function bind_openPMenu_strip($doc, $targetOptional){
-    var $target = $targetOptional
+//  ______  _____ __   _ ______                                    
+//  |_____]   |   | \  | |     \                                   
+//  |_____] __|__ |  \_| |_____/                                   
+                                                                
+//  _______ _______ _______ _______ _     _  ______ _______ _______
+//  |______ |______ |_____|    |    |     | |_____/ |______ |______
+//  |       |______ |     |    |    |_____| |    \_ |______ ______|
+                                                                
+function bind_features_onStripContainer($targetContainer, isMultiTarget){
     
-    if ($target == null){
-        //do for all mini menus if target not specified
-        $target = $doc.find('.menu_strip');
-    } else if ($targetOptional instanceof jQuery == false){
-        console.error("Cannot bind mini menu even to non-Jquery object.");
-        return false;
-    }
+    isMultiTarget = typeof(isMultiTarget) === 'boolean' ? isMultiTarget : isMultiTarget || true;
+    var t = isMultiTarget;
+
+    //Bind "upload"
+    // bind_openFrameEdit($targetContainer, (t ? ".thumb" : "")  + ' a.frame_edit');
+    //Bind "delete"
+    //bind_frameDelete($targetContainer, (t ? ".thumb" : "") + ' a.frame_delete');
+    //Bind "options" (popup menu)
+    bind_openPMenu_strip($targetContainer, (t ? ".strip_flex_toolbar" : "")  + ' a.strip_options'); 
     
-    // ...............
-    // open mini menu
-    // ...............
-    var $popupMenu = $doc.find(".pmenu_strip").eq(0);
+}
+
+
+function bind_stripDelete($targetContainer, targetSelector){
+    
+    var $target = getValidTarget($targetContainer, targetSelector, "strip delete");
+    if (!$target) { return; }
     
     $target.click(function(event){
         event.preventDefault();
+        _acHandler.ajaxFrameDeleteConfirm($(this).parent().attr("frameid"));
+    });
+}
+
+
+
+function bind_openPMenu_strip($targetContainer, targetSelector){
+    
+    var $target = getValidTarget($targetContainer, targetSelector , "strip popup menu");
+    if (!$target) { return; }
+    
+    $target.click(function(event){
         
-        // Grab partial and append to the current thumb location
-        $popupMenu.appendTo($(this));
-        $popupMenu.show();
+        event.preventDefault();
+        // append to itself [<span> with options icon]
+        _popupMenu_strip.popupAt($(this), "stripid");
         
-        // Update tag information about current object
-        var obj_id = $(this).parent().attr("stripid");
-        $popupMenu.attr("for", obj_id);
-        $popupMenu.children(".header").children("span").text(obj_id);
-        
-        // This allows popupMenu to disappear when you click else where
-        $popupMenu.focus();
         
     });
-    
-    
-    // ...............
-    // click events within the menu 
-    // ...............
-    
-    //.........................
-    // _. Bind Strip 'DELETE' action 
-    //.........................
-    $popupMenu.find('.action.delete').click(function(){
-        event.preventDefault();
-        
-        // Retrieve frame information
-        var stripId = $popupMenu.attr("for");
-        if (stripId=="-1"){return;} //STOP, if frameid is not set.
-        
-        // DELETE happens in 2 parts.
-        // First is GET, and then POST. To see POST delete
-        
-        var deleteResponce = window.flipbookLib.getJSONPartial(
-            '/flipbooks/strip/'+ stripId +'/delete/', 
-            'GET', 
-            'json',
-            function(){
-                console.log("DELETE CONFIRM");
-                $popupMenu.focusout()});
-        
-        deleteResponce.success(function(data){
-            
-            //////////////////////
-            /////// RENDER ///////
-            console.log("display confirm delete for strip");
-            renderStripDeleteConfirm(data, stripId, {'popupMenu': $popupMenu});
-            /////////////////////
-        });
-        
-    }); //end: bind 'delete'
-    
+
 }
 
 
@@ -496,7 +500,7 @@ function renderDeleteFrameConfirm(data, frameId, args){
     
     // Make a new popup with same style as original popupmenu
     var $popupMenu = args['popupMenu'];
-    var _popupDeleteMenu = new PopupMenu($popupMenu, 1);
+    var _popupDeleteMenu = new PopupMenu($popupMenu, "template");
     
     // Fill out popup
     _popupDeleteMenu.cleanContent();

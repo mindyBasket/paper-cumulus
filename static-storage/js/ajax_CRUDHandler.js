@@ -8,6 +8,7 @@ class AJAXCRUDHandler {
         this.spinny = spinnyObj ? spinnyObj : false;
         
         this.popupMenu; //popup object set at beginning of scene_edit_master
+        this.popupMenu_strip; //popup object for strip 
     }
     
 
@@ -210,6 +211,41 @@ class AJAXCRUDHandler {
         });
         
     } // end: ajaxFrameDelete()
+    
+    
+    
+    
+    
+    
+    
+    ajax_strip_DeleteConfirm(stripId){
+        
+        event.preventDefault();
+        var $popupMenu = this.popupMenu_strip.$menu;
+        
+        // Retrieve frame information
+        var stripId = $popupMenu.attr("for");
+        if (stripId=="-1"){return;} //STOP, if frameid is not set.
+        
+        // DELETE happens in 2 parts.
+        // First is GET, and then POST. To see POST delete
+        
+        var deleteResponce = window.flipbookLib.getJSONPartial(
+            '/flipbooks/strip/'+ stripId +'/delete/', 
+            'GET', 
+            'json',
+            function(){
+                console.log("DELETE CONFIRM");
+                $popupMenu.focusout()});
+        
+        deleteResponce.success(function(data){
+
+            /////// RENDER ///////
+            renderStripDeleteConfirm(data, stripId, {'popupMenu': $popupMenu});
+            /////////////////////
+        });
+            
+    }
     
 }
     
