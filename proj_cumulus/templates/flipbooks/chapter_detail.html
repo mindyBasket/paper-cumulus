@@ -41,23 +41,10 @@
             {% for scene in object_scene_list %}
                 <li class="scene_container">
                     
-                    <div class="flex_item header">
-                        Order: {{scene.order}} (id: {{scene.id}})
-                        
-                        <a class="scene_edit glyphicon glyphicon-pencil" 
-                           aria-hidden="true" 
-                           style='font-size:1.2em'
-                           href="{% url 'flipbooks:scene-detail' pk=scene.pk %}"></a>
-                    </div>
-                    
-                    <div class="flex_item preview">
-                        <a class="scene_img" href="{% url 'flipbooks:scene-play' pk=scene.pk %}">
-                            <!-- {- if forloop.counter0  < 2 -}
-                                Unfortunately, there is no "break" in Django. 
-                                Truncate the _set instead. -->
-
-                            {% with scene.strip_set.all|map_queryset:scene.children_li as mapped_strip_set %}
-                                
+                    <a class="flex_item preview_container" href="{% url 'flipbooks:scene-play' pk=scene.pk %}">
+  
+                        {% with scene.strip_set.all|map_queryset:scene.children_li as mapped_strip_set %}
+                            <div class="preview">
                                 {% for strip in mapped_strip_set|slice:":1" %}
                                     {% with strip.frame_set.all|first as first_frame %}
                                     
@@ -65,24 +52,29 @@
                                             <span class="thumb placeholder">
                                             </span>
                                         {% else %} 
-                                            <span class="thumb">
-                                                <img src="{{ first_frame.frame_image.thumb.url }}" width='100%'/>
+                                            <span>
+                                                <img src="{{ first_frame.frame_image.thumb.url }}" width="100%"/>
                                             </span>
                                         {% endif %} 
                                         
                                     {% endwith %}
                                 {% endfor %}
-                                
-                            {% endwith %}
-                              
-
-                        </a>
+                            </div>
+                        {% endwith %}
+                    </a>
+                    
+                    <div class="flex_item header">
+                        Order: {{scene.order}} (id: {{scene.id}})
                         
+                        <a class="scene_edit glyphicon glyphicon-pencil" 
+                           aria-hidden="true" 
+                           style='font-size:1.1em'
+                           href="{% url 'flipbooks:scene-detail' pk=scene.pk %}"></a>
                     </div>
                     
-                    <div class="flex_item description">
+                    <!--<div class="flex_item description">
                         {{scene.description}}
-                    </div>
+                    </div>-->
                     
                     <div class="flex_item timestamp">
                         {{ scene.date_created|timesince }}
