@@ -12,6 +12,8 @@ body{
 }
 
 
+
+
 /* -------------------------------------- */
 /* -------------------------------------- */
 /*        globally used text styles       */
@@ -31,11 +33,16 @@ body{
 /*                Base layout             */
 /* -------------------------------------- */
 /* -------------------------------------- */
+.content_wrapper{
+    min-height: 100%; 
+    padding-bottom: 120px; /*height of footer + padding*/
+}
+
 .footer {
     text-align: right;
     background-color: #ccc;
     padding: 20px;
-    margin-top: 30px;
+    margin-top: -60px; /*height of the footer*/
 }
 
 /* -------------------------------------- */
