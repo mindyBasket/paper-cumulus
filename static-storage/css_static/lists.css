@@ -1,3 +1,52 @@
+ul.list_scenes{
+    display:flex;
+    justify-content: center;
+    
+    margin: 0; padding: 0;
+    list-style: none;
+}
+
+ul.list_scenes li{ /*flex item*/
+    width: 250px;
+
+    
+    margin: 10px;
+}
+.scene_container{
+    display:flex;
+    flex-direction: column;
+    background-color: #434343;
+    color: #d7d7d7;
+}
+
+.scene_container .flex_item:last-child{
+    margin-top: auto; /*flushes to the bottom*/
+}
+
+.scene_container .header{
+    padding: 8px;
+}
+
+.scene_container .header a{
+    text-decoration: none;
+    color: #d7d7d7;
+    
+}
+.scene_container .header a:hover{ color: white; }
+
+.scene_container .preview{
+    text-align: center;
+}
+
+.scene_container .description{
+    padding: 8px;
+}
+
+.scene_container .timestamp{
+    border-top: 1px solid #323232;
+    padding: 8px;
+}
+
 /* -------------------------------------- */
 /* -------------------------------------- */
 /*               strip lists             */

@@ -37,66 +37,57 @@
         
         
         <h3>Scene list</h3>
-        <ul>
+        <ul class="list_scenes">
             {% for scene in object_scene_list %}
-                <li>
-                    Order: {{scene.order}} (id: {{scene.id}}) | {{scene.description}}
-                
-                    <p>
-                        <form action="{{strip_url}}">
-        
-                            <a href="{% url 'flipbooks:scene-play' pk=scene.pk %}">play</a>
-                            | 
-                            <a href="{% url 'flipbooks:scene-detail' pk=scene.pk %}">Edit</a>
-                        </form>
+                <li class="scene_container">
+                    
+                    <div class="flex_item header">
+                        Order: {{scene.order}} (id: {{scene.id}})
                         
-                        <div class="frame_thumbs stacked">
+                        <a class="scene_edit glyphicon glyphicon-pencil" 
+                           aria-hidden="true" 
+                           style='font-size:1.2em'
+                           href="{% url 'flipbooks:scene-detail' pk=scene.pk %}"></a>
+                    </div>
+                    
+                    <div class="flex_item preview">
+                        <a class="scene_img" href="{% url 'flipbooks:scene-play' pk=scene.pk %}">
                             <!-- {- if forloop.counter0  < 2 -}
                                 Unfortunately, there is no "break" in Django. 
                                 Truncate the _set instead. -->
-        
-                            <!-- valid_children_orders? -->
-                            {% if valid_children_orders and valid_children_orders|get_by_index:forloop.counter0 %}
+
+                            {% with scene.strip_set.all|map_queryset:scene.children_li as mapped_strip_set %}
                                 
-                                <!-- retrieve strip by id referedin valid_children_orders -->
-                                {% for curr_id in valid_children_orders|get_by_index:forloop.counter0 %}
-                                
-                                    <!-- single loop forloop -->
-                                    <!-- An attmpt at storing value in a variable in template -->
-                                    {% for curr_strip in scene.strip_set.all|get_by_id:curr_id %}
-                                        {% if curr_strip.frame_set is None or curr_strip.frame_set.first.frame_image is None %} 
+                                {% for strip in mapped_strip_set|slice:":1" %}
+                                    {% with strip.frame_set.all|first as first_frame %}
+                                    
+                                        {% if first_frame is None or first_frame.frame_image is None %} 
                                             <span class="thumb placeholder">
-                                                <a href="{% url 'flipbooks:strip-update' pk=curr_strip.id %}" class="mini_menu edit">
-                                                    [{{curr_strip.id}}] edit
-                                                </a>
                                             </span>
                                         {% else %} 
                                             <span class="thumb">
-                                                <img src="{{ curr_strip.frame_set.first.frame_image.thumb.url }}" width='200px'/>
-                                                <a href="{% url 'flipbooks:strip-update' pk=curr_strip.id %}" class="mini_menu edit">[{{curr_strip.id}}] edit</a>
+                                                <img src="{{ first_frame.frame_image.thumb.url }}" width='100%'/>
                                             </span>
                                         {% endif %} 
-                                    {% endfor %}
+                                        
+                                    {% endwith %}
                                 {% endfor %}
                                 
-                            {% else %}
-                                {% for strip in scene.strip_set.all|slice:":5" %}
-            
-                                    <!--<img src="{- thumbnail strip.frame_set.first.frame_image 200x200 autocrop -}"/>-->
-                                   
-                                    <span class="thumb">
-                                        <img src="{{ strip.frame_set.first.frame_image.thumb.url }}" width='200px'/>
-                                        <a href="{% url 'flipbooks:strip-update' pk=strip.id %}" class="mini_menu edit">edit</a>
-                                    </span>
-                                    
-                            
-                                {% endfor %}
-                            {% endif %}
-                        </div>
+                            {% endwith %}
+                              
+
+                        </a>
                         
-                    </p>
-                        
-        
+                    </div>
+                    
+                    <div class="flex_item description">
+                        {{scene.description}}
+                    </div>
+                    
+                    <div class="flex_item timestamp">
+                        {{ scene.date_created|timesince }}
+                    </div>
+
                 </li>
             {% empty %}
                 <p>No strips could be found</p>

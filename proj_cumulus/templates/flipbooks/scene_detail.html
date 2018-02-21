@@ -53,7 +53,7 @@
         <p>description: {{object.description}}</p>
         <ul class="list_strips">
 
-           <!-- {- for strip in ordered_strip_set -}-->
+            <!-- {- for strip in ordered_strip_set -}-->
             {% for strip in object.strip_set.all|map_queryset:object.children_li %}
                 <li class="flex_list" stripid="{{strip.id}}">
                     <!--<div class="header" stripid="{{strip.id}}">
