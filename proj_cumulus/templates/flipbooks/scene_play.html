@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load thumbnail %}
-
+{% load flipbooks_custom_tags %}
 
 {% block title %} {{block.super}} | Strips{% endblock title %}
 
@@ -14,7 +14,7 @@
 
 <p>Dev note: This page starts playing the frames inside each strip. When populating strips, 
 consider one scene equivalent to a "page" of a comic book.</p>
-<p>Structurally, this is a scene detail page.</p>
+<p>Structurally, scene object has two "detail page". One for playing, one for editing.</p>
 
 <!-- it would be nice if you can ajax load and don't show interface until first 
 strip has been loaded -->
@@ -28,27 +28,29 @@ strip has been loaded -->
         <!-- load first batch of images -->
         <!-- {{object_list|first}} -->
         <div class='frame_load'>
-            {% for strip in object.ordered_strip_set|slice:":5" %}
-                
-                
-                {% if strip != None %}
-                    <span class="strip">
-                        {% for fr in strip.frame_set.all %} 
-                            {% if fr is None or fr.frame_image is None or fr.frame_image|length is 0%} 
-                                BAD
-                            {% else %}
-                                <img src="{{fr.frame_image.url}}" class="frame_item"/>
-                            {% endif %}
-                        {% endfor %}
-                    </span>
-                {% else %}
-                    <b>STRIP NOT FOUND</b>
-                {% endif %}
+            {% with scene.strip_set.all|map_queryset:scene.children_li as mapped_strip_set %}
+                {% for strip in mapped_strip_set|slice:":5" %}
+                    {% if strip != None %}
+                    
+                        <span class="strip" stripid="{{strip.id}}">
+                            {% for fr in strip.frame_set.all|map_queryset:strip.children_li %} 
+                                {% if fr is None or fr.frame_image is None or fr.frame_image|length is 0 %} 
+                                    BAD
+                                {% else %}
+                                    <img src="{{fr.frame_image.url}}" class="frame_item"/>
+                                {% endif %}
+                            {% endfor %}
+                        </span>
+                        
+                    {% else %}
+                        <b>STRIP NOT FOUND</b>
+                    {% endif %}
              
                 
-            {% empty %}
-                Hmm, this scene is empty.
-            {% endfor %}
+                {% empty %}
+                    Hmm, this scene is empty.
+                {% endfor %}
+            {% endwith %}
                 
         </div>
         

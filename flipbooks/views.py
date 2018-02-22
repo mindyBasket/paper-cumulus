@@ -213,11 +213,6 @@ class ScenePlayView(generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super(ScenePlayView, self).get_context_data(**kwargs)
         context['scene'] = context['object']
-        # Convert children_li to iterable list, or mark it with "False"
-        stringy_children_li = context['object'].children_li
-        valid_children_li = False if stringy_children_li =="" else helpers.string2List(stringy_children_li) 
-            
-        context["valid_children_li"] = valid_children_li
         
         # Removed codes for re-ordering the element based on children_li,
         # because recommended to keep views and template as clean as possible

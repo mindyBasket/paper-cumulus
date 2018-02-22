@@ -5,7 +5,7 @@ var top_z_index;
 var frame_view;
 
 
-$(document).ready(function(){
+$(function(){
     console.log("* ------- flip.js v.1.14 ------- *");
 
     //init global var
@@ -13,9 +13,9 @@ $(document).ready(function(){
     frame_view = $(document).find('.frame_view');
 
     init_frame_imgs_and_container();
-    
-    
     var first_frame_loaded = false;
+    var imageLoadCount = 0;
+    
     $('.frame_view .frame_load').imagesLoaded()
     .fail( function() {
         console.log('all images loaded, at least one is broken');
@@ -29,9 +29,10 @@ $(document).ready(function(){
             frame_view.css({"width":frame_item.width(), "height":frame_item.height()});
             first_frame_loaded = true;
         }
-        
-        // var result = image.isLoaded ? 'loaded' : 'broken';
+    
+        imageLoadCount = (image.isLoaded ? 1 : 0) + imageLoadCount;
         // console.log( 'image is ' + result + ' for ' + image.img.src + ": instance: " + $(image.img).attr("src"));
+        console.log("Loaded [ " + imageLoadCount + "/" + $('.frame_view .frame_load').find("img").length + " ]"); 
         
     })
     .always( function( instance ) {
