@@ -4,6 +4,7 @@
 var top_z_index;
 var frame_view;
 
+var $currStrip = -1;
 
 $(function(){
     console.log("* ------- flip.js v.1.14 ------- *");
@@ -26,7 +27,7 @@ $(function(){
         // This is done here to ensure the width and height of image is avaliable
         if(!(first_frame_loaded)){
             var frame_item = frame_view.find("img.frame_item");
-            frame_view.css({"width":frame_item.width(), "height":frame_item.height()});
+            frame_view.css({"width":frame_item.width()+"px", "height":frame_item.height()+"px"});
             first_frame_loaded = true;
         }
     
@@ -39,33 +40,23 @@ $(function(){
         //all images loaded
     })
     .done( function( instance ) {
-        alert_msg('starter frames successfully loaded. Loading rest of frames in this scene.');
-        load_more_strips();
+        //alert_msg('starter frames successfully loaded. Loading rest of frames in this scene.');
+        //load_more_strips();
         
         //hide cover
         $(document).find(".cover").children("#msg_loading").hide();
         $(document).find(".cover").children("#msg_instruction").show();
         
         
+        
         //bind keyboard event
         document.addEventListener("keydown", function(){
         
             if (event.code === "ArrowRight"){ //next
-                play_frame();
+                play_nextFrame();
             }
             else if(event.code === "ArrowLeft"){ //previous
-                
-                //no animation, simply jump to last frame of previous strip
-                
-                //return visibility of current strip
-                var curr_strip = $(document).find(".frame_view span.strip[done=true").last();
-                curr_strip.children(".frame_item").show();
-                curr_strip.attr("done", false);
-                
-                //return visibility of last frame of previous strip
-                //below returns 2 objects previous, instead of 1
-                //$(document).find(".frame_view span.strip[done=true").last().prev().attr("revisited", true);
-                curr_strip.prev().children(".frame_item").last().show();
+                play_prevFrame();
             }
             
         }); //keyevent listener
@@ -87,77 +78,70 @@ var t_step = 400 //ms
 //Only works after img DOM has been loaded. 
 //Adds proper z-index and display_order attributes to the frames
 function init_frame_imgs_and_container(){
-    
-    var display_order = 0;
-    
-    $('.frame_view.wide .frame_load').find('img.frame_item').each(function(){
-        //TO DO:
-        // hard coded in "1000", but you must find more reliable way
-        // to retrieve that information
-        
-        $(this).css("z-index", top_z_index-display_order); 
-        display_order+=1;
-    });
-    
+    // removed code for setting z-index value for individual frame_item
 }
 
+function play_prevFrame(){
+    
+    //no animation, simply jump to last frame of previous strip
+    
+    // identify previous strip to show
+    if ($currStrip != -1){
+        //unstage currStrip
+        unstageStrip($currStrip);
+        //grab previous one
+        var $tempPrevStrip = $currStrip.prev(".strip");
+        if ($tempPrevStrip.length > 0 && $tempPrevStrip.attr("class") == "strip"){
+            // TODO: distinguish between staging to previous strip
+            //       vs. rewind current strip to the beginning.
+            $currStrip = $tempPrevStrip;
+            stageStrip($currStrip);
+        } else {
+            $currStrip = -1; //reset
+        }
+    } else { return; }
+}
 
-function play_frame(){
+function play_nextFrame(){
 
     var timeline = [];
     var first_play = false;
     
     //check if it is not covered
      if ($(document).find(".cover").css("display") != "none"){
-        first_play =true;
+        first_play = true;
         $(document).find(".frame_view .cover").css("display","none");
         $(document).find("img.frame_item").eq(0).attr("viewable",true);
     }
     
-    //find last completed .strip, it is marked with done=true
-    // note, done=true does not mean it is visible
-    // it means it finished playing all the frames. 
-    var curr_strip;
-    var next_strip;
-    
-    if (first_play || frame_view.find('span.strip[done=true]').length == 0){
-        //already at first strip
-        curr_strip = null;
-        next_strip = frame_view.find('span.strip').eq(0);
+    // identify next strip to play
+    if ($currStrip == -1){
+        //currStripId not set. Select the first one in the queue
+        $currStrip = $(document).find(".frame_load").find(".strip").eq(0);
     } else {
-        curr_strip = $(document).find(".frame_view").find('span.strip[done=true]').last();
-        next_strip =  curr_strip.next();
-        
-        //if there is no more next
-        if (next_strip.length == 0){
-            alert_msg('No more strip available.');
-            return;
-        }
+        //grab next one
+        $currStrip = $currStrip.next(".strip");
     }
     
-    
+    // stage current strip. Stage's z-index is 1000
+    // TODO: I don't think this is efficient way to unstage previous .strip
+    $(document).find(".strip").css("z-index", 1); 
+    stageStrip($currStrip);
     
     //get "timeline"
-    console.log(next_strip.children(".frame_item").length);
-    timeline = get_timeline(next_strip.children(".frame_item").length, t_step);
+    console.log("Playing strip " + $currStrip.attr("stripid") + ", has " + $currStrip.children(".frame_item").length + " frames");
+    timeline = get_timeline($currStrip.children(".frame_item").length, t_step);
     console.log("----------Timeline GET: " + timeline);
     
     //set chain of setTimeOuts
-    var total = next_strip.children(".frame_item").length-1
-    next_strip.children(".frame_item").each(function(index){
-        if (index == total){
-            $(this).parent().attr("done", 'true'); //finished playing
-        } else {
-            setTimeout(hideFrame.bind(null, $(this)), timeline[index]);
+    // It must be done in reverse, because item that is spawned the latest is on top
+    var total = $currStrip.children(".frame_item").length-1;
+    $currStrip.children(".frame_item").each(function(index){
+        if (index > 0) {
+            // do not apply it to the last frame of strip. It must stay visible.
+            setTimeout(hideFrame.bind(null, $(this)), timeline[total-index]);
         }
     });
-    
-    //remove "done" strip or cover, depending on what's currently on top
-    if (!(first_play) && curr_strip != null){
-        //finish off "done" strip. 
-        //hide ALL, in case user hits next before animation finishes
-        curr_strip.children(".frame_item").hide();
-    } else { first_play = false;}
     
 }
 
@@ -178,9 +162,17 @@ function get_timeline(count, delay){
 
 //hides the frame
 function hideFrame(frame_obj){
-
+    console.log("hide frame " + frame_obj.attr("frameid"));
     frame_obj.hide();
     
+}
+
+function unstageStrip(strip_obj){
+    strip_obj.css("z-index", 1);
+}
+function stageStrip(strip_obj){
+    strip_obj.css("z-index", 1001);
+    strip_obj.find('.frame_item').show();
 }
 
 
