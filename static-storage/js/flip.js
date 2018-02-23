@@ -1,8 +1,8 @@
 /* global $ */
 // Above line is to prevent cloud9 from thinking 
 // '$' is an undefined variable
-var top_z_index;
-var frame_view;
+var stage_z_index = 1000;
+var $frameView;
 
 var $currStrip = -1;
 
@@ -10,8 +10,7 @@ $(function(){
     console.log("* ------- flip.js v.1.14 ------- *");
 
     //init global var
-    top_z_index = 1000;
-    frame_view = $(document).find('.frame_view');
+    var $frameView = $(document).find('.frame_view');
 
     init_frame_imgs_and_container();
     var first_frame_loaded = false;
@@ -26,9 +25,12 @@ $(function(){
         // Set width and height of the container
         // This is done here to ensure the width and height of image is avaliable
         if(!(first_frame_loaded)){
-            var frame_item = frame_view.find("img.frame_item");
-            frame_view.css({"width":frame_item.width()+"px", "height":frame_item.height()+"px"});
+            var frame_item = $frameView.find("img.frame_item");
+            $frameView.css({"width":frame_item.width()+"px", "height":frame_item.height()+"px"});
             first_frame_loaded = true;
+            
+            // make all strip visible
+            $frameView.find(".strip").css("opacity",1);
         }
     
         imageLoadCount = (image.isLoaded ? 1 : 0) + imageLoadCount;
@@ -72,7 +74,7 @@ $(function(){
 -------------------------------------------------------------------*/
 
 //...........constants............
-var t_step = 400 //ms
+var t_step = 400; //ms
 
 //init_frame_imgs()...............
 //Only works after img DOM has been loaded. 
@@ -207,7 +209,7 @@ function add_strips(data){
         new_strip.appendTo(frame_load_container);
          
         //get information on the last displayable frame
-        var last_frame = frame_view.find('img.frame_item').last()
+        var last_frame = $frameView.find('img.frame_item').last()
         var last_z_index = last_frame.css("z-index")-1;
         
         //parse
