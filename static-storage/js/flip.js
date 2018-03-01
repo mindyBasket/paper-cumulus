@@ -6,8 +6,9 @@
 
 var _spinnyObj = new Spinny(); /* global Spinny*/
 
-var stage_z_index = 1000;
+// DOMs that will be referenced frequently
 var $frameView;
+var $frameScrubber;
 
 var $currStrip = -1;
 
@@ -15,7 +16,8 @@ $(function(){
     console.log("* ------- flip.js v.1.14 ------- *");
 
     //init global var
-    var $frameView = $(document).find('.frame_view');
+    $frameView = $(document).find('.frame_view');
+    $frameScrubber = $(document).find(".frame_scrubber");
 
     init_frame_imgs_and_container();
     var first_frame_loaded = false;
@@ -48,8 +50,7 @@ $(function(){
     
         imageLoadCount = (image.isLoaded ? 1 : 0) + imageLoadCount;
         // console.log( 'image is ' + result + ' for ' + image.img.src + ": instance: " + $(image.img).attr("src"));
-        console.log("Loaded [ " + imageLoadCount + "/" + imageTotalCount + " ]");
-        
+        // console.log("Loaded [ " + imageLoadCount + "/" + imageTotalCount + " ]");
         
         // progress bar
         var $loadingBar = $(document).find('#loading_bar');
@@ -60,7 +61,6 @@ $(function(){
         //all images loaded
     })
     .done( function( instance ) {
-        //alert_msg('starter frames successfully loaded. Loading rest of frames in this scene.');
         //load_more_strips();
         
         //hide cover
@@ -119,7 +119,21 @@ function play_prevFrame(){
         } else {
             $currStrip = -1; //reset
         }
-    } else { return; }
+        
+        // Show scrubber 
+        $frameScrubber.css("opacity", 1);
+        // Start timer to close it
+        setTimeout(function(){ 
+            
+            $frameScrubber.css("opacity", 0);
+        }, 5000);
+        
+        
+    } else { 
+        // User at the beginning. Do Nothing.
+        return; 
+        
+    }
 }
 
 function play_nextFrame(){
@@ -208,9 +222,11 @@ function load_more_strips(){
         },
         dataType: 'json',
         success: function (data) {
-            alert_msg("Retrieving more frames")
+            // TODO: alert_msg function will not work
+            //       due to removal of the alert container
+            // alert_msg("Retrieving more frames")
             add_strips(data);
-            alert_msg("More frames retrieved")
+            // alert_msg("More frames retrieved")
         }
     });
 }

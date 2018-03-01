@@ -314,7 +314,7 @@ body{
 
 /* -------------------------------------- */
 /* -------------------------------------- */
-/*           Elements inside Modal        */
+/*           Elements for Player          */
 /* -------------------------------------- */
 /* -------------------------------------- */
 
@@ -383,6 +383,14 @@ body{
 /*.frame_view.wide span:nth-of-type(1) > img:nth-of-type(1){
     z-index: 1000;
 }*/
+
+.frame_scrubber{
+    /* only appears when the play page is rewind mode */
+    /* That's when the user hits left arrow key */
+    opacity: 0;
+    transition-property: opacity;
+    transition-duration: 1s;
+}
 
 
 
