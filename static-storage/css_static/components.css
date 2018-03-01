@@ -38,7 +38,7 @@
 
 /* -------------------------------------- */
 /* -------------------------------------- */
-/*       Spinny. Loading animation.       */
+/*             Loading visuals            */
 /* -------------------------------------- */
 /* -------------------------------------- */
 
@@ -80,7 +80,6 @@
 
 }
 
-
 /* -ms-transform: rotate(3deg); 
     -webkit-transform: rotate(3deg); 
     transform: rotate(3deg);
@@ -93,6 +92,34 @@
 }
 
 
+#msg_loading{
+  display:inline-block;
+  width: 100%;
+  height: 100%;
+}
+
+#loading_bar_wrapper{
+  position: absolute;
+  display: inline-block;
+  width: 200px; height: 15px;
+  
+  top:50%; left: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(255, 255, 255, 0.30);
+  
+  margin-top: 55px;
+}
+
+#loading_bar_wrapper #loading_bar{
+  display:block;
+  width: 0%; height: 100%;
+  background-color: rgba(255, 255, 255, 0.25);
+  border:2px solid #1d1e1f;
+  
+  transition-property: width;
+  transition-duration: 0.2s;
+
+}
 
 
 

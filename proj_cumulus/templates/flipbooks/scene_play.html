@@ -28,6 +28,7 @@ strip has been loaded -->
         <!-- load first batch of images -->
         <!-- {{object_list|first}} -->
         <div class='fit_block frame_load'>
+            <!-- frames are loaded here first, but not visible -->
             {% with scene.strip_set.all|map_queryset:scene.children_li as mapped_strip_set %}
                 {% for strip in mapped_strip_set|slice:":5" %}
                     {% if strip != None %}
@@ -55,11 +56,16 @@ strip has been loaded -->
         </div>
         
         <div class="fit_block stage">
-            
+            <!-- frames are moved here to be shown to the user -->
         </div>
         
         <div class="fit_block cover">
-            <span id="msg_loading">Loading</span>
+            <span id="msg_loading">
+                <!-- progress bar -->
+                <div id="loading_bar_wrapper">
+                    <span id="loading_bar"></span>
+                </div>
+            </span>
             <span id="msg_instruction">Use arrow keys ></span>
         </div>
         
@@ -68,44 +74,39 @@ strip has been loaded -->
 
 
 {% block content_2 %}
-<div class="alert alert-info" role="alert">
-    <span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span>
-    <span class="msg"></span>
-</div>
-
-<!-- append thumbnails -->
-<div class="flimstrip_view">
-    {% if valid_children_orders %}
-        {% for strip in ordered_strip_set %}
-            {% if strip != None %}
-                {% for fr in strip.frame_set.all %}
-                    {% if fr is None or fr.frame_image is None or fr.frame_image|length is 0 %} 
-                        Image not found
-                    {% else %}
-                        <img src="{{fr.frame_image.cell.url}}"/>
-                    {% endif %}
-                {% endfor %}
+    <div class="alert alert-info" role="alert">
+        <span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span>
+        <span class="msg"></span>
+    </div>
+    
+    <!-- append thumbnails -->
+    <div class="frame_scrubber">
+        {% with scene.strip_set.all|map_queryset:scene.children_li as mapped_strip_set %}
+            {% for strip in mapped_strip_set|slice:":5" %}
+                {% if strip != None %}
+                    
+                    {% for fr in strip.frame_set.all|map_queryset:strip.children_li %} 
+                        {% if fr is None or fr.frame_image is None or fr.frame_image|length is 0 %} 
+                            ?
+                        {% else %}
+                            <img src="{{fr.frame_image.cell.url}}"/>
+                        {% endif %}
+                    {% endfor %}
+                    
+                {% else %}
+                    <b>STRIP NOT FOUND</b>
+                {% endif %}
                 
-            {% else %}
-                <b>STRIP NOT FOUND</b>
-            {% endif %}
-        {% endfor %}
-    
-    {% else %}
-         <p style="color:red;">Warning: error retrieving strip order reference. Strips has been rendered in id of order.</p>
-         {% for strip in scene.strip_set.all %}
-            {% for fr in strip.frame_set.all %}
-                {% verbatim %}
-                    <img src="{{ fr.frame_image.cell.url }}"/>
-                {% endverbatim %}
+            {% empty %}
+                Strip not found
             {% endfor %}
-        {% endfor %}
-    {% endif %} 
+      
+        {% endwith %} 
+        
+        
+        
     
-    
-    
-
-</div>
+    </div>
 
 {% endblock content_2 %}
 

@@ -1,6 +1,11 @@
 /* global $ */
 // Above line is to prevent cloud9 from thinking 
 // '$' is an undefined variable
+
+
+
+var _spinnyObj = new Spinny(); /* global Spinny*/
+
 var stage_z_index = 1000;
 var $frameView;
 
@@ -15,6 +20,14 @@ $(function(){
     init_frame_imgs_and_container();
     var first_frame_loaded = false;
     var imageLoadCount = 0;
+    var imageTotalCount = $('.frame_view .frame_load').find("img").length;
+    
+    // show loading
+    _spinnyObj.appendSpinnyTo(
+        $('#msg_loading').eq(0),
+        {"background-color": "transparent"},
+        false);
+    
     
     $('.frame_view .frame_load').imagesLoaded()
     .fail( function() {
@@ -35,7 +48,12 @@ $(function(){
     
         imageLoadCount = (image.isLoaded ? 1 : 0) + imageLoadCount;
         // console.log( 'image is ' + result + ' for ' + image.img.src + ": instance: " + $(image.img).attr("src"));
-        console.log("Loaded [ " + imageLoadCount + "/" + $('.frame_view .frame_load').find("img").length + " ]"); 
+        console.log("Loaded [ " + imageLoadCount + "/" + imageTotalCount + " ]");
+        
+        
+        // progress bar
+        var $loadingBar = $(document).find('#loading_bar');
+        $loadingBar.css("width", (imageLoadCount/imageTotalCount)*100 + "%");
         
     })
     .always( function( instance ) {
