@@ -87,14 +87,17 @@ class Spinny {
                             <div class="spinny">
                                 <span></span>
                             </div>
-                        `
-        this.defaultBackground = "#e5e5e5"
+                        `;
+        this.defaultBackground = "#e5e5e5";
+        this.defaultWidth = "100%";
+        this.defaultHeight = "100%";
     }
     
     // Method
     appendSpinnyTo($target, css_options, clearHtml){
         if ($target instanceof jQuery == false){
             console.error("Cannot append to non-Jquery object.");
+            return;
         }
     
         clearHtml = typeof(clearHtml) === 'boolean' ? clearHtml : clearHtml || true;
@@ -103,10 +106,27 @@ class Spinny {
         }
         
         var $spinny = $(this.template);
-            $spinny.css(css_options);
-            // default css
+        
+        if (css_options){
+            $spinny.css(css_options)
+        }
+        
+        // Apply default to properties that was not set by css_options
+        if (!cssDictHasKeyword(css_options, "background")){
+            console.warn("spinny's background set to default");
             $spinny.css("background-color", this.defaultBackground);
-            
+        }
+        if (!cssDictHasKeyword(css_options, "width")){
+            console.warn("spinny's width set to default");
+            $spinny.css("width", this.defaultWidth);
+        }
+        if (!cssDictHasKeyword(css_options, "height")){
+            console.warn("spinny's height set to default");
+            $spinny.css("height", this.defaultHeight);
+        }
+        
+      
+        
         $target.append($($spinny));
     }
 
@@ -373,3 +393,19 @@ function crawlOutUntilAttribute($start, attrname){
     }
     return false;
 } //end: crawlOutUntilAttribute
+
+
+// Checks if key exists in a dictionary of css rules.
+// It will return true even if the key contains the provided keyword.
+// ex) keyword = "width" will return true if one of key is "max-width"
+function cssDictHasKeyword(dict, keyword){
+    var cssProps = Object.keys(dict);
+    
+    for(var i=0;i<cssProps.length;i++){
+        if (cssProps[i].indexOf(keyword) >= 0){
+            return true;
+        }
+    }
+    
+    return false;
+}
