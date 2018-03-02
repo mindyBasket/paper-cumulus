@@ -385,11 +385,39 @@ body{
 }*/
 
 .frame_scrubber{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    
     /* only appears when the play page is rewind mode */
     /* That's when the user hits left arrow key */
-    opacity: 0;
+    opacity: 0.5;
     transition-property: opacity;
     transition-duration: 1s;
+}
+
+.frame_scrubber .timer{
+    display:inline-block;
+    width: 300px;
+    text-align: center;
+}
+
+.frame_scrubber .cell_container{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    width: 100%;
+}
+
+.frame_scrubber .cell_container .cell{
+    width: 100px;
+    text-align: center;
+}
+
+.frame_scrubber img{
+    /* original is 100px. Seemed too big */
+    width: 80px;   
 }
 
 
