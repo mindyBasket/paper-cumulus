@@ -125,9 +125,10 @@ function init_frame_imgs_and_container(){
 // or to jump to the previous strip
 var _rewinded = false;
 
+// No animation, simply jump to last frame of previous strip
 function play_prevFrame(){
     
-    //no animation, simply jump to last frame of previous strip
+    
     
     // identify previous strip to show
     if ($currStrip != -1){
@@ -146,6 +147,7 @@ function play_prevFrame(){
             } else {
                 $currStrip = -1; //reset
             }
+
         } else {
             // REWIND
             console.log("REWIND");
@@ -153,10 +155,7 @@ function play_prevFrame(){
             resetStrip($currStrip);
             
             _rewinded = true;
-            
-            
         }
-        
         
         //Update timer. Small icon right beneath the main stage
         updateTimer($currStrip);
@@ -167,7 +166,6 @@ function play_prevFrame(){
         // setTimeout(function(){ 
         //     $frameScrubber.css("opacity", 0);
         // }, 5000);
-        
         
     } else { 
         // User at the beginning. Do Nothing.
@@ -187,7 +185,6 @@ function play_prevFrame(){
 //  | \  | |______  \___/     |   
 //  |  \_| |______ _/   \_    |   
                                
-
 function play_nextFrame(){
     
 
@@ -196,43 +193,37 @@ function play_nextFrame(){
 
     
     //check if it is not covered
-     if ($(document).find(".cover").css("display") != "none"){
+    if ($(document).find(".cover").css("display") != "none"){
         first_play = true;
         $(document).find(".frame_view .cover").css("display","none");
         $(document).find("img.frame_item").eq(0).attr("viewable",true);
     }
     
     
-    if (_rewinded){
-        // In a rewinded state, do not grab next frame
-        // Instead, just play the current
-        
-        // No longer rewinded 
-        _rewinded = false;
-        
-    } else {
-        // identify next strip to play
-        if ($currStrip == -1){
-            //currStripId not set. Select the first one in the queue
-            $currStrip = $(document).find(".frame_load").find(".strip").eq(0);
-        } else {
-            //grab next one
+    // Play Current? or Grab next?
+    if ($currStrip == -1){
+        //No currStrip. Select the first one in the queue
+        $currStrip = $(document).find(".frame_load").find(".strip").eq(0);
+    } else  {
+        if (!_rewinded){
+            // Grab next one if not in rewinded state
             $currStrip = $currStrip.next(".strip");
         }
-        
-        //Update timer. Small icon right beneath the main stage
-        updateTimer($currStrip);
-        // And reset visibility of current strip's frames
-        resetStrip($currStrip);
-            
-        // stage current strip. Stage's z-index is 1000
-        // TODO: I don't think this is efficient way to unstage previous .strip
-        $(document).find(".strip").css("z-index", 1); 
-        stageStrip($currStrip);
-    }
+    }       
     
-
-    //get "timeline"
+    _rewinded = false; // undo rewinded state because strip will be played
+    
+    
+    // a. Update timer. Small icon right beneath the main stage
+    updateTimer($currStrip);
+    // b. Reset visibility of current strip's frames
+    resetStrip($currStrip);
+    // c. Unstage every strip
+    $(document).find(".strip").css("z-index", 1); 
+    // d. except the current strip. Stage's z-index is 1000
+    stageStrip($currStrip);
+    
+    // e. get "timeline"
     console.log("Playing strip " + $currStrip.attr("stripid") + ", has " + $currStrip.children(".frame_item").length + " frames");
     timeline = get_timeline($currStrip.children(".frame_item").length, t_step);
     console.log("----------Timeline GET: " + timeline);
@@ -247,6 +238,8 @@ function play_nextFrame(){
         }
     });
     
+    // f. fill the first timer icon
+    $timer.find('.frame_icon').eq(0).addClass('on');
 }
 
 
@@ -278,6 +271,8 @@ function playFrame(frame_obj){
     
 }
 
+
+
 function updateTimer($currStrip){
     $timer.html('');
     
@@ -299,6 +294,7 @@ function unstageStrip(strip_obj){
     strip_obj.css("z-index", 1);
 }
 function stageStrip(strip_obj){
+    
     strip_obj.css("z-index", 1001);
     strip_obj.find('.frame_item').show();
 }

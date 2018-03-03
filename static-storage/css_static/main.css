@@ -345,7 +345,7 @@ body{
     justify-content: center;
     align-items: center;
     text-align: center;
-    z-index: 1001;
+    z-index: 1000;
 }
 
 .frame_view.wide .cover span{
@@ -412,10 +412,6 @@ body{
     margin: 0 3px;
 }
 
-.frame_scrubber .timer .frame_icon:first-of-type{
-    /*first timer is always on the moment timer is visible */
-    background-color: #777777;
-}
 .frame_scrubber .timer .frame_icon.on{
     background-color: #777777;
 }
