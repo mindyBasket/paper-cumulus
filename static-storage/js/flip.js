@@ -1,4 +1,5 @@
 /* global $ */
+/* global jQuery */
 // Above line is to prevent cloud9 from thinking 
 // '$' is an undefined variable
 
@@ -187,19 +188,8 @@ function play_prevFrame(){
                                
 function play_nextFrame(){
     
-
     var timeline = [];
-    var first_play = false;
-
-    
-    //check if it is not covered
-    if ($(document).find(".cover").css("display") != "none"){
-        first_play = true;
-        $(document).find(".frame_view .cover").css("display","none");
-        $(document).find("img.frame_item").eq(0).attr("viewable",true);
-    }
-    
-    
+   
     // Play Current? or Grab next?
     if ($currStrip == -1){
         //No currStrip. Select the first one in the queue
@@ -207,7 +197,14 @@ function play_nextFrame(){
     } else  {
         if (!_rewinded){
             // Grab next one if not in rewinded state
+            if ($currStrip.next(".strip") instanceof jQuery == false){
+                console.log("NO MORE STRIP");
+                return;
+            }
+            
             $currStrip = $currStrip.next(".strip");
+            //console.log("CurrStrip valid: " + $currStrip.html());
+            
         }
     }       
     
