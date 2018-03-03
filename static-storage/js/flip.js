@@ -109,24 +109,54 @@ function init_frame_imgs_and_container(){
     // removed code for setting z-index value for individual frame_item
 }
 
+
+
+
+// http://patorjk.com/software/taag/#p=display&f=Cyberlarge&t=Play%0APrevious
+//   _____         _______ __   __                              
+//  |_____] |      |_____|   \_/                                
+//  |       |_____ |     |    |                                 
+                                                             
+//   _____   ______ _______ _    _ _____  _____  _     _ _______
+//  |_____] |_____/ |______  \  /    |   |     | |     | |______
+//  |       |    \_ |______   \/   __|__ |_____| |_____| ______|
+
+// Use this variable to distinguish prevFrame() action is done to rewind
+// or to jump to the previous strip
+var _rewinded = false;
+
 function play_prevFrame(){
     
     //no animation, simply jump to last frame of previous strip
     
     // identify previous strip to show
     if ($currStrip != -1){
-        //unstage currStrip
-        unstageStrip($currStrip);
-        //grab previous one
-        var $tempPrevStrip = $currStrip.prev(".strip");
-        if ($tempPrevStrip.length > 0 && $tempPrevStrip.attr("class") == "strip"){
-            // TODO: distinguish between staging to previous strip
-            //       vs. rewind current strip to the beginning.
-            $currStrip = $tempPrevStrip;
-            stageStrip($currStrip);
+        
+        // Rewind? or Grab prev? 
+        if (_rewinded){
+            // GOTO PREVIUOS
+            
+            //unstage currStrip
+            unstageStrip($currStrip);
+        
+            var $tempPrevStrip = $currStrip.prev(".strip");
+            if ($tempPrevStrip.length > 0 && $tempPrevStrip.attr("class") == "strip"){
+                $currStrip = $tempPrevStrip;
+                stageStrip($currStrip);
+            } else {
+                $currStrip = -1; //reset
+            }
         } else {
-            $currStrip = -1; //reset
+            // REWIND
+            console.log("REWIND");
+            updateTimer($currStrip);
+            resetStrip($currStrip);
+            
+            _rewinded = true;
+            
+            
         }
+        
         
         //Update timer. Small icon right beneath the main stage
         updateTimer($currStrip);
@@ -146,10 +176,24 @@ function play_prevFrame(){
     }
 }
 
+
+
+// http://patorjk.com/software/taag/#p=display&f=Cyberlarge&t=Play%0ANext
+//   _____         _______ __   __
+//  |_____] |      |_____|   \_/  
+//  |       |_____ |     |    |   
+                               
+//  __   _ _______ _     _ _______
+//  | \  | |______  \___/     |   
+//  |  \_| |______ _/   \_    |   
+                               
+
 function play_nextFrame(){
+    
 
     var timeline = [];
     var first_play = false;
+
     
     //check if it is not covered
      if ($(document).find(".cover").css("display") != "none"){
@@ -158,25 +202,36 @@ function play_nextFrame(){
         $(document).find("img.frame_item").eq(0).attr("viewable",true);
     }
     
-    // identify next strip to play
-    if ($currStrip == -1){
-        //currStripId not set. Select the first one in the queue
-        $currStrip = $(document).find(".frame_load").find(".strip").eq(0);
+    
+    if (_rewinded){
+        // In a rewinded state, do not grab next frame
+        // Instead, just play the current
+        
+        // No longer rewinded 
+        _rewinded = false;
+        
     } else {
-        //grab next one
-        $currStrip = $currStrip.next(".strip");
+        // identify next strip to play
+        if ($currStrip == -1){
+            //currStripId not set. Select the first one in the queue
+            $currStrip = $(document).find(".frame_load").find(".strip").eq(0);
+        } else {
+            //grab next one
+            $currStrip = $currStrip.next(".strip");
+        }
+        
+        //Update timer. Small icon right beneath the main stage
+        updateTimer($currStrip);
+        // And reset visibility of current strip's frames
+        resetStrip($currStrip);
+            
+        // stage current strip. Stage's z-index is 1000
+        // TODO: I don't think this is efficient way to unstage previous .strip
+        $(document).find(".strip").css("z-index", 1); 
+        stageStrip($currStrip);
     }
     
-    //Update timer. Small icon right beneath the main stage
-    // get number of frames in this frame_set
-    updateTimer($currStrip);
-  
-        
-    // stage current strip. Stage's z-index is 1000
-    // TODO: I don't think this is efficient way to unstage previous .strip
-    $(document).find(".strip").css("z-index", 1); 
-    stageStrip($currStrip);
-    
+
     //get "timeline"
     console.log("Playing strip " + $currStrip.attr("stripid") + ", has " + $currStrip.children(".frame_item").length + " frames");
     timeline = get_timeline($currStrip.children(".frame_item").length, t_step);
@@ -234,6 +289,10 @@ function updateTimer($currStrip){
     }
     return;
     
+}
+
+function resetStrip($currStrip){
+    $currStrip.find('img').show();    
 }
 
 function unstageStrip(strip_obj){
