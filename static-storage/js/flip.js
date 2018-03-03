@@ -197,14 +197,12 @@ function play_nextFrame(){
     } else  {
         if (!_rewinded){
             // Grab next one if not in rewinded state
-            if ($currStrip.next(".strip") instanceof jQuery == false){
+            var $nextStrip = $currStrip.next(".strip");
+            if ($nextStrip.length <= 0){
                 console.log("NO MORE STRIP");
                 return;
             }
-            
             $currStrip = $currStrip.next(".strip");
-            //console.log("CurrStrip valid: " + $currStrip.html());
-            
         }
     }       
     
