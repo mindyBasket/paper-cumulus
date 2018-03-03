@@ -305,7 +305,7 @@ flipbookLib.getJSONPartial = function(url, method, dataType, beforeSendFunc){
     var method = method || 'GET';
     var dataType = dataType || 'json';
     
-    console.log("Variable check: " + JSON.stringify({'url':url, 'method':method, 'dataType': dataType}));
+    //console.log("Variable check: " + JSON.stringify({'url':url, 'method':method, 'dataType': dataType}));
     
     return $.ajax({
         url: url,

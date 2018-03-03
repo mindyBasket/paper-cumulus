@@ -5,20 +5,27 @@
 
 
 var _spinnyObj = new Spinny(); /* global Spinny*/
+var _imgHandler = new AJAXImageHandler(); /* global AJAXImageHandler */
 
 // DOMs that will be referenced frequently
 var $frameView;
 var $frameScrubber;
+var $timer;
 
 var $currStrip = -1;
 
 $(function(){
     console.log("* ------- flip.js v.1.14 ------- *");
-
+    var $doc = $(document);
+    
     //init global var
-    $frameView = $(document).find('.frame_view');
-    $frameScrubber = $(document).find(".frame_scrubber");
-
+    $frameView = $doc.find('.frame_view');
+    $frameScrubber = $doc.find(".frame_scrubber");
+    $timer = $frameScrubber.find(".timer");
+    
+    //connect DOM obj to ajax handlers
+    _imgHandler.$cellContainer = $doc.find('.cell_container').eq(0); 
+    
     init_frame_imgs_and_container();
     var first_frame_loaded = false;
     var imageLoadCount = 0;
@@ -82,6 +89,7 @@ $(function(){
         }); //keyevent listener
         
     });
+
     
 });
 
@@ -120,13 +128,15 @@ function play_prevFrame(){
             $currStrip = -1; //reset
         }
         
+        //Update timer. Small icon right beneath the main stage
+        updateTimer($currStrip);
+    
         // Show scrubber 
-        $frameScrubber.css("opacity", 1);
-        // Start timer to close it
-        setTimeout(function(){ 
-            
-            $frameScrubber.css("opacity", 0);
-        }, 5000);
+        // $frameScrubber.css("opacity", 1);
+        // // Start timer to close it
+        // setTimeout(function(){ 
+        //     $frameScrubber.css("opacity", 0);
+        // }, 5000);
         
         
     } else { 
@@ -157,6 +167,11 @@ function play_nextFrame(){
         $currStrip = $currStrip.next(".strip");
     }
     
+    //Update timer. Small icon right beneath the main stage
+    // get number of frames in this frame_set
+    updateTimer($currStrip);
+  
+        
     // stage current strip. Stage's z-index is 1000
     // TODO: I don't think this is efficient way to unstage previous .strip
     $(document).find(".strip").css("z-index", 1); 
@@ -173,7 +188,7 @@ function play_nextFrame(){
     $currStrip.children(".frame_item").each(function(index){
         if (index > 0) {
             // do not apply it to the last frame of strip. It must stay visible.
-            setTimeout(hideFrame.bind(null, $(this)), timeline[total-index]);
+            setTimeout(playFrame.bind(null, $(this)), timeline[total-index]);
         }
     });
     
@@ -194,10 +209,30 @@ function get_timeline(count, delay){
     return timeline
 }
 
-//hides the frame
-function hideFrame(frame_obj){
-    console.log("hide frame " + frame_obj.attr("frameid"));
+// 'Plays the frame by hiding the given frame_obj, revealing the
+// one right beneath it. It creates an illusion of image update.
+function playFrame(frame_obj){
+
     frame_obj.hide();
+    
+    //update timer
+    // Note: frame_obj is spawned in document in reverse order 
+    var reverseCount = frame_obj.parent().find('.'+frame_obj.attr("class")).index(frame_obj);
+        reverseCount = Number(reverseCount)*(-1)
+    $timer.find('.frame_icon').eq(reverseCount).addClass('on');
+    
+}
+
+function updateTimer($currStrip){
+    $timer.html('');
+    
+    if ($currStrip != -1){
+        var stepCount = $currStrip.children('img').length;
+        for (var i=0; i<stepCount; i++){
+            $('<span class="frame_icon"></span>').appendTo($timer);
+        }
+    }
+    return;
     
 }
 
