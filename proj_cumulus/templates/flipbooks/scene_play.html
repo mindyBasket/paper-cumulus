@@ -82,29 +82,16 @@ strip has been loaded -->
             <!--<span class="frame_icon"></span>-->
         </div>
         
+        <div class="cell_fill">
+        </div>
+            
         <div class="cell_container">
+            
             {% with scene.strip_set.all|map_queryset:scene.children_li as mapped_strip_set %}
-                <div class="eraser">
-                </div>
-                {% for strip in mapped_strip_set|slice:":5" %}
-                    
+                {% for strip in mapped_strip_set %}
                     {% if strip != None %}
-
-                        {% with strip.frame_set.all|map_queryset:strip.children_li as mapped_frame_set %}
-                            {% with mapped_frame_set|first as first_frame %}
-                                <div class="cell" frameid="{{first_frame.id}}">
-                                    {% if first_frame is None or first_frame.frame_image is None or first_frame.frame_image|length is 0 %} 
-                                        Invalid frame image
-                                    {% else %}
-                                        <div class="content">
-                                            <img src="{{first_frame.frame_image.cell.url}}"/>
-                                        </div>
-                                    {% endif %}
-                                </div>
-                            {% endwith %}
-                        {% endwith %}
-                    
-                        
+                        <div class="cell">
+                        </div>
                     {% else %}
                         <div class="cell not_found">
                             <b>STRIP NOT FOUND</b>

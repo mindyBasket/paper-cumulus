@@ -159,8 +159,8 @@ function play_prevFrame(){
         }
         
         //Update timer. Small icon right beneath the main stage
-        updateTimer($currStrip);
-    
+        updateTimer();
+        updateScrubberFill();
         // Show scrubber 
         // $frameScrubber.css("opacity", 1);
         // // Start timer to close it
@@ -209,8 +209,9 @@ function play_nextFrame(){
     _rewinded = false; // undo rewinded state because strip will be played
     
     
-    // a. Update timer. Small icon right beneath the main stage
+    // a. Update timer and scrubber Fill
     updateTimer($currStrip);
+    updateScrubberFill($currStrip);
     // b. Reset visibility of current strip's frames
     resetStrip($currStrip);
     // c. Unstage every strip
@@ -252,6 +253,7 @@ function get_timeline(count, delay){
     return timeline
 }
 
+
 // 'Plays the frame by hiding the given frame_obj, revealing the
 // one right beneath it. It creates an illusion of image update.
 function playFrame(frame_obj){
@@ -268,7 +270,7 @@ function playFrame(frame_obj){
 
 
 
-function updateTimer($currStrip){
+function updateTimer(){
     $timer.html('');
     
     if ($currStrip != -1){
@@ -278,7 +280,21 @@ function updateTimer($currStrip){
         }
     }
     return;
+   
+}
+
+function updateScrubberFill(){
+    if ($currStrip == -1){
+        $frameScrubber.children('.cell_fill').css('width', '0%');
+        return;
+    }
+
+    var stripIndex = $currStrip.parent().find('.strip').index($currStrip);
+    var stripCount = $frameScrubber.find('.cell').length;
+    var percentWatched = ((stripIndex+1)/stripCount)*100;
     
+    $frameScrubber.children('.cell_fill').css('width', percentWatched.toString()+'%');
+
 }
 
 function resetStrip($currStrip){
