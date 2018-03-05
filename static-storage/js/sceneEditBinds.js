@@ -353,6 +353,14 @@ function bind_openPMenu_frame($targetContainer, targetSelector){
 //  |______    |    |_____/   |   |_____]
 //  ______|    |    |    \_ __|__ |      
                                        
+//  ______  _____ __   _ ______                                    
+//  |_____]   |   | \  | |     \                                   
+//  |_____] __|__ |  \_| |_____/                                   
+                                                                
+//  _______ _______ _______ _______ _     _  ______ _______ _______
+//  |______ |______ |_____|    |    |     | |_____/ |______ |______
+//  |       |______ |     |    |    |_____| |    \_ |______ ______|
+
 // ................................................
 // bind link that opens popup menu for strip
 //
@@ -361,14 +369,6 @@ function bind_openPMenu_frame($targetContainer, targetSelector){
 // flipbooks/partials/popup_menu_strip_partial.html
 // ................................................
 
-//  ______  _____ __   _ ______                                    
-//  |_____]   |   | \  | |     \                                   
-//  |_____] __|__ |  \_| |_____/                                   
-                                                                
-//  _______ _______ _______ _______ _     _  ______ _______ _______
-//  |______ |______ |_____|    |    |     | |_____/ |______ |______
-//  |       |______ |     |    |    |_____| |    \_ |______ ______|
-                                                                
 function bind_features_onStripContainer($targetContainer, isMultiTarget){
     
     isMultiTarget = typeof(isMultiTarget) === 'boolean' ? isMultiTarget : isMultiTarget || true;

@@ -8,6 +8,12 @@
 var _spinnyObj = new Spinny(); /* global Spinny*/
 var _imgHandler = new AJAXImageHandler(); /* global AJAXImageHandler */
 
+// SetTimeOut object
+var _setTimeOutArr = new Array();
+
+// Input controller
+var _keyInputOpen = true;
+
 // DOMs that will be referenced frequently
 var $frameView;
 var $frameScrubber;
@@ -16,7 +22,7 @@ var $timer;
 var $currStrip = -1;
 
 $(function(){
-    console.log("* ------- flip.js v.1.14 ------- *");
+    console.log("* ------- flip.js loaded4 -------v.1.20 *");
     var $doc = $(document);
     
     //init global var
@@ -79,6 +85,9 @@ $(function(){
         
         //bind keyboard event
         document.addEventListener("keydown", function(){
+            
+            // clear any unfinished timeout animation
+            stopFrame();
         
             if (event.code === "ArrowRight"){ //next
                 play_nextFrame();
@@ -188,6 +197,8 @@ function play_prevFrame(){
                                
 function play_nextFrame(){
     
+    _keyInputOpen = false; //disable input until process is finished
+
     var timeline = [];
    
     // Play Current? or Grab next?
@@ -229,13 +240,17 @@ function play_nextFrame(){
     var total = $currStrip.children(".frame_item").length-1;
     $currStrip.children(".frame_item").each(function(index){
         if (index > 0) {
-            // do not apply it to the last frame of strip. It must stay visible.
-            setTimeout(playFrame.bind(null, $(this)), timeline[total-index]);
+            // Add reference to stop it later
+            _setTimeOutArr.push(setTimeout(playFrame.bind(null, $(this)), timeline[total-index]));
         }
     });
     
     // f. fill the first timer icon
     $timer.find('.frame_icon').eq(0).addClass('on');
+    
+    // Everything finished. Allow keyinput
+    _keyInputOpen = true;
+    
 }
 
 
@@ -268,7 +283,17 @@ function playFrame(frame_obj){
     
 }
 
-
+// Clears all setTimeout objects in the array
+function stopFrame(){
+    for(var i=0;i<_setTimeOutArr.length;i++){
+        clearTimeout(_setTimeOutArr[i]);
+    }
+    
+    // Dump array
+    // the array only gets new entry in play_nextFrame()
+    _setTimeOutArr = new Array();
+    
+}
 
 function updateTimer(){
     $timer.html('');
