@@ -4,7 +4,7 @@ html, body{
 }
 
 body{
-    background-color: #efefef;
+    background-color: #f9f7e5;
 
     /*font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;*/
     font-family: 'Quicksand', sans-serif;
@@ -12,7 +12,7 @@ body{
 }
 
 a {
-    color: #8885dc;
+    color: #da8d8d;
     
 }
 
@@ -55,9 +55,11 @@ a:hover{
 
 .footer {
     text-align: right;
-    background-color: #ccc;
+    background-color: #f7d2c4;
     padding: 20px;
     margin-top: -60px; /*height of the footer*/
+    
+    color: #dc8a89;
 }
 
 

@@ -110,7 +110,7 @@ ul.list_strips li{
     align-items: stretch;
     
     margin-bottom: 20px;
-    background-color: #FAFAFA;
+    background-color: white;
     border-bottom: 5px solid #c9c9c9;
 
 }
@@ -144,7 +144,7 @@ ul.list_strips .strip_flex_container .tile{
     padding: 5px 15px 5px 15px;
 
     text-align: right;
-    background-color: #fafafa;
+    background-color: white;
     border-bottom: 1px solid #ddd;
 }
 
