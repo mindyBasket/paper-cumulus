@@ -240,8 +240,11 @@ body{
 .pmenu_strip{
     /* popup menu for strip */
     position: absolute;
-    top: 0px; right: -10px;
-    width: 150px;
+    
+    /* This setting can be changed in the Popup obj*/
+    top: 20px;
+    right: 15px;
+    /*width: 150px;*/
 
     transform-origin: top left;
     transform: translate(-110%, -10%);
@@ -251,10 +254,7 @@ body{
     border:1px solid #e5e5e5;
 
     color: #5b5b5b;
-    font-size: 0.5em;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    
-    
+
     -webkit-box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.25);
     -moz-box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.25);
     box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.25);
@@ -291,7 +291,6 @@ body{
 .pmenu_strip .content{ 
     padding: 10px;
 }
-
 
 .pmenu_strip ul{
     padding: 0;

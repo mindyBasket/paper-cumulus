@@ -161,7 +161,7 @@ ul.list_strips .strip_flex_container .tile{
     opacity:1;
 }
 
-.strip_flex_toolbar a{ color: #859297;}
+.strip_flex_toolbar a{ color: #859297; cursor:pointer;}
 .strip_flex_toolbar a:hover{ color: #545b5d; text-decoration: none;}
 
 

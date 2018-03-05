@@ -143,6 +143,7 @@ class Spinny {
 // object picks it up.
 
 class PopupMenu {
+    
     constructor($popupInitObj, popupObjType){
         // if template is not provided, it will look for partial rendered
         // right on the current page.
@@ -171,15 +172,20 @@ class PopupMenu {
         
         // lightbox relationship
         this._lightBox;
-        
+
     }
     
     // set _lightBox(lb){
     //      Warning: anything set using setter doesn't work like a 
     //      normal property. So you can't retrieve obj._lightbox.
     // }
- 
+    
+    
     //methods
+    set css(cssDict){
+        this.$menu.css(cssDict);
+    }
+    
     highlightRelated(){
         for(var i=0;i<this.relatedElement.length;i++){
             var currElemDefaultStyle = {};
@@ -205,7 +211,27 @@ class PopupMenu {
         }
     }
     
-    popupAt($target, contentIdType){
+    // Searches for DOM object that has an attirbute that describe 
+    // model instance's id. It is "search" instead of "get" because the information 
+    // is not inherent to the popup object, and it must search anew everytime it pops up.
+    // idAttrname = must string match the attribute name that contain mode instance
+    //              id number. 
+    searchModelInstanceId(idAttrname){
+        
+        var $instanceIdContainer = crawlOutUntilAttribute(this.$menu, idAttrname);
+       
+        if ($instanceIdContainer){
+            var instanceId = $instanceIdContainer.attr(idAttrname);
+            if (instanceId && instanceId > 0)
+                {return instanceId}
+        }
+
+        console.error("Could not find id attrbute '" + idAttrname + "' for popup!");
+        return -1;
+        
+    }
+    
+    popupAt($target, modelInstanceIdAttr){
         
         var _lb = this._lightBox;
         if (this.active){
@@ -225,23 +251,12 @@ class PopupMenu {
             this.$menu.show();
             this.$menu.focus(); // allows it to disappear when you click else where
             
-            // Update tag information about current frame
-            // TODO: currently assumes $target has attribute 'frameid'.
-            //       this is not useful for 'sceneid'.
-            
-            var contentId = $target.attr("frameid");
-            if (contentIdType){
-                var parentWithContentId = crawlOutUntilAttribute($target, contentIdType);
-                if (parentWithContentId){
-                    contentId = parentWithContentId.attr(contentIdType);
-                }
+            // Update tag information about current frame/strip/scene etc
+            if (modelInstanceIdAttr){
+                var instanceId = this.searchModelInstanceId(modelInstanceIdAttr);
+                this.$menu.attr("for", instanceId);
+                this.$menu.children(".header").children("span").text(instanceId);
             }
-            
-            if (!contentId){
-                console.warn("Could not extract content id");
-            }
-            this.$menu.attr("for", contentId);
-            this.$menu.children(".header").children("span").text(contentId);
         
         } else { 
             console.log("Popup menu currently not active");
@@ -272,7 +287,7 @@ class PopupMenu {
     dislodge(){
         // Popup menu elements are nested inside delete-able containers.
         // Before the element is deleted, make sure the popup menu is
-        // dislodged somewhere safe, like 'body'.
+        // dislodged somewhere safe, like onto 'body'.
         this.$menu.appendTo('body');
     }
 }
@@ -384,6 +399,7 @@ flipbookLib.submitFormAjaxly = function($form, url, settings, beforeSendFunc){
 function crawlOutUntilAttribute($start, attrname){
     
     var $nextParent = $start.parent();
+    console.log("searching " + attrname + " in " + $nextParent.attr("class"));
     
     while ($nextParent.is('body') != true){
         if ($nextParent[0].hasAttribute(attrname)){

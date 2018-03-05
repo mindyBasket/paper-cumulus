@@ -35,18 +35,15 @@ $(function() {
     bind_frameCreateFormButton($(document));
     
     // Initialize popup menu partial
-    bind_popupMenu_elems(_popupMenu.$menu);
+    make_popupMenu_frame();
+    make_popupMenu_strip();
     _acHandler.popupMenu = _popupMenu; //add reference to the popupmenu
-    bind_popupMenu_strip_elems(_popupMenu_strip.$menu);
     _acHandler.popupMenu_strip = _popupMenu_strip;
     
     // Bind features on each containers
     bind_features_onFrameContainer();
     bind_features_onStripContainer();
 
-    // popup menu for strip 
-    //bind_openPMenu_strip($(document));
-    
     // drag and drop events
     bind_dragAndDrop($(document), '.strip_flex_container');
    
@@ -186,7 +183,9 @@ function bind_frameCreateFormButton($doc, $targetOptional){
 //  |_____] |     | |_____] |     | |_____] |______
 //  |       |_____| |       |_____| |       ______|
 
-function bind_popupMenu_elems($popupMenu){
+function make_popupMenu_frame(){
+    
+    var $pmenu = _popupMenu.$menu;
     
     // ............................
     // a. Bind 'EDIT' action 
@@ -202,19 +201,20 @@ function bind_popupMenu_elems($popupMenu){
     //.........................
     // c. Bind 'DELETE' action 
     //.........................
-     $popupMenu.find('.action.delete').click(function(){
-         _acHandler.ajaxFrameDeleteConfirm($popupMenu.attr("for"));
+     $pmenu.find('.action.delete').click(function(){
+         _acHandler.ajaxFrameDeleteConfirm($pmenu.attr("for"));
      });
 }
 
 
-function bind_popupMenu_strip_elems($popupMenu){
-    
+function make_popupMenu_strip(){
+   
+    var $pmenu = _popupMenu_strip.$menu;
     //.........................
     // c. Bind 'DELETE' action 
     //.........................
-    $popupMenu.find('.action.delete').click(function(){
-        _acHandler.ajax_strip_DeleteConfirm($popupMenu.attr("for"));
+    $pmenu.find('.action.delete').click(function(){
+        _acHandler.ajax_strip_DeleteConfirm($pmenu.attr("for"));
     });
 }
     
@@ -338,7 +338,7 @@ function bind_openPMenu_frame($targetContainer, targetSelector){
         // append to thumbnail base [div with ".thumb" class]
         var $parentThumb = crawlOutUntilClassname($(this), "thumb");
         if ($parentThumb) {
-            _popupMenu.popupAt($parentThumb);
+            _popupMenu.popupAt($parentThumb, "frameid");
         } else {
             console.log("Cannot find the thumbnail element in list of parents.");
             return;
@@ -385,6 +385,8 @@ function bind_features_onStripContainer($targetContainer, isMultiTarget){
     //Bind "options" (popup menu)
     bind_openPMenu_strip($targetContainer, (t ? ".strip_flex_toolbar" : "")  + ' a.strip_options'); 
     
+    
+    
 }
 
 
@@ -405,7 +407,7 @@ function bind_openPMenu_strip($targetContainer, targetSelector){
     
     var $target = getValidTarget($targetContainer, targetSelector , "strip popup menu");
     if (!$target) { return; }
-    
+
     $target.click(function(event){
         
         event.preventDefault();
