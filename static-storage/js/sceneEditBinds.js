@@ -224,6 +224,9 @@ function bind_popupMenu_strip_elems($popupMenu){
    specified in argument classname */
 function crawlOutUntilClassname($start, classname){
     
+    //do not include period in the beginning
+    classname = classname.split('.')[0];
+    
     var $nextParent = $start.parent();
     
     while ($nextParent.is('body') != true){
@@ -232,6 +235,7 @@ function crawlOutUntilClassname($start, classname){
         } else {
             $nextParent = $nextParent.parent();}
     }
+    console.warn('Could not find '+classname+'from '+$start.attr('class'));
     return false;
 } //end: crawlOutUntilClassname
 
@@ -406,7 +410,8 @@ function bind_openPMenu_strip($targetContainer, targetSelector){
         
         event.preventDefault();
         // append to itself [<span> with options icon]
-        _popupMenu_strip.popupAt($(this), "stripid");
+        var $popupTarget = crawlOutUntilClassname($(this), 'flex_list');
+        _popupMenu_strip.popupAt($popupTarget, "stripid");
         
         
     });

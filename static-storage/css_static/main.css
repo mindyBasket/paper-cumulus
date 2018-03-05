@@ -240,7 +240,7 @@ body{
 .pmenu_strip{
     /* popup menu for strip */
     position: absolute;
-    top: 0px; left: -10px;
+    top: 0px; right: -10px;
     width: 150px;
 
     transform-origin: top left;
