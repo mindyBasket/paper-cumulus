@@ -58,7 +58,6 @@ $(function() {
     //.......................
     var scenePk = $('#strip_create_form').find('select#id_scene').val();
     
-    
     $('#strip_create_form').submit(function(event){
         
         // disable default form action
@@ -447,7 +446,11 @@ function renderStripContainer(data){
         $newStripContainer.slideToggle( "slow" );
         
         // Bind Button Events
-        bind_frameCreateFormButton($(document), $newStripContainer.find('.frame_form'));
+        // bind_frameCreateFormButton($(document), $newStripContainer.find('.frame_form'));
+        
+        // Bind events on container 
+        bind_features_onStripContainer($newStripContainer, false);
+        
     });
     
 }

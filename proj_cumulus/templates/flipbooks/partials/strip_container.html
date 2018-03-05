@@ -1,17 +1,27 @@
 <li class="flex_list" stripid="{{strip.id}}">
-    <div class="header" stripid="{{strip.id}}">
-        <span class="bigtext-1">{{index}}</span>
-        <br>
-        <span>id: {{strip.id}}</span>
-        <a class="glyphicon glyphicon-menu-hamburger menu_strip" aria-hidden="true" style='font-size:2em'></a>
-    </div>
-            
-    <div class="strip_flex_container" stripid="{{strip.id}}">
-        
-        <!-- open frame_form -->
-        <div class="tile frame_form" displaytype="add" for="{{strip.id}}">
-            <span style="font-size:4em">+</span>
-            Add Frames
+                    
+    <div class="strip_flex_toolbar">
+        <div class="header">
+            <span class="bigtext-2">{{index}}</span>
+            <span>id: {{strip.id}}</span>
         </div>
+        <div class="tools">
+            <a class="strip_upload glyphicon glyphicon-upload" aria-hidden="true" style='font-size:1.5em'></a>
+            <a class="strip_edit glyphicon glyphicon-edit" aria-hidden="true" style='font-size:1.5em'></a>
+            <a class="strip_delete glyphicon glyphicon-trash" aria-hidden="true" style='font-size:1.5em'></a>
+            <a class="strip_options glyphicon glyphicon-option-horizontal" aria-hidden="true" style='font-size:1.5em'></a>
+        </div>
+        
     </div>
+    
+    <div class="strip_flex_container" stripid="{{strip.id}}">
+ 
+        
+        <!-- indicator when a file is being dragged -->
+        <div class="cover_drag_and_drop">
+            <span class="bigtext-2">Upload to scene {{forloop.counter}}</span>
+        </div>
+
+    </div>
+
 </li>

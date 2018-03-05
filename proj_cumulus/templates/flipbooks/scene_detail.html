@@ -56,12 +56,7 @@
             <!-- {- for strip in ordered_strip_set -}-->
             {% for strip in object.strip_set.all|map_queryset:object.children_li %}
                 <li class="flex_list" stripid="{{strip.id}}">
-                    <!--<div class="header" stripid="{{strip.id}}">
-                        <span class="bigtext-1">{{forloop.counter}}</span>
-                        <br>
-                        <span>id: {{strip.id}}</span>
-                        <a class="glyphicon glyphicon-menu-hamburger menu_strip" aria-hidden="true" style='font-size:2em'></a>
-                    </div>-->
+                    
                     <div class="strip_flex_toolbar">
                         <div class="header">
                             <span class="bigtext-2">{{forloop.counter}}</span>
@@ -93,20 +88,20 @@
                             {% endif %}
                                
                         {% empty %}
-                            {% if strip is None %}
-                                <div class="tile ui-state-disabled">
-                                    <span style="color:#898989">Invalid Strip</span>
-                                </div>
-                            {% endif %}
+             
+                            <div class="tile empty-strip ui-state-disabled">
+                                <span>No frames in this strip. Upload some!</span>
+                            </div>
+   
                         {% endfor %}
                         
-                        {% if strip != None %}
-                            <!-- open frame_form -->
-                            <div class="tile frame_form ui-state-disabled" displaytype="add" for="{{strip.id}}">
-                                <span style="font-size:4em">+</span>
-                                Add Frames
-                            </div>
-                        {% endif %}
+           
+                        <!-- open frame_form 
+                        <div class="tile frame_form ui-state-disabled" displaytype="add" for="{{strip.id}}">
+                            <span style="font-size:4em">+</span>
+                            Add Frames
+                        </div>-->
+                
                         
                         
                         <!-- indicator when a file is being dragged -->
@@ -115,11 +110,7 @@
                         </div>
 
                     </div>
-                    
-                    
-                   
-                    
-                        
+  
                 </li>
             {% empty %}
             

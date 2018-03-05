@@ -7,14 +7,9 @@
 {% block body_class %}dark{% endblock body_class %}
 
 {% block content %}
-<h3>Flip through Strips</h3>
-
+<h3>Scene {{scene.id}}</h3>
 
 <a href="{% url 'flipbooks:chapter-detail' book_pk=scene.chapter.book.id chapter_number=scene.chapter.number%}">< return </a>
-
-<p>Dev note: This page starts playing the frames inside each strip. When populating strips, 
-consider one scene equivalent to a "page" of a comic book.</p>
-<p>Structurally, scene object has two "detail page". One for playing, one for editing.</p>
 
 <!-- it would be nice if you can ajax load and don't show interface until first 
 strip has been loaded -->
