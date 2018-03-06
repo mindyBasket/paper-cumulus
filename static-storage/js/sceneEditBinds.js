@@ -22,9 +22,12 @@ var _popupMenu_strip = new PopupMenu(
                             $(document).find(".pmenu_strip").eq(0),
                             "partial");
                             
-var $lbCover = new LightBox(); /* global LightBox*/
+var _lbCover = new LightBox(); /* global LightBox*/
 var _spinnyObj = new Spinny(); /* global Spinny*/
-var _acHandler = new AJAXCRUDHandler($lbCover, _spinnyObj); /* global AJAXCRUDHandler */
+var _acHandler = new AJAXCRUDHandler(_lbCover, _spinnyObj); /* global AJAXCRUDHandler */
+
+// Have some constants
+var CLASS_STRIPLI = ".flex_list"
 
 $(function() { 
 
@@ -132,6 +135,7 @@ $(function() {
 // ................................................
 // Button for opening frame create form in a desginated strip container
 // ................................................
+// TODO: do this in ajax_CRUDHandler instead. 
 function bind_frameCreateFormButton($doc, $targetOptional){
    
     var $target = $targetOptional
@@ -223,19 +227,35 @@ function make_popupMenu_strip(){
    specified in argument classname */
 function crawlOutUntilClassname($start, classname){
     
-    //do not include period in the beginning
-    classname = classname.split('.')[0];
+    // Fail cases
+    if ($start instanceof jQuery == false){
+        console.log("The starting element is not jQuery object");
+        return false;
+    }
+  
+    var classnameSplit = classname.split('.');
+    classname = false;
+    for (var i=0; i<classnameSplit.length;i++){
+        if(classnameSplit[i] != ""){ classname = classnameSplit[i]; break;}
+    }
+    if (!classname){
+        console.log("Classname not valid");
+        return false;
+    }
+    
     
     var $nextParent = $start.parent();
     
     while ($nextParent.is('body') != true){
         if ($nextParent.attr("class") == classname || $nextParent.attr("class").indexOf(classname) !== -1){
+            console.log("searching at " + $nextParent.attr("class") + ", for " + classname);
             return $nextParent;
         } else {
             $nextParent = $nextParent.parent();}
     }
-    console.warn('Could not find '+classname+'from '+$start.attr('class'));
+    console.warn('Could not find '+classname+' from '+$start.attr('class'));
     return false;
+    
 } //end: crawlOutUntilClassname
 
 
@@ -378,7 +398,7 @@ function bind_features_onStripContainer($targetContainer, isMultiTarget){
     var t = isMultiTarget;
 
     //Bind "upload"
-    // bind_openFrameEdit($targetContainer, (t ? ".thumb" : "")  + ' a.frame_edit');
+    bind_openUpload($targetContainer, (t ? ".strip_flex_toolbar" : "")  + ' a.strip_upload');
     //Bind "delete"
     //bind_frameDelete($targetContainer, (t ? ".thumb" : "") + ' a.frame_delete');
     //Bind "options" (popup menu)
@@ -388,6 +408,34 @@ function bind_features_onStripContainer($targetContainer, isMultiTarget){
     
 }
 
+function bind_openUpload($targetContainer, targetSelector){
+    
+    var $target = getValidTarget($targetContainer, targetSelector, "strip upload");
+    if (!$target) { return; }
+    
+    $target.click(function(event){
+        event.preventDefault();
+        
+        var $highlightable = crawlOutUntilClassname($(this), CLASS_STRIPLI);
+        
+        //_acHandler.ajaxStrip_OpenUploadForm($highlightable);
+        var $fileUploadCover = $highlightable.find(".cover.file_upload");
+            $fileUploadCover.css("opacity", 1);
+            $fileUploadCover.css("pointer-events", "auto");
+            $fileUploadCover.append($('#frame_create_form').eq(0));
+            
+        // TODO: when turned off, the cover also needs to disappear hmm...
+        _lbCover.setClickEventFunc(function(){
+            $fileUploadCover.css("opacity",0);
+            $fileUploadCover.css("pointer-events", "none");
+        })
+        
+        _lbCover.turnOn($highlightable);
+        
+        
+    });
+    
+}
 
 function bind_stripDelete($targetContainer, targetSelector){
     
@@ -411,7 +459,7 @@ function bind_openPMenu_strip($targetContainer, targetSelector){
         
         event.preventDefault();
         // append to itself [<span> with options icon]
-        var $popupTarget = crawlOutUntilClassname($(this), 'flex_list');
+        var $popupTarget = crawlOutUntilClassname($(this), CLASS_STRIPLI);
         _popupMenu_strip.popupAt($popupTarget, "stripid");
         
         
@@ -521,11 +569,11 @@ function renderDeleteFrameConfirm(data, frameId, args){
     _popupDeleteMenu.relatedElement.push($targetThumbnail.children(".frame_image.stretch"));
 
     // ++++++ lights out ++++++
-    _popupDeleteMenu._lightBox = $lbCover;
+    _popupDeleteMenu._lightBox = _lbCover;
     _popupDeleteMenu.popupAt($targetThumbnail);
     // ++++++++++++++++++++++++
     
-    $lbCover.setClickEventFunc(function(){
+    _lbCover.setClickEventFunc(function(){
         _popupDeleteMenu.$menu.find('#delete-cancel-button').click();
     });
 
@@ -576,11 +624,11 @@ function renderStripDeleteConfirm(data, stripId, args){
     $popupDelete.children('.content').html(''); //clear unnecessary cloned content
     
     // Change click event to LightBox so that it closes Strip Delete Confirm form
-    $lbCover.setClickEventFunc(function(){
+    _lbCover.setClickEventFunc(function(){
         $popupDelete.find('#delete-cancel-button').click();
     });
     
-    $lbCover.turnOn();
+    _lbCover.turnOn();
     
     //make objects to appear above lightbox
     $popupDelete.attr('style','z-index:1000');
@@ -630,7 +678,7 @@ function renderStripDeleteConfirm(data, stripId, args){
     $popupDelete.find('#delete-cancel-button').click(function(event){
         //clean up
         $popupDelete.remove();
-        $lbCover.turnOff(); //don't forget the lightbox cover
+        _lbCover.turnOff(); //don't forget the lightbox cover
     });
         
 }

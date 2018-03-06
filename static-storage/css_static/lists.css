@@ -231,3 +231,62 @@ ul.list_strips .strip_flex_container .tile.empty-strip{
     padding-top:15px;
     text-align: center;
 }
+
+
+
+.cover{
+    pointer-events: none;
+    position: absolute;
+    top: 0; left:0;
+      
+    height: 100%;
+    width: 100%;
+    
+    opacity:0;
+}
+
+.cover.drag_and_drop,
+.cover.file_upload{
+  
+  margin-bottom: 20px;
+  color: white;
+  
+  background-color: rgba(25, 25, 25, 0.7);
+  transition-property: opacity;
+  transition-duration: 0.15s;
+  transition-timing-function: ease-in;
+  
+  /* low-tech solution to prevent flickering when drag related event fires
+     over children object. The ease-in makes the flickering much milder */
+  
+}
+
+.cover.file_upload{
+    /* This needs to apply dynamically? *?
+    /*pointer-events: auto;*/
+}
+
+
+.cover.drag_and_drop span{
+  position: absolute;
+  top: 50%; left: 50%;
+  
+  transform: translate(-50%, -50%);
+}
+
+.is-dragover .cover.drag_and_drop{
+  opacity: 1;
+}
+
+/* prevent flickering */
+/* Downside: this makes the drag events a bit unstable. 
+   makes dragleave fire rapidly sometimes */
+/* after some investigation, realized it's the .thumb that is causing issue */
+/*.is-dragover .thumb { pointer-events:none; }*/
+
+.cover.file_upload span{
+  position: absolute;
+  top: 50%; left: 50%;
+  
+  transform: translate(-50%, -50%);
+}

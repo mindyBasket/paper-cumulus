@@ -43,14 +43,23 @@ class LightBox {
         this.$obj = $lightBoxCover;
         this.$obj.hide(); // hidden by default
         
+        $lightBoxCover.data({
+            'obj': this,
+            'clickEventFunc': this.clickEventFunc
+        });
+        
         $lightBoxCover.click(function(){
             $(this).data("obj").turnOff(); //default behavior
             var func = $(this).data("clickEventFunc");
             func();
         });
-        $lightBoxCover.data(
-            "obj", this,
-            "clickEventFunc", this.clickEventFunc);
+        
+        // Elements that is to be highlighted when turned on.
+        // This is similar to 'relatedElement' for PopupMenu Obj
+        // but this one is disposable, and will be EMPTIED when 
+        // lightbox gets turned off.
+        this.highlightables = [];
+        
     }
 
    // Getter
@@ -65,10 +74,13 @@ class LightBox {
         this.clickEventFunc = func;
     }
 
-    turnOn(){
+    turnOn(highlightables){
         var $lb = this.$obj;
         $lb.css( "opacity", 0);
         $lb.fadeTo(200, 1);
+        
+        //highlight anything in highlightable
+        this.highlight(highlightables);   
     }
     
     turnOff() {
@@ -76,7 +88,44 @@ class LightBox {
         $lb.fadeTo(200, 0, function(){
             $(this).hide();
         })
+        
+        //unhighlight
+        this.unhighlight();
     }
+    
+    highlight(h){
+        if (!h){ return;}
+        
+        this.highlightables = h; // store it, so that they get unhighlighted later
+        
+        if (Array.isArray(h)){
+            for(var i=0;i<h.length;i++){
+                if(h[i] instanceof jQuery){h[i].css("z-index",1000)}
+            }
+        } else {
+            h.css('z-index',1000);
+        }
+    
+    }
+    
+    unhighlight(){
+        var h = this.highlightables;
+        
+        console.log("unhighlight");
+        if (h){
+            if (Array.isArray(h)){
+                for(var i=0;i<h.length;i++){
+                    if(h[i] instanceof jQuery){h[i].css("z-index",'')}
+                }
+            } else {
+                h.css('z-index','');
+            }
+        }
+        
+        this.highlightables = [];
+    }
+    
+    // end of LightBox
 
 }
 
