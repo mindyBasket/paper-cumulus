@@ -111,7 +111,6 @@ class LightBox {
     unhighlight(){
         var h = this.highlightables;
         
-        console.log("unhighlight");
         if (h){
             if (Array.isArray(h)){
                 for(var i=0;i<h.length;i++){
@@ -260,26 +259,7 @@ class PopupMenu {
         }
     }
     
-    // Searches for DOM object that has an attirbute that describe 
-    // model instance's id. It is "search" instead of "get" because the information 
-    // is not inherent to the popup object, and it must search anew everytime it pops up.
-    // idAttrname = must string match the attribute name that contain mode instance
-    //              id number. 
-    searchModelInstanceId(idAttrname){
-        
-        var $instanceIdContainer = crawlOutUntilAttribute(this.$menu, idAttrname);
-       
-        if ($instanceIdContainer){
-            var instanceId = $instanceIdContainer.attr(idAttrname);
-            if (instanceId && instanceId > 0)
-                {return instanceId}
-        }
-
-        console.error("Could not find id attrbute '" + idAttrname + "' for popup!");
-        return -1;
-        
-    }
-    
+ 
     popupAt($target, modelInstanceIdAttr){
         
         var _lb = this._lightBox;
@@ -302,7 +282,7 @@ class PopupMenu {
             
             // Update tag information about current frame/strip/scene etc
             if (modelInstanceIdAttr){
-                var instanceId = this.searchModelInstanceId(modelInstanceIdAttr);
+                var instanceId = $target.closest('*['+modelInstanceIdAttr+']').attr(modelInstanceIdAttr);
                 this.$menu.attr("for", instanceId);
                 this.$menu.children(".header").children("span").text(instanceId);
             }
@@ -443,21 +423,6 @@ flipbookLib.submitFormAjaxly = function($form, url, settings, beforeSendFunc){
     });
     
 }
-
-
-function crawlOutUntilAttribute($start, attrname){
-    
-    var $nextParent = $start.parent();
-    console.log("searching " + attrname + " in " + $nextParent.attr("class"));
-    
-    while ($nextParent.is('body') != true){
-        if ($nextParent[0].hasAttribute(attrname)){
-            return $nextParent;
-        } else {
-            $nextParent = $nextParent.parent();}
-    }
-    return false;
-} //end: crawlOutUntilAttribute
 
 
 // Checks if key exists in a dictionary of css rules.

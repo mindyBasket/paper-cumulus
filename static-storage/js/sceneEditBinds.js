@@ -27,7 +27,7 @@ var _spinnyObj = new Spinny(); /* global Spinny*/
 var _acHandler = new AJAXCRUDHandler(_lbCover, _spinnyObj); /* global AJAXCRUDHandler */
 
 // Have some constants
-var CLASS_STRIPLI = ".flex_list"
+var CLASS_STRIPLI = ".flex_list";
 
 $(function() { 
 
@@ -138,7 +138,7 @@ $(function() {
 // TODO: do this in ajax_CRUDHandler instead. 
 function bind_frameCreateFormButton($doc, $targetOptional){
    
-    var $target = $targetOptional
+    var $target = $targetOptional;
     
     if ($target == null){
         //do for all mini menus if target not specified
@@ -223,43 +223,6 @@ function make_popupMenu_strip(){
     
 
 /* HELPER */
-/* This function crawls up hiearchy until its parent's name is 
-   specified in argument classname */
-function crawlOutUntilClassname($start, classname){
-    
-    // Fail cases
-    if ($start instanceof jQuery == false){
-        console.log("The starting element is not jQuery object");
-        return false;
-    }
-  
-    var classnameSplit = classname.split('.');
-    classname = false;
-    for (var i=0; i<classnameSplit.length;i++){
-        if(classnameSplit[i] != ""){ classname = classnameSplit[i]; break;}
-    }
-    if (!classname){
-        console.log("Classname not valid");
-        return false;
-    }
-    
-    
-    var $nextParent = $start.parent();
-    
-    while ($nextParent.is('body') != true){
-        if ($nextParent.attr("class") == classname || $nextParent.attr("class").indexOf(classname) !== -1){
-            console.log("searching at " + $nextParent.attr("class") + ", for " + classname);
-            return $nextParent;
-        } else {
-            $nextParent = $nextParent.parent();}
-    }
-    console.warn('Could not find '+classname+' from '+$start.attr('class'));
-    return false;
-    
-} //end: crawlOutUntilClassname
-
-
-/* HELPER */
 /* Pass container with features, and selector describing element 
     in the container to bind. Returns the object ready to be binded. 
     Returns false if it could not find the object using the selector. 
@@ -307,9 +270,7 @@ function bind_features_onFrameContainer($targetContainer, isMultiTarget){
     
     isMultiTarget = typeof(isMultiTarget) === 'boolean' ? isMultiTarget : isMultiTarget || true;
     var t = isMultiTarget;
-    var targetArr = ['a.frame_edit', 'a.frame_delete', 'a.frame_options'];
-    
-    
+
     //Bind "edit"
     bind_openFrameEdit($targetContainer, (t ? ".thumb" : "")  + ' a.frame_edit');
     //Bind "delete"
@@ -355,7 +316,7 @@ function bind_openPMenu_frame($targetContainer, targetSelector){
         
         event.preventDefault();
         // append to thumbnail base [div with ".thumb" class]
-        var $parentThumb = crawlOutUntilClassname($(this), "thumb");
+        var $parentThumb = $(this).closest(".thumb");
         if ($parentThumb) {
             _popupMenu.popupAt($parentThumb, "frameid");
         } else {
@@ -416,22 +377,20 @@ function bind_openUpload($targetContainer, targetSelector){
     $target.click(function(event){
         event.preventDefault();
         
-        var $highlightable = crawlOutUntilClassname($(this), CLASS_STRIPLI);
+        var $highlightable = $(this).closest(CLASS_STRIPLI);
         
         //_acHandler.ajaxStrip_OpenUploadForm($highlightable);
         var $fileUploadCover = $highlightable.find(".cover.file_upload");
             $fileUploadCover.css("opacity", 1);
             $fileUploadCover.css("pointer-events", "auto");
             $fileUploadCover.append($('#frame_create_form').eq(0));
-            
-        // TODO: when turned off, the cover also needs to disappear hmm...
+
         _lbCover.setClickEventFunc(function(){
             $fileUploadCover.css("opacity",0);
             $fileUploadCover.css("pointer-events", "none");
-        })
+        });
         
         _lbCover.turnOn($highlightable);
-        
         
     });
     
@@ -459,9 +418,8 @@ function bind_openPMenu_strip($targetContainer, targetSelector){
         
         event.preventDefault();
         // append to itself [<span> with options icon]
-        var $popupTarget = crawlOutUntilClassname($(this), CLASS_STRIPLI);
+        var $popupTarget = $(this).closest(CLASS_STRIPLI);
         _popupMenu_strip.popupAt($popupTarget, "stripid");
-        
         
     });
 
@@ -472,15 +430,18 @@ function bind_openPMenu_strip($targetContainer, targetSelector){
 
 
 
-/*-----------------------------------------------------------------
----------------------- rendering functions ------------------------
--------------------------------------------------------------------*/
+
+//   ______ _______ __   _ ______  _______  ______ _______
+//  |_____/ |______ | \  | |     \ |______ |_____/ |______
+//  |    \_ |______ |  \_| |_____/ |______ |    \_ ______|
+
+// Functions used to spawn new elements
 
 
 // Uses json_partial view to load html template for a strip container
 function renderStripContainer(data){
     
-    var stripObj = data
+    var stripObj = data;
     var $stripList = $('ul.list_strips');
     
     var responce = window.flipbookLib.getJSONPartial(
@@ -709,7 +670,7 @@ function bind_dragAndDrop($targetContainer, targetSelector){
         
         var droppedFiles = e.originalEvent.dataTransfer.files;
         
-        var containerObj = crawlOutUntilClassname($(this), "flex_list");
+        var containerObj = $(this).closest(CLASS_STRIPLI);
         var stripId = containerObj ? containerObj.attr("stripid") : "-1"
         
         

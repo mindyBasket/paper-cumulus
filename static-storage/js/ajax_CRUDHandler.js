@@ -212,18 +212,9 @@ class AJAXCRUDHandler {
         
     } // end: ajaxFrameDelete()
     
-    
-    // moved back to sceneEditBinds.js
-    // ajaxStrip_OpenUploadForm($strip){
-    //     var $fileUploadCover = $strip.find(".cover.file_upload");
-    //         $fileUploadCover.css("opacity", 1);
-        
-        
-    //     $fileUploadCover.append($('#frame_create_form').eq(0));
-    // }
-    
-    
-    
+
+
+
     ajax_strip_DeleteConfirm(stripId){
         
         event.preventDefault();
