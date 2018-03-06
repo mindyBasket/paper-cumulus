@@ -35,7 +35,7 @@ $(function() {
     
     // "+frame" button appends frame create form
     // TODO: remove this form, and make one-click-submit
-    bind_frameCreateFormButton($(document));
+    //bind_frameCreateFormButton($(document));
     
     // Initialize popup menu partial
     make_popupMenu_frame();
@@ -98,13 +98,19 @@ $(function() {
     $('#frame_create_form').submit(function(event){
         // disable default form action
         event.preventDefault();
+        
         var $frameForm = $(this);
-        var stripPk = $(this).parent().attr("stripid");
+        var stripId = $(this).closest("*[stripid]").attr("stripid");
+        
+        if (!stripId){
+            console.log("Could not find stripid to submit frame form");
+            return;
+        }
 
         //ajax call
         var frameCreateResp = window.flipbookLib.submitFormAjaxly(
             $(this),
-            '/api/strip/'+stripPk+'/frame/create/',
+            '/api/strip/'+stripId+'/frame/create/',
             {'method': 'POST',
              'processData': false,
              'contentType': false
@@ -117,7 +123,7 @@ $(function() {
             $('.frame_form').show();
             
             /////// RENDER ///////
-            renderFrameContainer(data, stripPk);
+            renderFrameContainer(data, stripId);
             //////////////////////
         });                
 
@@ -136,43 +142,43 @@ $(function() {
 // Button for opening frame create form in a desginated strip container
 // ................................................
 // TODO: do this in ajax_CRUDHandler instead. 
-function bind_frameCreateFormButton($doc, $targetOptional){
+// function bind_frameCreateFormButton($doc, $targetOptional){
    
-    var $target = $targetOptional;
+//     var $target = $targetOptional;
     
-    if ($target == null){
-        //do for all mini menus if target not specified
-        $target = $doc.find('.strip_flex_container .frame_form');
-    } else if ($targetOptional instanceof jQuery == false){
-        console.error("Cannot bind mini menu even to non-Jquery object.");
-        return false;
-    }
+//     if ($target == null){
+//         //do for all mini menus if target not specified
+//         $target = $doc.find('.strip_flex_container .frame_form');
+//     } else if ($targetOptional instanceof jQuery == false){
+//         console.error("Cannot bind mini menu even to non-Jquery object.");
+//         return false;
+//     }
     
-    $target.click(function(){
+//     $target.click(function(){
         
-        // Hide only the current form request button
-        $doc.find('.frame_form').show(); //show all
-        var $formRequestBtn_ = $(this);
-        $formRequestBtn_.hide(); //hide this
+//         // Hide only the current form request button
+//         $doc.find('.frame_form').show(); //show all
+//         var $formRequestBtn_ = $(this);
+//         $formRequestBtn_.hide(); //hide this
         
-        var stripid = $formRequestBtn_.attr("for");
+//         var stripid = $formRequestBtn_.attr("for");
         
-        // Form is already appended into the page. Move it around to 
-        // the appropriate strip container
-        var currStripContainer = $('.strip_flex_container[stripid='+stripid+']');
-        var targetForm = $doc.find("#frame_create_form").eq(0); //the one and only
-        targetForm.hide();
-        targetForm.appendTo(currStripContainer);
-        targetForm.slideToggle();
+//         // Form is already appended into the page. Move it around to 
+//         // the appropriate strip container
+//         var currStripContainer = $('.strip_flex_container[stripid='+stripid+']');
+//         var targetForm = $doc.find("#frame_create_form").eq(0); //the one and only
+//         targetForm.hide();
+//         targetForm.appendTo(currStripContainer);
+//         targetForm.slideToggle();
         
-        //auto-fill the form
-        console.log("curr strip id: " + stripid);
-        targetForm.find('#id_strip').val(String(stripid));
-        console.log("changing field val: " + targetForm.find('#id_strip').val());
-    });
+//         //auto-fill the form
+//         console.log("curr strip id: " + stripid);
+//         targetForm.find('#id_strip').val(String(stripid));
+//         console.log("changing field val: " + targetForm.find('#id_strip').val());
+//     });
     
 
-}
+// }
 
 
 
@@ -383,8 +389,17 @@ function bind_openUpload($targetContainer, targetSelector){
         var $fileUploadCover = $highlightable.find(".cover.file_upload");
             $fileUploadCover.css("opacity", 1);
             $fileUploadCover.css("pointer-events", "auto");
-            $fileUploadCover.append($('#frame_create_form').eq(0));
+        
+        // Move form to current strip container
+        var $frameCreateForm = $('#frame_create_form').eq(0);
+        //auto-fill the form
+        var stripId = $highlightable.attr("stripId");
+        //console.log("curr strip id: " + stripId);
+        $frameCreateForm.find('#id_strip').val(String(stripId));
+        console.log("changing field val: " + $frameCreateForm.find('#id_strip').val());
 
+        $fileUploadCover.append($frameCreateForm);
+        
         _lbCover.setClickEventFunc(function(){
             $fileUploadCover.css("opacity",0);
             $fileUploadCover.css("pointer-events", "none");
