@@ -15,7 +15,7 @@ class AJAXCRUDHandler {
     // ------------------------------
     // Methods
     // ------------------------------
-    ajax_frame_create(stripId, args){
+    ajax_frameCreate(stripId, args){
         
         console.log("StripId? : " + stripId);
         if(!stripId || Number(stripId) < 0){return;}

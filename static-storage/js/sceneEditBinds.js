@@ -108,24 +108,22 @@ $(function() {
         }
 
         //ajax call
-        var frameCreateResp = window.flipbookLib.submitFormAjaxly(
-            $(this),
-            '/api/strip/'+stripId+'/frame/create/',
-            {'method': 'POST',
-             'processData': false,
-             'contentType': false
-            });
-        frameCreateResp.success(function(data){
+        // var frameCreateResp = window.flipbookLib.submitFormAjaxly(
+        //     $(this),
+        //     '/api/strip/'+stripId+'/frame/create/',
+        //     {'method': 'POST',
+        //      'processData': false,
+        //      'contentType': false
+        //     });
+        // frameCreateResp.success(function(data){
             
-            console.log("sucessfully created frame");
-            //Hide the form and return add button
-            $frameForm.hide();
-            $('.frame_form').show();
-            
-            /////// RENDER ///////
-            renderFrameContainer(data, stripId);
-            //////////////////////
-        });                
+        //     console.log("sucessfully created frame");
+        //     /////// RENDER ///////
+        //     renderFrameContainer(data, stripId);
+        //     //////////////////////
+        // });                
+
+        _acHandler.ajax_frameCreate(stripId, {"formData": $(this)});
 
     });
     
@@ -490,7 +488,7 @@ function renderNewFrameContainer(stripId){
         var $emptyFrameContainer = $(data_partial['html_template']);
         var targetStripContainer = $('.strip_flex_container[stripid='+stripId+']');
             
-            $emptyFrameContainer.insertBefore(targetStripContainer.find('.frame_form'));
+            $emptyFrameContainer.appendTo(targetStripContainer);
             $emptyFrameContainer.hide();
             $emptyFrameContainer.slideToggle( "fast" );
 
@@ -504,6 +502,8 @@ function renderNewFrameContainer(stripId){
 }
 
 function renderFrameContainer(data, stripId){
+    
+    console.log("Render new frame container");
     
     var frameObj = data;
     
@@ -696,7 +696,7 @@ function bind_dragAndDrop($targetContainer, targetSelector){
         var moddedFormData = new FormData($form[0]);
         moddedFormData.append("frame_image", droppedFiles[0]);
     
-        _acHandler.ajax_frame_create(stripId, {"formData": moddedFormData});
+        _acHandler.ajax_frameCreate(stripId, {"formData": moddedFormData});
         
     });
 }

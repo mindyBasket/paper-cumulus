@@ -1,4 +1,4 @@
-<div class="thumb" frameid="{% if frame %}{{frame.id}}{% else %}loading{% endif %}">
+<div class="thumb {% if not frame %}loading{% endif %}" frameid="{% if frame %}{{frame.id}}{% endif %}">
     {% if frame %}
         <div class="frame_image stretch">
             <!-- opacity 0 -->
