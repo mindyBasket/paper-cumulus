@@ -73,6 +73,11 @@ class LightBox {
         this.$obj.data("clickEventFunc", func);
         this.clickEventFunc = func;
     }
+    
+    doClick(){
+        // equivalent to clicking on the $lightBoxCover
+        this.$obj.click();
+    }
 
     turnOn(highlightables){
         var $lb = this.$obj;

@@ -17,7 +17,7 @@ class AJAXCRUDHandler {
     // ------------------------------
     ajax_frameCreate(stripId, args){
         
-        console.log("StripId? : " + stripId);
+        console.log("FrameCreate under Strip id: " + stripId);
         if(!stripId || Number(stripId) < 0){return;}
         
         var spinny = this.spinny;
@@ -38,10 +38,7 @@ class AJAXCRUDHandler {
             });
         frameCreateResp.success(function(data){
             console.log("sucessfully created frame");
-            //Hide the form and return add button
-            $form.hide();
-            $('.frame_form').show();
-            
+
             /////// RENDER ///////
             renderFrameContainer(data, stripId);
             //////////////////////

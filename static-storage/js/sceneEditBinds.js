@@ -96,87 +96,28 @@ $(function() {
     // on frame_form submit
     //.......................
     $('#frame_create_form').submit(function(event){
-        // disable default form action
+
         event.preventDefault();
         
-        var $frameForm = $(this);
-        var stripId = $(this).closest("*[stripid]").attr("stripid");
-        
+        // var $frameForm = $(this);
+        var $strip = $(this).closest("*[stripid]");
+        var stripId = $strip.attr("stripid");
+    
         if (!stripId){
             console.log("Could not find stripid to submit frame form");
             return;
         }
-
-        //ajax call
-        // var frameCreateResp = window.flipbookLib.submitFormAjaxly(
-        //     $(this),
-        //     '/api/strip/'+stripId+'/frame/create/',
-        //     {'method': 'POST',
-        //      'processData': false,
-        //      'contentType': false
-        //     });
-        // frameCreateResp.success(function(data){
-            
-        //     console.log("sucessfully created frame");
-        //     /////// RENDER ///////
-        //     renderFrameContainer(data, stripId);
-        //     //////////////////////
-        // });                
-
+        
+        //exit lightbox 
+        _lbCover.doClick();
+        
+        // ajax frame create
         _acHandler.ajax_frameCreate(stripId, {"formData": $(this)});
 
     });
     
 });
 
-
-
-
-/*-----------------------------------------------------------------
------------------------ binding functions -------------------------
--------------------------------------------------------------------*/
-
-// ................................................
-// Button for opening frame create form in a desginated strip container
-// ................................................
-// TODO: do this in ajax_CRUDHandler instead. 
-// function bind_frameCreateFormButton($doc, $targetOptional){
-   
-//     var $target = $targetOptional;
-    
-//     if ($target == null){
-//         //do for all mini menus if target not specified
-//         $target = $doc.find('.strip_flex_container .frame_form');
-//     } else if ($targetOptional instanceof jQuery == false){
-//         console.error("Cannot bind mini menu even to non-Jquery object.");
-//         return false;
-//     }
-    
-//     $target.click(function(){
-        
-//         // Hide only the current form request button
-//         $doc.find('.frame_form').show(); //show all
-//         var $formRequestBtn_ = $(this);
-//         $formRequestBtn_.hide(); //hide this
-        
-//         var stripid = $formRequestBtn_.attr("for");
-        
-//         // Form is already appended into the page. Move it around to 
-//         // the appropriate strip container
-//         var currStripContainer = $('.strip_flex_container[stripid='+stripid+']');
-//         var targetForm = $doc.find("#frame_create_form").eq(0); //the one and only
-//         targetForm.hide();
-//         targetForm.appendTo(currStripContainer);
-//         targetForm.slideToggle();
-        
-//         //auto-fill the form
-//         console.log("curr strip id: " + stripid);
-//         targetForm.find('#id_strip').val(String(stripid));
-//         console.log("changing field val: " + targetForm.find('#id_strip').val());
-//     });
-    
-
-// }
 
 
 
@@ -390,11 +331,13 @@ function bind_openUpload($targetContainer, targetSelector){
         
         // Move form to current strip container
         var $frameCreateForm = $('#frame_create_form').eq(0);
+            $frameCreateForm.show(); //may be hidden in beginning.
         //auto-fill the form
         var stripId = $highlightable.attr("stripId");
+        
         //console.log("curr strip id: " + stripId);
         $frameCreateForm.find('#id_strip').val(String(stripId));
-        console.log("changing field val: " + $frameCreateForm.find('#id_strip').val());
+        //console.log("changing field val: " + $frameCreateForm.find('#id_strip').val());
 
         $fileUploadCover.append($frameCreateForm);
         
@@ -488,7 +431,7 @@ function renderNewFrameContainer(stripId){
         var $emptyFrameContainer = $(data_partial['html_template']);
         var targetStripContainer = $('.strip_flex_container[stripid='+stripId+']');
             
-            $emptyFrameContainer.appendTo(targetStripContainer);
+            $emptyFrameContainer.insertAfter(targetStripContainer.find(".thumb").last());
             $emptyFrameContainer.hide();
             $emptyFrameContainer.slideToggle( "fast" );
 
@@ -515,8 +458,10 @@ function renderFrameContainer(data, stripId){
         var $newFrameContainer = $(data_partial['html_template']);
         var targetStripContainer = $('.strip_flex_container[stripid='+stripId+']');
             
-            targetStripContainer.find(".thumb[frameid='loading']").remove();
-            $newFrameContainer.insertBefore(targetStripContainer.find('.frame_form'));
+            var $loadingFrame = targetStripContainer.find(".thumb.loading");
+            
+            $newFrameContainer.insertAfter($loadingFrame);
+            $loadingFrame.remove();
             $newFrameContainer.hide();
             $newFrameContainer.slideToggle( "fast" );
             

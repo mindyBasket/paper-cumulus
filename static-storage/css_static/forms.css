@@ -2,3 +2,8 @@ form select[invisible],
 form textarea[invisible]{
     display:none;
 }
+
+
+#frame_create_form{
+    display:none;
+}
