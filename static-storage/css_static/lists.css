@@ -234,7 +234,7 @@ ul.list_strips .strip_flex_container .tile.empty-strip{
 
 
 
-.cover{
+.flex_list .cover{
     pointer-events: none;
     position: absolute;
     top: 0; left:0;
