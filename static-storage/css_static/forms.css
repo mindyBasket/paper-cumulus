@@ -5,5 +5,8 @@ form textarea[invisible]{
 
 
 #frame_create_form{
-    display:none;
+    display:inline-block;
+    width: 100; height: 0;
+    opacity: 1;
+    /*pointer-events: none;*/
 }

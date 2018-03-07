@@ -262,8 +262,10 @@ ul.list_strips .strip_flex_container .tile.empty-strip{
 }
 
 .cover.file_upload{
-    /* This needs to apply dynamically? *?
+    /* This needs to apply dynamically unfortunately */
     /*pointer-events: auto;*/
+    background-color: rgba(237, 237, 237, 0.9);
+    color: #984242;
 }
 
 

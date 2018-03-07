@@ -4,8 +4,6 @@
 // '$' is an undefined variable
 
 
-
-
 // Project specific libraries
 // window.flipbookLib
 
@@ -33,20 +31,21 @@ $(function() {
 
     console.log("sceneEditBinds.js ---------- * v0.6.5");
     
-    // "+frame" button appends frame create form
-    // TODO: remove this form, and make one-click-submit
-    //bind_frameCreateFormButton($(document));
-    
     // Initialize popup menu partial
     make_popupMenu_frame();
     make_popupMenu_strip();
-    _acHandler.popupMenu = _popupMenu; //add reference to the popupmenu
+    _acHandler.popupMenu       = _popupMenu; //add reference to the popupmenu
     _acHandler.popupMenu_strip = _popupMenu_strip;
     
     // Bind features on each containers
     bind_features_onFrameContainer();
     bind_features_onStripContainer();
 
+    // one-click-submit
+    //bind_frameCreateFormButton($(document));
+    bind_frameCreateCondensed();
+    
+    
     // drag and drop events
     bind_dragAndDrop($(document), '.strip_flex_container');
    
@@ -194,6 +193,48 @@ function getValidTarget($targetContainer, targetSelector, name){
     }
         
 }
+
+
+
+
+function bind_frameCreateCondensed(){
+    
+    var $frameForm = $(document).find('#frame_create_form').eq(0);
+    var $fileInput = $frameForm.find('input#id_frame_image').eq(0);
+    
+    if ($frameForm.length <= 0 || $fileInput.length <=0){
+        console.error("Could not find #frame_create_form, or the form does not have valid input.");
+        return;
+    }
+    
+    // TODO: move this somewhere more appropriate
+    $frameForm.prop('accept', 'image/jpeg, image/jpg, image/png, image/gif');
+    
+        
+    // simulate file input click
+    $('.frame_create_form_condensed').each(function(){
+        $(this).click(function(event){
+            event.preventDefault();
+            
+            if ($frameForm.closest(CLASS_STRIPLI).attr("stripid") != $(this).closest(CLASS_STRIPLI).attr("stripid")){
+                console.error("StripId of frame frame and current stripId does not match.");
+                return;
+            }
+            
+            $fileInput.click();
+        });
+    });
+    
+        
+    
+    // bind listener for input change
+    $fileInput.change(function(event){
+        $frameForm.submit();
+    });
+    
+}
+
+
 
 
 // http://patorjk.com/software/taag/#p=display&f=Cyberlarge&t=Frame
