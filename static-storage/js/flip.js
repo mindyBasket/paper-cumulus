@@ -50,7 +50,6 @@ $(function(){
         console.log('all images loaded, at least one is broken');
     })
     .progress( function( instance, image ) {
-        
         // Set width and height of the container
         // This is done here to ensure the width and height of image is avaliable
         if(!(first_frame_loaded)){

@@ -229,7 +229,8 @@ function bind_frameCreateCondensed(){
     
     // bind listener for input change
     $fileInput.change(function(event){
-        $frameForm.submit();
+        //$frameForm.submit();
+        console.warn("[Debugging] $frameForm submit action initated!");
     });
     
 }
