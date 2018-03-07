@@ -62,12 +62,7 @@ class LightBox {
         
     }
 
-   // Getter
-    //   get area() {
-    //     return this.calcArea();
-    //   }
-   
-    
+ 
     // Method
     setClickEventFunc(func){
         this.$obj.data("clickEventFunc", func);
@@ -434,6 +429,7 @@ flipbookLib.submitFormAjaxly = function($form, url, settings, beforeSendFunc){
 // It will return true even if the key contains the provided keyword.
 // ex) keyword = "width" will return true if one of key is "max-width"
 function cssDictHasKeyword(dict, keyword){
+    if (!dict){return false;}
     var cssProps = Object.keys(dict);
     
     for(var i=0;i<cssProps.length;i++){

@@ -277,7 +277,7 @@ function bind_openFrameEdit($targetContainer, targetSelector){
     $target.click(function(event){
         
         event.preventDefault();
-        _acHandler.ajax_frame_edit($(this).parent().attr("frameid"));
+        _acHandler.ajax_frameEdit($(this).parent().attr("frameid"));
     });
 }
 

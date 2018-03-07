@@ -1,8 +1,10 @@
 {% load widget_tweaks %}
 
+<!--
 <div class="header">
     Frame #{{frame_instance.id}}
 </div>
+-->
 
 
 <div class="content">
@@ -18,20 +20,21 @@
         {% csrf_token %}
         
         {% if frame_instance.frame_image %}
-            <div class="alert alert-success" role="alert" id="field_frame_image">
-                <span class="glyphicon glyphicon-ok-circle" aria-hidden="true" style='font-size:2em'></span>
+        
+            <div id="field_frame_image">
                 <span class='field_value'>
-                    <img src="{{ frame_instance.frame_image.url }}" width='400px'/>
+                    <img src="{{ frame_instance.frame_image.url }}"/>
                 </span>
-                <br/>
             </div>
-            <div class="alert alert-success" role="alert" id="field_frame_image_file_info">
+            
+            <div id="field_frame_image_file_info">
                 <span class="glyphicon glyphicon-picture" aria-hidden="true" style="font-size:2em"></span>
                 <span class="field_value">
                     {{frame_instance.frame_image.width}} x {{frame_instance.frame_image.height}},
                     {{frame_instance.frame_image.name}}
                 </span>
             </div>
+            
         {% else %}
             <div class="alert alert-warning" role="alert" id='field_frame_image'>
                 <span class="glyphicon glyphicon-question-sign" aria-hidden="true" style='font-size:2em'></span>
