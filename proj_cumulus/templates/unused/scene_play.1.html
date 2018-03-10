@@ -1,4 +1,4 @@
-{% extends "layout_letterboxed.html" %}
+{% extends "base.html" %}
 {% load thumbnail %}
 {% load flipbooks_custom_tags %}
 
@@ -6,10 +6,16 @@
 
 {% block body_class %}dark{% endblock body_class %}
 
-{% block top_content %}
-    <h3>Scene {{scene.id}}</h3>
-    <a href="{% url 'flipbooks:chapter-detail' book_pk=scene.chapter.book.id chapter_number=scene.chapter.number%}">< return </a>
-{% endblock %}
+{% block content %}
+<h3>Scene {{scene.id}}</h3>
+
+<a href="{% url 'flipbooks:chapter-detail' book_pk=scene.chapter.book.id chapter_number=scene.chapter.number%}">< return </a>
+
+<!-- it would be nice if you can ajax load and don't show interface until first 
+strip has been loaded -->
+
+{% endblock content %}
+
 
 {% block letterbox %}
     <div class="frame_view wide">
@@ -63,7 +69,7 @@
 {% endblock letterbox %}
 
 
-{% block bottom_content %}
+{% block content_2 %}
 
     <!-- append thumbnails -->
     <div class="frame_scrubber">
@@ -98,7 +104,7 @@
     
     </div>
 
-{% endblock %}
+{% endblock content_2 %}
 
 {% block extra_js %}
     {% load static %}

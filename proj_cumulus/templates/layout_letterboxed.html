@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block layout %}
+    
+    <div class="container">
+        {% block top_content %}
+        {% endblock %}
+    </div>
+    
+    <div class='letterbox'>
+        {% block letterbox %}
+        {% endblock %}
+    </div>
+    
+    <div class="container noflex">
+        {% block bottom_content %}
+        {% endblock %}
+    </div>
+{% endblock %}
+
+

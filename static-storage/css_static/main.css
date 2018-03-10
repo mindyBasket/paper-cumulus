@@ -1,4 +1,5 @@
 html, body{
+    /* keep these property to make flexbox fill whole screen*/
     margin: 0;
     height: 100%;
 }
@@ -43,9 +44,36 @@ a:hover{
 /* -------------------------------------- */
 /* -------------------------------------- */
 .content_wrapper{
+    display:flex;
+    flex-direction: column;
     min-height: 100%; 
-    padding-bottom: 120px; /*height of footer + padding*/
+    
+    padding-bottom: 60px; /*height of footer*/
+    
 }
+
+/* in a columned layout, the contents stretched to fill the rest of the page */
+.content_wrapper.columned .container{ 
+    /* stretched to fill rest of screen*/
+    display: flex;
+    flex-grow: 1;
+    flex-basis: auto;
+}
+
+.content_wrapper.columned .container .row{
+    /* ALSO stretched to fill rest of screen*/
+    display: flex;
+    flex-grow: 1;
+    flex-basis: auto;
+}
+
+.content_wrapper.columned .container .right_column{
+    /* ALSO stretched to fill rest of screen*/
+    flex-grow: 1;
+    flex-basis: auto;
+    border-left: 1px solid #cfcfcf;
+}
+
 
 .letterbox{
     display: block;

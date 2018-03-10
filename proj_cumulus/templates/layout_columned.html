@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block wrapper_class %}columned{% endblock %}
+
+{% block layout %}
+    <div class="container">
+    <div class="row">
+        
+        <div class="col-md-2 left_column">
+            
+            {% block left_column %}
+            {% endblock %}
+            
+        </div>
+
+        <div class="col-md-10 right_column">
+            {% block right_column %}
+            {% endblock %}
+        </div>
+    </div>
+    </div>
+
+    {% block message_layout %}
+    {% endblock %}
+
+{% endblock %}
+
+
