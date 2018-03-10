@@ -48,6 +48,8 @@ $(function() {
     
     // drag and drop events
     bind_dragAndDrop($(document), '.strip_flex_container');
+    // prevent opening file if dropped else where
+    bind_dragAndDrop_misfire();
    
     
 
@@ -171,7 +173,8 @@ function make_popupMenu_strip(){
     in the container to bind. Returns the object ready to be binded. 
     Returns false if it could not find the object using the selector. 
     
-    Can pass nothing for $targetContainer. It will assume $(document) */
+    Can pass nothing for $targetContainer. It will assume $(document).
+    If targetSelector is not provided, will return $targetContainer. */
 function getValidTarget($targetContainer, targetSelector, name){
     
     $targetContainer = $targetContainer ? $targetContainer : $(document);
@@ -181,7 +184,8 @@ function getValidTarget($targetContainer, targetSelector, name){
         return false;
     } else 
     if (!targetSelector){
-        console.error((name ? "["+name+"] " : "") + "You must provide targetSelector to getValidTarget()");
+        console.warn((name ? "["+name+"] " : "") + "No targetSelector. Will return $targetContainer");
+        return $targetContainer;
     } 
     else {
         var $target = $targetContainer.find(targetSelector);
@@ -682,8 +686,25 @@ function bind_dragAndDrop($targetContainer, targetSelector){
         var $form = $(document).find("#frame_create_form");
         var moddedFormData = new FormData($form[0]);
         moddedFormData.append("frame_image", droppedFiles[0]);
-    
+
         _acHandler.ajax_frameCreate(stripId, {"formData": moddedFormData});
         
     });
 }
+
+function bind_dragAndDrop_misfire($targetContainer, targetSelector){
+    
+    var $target = getValidTarget($targetContainer, targetSelector);
+    if (!$target) { return; }
+    
+    $target.on('drag dragstart dragend dragover dragenter dragleave drop', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    })
+    .on('drop', function(e) {
+        
+        //drop misfired. No action taken.
+        
+    });
+    
+}    
