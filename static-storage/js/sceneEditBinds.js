@@ -394,7 +394,7 @@ function bind_framePreview($targetContainer, targetSelector){
                 //append new images
                 var imgPath = $(this).children(".frame_image.stretch").children("img").attr('src');
                 var $newImg = $("<img src='"+imgPath +"' class='frame_item' />");
-                $previewContainer.prepend($newImg);
+                $previewContainer.find(".frame_items").prepend($newImg);
                 
                 maxImgHeight = $newImg.height() > maxImgHeight ? $newImg.height() : maxImgHeight;
                 console.log("compare height: " + $newImg.height());
