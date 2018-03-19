@@ -23,6 +23,7 @@ var _popupMenu_strip = new PopupMenu(
 var _lbCover = new LightBox(); /* global LightBox*/
 var _spinnyObj = new Spinny(); /* global Spinny*/
 var _acHandler = new AJAXCRUDHandler(_lbCover, _spinnyObj); /* global AJAXCRUDHandler */
+var _flipper = new FlipHandler(); /* global FlipHandler */ 
 
 // Have some constants
 var CLASS_STRIPLI = ".flex_list";
@@ -348,7 +349,10 @@ function bind_features_onStripContainer($targetContainer, isMultiTarget){
     
     isMultiTarget = typeof(isMultiTarget) === 'boolean' ? isMultiTarget : isMultiTarget || true;
     var t = isMultiTarget;
-
+    
+    //Bind "preview"
+    bind_framePreview($targetContainer, (t ? ".strip_flex_toolbar" : "")  + ' a.strip_preview');
+    
     //Bind "upload"
     bind_openUpload($targetContainer, (t ? ".strip_flex_toolbar" : "")  + ' a.strip_upload');
     //Bind "delete"
@@ -359,6 +363,58 @@ function bind_features_onStripContainer($targetContainer, isMultiTarget){
     
     
 }
+
+function bind_framePreview($targetContainer, targetSelector){
+    
+    var $target = getValidTarget($targetContainer, targetSelector, "strip upload");
+    if (!$target) { return; }
+
+    $target.click(function(event){
+        event.preventDefault();
+        
+        //load all frames in current strip
+        var $strip = $(this).closest(CLASS_STRIPLI);
+        var $stripContainer = $strip.find(".strip_flex_container").eq(0);
+        var $previewContainer = $strip.find(".cover.preview").eq(0);
+        
+        //no ajax. Just grab what's there.
+        var maxImgHeight = $stripContainer.height();
+        if ($previewContainer.length > 0 && $previewContainer){
+            $stripContainer.find(".thumb").each(function(){
+                //append new images
+                var imgPath = $(this).children(".frame_image.stretch").children("img").attr('src');
+                var $newImg = $("<img src='"+imgPath +"' />");
+                $previewContainer.prepend($newImg);
+                
+                maxImgHeight = $newImg.height() > maxImgHeight ? $newImg.height() : maxImgHeight;
+                console.log("compare height: " + $newImg.height());
+            });
+        }
+        
+        var padding = 40;
+        // the image might be too big for the container
+        $stripContainer.animate(
+            {
+                height: maxImgHeight + padding
+            }, 
+            500,
+            function(){
+                //show preview container
+                // TODO: would be nice if this was wrapped in a function
+                $previewContainer.css("opacity", 1);
+                $previewContainer.css("pointer-events", "auto");
+                //play!
+            }
+        );
+        
+
+  
+        
+        
+        
+    });    
+}
+
 
 function bind_openUpload($targetContainer, targetSelector){
     

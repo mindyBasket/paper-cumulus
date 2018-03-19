@@ -89,14 +89,21 @@ class FlipHandler{
     //  __   _ _______ _     _ _______
     //  | \  | |______  \___/     |   
     //  |  \_| |______ _/   \_    |   
-                                   
-    play_nextFrame(){
+               
+    // Use arg 'playCurr' for situation where current strip/whatever MUST be played.
+    // Currently this is used for preview animation in scene detail view
+    play_nextFrame(forcePlayCurr){
         
         var t_step = this.t_step;
         var $currStrip = this.$currStrip;
 
         var timeline = [];
        
+       
+        if (forcePlayCurr){
+            
+        }
+        
         // Play Current? or Grab next?
         if ($currStrip == -1){
             //No currStrip. Select the first one in the queue

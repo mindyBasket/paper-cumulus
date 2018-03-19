@@ -154,6 +154,7 @@ a:hover{
     
     overflow: hidden;
     background-size: contain;
+    background-repeat: no-repeat;
 }
 
 .thumb .frame_image.stretch{

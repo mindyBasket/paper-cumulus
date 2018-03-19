@@ -59,7 +59,7 @@
                         <span>id: {{strip.id}}</span>
                     </div>
                     <div class="tools">
-                        <a class="strip_play glyphicon glyphicon-play" aria-hidden="true"></a>
+                        <a class="strip_preview glyphicon glyphicon-play" aria-hidden="true"></a>
                         <a class="strip_upload glyphicon glyphicon-upload" aria-hidden="true"></a>
                         <a class="strip_edit glyphicon glyphicon-edit" aria-hidden="true"></a>
                         <a class="strip_delete glyphicon glyphicon-trash" aria-hidden="true"></a>
@@ -112,7 +112,12 @@
                             <a href="#" class="btn btn-default frame_create_form_condensed" role="button" style="font-size:1em">Browse</a> or Drag Image here
                             </span>
                     </div>
-
+                    
+                    <!-- animated preview -->
+                    <div class="cover preview">
+                        
+                    </div>
+                    
                 </div>
                 
                 <div class="strip_flex_editor">
@@ -151,5 +156,6 @@
     {% load static %}
     <script src="{% static 'js/ajax_CRUDHandler.js' %}"></script>
     <script src="{% static 'js/ajax_sortableUI.js' %}"></script>
+    <script src="{% static 'js/flipHandler.js' %}"></script>
     <script src="{% static 'js/sceneEditBinds.js' %}"></script>
 {% endblock extra_js %}
