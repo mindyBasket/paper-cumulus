@@ -88,7 +88,7 @@ ul.list_strips{
 
 
 
-ul.list_strips li{
+ul.list_strips li{ /*flex_list*/
     
     display:flex;
     flex-direction: column;
@@ -97,6 +97,9 @@ ul.list_strips li{
     position: relative;
     
     counter-increment: stripNum;
+    
+    border-bottom: 5px solid #c9c9c9;
+    margin-bottom: 30px;
     
 }
 
@@ -109,9 +112,7 @@ ul.list_strips li{
     flex-direction: row;
     align-items: stretch;
     
-    margin-bottom: 20px;
     background-color: white;
-    border-bottom: 5px solid #c9c9c9;
 
 }
 
@@ -232,7 +233,18 @@ ul.list_strips .strip_flex_container .tile.empty-strip{
     text-align: center;
 }
 
+.strip_flex_editor{
+    border-top: 1px solid #ddd;
+    background-color: #f5f5f5;
+    padding: 10px;
+}
 
+
+
+
+
+
+/* covers */
 
 .flex_list .cover{
     pointer-events: none;
