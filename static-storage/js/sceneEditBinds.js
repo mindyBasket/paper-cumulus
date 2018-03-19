@@ -371,11 +371,21 @@ function bind_framePreview($targetContainer, targetSelector){
 
     $target.click(function(event){
         event.preventDefault();
-        
-        //load all frames in current strip
+
+        // Grab containers needed
         var $strip = $(this).closest(CLASS_STRIPLI);
         var $stripContainer = $strip.find(".strip_flex_container").eq(0);
         var $previewContainer = $strip.find(".cover.preview").eq(0);
+        
+        //toggler
+        if ($(this).attr("opened") == "true"){
+            //play!
+            _flipper.play_withoutTimer($previewContainer);
+            return;
+        }
+        else {
+            $(this).attr("opened", "true");
+        }
         
         //no ajax. Just grab what's there.
         var maxImgHeight = $stripContainer.height();
@@ -383,7 +393,7 @@ function bind_framePreview($targetContainer, targetSelector){
             $stripContainer.find(".thumb").each(function(){
                 //append new images
                 var imgPath = $(this).children(".frame_image.stretch").children("img").attr('src');
-                var $newImg = $("<img src='"+imgPath +"' />");
+                var $newImg = $("<img src='"+imgPath +"' class='frame_item' />");
                 $previewContainer.prepend($newImg);
                 
                 maxImgHeight = $newImg.height() > maxImgHeight ? $newImg.height() : maxImgHeight;
@@ -403,7 +413,9 @@ function bind_framePreview($targetContainer, targetSelector){
                 // TODO: would be nice if this was wrapped in a function
                 $previewContainer.css("opacity", 1);
                 $previewContainer.css("pointer-events", "auto");
+                
                 //play!
+                _flipper.play_withoutTimer($previewContainer);
             }
         );
         

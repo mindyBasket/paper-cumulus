@@ -92,17 +92,12 @@ class FlipHandler{
                
     // Use arg 'playCurr' for situation where current strip/whatever MUST be played.
     // Currently this is used for preview animation in scene detail view
-    play_nextFrame(forcePlayCurr){
+    play_nextFrame(){
         
         var t_step = this.t_step;
         var $currStrip = this.$currStrip;
 
         var timeline = [];
-       
-       
-        if (forcePlayCurr){
-            
-        }
         
         // Play Current? or Grab next?
         if ($currStrip == -1){
@@ -159,6 +154,41 @@ class FlipHandler{
     }
     
     
+    // Standalone play_next that has no timer. Current use is on scene detail.
+    // Because this function works without being aware of next or previous frame,
+    // $currStrip must have a valid jquery object
+    play_withoutTimer($currStrip){
+        
+        // clear any unfinished timeout animation
+        this.stopFrame();
+            
+        var t_step = this.t_step;
+        var timeline = [];   
+        
+        if ($currStrip instanceof jQuery == false){
+            console.error("Cannot play this strip because it is not a valid jquery object");
+        } else {
+            // b. Reset visibility of current strip's frames
+            this.resetStrip($currStrip);
+            // e. get "timeline"
+            console.log("Playing strip " + $currStrip.attr("stripid") + ", has " + $currStrip.children(".frame_item").length + " frames");
+            timeline = this.get_timeline($currStrip.children(".frame_item").length, t_step);
+            console.log("----------Timeline GET: " + timeline);
+            
+            //set chain of setTimeOuts
+            // It must be done in reverse, because item that is spawned the latest is on top
+            var total = $currStrip.children(".frame_item").length-1;
+            var thisObj = this; 
+            $currStrip.children(".frame_item").each(function(index){
+                if (index > 0) {
+                    // Add reference to stop it later
+                    thisObj._setTimeOutArr.push(setTimeout(thisObj.playFrame.bind(thisObj, $(this)), timeline[total-index]));
+                }
+            });
+        }
+        
+        
+    }
     
     //makes "timeline" for setTimeOut for reach items
     get_timeline(count, delay){
@@ -182,10 +212,13 @@ class FlipHandler{
         
         //update timer
         // Note: frame_obj is spawned in document in reverse order 
-        var reverseCount = frame_obj.parent().find('.'+frame_obj.attr("class")).index(frame_obj);
+        if (this.$timer){
+            var reverseCount = frame_obj.parent().find('.'+frame_obj.attr("class")).index(frame_obj);
             reverseCount = Number(reverseCount)*(-1);
  
-        this.$timer.find('.frame_icon').eq(reverseCount).addClass('on');
+            this.$timer.find('.frame_icon').eq(reverseCount).addClass('on');
+        }
+        
         
     }
     

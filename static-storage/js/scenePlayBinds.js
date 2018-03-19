@@ -70,9 +70,7 @@ $(function(){
         //hide cover
         $(document).find(".cover").children("#msg_loading").hide();
         $(document).find(".cover").children("#msg_instruction").show();
-        
-        
-        
+
         //bind keyboard event
         document.addEventListener("keydown", function(){
             
