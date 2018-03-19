@@ -16,10 +16,14 @@ var _keyInputOpen = true;
 
 // DOMs that will be referenced frequently
 var $frameView;
+
 var $frameScrubber;
 var $timer;
-
 var $currStrip = -1;
+
+//...........constants............
+// TODO: this information should eventually come from the Strip
+var t_step = 400; //ms
 
 $(function(){
     console.log("* ------- flip.js loaded4 -------v.1.20 *");
@@ -108,8 +112,7 @@ $(function(){
 -----------------------------helpers-------------------------------
 -------------------------------------------------------------------*/
 
-//...........constants............
-var t_step = 400; //ms
+
 
 //init_frame_imgs()...............
 //Only works after img DOM has been loaded. 
@@ -117,8 +120,6 @@ var t_step = 400; //ms
 function init_frame_imgs_and_container(){
     // removed code for setting z-index value for individual frame_item
 }
-
-
 
 
 // http://patorjk.com/software/taag/#p=display&f=Cyberlarge&t=Play%0APrevious
@@ -136,8 +137,6 @@ var _rewinded = false;
 
 // No animation, simply jump to last frame of previous strip
 function play_prevFrame(){
-    
-    
     
     // identify previous strip to show
     if ($currStrip != -1){
