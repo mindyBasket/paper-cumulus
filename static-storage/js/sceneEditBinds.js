@@ -389,6 +389,7 @@ function bind_framePreview($targetContainer, targetSelector){
         
         //no ajax. Just grab what's there.
         var maxImgHeight = $stripContainer.height();
+        var padding = 40;
         if ($previewContainer.length > 0 && $previewContainer){
             $stripContainer.find(".thumb").each(function(){
                 //append new images
@@ -396,18 +397,17 @@ function bind_framePreview($targetContainer, targetSelector){
                 var $newImg = $("<img src='"+imgPath +"' class='frame_item' />");
                 $previewContainer.find(".frame_items").prepend($newImg);
                 
-                maxImgHeight = $newImg.height() > maxImgHeight ? $newImg.height() : maxImgHeight;
-                console.log("compare height: " + $newImg.height());
+                maxImgHeight = ($newImg.height()+padding) > maxImgHeight ? ($newImg.height()+padding) : maxImgHeight;
+                console.log("compare height: " + $stripContainer.height() + ", " + $newImg.height());
             });
         }
-        
-        var padding = 40;
+
         // the image might be too big for the container
         $stripContainer.animate(
             {
-                height: maxImgHeight + padding
+                height: maxImgHeight
             }, 
-            500,
+            500*( ($stripContainer.height()-maxImgHeight >= 0 ? 0 : 1) ),
             function(){
                 //show preview container
                 // TODO: would be nice if this was wrapped in a function
@@ -727,7 +727,7 @@ function renderStripDeleteConfirm(data, stripId, args){
 
 function bind_dragAndDrop($targetContainer, targetSelector){
     
-    var $target = getValidTarget($targetContainer, targetSelector);
+    var $target = getValidTarget($targetContainer, targetSelector, "dragNdrop");
     if (!$target) { return; }
 
     $target.on('drag dragstart dragend dragover dragenter dragleave drop', function(e) {
@@ -762,7 +762,7 @@ function bind_dragAndDrop($targetContainer, targetSelector){
 
 function bind_dragAndDrop_misfire($targetContainer, targetSelector){
     
-    var $target = getValidTarget($targetContainer, targetSelector);
+    var $target = getValidTarget($targetContainer, targetSelector, "dragNdrop_misfire");
     if (!$target) { return; }
     
     $target.on('drag dragstart dragend dragover dragenter dragleave drop', function(e) {
