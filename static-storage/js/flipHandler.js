@@ -171,6 +171,7 @@ class FlipHandler{
             // b. Reset visibility of current strip's frames
             this.resetStrip($currStrip);
             // e. get "timeline"
+            console.log("At " + $currStrip.attr("class"));
             console.log("Playing strip " + $currStrip.attr("stripid") + ", has " + $currStrip.children(".frame_item").length + " frames");
             timeline = this.get_timeline($currStrip.children(".frame_item").length, t_step);
             console.log("----------Timeline GET: " + timeline);

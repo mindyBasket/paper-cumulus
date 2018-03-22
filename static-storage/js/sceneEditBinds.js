@@ -378,16 +378,16 @@ function bind_framePreview($targetContainer, targetSelector){
         var $previewContainer = $strip.find(".cover.preview").eq(0);
         
         //toggler
-        if ($(this).attr("opened") == "true"){
+        if ($previewContainer.attr("opened") == "true"){
             //play!
-            _flipper.play_withoutTimer($previewContainer);
+            _flipper.play_withoutTimer($previewContainer.find(".frame_items"));
             return;
         }
         else {
-            $(this).attr("opened", "true");
+            $previewContainer.attr("opened", "true");
         }
         
-        //no ajax. Just grab what's there.
+        // No ajax call. Just grab what's there.
         var maxImgHeight = $stripContainer.height();
         var padding = 40;
         if ($previewContainer.length > 0 && $previewContainer){
@@ -401,7 +401,7 @@ function bind_framePreview($targetContainer, targetSelector){
                 console.log("compare height: " + $stripContainer.height() + ", " + $newImg.height());
             });
         }
-
+        
         // the image might be too big for the container
         $stripContainer.animate(
             {
@@ -413,9 +413,18 @@ function bind_framePreview($targetContainer, targetSelector){
                 // TODO: would be nice if this was wrapped in a function
                 $previewContainer.css("opacity", 1);
                 $previewContainer.css("pointer-events", "auto");
+                // Clicking on the cover will close the preview
+                $previewContainer.click(function(){
+                    
+                    $(this).find(".frame_items").html("");
+                    $(this).css("opacity",0);
+                    $previewContainer.css("pointer-events", "");
+                    $(this).attr("opened", "");
+                    $stripContainer.height('');
+                });
                 
                 //play!
-                _flipper.play_withoutTimer($previewContainer);
+                _flipper.play_withoutTimer($previewContainer.find(".frame_items"));
             }
         );
         

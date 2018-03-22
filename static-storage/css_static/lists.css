@@ -313,8 +313,26 @@ ul.list_strips .strip_flex_container .tile.empty-strip{
 
 
 /* cover for showing preview animation */
+.cover.preview{
+    cursor: pointer;
+}
+.cover.preview:hover{
+    background-color: rgba(25, 25, 25, 0.8);
+}
+
 .cover.preview img{
     position: absolute;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
+}
+
+.cover.preview .close_preview{
+    color: #dedede;
+    font-size: 2em;
+    float: right;
+    margin: 10px 10px;
+}
+
+.cover.preview:hover .close_preview{
+    color: white;
 }
