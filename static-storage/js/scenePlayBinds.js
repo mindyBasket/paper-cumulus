@@ -72,7 +72,9 @@ $(function(){
         $(document).find(".cover").children("#msg_instruction").show();
 
         //bind keyboard event
-        document.addEventListener("keydown", function(){
+        document.addEventListener("keydown", function(event){
+            
+            event = event || window.event;
             
             // clear any unfinished timeout animation
             _flipper.stopFrame();
