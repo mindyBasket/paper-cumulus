@@ -14,7 +14,7 @@ Including another URLconf
     2. Import the include() function: from django.conf.urls import url, include
     3. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
-from django.conf.urls import url, include
+from django.urls import path, re_path, include
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
@@ -23,23 +23,21 @@ from django.views.generic.base import RedirectView
 from .views import home
 
 
-
-
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
+    path('admin/', admin.site.urls),
     
     #standalone homepage
-    url(r'^$', home, name='home'),
+    re_path(r'^$', home, name='home'),
     
     # This doesn't work!
     # url(r'^.*$', RedirectView.as_view(url='flipbooks/chapter/0/', permanent=False), name='index'),
     
     #flipbooks include
-    url(r'^flipbooks/', include('flipbooks.urls', namespace='flipbooks')),
+    path('flipbooks/', include(('flipbooks.urls','flipbooks'), namespace='flipbooks')),
     
     #restful api
     #serializer
-    url(r'^api/', include('flipbooks.api.urls', namespace='flipbooks-api'))
+    re_path(r'^api/', include(('flipbooks.api.urls','flipbooks'), namespace='flipbooks-api'))
     
 ]
 

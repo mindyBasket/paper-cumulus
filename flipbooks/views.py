@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, get_object_or_404
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 from django.template.loader import render_to_string
 
 from django.views import generic
