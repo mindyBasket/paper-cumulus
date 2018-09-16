@@ -1,34 +1,25 @@
+An experimental visual novel delivery tool that has "animation" more in mind. A story will be told as if it is a flipbook, where there smallest unit is a short, few-framed animation. This is not intended to be a full blown animation tool. It's somewhere between an animatic and a storyboard. 
 
-     ,-----.,--.                  ,--. ,---.   ,--.,------.  ,------.
-    '  .--./|  | ,---. ,--.,--. ,-|  || o   \  |  ||  .-.  \ |  .---'
-    |  |    |  || .-. ||  ||  |' .-. |`..'  |  |  ||  |  \  :|  `--, 
-    '  '--'\|  |' '-' ''  ''  '\ `-' | .'  /   |  ||  '--'  /|  `---.
-     `-----'`--' `---'  `----'  `---'  `--'    `--'`-------' `------'
-    ----------------------------------------------------------------- 
+This project started out experimental and explorative in order to help me learn Django. 
 
 
-This project is built using Cloud9 IDE. 
+## Running this project 
 
-Access your application from 'https://proj-cumulus-blacksandbox.c9users.io/' and the admin page from 
-'https://proj-cumulus-blacksandbox.c9users.io/admin'.
-
-This project is largely experimental, to help me learn Django. 
-
-## Running Django server on Cloud9
-
-    $ python manage.py runserver $IP:$PORT
-    
-## Configuration
-
-You can configure your Python version and `PYTHONPATH` used in
-Cloud9 > Preferences > Project Settings > Language Support.
-
-## Support & Documentation
-
-Django docs can be found at https://www.djangoproject.com/
-
-You may also want to follow the Django tutorial to create your first application:
-https://docs.djangoproject.com/en/1.9/intro/tutorial01/
-
-Visit http://docs.c9.io for support, or to learn more about using Cloud9 IDE.
-To watch some training videos, visit http://www.youtube.com/user/c9ide
+1. Make sure you have Python 3 and the latest pip
+2. Clone this project and start a virtual environment
+```
+virtualenn env --no-site-packages
+source env/bin/activate
+```
+3. Once the virtual environment is running, install dependencies
+```
+pip install -r requirements.txt
+```
+4. Make sure you can migrate without a problem
+```
+py manage.py migrate
+```
+5. Run
+```
+py manage.py runserver
+```
