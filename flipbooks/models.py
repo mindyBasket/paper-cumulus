@@ -269,7 +269,7 @@ class Frame(models.Model):
         max_length=100, blank=True, default="", help_text="This note will not be visible for viewers. It's just for the creator"
     )
     
-    strip = models.ForeignKey(Strip, blank=True, null=True)
+    strip = models.ForeignKey(Strip, blank=True, null=True, on_delete=models.CASCADE)
     
     #frame images
     frame_image = ThumbnailerImageField(
