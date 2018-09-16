@@ -65,7 +65,7 @@ from ..models import (
 # Accepts children_li in form of stringy list or a list
 def is_valid_children_li(cli):
     
-    if isinstance(cli, unicode) or isinstance(cli, str): # is it a string?
+    if isinstance(cli, str) or isinstance(cli, str): # is it a string?
         # note, 'unicode' was renamed to 'str' in Python 3
         cli = cli.split(",")
     elif isinstance(cli, list): # is it a list?
