@@ -37,7 +37,9 @@ urlpatterns = [
     
     #restful api
     #serializer
-    re_path(r'^api/', include(('flipbooks.api.urls','flipbooks'), namespace='flipbooks-api'))
+    re_path(r'^api/', include(('flipbooks.api.urls','flipbooks'), namespace='flipbooks-api')),
+
+    
     
 ]
 

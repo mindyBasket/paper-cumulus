@@ -1,6 +1,9 @@
 from django.shortcuts import render
+from django.http import HttpResponse
 
 # REACT views
 def index(request):
-	context = {'welcome_msg': "This message is by context."}
-    return render(request, 'frontend/index.html', context)
+	context = {'welcome_msg': "You are looking at the frontend."}
+	
+	return render(request, "frontend/index.html", context)
+
