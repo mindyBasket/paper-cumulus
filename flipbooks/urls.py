@@ -2,7 +2,7 @@
 Flipbooks URLs
 """
 # from django.conf.urls import url # depreciated
-from django.urls import path, re_path
+from django.urls import path, re_path, include
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
@@ -17,6 +17,10 @@ urlpatterns = [
     # I don't have anything planned for flipbooks app's homepage. So it is set to
     # project homepage for now
     # url(r'^$', home, name='home'),
+
+    # React frontend 
+    # TEST LOCATION
+    path('', include(('frontend.urls','frontend'), namespace='frontend' )),
     
     # Book Urls
     path('books/', views.BookListView.as_view(), name='book-list'),

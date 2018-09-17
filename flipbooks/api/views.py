@@ -29,7 +29,19 @@ class FlipbookAPIListView(generics.ListAPIView):
     
     def get_queryset(self):
         return Scene.objects.all()
-        
+
+
+class SceneAPIListView(generics.ListAPIView):
+    # Similar to above, but only lists scene under a book
+
+    # queryset = Scene.objects.all() # see get_queryset() below
+    serializer_class = SceneModelSerializer
+    
+    def get_queryset(self):
+        _chapter_pk = self.kwargs['pk'] if ('pk' in self.kwargs) else '1'
+        return Scene.objects.filter(chapter__id=_chapter_pk)
+
+
 
 class SceneAPIDetailView(generics.RetrieveAPIView):
     

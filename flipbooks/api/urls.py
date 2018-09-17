@@ -2,23 +2,28 @@
 API URLs
 """
 from django.conf.urls import url
+from django.urls import path, re_path
 
 from . import views
 
 urlpatterns = [
     #note: "/" = "{base url}/api/"
     
-    url(r'^$', views.FlipbookAPIListView.as_view(), name="list"), 
+    re_path(r'^$', views.FlipbookAPIListView.as_view(), name="list"), 
     
+    # Books 
     #url(r'^api/book/(?P<pk>\d+)/', include('flipbooks.api.urls', namespace='api-get-book'))
-    url(r'^book/all/$', views.FlipbookAPIListView.as_view(), name="list-book"),
+    path('book/all/', views.FlipbookAPIListView.as_view(), name="list-book"),
+    path('chapter/<int:pk>/scene/all/', views.SceneAPIListView.as_view(), name="list-scene"),
+
+    # Scenes 
+    path('scene/<int:pk>/', views.SceneAPIDetailView.as_view(), name="detail-scene"),
+    re_path(r'^scene/(?P<pk>\d+)/strip/create/$', views.StripCreateAPIView.as_view(), name="create-strip-under-scene"),
     
-    # Seems to use "pk" as default argument
-    url(r'^scene/(?P<pk>\d+)/$', views.SceneAPIDetailView.as_view(), name="detail-scene"),
-    url(r'^scene/(?P<pk>\d+)/strip/create/$', views.StripCreateAPIView.as_view(), name="create-strip-under-scene"),
+    # Strips
+    re_path(r'^strip/(?P<pk>\d+)/frame/create/$', views.FrameCreateAPIView.as_view(), name="create-frame-under-strip"),
     
-    url(r'^strip/(?P<pk>\d+)/frame/create/$', views.FrameCreateAPIView.as_view(), name="create-frame-under-strip"),
-    
-    url(r'^frame/(?P<pk>\d+)/$', views.FrameDetailAPIView.as_view(), name="detail-frame"),
-    url(r'^frame/(?P<pk>\d+)/update/$', views.FrameUpdateAPIView.as_view(), name="update-frame")
+    # Frames
+    path('frame/<int:pk>/', views.FrameDetailAPIView.as_view(), name="detail-frame"),
+    re_path(r'^frame/(?P<pk>\d+)/update/$', views.FrameUpdateAPIView.as_view(), name="update-frame")
 ]
