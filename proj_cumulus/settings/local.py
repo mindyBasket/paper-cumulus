@@ -139,9 +139,12 @@ STATIC_URL = '/static/'
 
 # Storage and serves
 
-# not served directly. Long term storage.
+# If /static/ above doesn't exist, it will look at the following paths.
 # Wait...this IS served directly when I run this app.
-STATICFILES_DIRS = [ os.path.join(BASE_DIR, "static-storage") ]
+STATICFILES_DIRS = [ 
+    os.path.join(BASE_DIR, "static-storage"),
+    '/var/www/static/'
+]
 
 #Is served
 STATIC_ROOT = os.path.join(BASE_DIR, "static-serve")
