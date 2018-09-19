@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-class DataProvider extends Component {
+class DataFeeder extends Component {
   static propTypes = {
     endpoint: PropTypes.string.isRequired,
     render: PropTypes.func.isRequired
@@ -12,7 +12,6 @@ class DataProvider extends Component {
       placeholder: "Loading..."
     };
   componentDidMount() {
-  render() {
     fetch(this.props.endpoint)
       .then(response => {
         if (response.status !== 200) {
@@ -20,10 +19,18 @@ class DataProvider extends Component {
         }
         return response.json();
       })
-      .then(data => this.setState({ data: data, loaded: true }));
+      .then(data => {
+        console.warn(data);
+        return this.setState({ data: data, loaded: true });
+
+      }
+
+      );
   }
+  render() {
     const { data, loaded, placeholder } = this.state;
     return loaded ? this.props.render(data) : <p>{placeholder}</p>;
   }
 }
+
 export default DataFeeder;
