@@ -101,7 +101,7 @@ class ChapterDetailView2(generic.TemplateView):
     model = Chapter
     
     queryset = Chapter.objects.all()
-    template_name = "frontend/index.html"
+    template_name = "frontend/chapter_detail.html" # use frontend
     
     def get_context_data(self, *args, **kwargs):
 

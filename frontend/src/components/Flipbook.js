@@ -32,8 +32,6 @@ const Table = ({ data }) =>
     </div>
 
   );
-
-  
 Table.propTypes = {
   data: PropTypes.array.isRequired
 };
@@ -41,11 +39,36 @@ Table.propTypes = {
 
 
 
-const App = () => (
-  <DataFeeder endpoint="/api/chapter/1/scene/all/" 
-                render={data => <Table data={data} />} />
+class Curtain extends Component {
+  static propTypes = {
+    color: PropTypes.string.isRequired,
+  };
+  state = {
+      open: "TRUE"
+    };
+
+  componentDidMount() {
+   
+  }
+  render() {
+    return (
+      <p>{this.state.open}</p>
+    )
+  }
+}
+
+
+  
+
+
+
+
+const Flipbook = () => (
+  <Curtain color="black"/>
 );
-const wrapper = document.getElementById("app");
-wrapper ? ReactDOM.render(<App />, wrapper) : null;
+
+// render flipbook
+const wrapper = document.getElementById("flip");
+wrapper ? ReactDOM.render(<Flipbook />, wrapper) : null;
 
 

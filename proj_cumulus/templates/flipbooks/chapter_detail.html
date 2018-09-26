@@ -13,9 +13,9 @@
 {% endblock %}
 
 {% block right_column %}
-    <p>This is a page listing all the scenes in a chapter. Currently I don't have 
-    a chapter object, so all this is in a hypothetical chapter "1". Try to imagine one 
-    "scene" = "page" in a comic book sense. Thus, viewing a scene should start "playing".</p>
+    <p>You are viewing a chapter detail. This is in a hypothetical chapter "1". Try to imagine one 
+    "scene" = "page" in a comic book sense. Viewing a scene should start "playing".</p>
+    <p>I also plan this page to also act as a player interface if possible</p>
 
 
     <div>
@@ -77,6 +77,11 @@
         {% endfor %}
         
     </ul>
+
+    <!-- flip player -->
+    <div id="flip">
+      <!-- React -->
+    </div>
     
 {% endblock %}
 
@@ -99,3 +104,8 @@
    
 </div>
 {% endblock %}
+
+{% block extra_js %}
+    {% load static %}
+    <script src="{% static 'frontend/main.js' %}"></script>
+{% endblock extra_js %}
