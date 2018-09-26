@@ -93,6 +93,41 @@ class ChapterDetailView(generic.TemplateView):
         return context
 
 
+class ChapterDetailView2(generic.TemplateView):
+    # NOTE: the reason this is using TemplateView instead of DetailView
+    #       is because this not retrieving chapter by pk but instead
+    #       by its 'number' property
+    
+    model = Chapter
+    
+    queryset = Chapter.objects.all()
+    template_name = "frontend/index.html"
+    
+    def get_context_data(self, *args, **kwargs):
+
+        context = super(ChapterDetailView2, self).get_context_data(*args, **kwargs)
+        
+        # Get book from URL
+        book = Book.objects.get(pk=kwargs['book_pk'])
+    
+        # make context for the Chapter and its Scenes        
+        context['object_chapter'] = book.chapter_set.filter(number=kwargs['chapter_number'])[0]
+        context['object_scene_list'] = context['object_chapter'].scene_set.order_by('order')
+    
+        # print("*--------------Get scene set {}".format(context['object'].scene_set.all()))
+        
+        # valid_children_li = []
+        # for obj in context['object_scene_list']:
+        #     if obj.children_li == "":
+        #         #has_valid_children_li.append(False if obj.children_li == "" else True)
+        #         valid_children_li.append(False)
+        #     else:
+        #         valid_children_li.append(helpers.string2List(obj.children_li))
+
+        #context["valid_children_li"] = valid_children_li
+        
+        return context
+
 
 # Make giant ascii text:
 # http://patorjk.com/software/taag/#p=display&f=Modular&t=Type%20Something%20

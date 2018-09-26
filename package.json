@@ -31,5 +31,8 @@
     "weak-key": "^1.0.1",
     "webpack": "^4.19.0",
     "webpack-cli": "^3.1.0"
+  },
+  "dependencies": {
+    "npm": "^6.4.1"
   }
 }

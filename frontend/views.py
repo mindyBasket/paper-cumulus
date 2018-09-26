@@ -3,7 +3,7 @@ from django.http import HttpResponse
 
 # REACT views
 def index(request):
-	context = {'welcome_msg': "You are looking at the frontend."}
+	context = {'msg': "This is frontend's index. Nothing to see here though."}
 	
-	return render(request, "frontend/index.html", context)
+	return render(request, "standalone/generic_msg.html", context)
 

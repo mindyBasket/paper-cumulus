@@ -35,6 +35,9 @@ urlpatterns = [
     #flipbooks include
     path('flipbooks/', include(('flipbooks.urls','flipbooks'), namespace='flipbooks')),
     
+    # frontend handler
+    path('see/', include(('frontend.urls','frontend'), namespace='frontend' )),
+
     #restful api
     #serializer
     re_path(r'^api/', include(('flipbooks.api.urls','flipbooks'), namespace='flipbooks-api')),

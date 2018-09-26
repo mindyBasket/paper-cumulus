@@ -19,15 +19,16 @@ urlpatterns = [
     # url(r'^$', home, name='home'),
 
     # React frontend 
-    # TEST LOCATION
     path('', include(('frontend.urls','frontend'), namespace='frontend' )),
-    
+
+
     # Book Urls
     path('books/', views.BookListView.as_view(), name='book-list'),
     
     # Chapter Urls
     re_path(r'^(?P<book_pk>\d+)/chapter/(?P<chapter_number>\d+)/$', views.ChapterDetailView.as_view(), name='chapter-detail'),
     
+
     # Scene Urls
     # url(r'^scenes/$', views.SceneListView.as_view(), name="scene-list"),
     re_path(r'^scene/(?P<pk>\d+)/flip/$', views.ScenePlayView.as_view(), name='scene-play'), #play!

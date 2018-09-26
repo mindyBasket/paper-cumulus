@@ -1,20 +1,32 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">-->
-  <title>Django DRF - React : Quickstart - Valentino G. - www.valentinog.com</title>
-</head>
-<body>
-<h2>{{welcome_msg}}</h2>
-  <section class="section">
+{% extends "layout_columned.html" %}
+{% load thumbnail %}
+{% load flipbooks_custom_tags %}
+
+{% block title %} {{block.super}} | Scenes{% endblock title %}
+
+{% block left_column %}
+<h3>Scenes Under Chapter object.number</h3>
+        
+        <p>
+            from Book : object.book.title
+        </p>
+{% endblock %}
+
+
+{% block right_column %}
+    <p>You are viewing a chapter detail. This is in a hypothetical chapter "1". Try to imagine one 
+    "scene" = "page" in a comic book sense. Viewing a scene should start "playing".</p>
+
+<h3>Scene list</h3>
     <div class="container">
-          <div id="app" class="columns"><!-- React --></div>
+          <div id="app" class="columns">
+          	<!-- React -->
+          </div>
     </div>
-  </section>
-</body>
-{% load static %}
-<script src="{% static "frontend/main.js" %}"></script>
-</html>
+{% endblock %}
+
+{% block extra_js %}
+    {% load static %}
+    <script src="{% static 'frontend/main.js' %}"></script>
+{% endblock extra_js %}
 
