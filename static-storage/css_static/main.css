@@ -5,7 +5,7 @@ html, body{
 }
 
 body{
-    background-color: #f9f7e5;
+    background-color: #efecea;
 
     /*font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;*/
     font-family: 'Quicksand', sans-serif;
@@ -83,11 +83,11 @@ a:hover{
 
 .footer {
     text-align: right;
-    background-color: #f7d2c4;
+    background-color: #c7c2c2;
     padding: 20px;
     margin-top: -60px; /*height of the footer*/
     
-    color: #dc8a89;
+    color: #946363;
 }
 
 
