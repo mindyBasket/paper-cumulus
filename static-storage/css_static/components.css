@@ -127,3 +127,17 @@
 
 
 
+/* -------------------------------------- */
+/* -------------------------------------- */
+/*             React lightbox             */
+/* -------------------------------------- */
+/* -------------------------------------- */
+
+#curtain{
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 3em; height: 3em;
+  background-color: #1d1e1f;
+  opacity: 1; /*becomes visible by script*/
+  border-radius: 50%;
+}

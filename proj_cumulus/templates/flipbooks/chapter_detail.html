@@ -24,8 +24,6 @@
         </ul>
     </div>
     
-    
-    
     <h3>Scene list</h3>
     <ul class="list_scenes">
         {% for scene in object_scene_list %}
@@ -60,6 +58,8 @@
                        aria-hidden="true" 
                        style='font-size:1.1em'
                        href="{% url 'flipbooks:scene-detail' pk=scene.pk %}"></a>
+
+                    <span class="flipbook-btn" id="{{ scene.id }}">Flip!</span>
                 </div>
                 
                 <!--<div class="flex_item description">
@@ -79,7 +79,7 @@
     </ul>
 
     <!-- flip player -->
-    <div id="flip">
+    <div id="flipbook">
       <!-- React -->
     </div>
     
