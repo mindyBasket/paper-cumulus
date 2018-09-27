@@ -255,6 +255,26 @@ class ScenePlayView(generic.DetailView):
         return context
     
 
+class ScenePlayView_REACT(generic.DetailView):
+    
+    #detail view's model
+    model = Scene 
+    
+    queryset = Scene.objects.all()
+    template_name = "flipbook/scene_play_test.html" # not "flipbooks". It's singular!
+    queryset_scene = "" # what is this?
+    strip_json = {} # what's this for? 
+    #context_object_name = "strip_list"  # default is 'object_list' if you don't like that
+
+    def get_context_data(self, **kwargs):
+        context = super(ScenePlayView_REACT, self).get_context_data(**kwargs)
+        context['scene'] = context['object']
+        
+        # Removed codes for re-ordering the element based on children_li,
+        # because recommended to keep views and template as clean as possible
+    
+        return context
+
 
 
 #  _______  _______  ______    ___   _______    

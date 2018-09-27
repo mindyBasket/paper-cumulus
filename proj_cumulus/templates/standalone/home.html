@@ -5,10 +5,19 @@
 {% block right_column %}
 <h1>This is the home page</h1>
 <h3>{{welcome_msg}}</h3>
+	
+<h4>Current Test Areas</h4>
 
     <a href="/flipbooks/1/0/">
         <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-        Current Test Area (Chapter 0)
+        Scene list under Chapter detail (Chapter 0) 
+    </a>
+    <br>
+    
+
+    <a href="{% url 'flipbooks:scene-play-REACT' pk=1 %}">
+        <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+        REACT version of scene play
     </a>
 
 

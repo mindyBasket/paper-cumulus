@@ -18,8 +18,9 @@ urlpatterns = [
     # project homepage for now
     # url(r'^$', home, name='home'),
 
-    # React frontend 
+    # /// React frontend tests ///
     # path('', include(('frontend.urls','frontend'), namespace='frontend' )),
+    re_path(r'^scene/(?P<pk>\d+)/fliptest/$', views.ScenePlayView_REACT.as_view(), name='scene-play-REACT'), #play!
 
 
     # Book Urls
@@ -27,8 +28,7 @@ urlpatterns = [
     
     # Chapter Urls
     re_path(r'^(?P<book_pk>\d+)/(?P<chapter_number>\d+)/$', views.ChapterDetailView.as_view(), name='chapter-detail'),
-    # re_path(r'^(?P<book_pk>\d+)/(?P<chapter_number>\d+)/$', views.ChapterDetailView2.as_view(), name='chapter-detail2'),
-
+    
     # Scene Urls
     # url(r'^scenes/$', views.SceneListView.as_view(), name="scene-list"),
     re_path(r'^scene/(?P<pk>\d+)/flip/$', views.ScenePlayView.as_view(), name='scene-play'), #play!

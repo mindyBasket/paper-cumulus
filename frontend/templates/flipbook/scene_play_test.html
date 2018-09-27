@@ -1,0 +1,67 @@
+{% extends "layout_letterboxed.html" %}
+{% load thumbnail %}
+{% load flipbooks_custom_tags %}
+
+{% block title %} {{block.super}} | Strips{% endblock title %}
+
+{% block body_class %}dark{% endblock body_class %}
+
+{% block top_content %}
+    <h3>Scene {{scene.id}}</h3>
+    <a href="{% url 'flipbooks:chapter-detail' book_pk=scene.chapter.book.id chapter_number=scene.chapter.number%}">< return </a>
+{% endblock %}
+
+{% block letterbox %}
+    <div id="flipbook-player">
+        <!-- REACT -->
+    </div>
+{% endblock letterbox %}
+
+
+{% block bottom_content %}
+
+    <!-- append thumbnails -->
+    <div class="frame_scrubber">
+        <div class="timer">
+            <!--<span class="frame_icon"></span>-->
+        </div>
+        
+        <div class="cell_fill">
+        </div>
+            
+        <div class="cell_container">
+            
+            {% with scene.strip_set.all|map_queryset:scene.children_li as mapped_strip_set %}
+                {% for strip in mapped_strip_set %}
+                    {% if strip != None %}
+                        <div class="cell">
+                        </div>
+                    {% else %}
+                        <div class="cell not_found">
+                            <b>STRIP NOT FOUND</b>
+                        </div>
+                    {% endif %}
+                    
+                {% empty %}
+                    Strip not found
+                {% endfor %}
+          
+            {% endwith %} 
+        </div>
+        
+        
+    
+    </div>
+
+{% endblock %}
+
+{% block extra_js %}
+    {% load static %}
+    <!-- <script src="{% static 'js/restful_api.js' %}"></script>
+    <script src="{% static 'js/ajax_ImageHandler.js' %}"></script>
+    <script src="{% static 'js/flipHandler.js' %}"></script>
+    <script src="{% static 'js/scenePlayBinds.js' %}"></script> -->
+
+    <script src="{% static 'frontend/main.js' %}"></script>
+
+{% endblock extra_js %}
