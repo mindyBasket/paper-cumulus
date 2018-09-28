@@ -13,8 +13,23 @@ from ..models import (
 # .................................................. 
 # .................................................. 
 
+class FrameModelSerializer(serializers.ModelSerializer):
+    
+    # strip = serializers.PrimaryKeyRelatedField(source='strip', read_only=True, required=True)
+    
+    class Meta:
+        model = Frame
+        fields = [
+            'id',
+            'note',
+            'strip',
+            'frame_image'
+            ]
+        #read_only_fields = ('frame_image',)
 
 class StripModelSerializer(serializers.ModelSerializer):
+
+    frames = FrameModelSerializer(many=True, read_only=True, source='frame_set')
 
     class Meta:
         model = Strip
@@ -23,7 +38,9 @@ class StripModelSerializer(serializers.ModelSerializer):
             'scene',
             'order',
             'description',
-            'frame_set'
+            'children_li',
+            # 'frame_set' # only returns IDs
+            'frames'
             ]
             
 class SceneModelSerializer(serializers.ModelSerializer):
@@ -42,16 +59,3 @@ class SceneModelSerializer(serializers.ModelSerializer):
         ]
         
         
-class FrameModelSerializer(serializers.ModelSerializer):
-    
-    # strip = serializers.PrimaryKeyRelatedField(source='strip', read_only=True, required=True)
-    
-    class Meta:
-        model = Frame
-        fields = [
-            'id',
-            'note',
-            'strip',
-            'frame_image'
-            ]
-        #read_only_fields = ('frame_image',)
