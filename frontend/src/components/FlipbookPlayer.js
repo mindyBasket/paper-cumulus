@@ -114,6 +114,9 @@ class FrameStage extends Component{
 
 	rewind(){
 		this.currStrip.scrollIntoView(true);
+
+		//update timer
+		_setState_Timer({currFrame: -1});
 	}
 
 	gotoPrev(){
@@ -122,6 +125,8 @@ class FrameStage extends Component{
 			this.currStrip = this.currStrip.previousElementSibling;
 			this.currStrip.scrollIntoView(true);
 		}
+
+		_setState_Timer({numFrames: Number(this.currStrip.getAttribute("count"))});
 	}
 
 
@@ -131,6 +136,10 @@ class FrameStage extends Component{
 		var targetFrame = this.currStrip.querySelectorAll(".frame")[index];
 		if (targetFrame != null) { targetFrame.scrollIntoView(true);}
 		else {console.warn("Could not find frame at index " + index)}
+
+		//update timer
+		_setState_Timer({currFrame: index});
+
 	}
 
 	stopFrame(){
@@ -217,7 +226,8 @@ class Timer extends Component{
 	constructor(props){
 		super(props);
 		this.state= {
-			numFrames: 0
+			numFrames: 0,
+			currFrame: -1
 		};
 
 		this.renderChildren = this.renderChildren.bind(this);
@@ -231,7 +241,10 @@ class Timer extends Component{
 	renderChildren() {
 		return (
 			Array.apply(null, Array(this.state.numFrames)).map((n,index) => {
-			    return React.cloneElement(this.props.children, {index: index})
+			    return React.cloneElement(this.props.children, {
+			    	index: index,
+			    	className: "frame_icon" +(index<=this.state.currFrame ? " on" : "")
+			    })
 			})
 			
 		) //end: return
