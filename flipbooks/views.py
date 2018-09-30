@@ -261,7 +261,7 @@ class ScenePlayView_REACT(generic.DetailView):
     model = Scene 
     
     queryset = Scene.objects.all()
-    template_name = "flipbook/scene_play_test.html" # not "flipbooks". It's singular!
+    template_name = "flipbook/flipbook_play.html" # not "flipbooks". It's singular!
     queryset_scene = "" # what is this?
     strip_json = {} # what's this for? 
     #context_object_name = "strip_list"  # default is 'object_list' if you don't like that

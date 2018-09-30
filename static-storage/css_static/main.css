@@ -48,7 +48,7 @@ a:hover{
     flex-direction: column;
     min-height: 100%; 
     
-    padding-bottom: 60px; /*height of footer*/
+    /*padding-bottom: 60px; /*height of footer*/
     
 }
 
@@ -82,11 +82,20 @@ a:hover{
 }
 
 .footer {
+    display: flex;
+    flex-grow: 1; /*will fill the rest of the page */
+    
+}
+
+.footer span{
     text-align: right;
+    align-self: flex-end;
+    display: block;
+    height: 60px; width: 100%;
+
     background-color: #c7c2c2;
     padding: 20px;
-    margin-top: -60px; /*height of the footer*/
-    
+ 
     color: #946363;
 }
 
@@ -445,12 +454,12 @@ a:hover{
     display:inline-block;
     width: 15px; height: 15px;
     border-radius: 15px;
-    border:1px solid #606060;
+    border:1px solid #3c3c3c;
     margin: 0 3px;
 }
 
 .frame_scrubber .timer .frame_icon.on{
-    background-color: #606060;
+    background-color: #3c3c3c;
 }
     
 .frame_scrubber .timer .frame_icon:last-of-type{

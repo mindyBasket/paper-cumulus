@@ -180,7 +180,7 @@
   flex-grow: 1;
 
   /* TODO: width and height would need to be determined after frames are loaded */
-  max-width: 900px;
+  max-width: 800px;
   /* height: 500px; Do not set height here. it's a flex container */
 
 }

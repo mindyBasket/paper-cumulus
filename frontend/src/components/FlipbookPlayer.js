@@ -368,7 +368,8 @@ class FlipbookPlayer extends Component{
 
 	constructor(props){
 		super(props);
-
+		console.log(JSON.stringify(this.props))
+		this.endpoint = "/api/scene/" + this.props.startSceneId + "/";
 		this.state = {
 			introActive: true,
 			onStandby: false
@@ -384,7 +385,7 @@ class FlipbookPlayer extends Component{
 				{/* -Frames are loaded here */}
 				<div className="frame_window" 
 					 style={{ opacity: (this.state.onStandby ? STANDBY_OPACITY : 1) }}>
-					<FrameFeeder endpoint="/api/scene/1/" 
+					<FrameFeeder endpoint = {this.endpoint} 
 								render={data => <FrameStage data={data} />} />
 
 					<div className="player_instruction" 
@@ -415,4 +416,10 @@ class FlipbookPlayer extends Component{
 
 // render flipbook
 const wrapper = document.getElementById("letterbox");
-wrapper ? ReactDOM.render(<FlipbookPlayer />, wrapper) : null;
+const refNode = document.getElementById("ref").querySelector("#ref-content");
+const sceneId = refNode.getAttribute("sceneId");
+
+wrapper ? ReactDOM.render(<FlipbookPlayer startSceneId={sceneId}/>, wrapper) : null;
+
+
+//get Django context
