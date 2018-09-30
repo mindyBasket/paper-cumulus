@@ -6,27 +6,26 @@ import FrameFeeder from "./FrameFeeder";
 import key from "weak-key";
 
 
-const FrameBundle = ({ data }) => {
+const FrameStage = ({ data }) => {
 	data = new Array(data); //unify format
 	return (
 		!data || !data.length ? (
 			<p>Nothing to show</p>
 		) : (
-			<div className="fit_block frame_load">
+			<div className="frame_stage">
 		  
 				{/* <strong>{data.length} Scenes</strong> */}
 			 	
 			 	{/* data.strips is an array of JSON objects */}
-				{console.log(data[0]['strips'])}
 				{data[0]['strips'].map(el_strip => (
 					<span className="strip" id={el_strip.id} key={key(el_strip)}>
 
-						{el_strip.frame_set.map(frame_list => {
-							JSON.stringify(scene_prop[1])
-							return ();
+						{el_strip.frames.map(el_frame => {
+							JSON.stringify(el_frame[1]);
+							return (
+								<img src={el_frame.frame_image} className="frame_item" key={key(el_frame)}/>
+							);
 						})}
-						This should have image
-
 					</span>
 
 
@@ -54,16 +53,14 @@ class FlipbookPlayer extends Component{
 
 	render (){
 		return (
-			<div className="frame_view wide">
+			<div className="flipbook_player">
 				{/* -- fit_block frame_load --*/}
-				<FrameFeeder endpoint="/api/scene/1/" 
-								render={data => <FrameBundle data={data} />} />
-
-				{/* -- cover for hiding frames --*/}		
-				<div className="fit_block stage">
+				<div className="frame_window">
+					<FrameFeeder endpoint="/api/scene/1/" 
+								render={data => <FrameStage data={data} />} />
 				</div>
-
 			</div>
+
 		)
 	}
 
@@ -75,5 +72,5 @@ class FlipbookPlayer extends Component{
 // );
 
 // render flipbook
-const wrapper = document.getElementById("flipbook-player");
+const wrapper = document.getElementById("letterbox");
 wrapper ? ReactDOM.render(<FlipbookPlayer />, wrapper) : null;

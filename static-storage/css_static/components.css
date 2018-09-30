@@ -141,3 +141,54 @@
   opacity: 1; /*becomes visible by script*/
   border-radius: 50%;
 }
+
+
+
+
+
+/*
+███████╗██╗     ██╗██████╗ ██████╗  ██████╗  ██████╗ ██╗  ██╗
+██╔════╝██║     ██║██╔══██╗██╔══██╗██╔═══██╗██╔═══██╗██║ ██╔╝
+█████╗  ██║     ██║██████╔╝██████╔╝██║   ██║██║   ██║█████╔╝ 
+██╔══╝  ██║     ██║██╔═══╝ ██╔══██╗██║   ██║██║   ██║██╔═██╗ 
+██║     ███████╗██║██║     ██████╔╝╚██████╔╝╚██████╔╝██║  ██╗
+╚═╝     ╚══════╝╚═╝╚═╝     ╚═════╝  ╚═════╝  ╚═════╝ ╚═╝  ╚═╝
+                                                             */
+/* UI for flipbook / player */
+
+.flipbook_player{
+  display:flex; /*to center the stage*/
+  justify-content: center;
+}
+
+.flipbook_player .frame_window{
+  /* only shows only frame at a time with overflow trick*/
+  /* TODO: width and height would need to be determined after frames are loaded */
+  height: 500px;
+  overflow-y: scroll;
+}
+
+.flipbook_player .frame_stage{
+  /* container that shows all strips*/
+  /*width should wrap tight around frames */
+
+  display:flex; /*to..do something with the frame*/
+  flex-direction: column; /*all strip listed vertically */
+
+  flex-grow: 1;
+
+  /* TODO: width and height would need to be determined after frames are loaded */
+  max-width: 900px;
+  /* height: 500px; Do not set height here. it's a flex container */
+
+}
+
+.flipbook_player .frame_stage .strip{
+  display:flex;
+  flex-direction: column;
+}
+
+.flipbook_player .frame_stage .strip .frame_item{
+  flex-grow: 1;
+  width: 100%;
+}
