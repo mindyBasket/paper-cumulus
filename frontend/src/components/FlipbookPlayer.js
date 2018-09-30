@@ -7,6 +7,7 @@ import key from "weak-key";
 
 // Global param
 var T_STEP = 400; //ms
+var STANDBY_OPACITY = 0.5
 
 // Static functions
 // These are used to make components communicate with each other
@@ -15,6 +16,10 @@ var T_STEP = 400; //ms
 // }
 
 function _setState_Scrubber(newState){
+	this.setState(newState);
+}
+
+function _setState_FlipbookPlayer(newState){
 	this.setState(newState);
 }
 
@@ -94,7 +99,6 @@ class FrameStage extends Component{
 	gotoNextAndPlay(){
 
 		if (!this.frameState.isStripHead && this.currStrip.nextElementSibling != null){
-			console.log(this.currStrip.nextElementSibling.getAttribute("class"));
 			//scroll
 			this.currStrip = this.currStrip.nextElementSibling;
 			this.currStrip.scrollIntoView(true);
@@ -118,6 +122,12 @@ class FrameStage extends Component{
 			numFrames: Number(frameCount),
 			currStrip: Number(this.currStrip.getAttribute("index"))
 		});
+
+		_setState_FlipbookPlayer({onStandby: false});
+
+		if(this.currStrip.getAttribute("index") == 0){
+			_setState_FlipbookPlayer({introActive: false});
+		}
 	 
 	}
 
@@ -126,6 +136,8 @@ class FrameStage extends Component{
 
 		//update timer
 		_setState_Scrubber({currFrame: -1});
+		_setState_FlipbookPlayer({onStandby: true});
+		
 	}
 
 	gotoPrev(){
@@ -133,12 +145,25 @@ class FrameStage extends Component{
 			//scroll
 			this.currStrip = this.currStrip.previousElementSibling;
 			this.currStrip.scrollIntoView(true);
+
+			_setState_Scrubber({
+				numFrames: Number(this.currStrip.getAttribute("count")),
+				currStrip: Number(this.currStrip.getAttribute("index"))
+			});
+		} else {
+			// check if you reached the beginning
+			if (this.currStrip.getAttribute("index") == 0){
+				// turn on intro page
+				_setState_FlipbookPlayer({introActive: true});
+
+				_setState_Scrubber({
+					currStrip: -1
+				});
+			}
+			
 		}
 
-		_setState_Scrubber({
-			numFrames: Number(this.currStrip.getAttribute("count")),
-			currStrip: Number(this.currStrip.getAttribute("index"))
-		});
+		
 	}
 
 
@@ -256,8 +281,9 @@ class Scrubber extends Component{
 
 			    	{/* Method 2: map it directly */}
 			    	<div className="cell_container">
-			    		{Array.apply(null, Array(this.state.numStrips)).map(n => (
-			    			<div className="cell"/>
+			    		{Array.apply(null, Array(this.state.numStrips)).map((n,index) => (
+			    			<div className="cell"
+			    				 key={key({cell: "cell"+index})}/>
 			    		))}
 
 			    	</div>
@@ -289,16 +315,7 @@ class Timer extends Component{
 
 	constructor(props){
 		super(props);
-		// this.state= {
-		// 	numFrames: 0,
-		// 	currFrame: -1
-		// };
-
 		this.renderChildren = this.renderChildren.bind(this);
-
-		//static function
-		//_setState_Scrubber = _setState_Scrubber.bind(this);
-	
 	}
 
 	renderChildren() {
@@ -306,7 +323,9 @@ class Timer extends Component{
 			Array.apply(null, Array(this.props.numFrames)).map((n,index) => {
 			    return React.cloneElement(this.props.children, {
 			    	index: index,
-			    	className: "frame_icon" +(index<=this.props.currFrame ? " on" : "")
+			    	className: "frame_icon" +(index<=this.props.currFrame ? " on" : ""),
+			    	key: key({tickmark: "tickmark"+index})
+
 			    })
 			})
 			
@@ -351,20 +370,34 @@ class FlipbookPlayer extends Component{
 		super(props);
 
 		this.state = {
-
+			introActive: true,
+			onStandby: false
 		}
+
+		//static function
+		_setState_FlipbookPlayer = _setState_FlipbookPlayer.bind(this);
 	}
-
-
 
 	render (){
 		return (
 			<div className="flipbook_player">
 				{/* -Frames are loaded here */}
-				<div className="frame_window">
+				<div className="frame_window" 
+					 style={{ opacity: (this.state.onStandby ? STANDBY_OPACITY : 1) }}>
 					<FrameFeeder endpoint="/api/scene/1/" 
 								render={data => <FrameStage data={data} />} />
+
+					<div className="player_instruction" 
+						 style={{opacity: (this.state.introActive ? 1 : 0) }}>
+						<span>Use keyboard to navigate</span>
+						<span>
+							<span className="bigtext-2 far fa-caret-square-left"></span>
+							<span className="bigtext-2 far fa-caret-square-right"></span>
+						</span>
+					</div>
+
 				</div>
+
 
 				{/* Scrubber, to hint which strip you are on */}
 				<Scrubber/>
