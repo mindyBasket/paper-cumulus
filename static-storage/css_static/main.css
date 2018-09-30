@@ -430,6 +430,8 @@ a:hover{
     opacity: 1;
     transition-property: opacity;
     transition-duration: 1s;
+
+    width: 100%;
 }
 
 .frame_scrubber .timer{

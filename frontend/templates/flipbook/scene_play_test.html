@@ -18,39 +18,6 @@
 
 {% block bottom_content %}
 
-    <!-- append thumbnails -->
-    <div class="frame_scrubber">
-        <div class="timer">
-            <!--<span class="frame_icon"></span>-->
-        </div>
-        
-        <div class="cell_fill">
-        </div>
-            
-        <div class="cell_container">
-            
-            {% with scene.strip_set.all|map_queryset:scene.children_li as mapped_strip_set %}
-                {% for strip in mapped_strip_set %}
-                    {% if strip != None %}
-                        <div class="cell">
-                        </div>
-                    {% else %}
-                        <div class="cell not_found">
-                            <b>STRIP NOT FOUND</b>
-                        </div>
-                    {% endif %}
-                    
-                {% empty %}
-                    Strip not found
-                {% endfor %}
-          
-            {% endwith %} 
-        </div>
-        
-        
-    
-    </div>
-
 {% endblock %}
 
 {% block extra_js %}

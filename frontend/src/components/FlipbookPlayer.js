@@ -14,6 +14,21 @@ var T_STEP = 400; //ms
 // 	console.warn("FrameFeeder done. start Key listener");
 // }
 
+function _setState_Timer(newState){
+	this.setState(newState);
+}
+
+
+// http://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=FrameStage
+
+// ███████╗██████╗  █████╗ ███╗   ███╗███████╗███████╗████████╗ █████╗  ██████╗ ███████╗
+// ██╔════╝██╔══██╗██╔══██╗████╗ ████║██╔════╝██╔════╝╚══██╔══╝██╔══██╗██╔════╝ ██╔════╝
+// █████╗  ██████╔╝███████║██╔████╔██║█████╗  ███████╗   ██║   ███████║██║  ███╗█████╗  
+// ██╔══╝  ██╔══██╗██╔══██║██║╚██╔╝██║██╔══╝  ╚════██║   ██║   ██╔══██║██║   ██║██╔══╝  
+// ██║     ██║  ██║██║  ██║██║ ╚═╝ ██║███████╗███████║   ██║   ██║  ██║╚██████╔╝███████╗
+// ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚══════╝
+                                                                                     
+
 class FrameStage extends Component{
 
 	constructor(props){
@@ -59,7 +74,7 @@ class FrameStage extends Component{
 		    }
 		    else if(event.keyCode == 39) {
 		    	this.stopFrame();
-		    		
+
 		    	this.gotoNextAndPlay();
 		    }
 		});
@@ -67,6 +82,7 @@ class FrameStage extends Component{
 		// scroll to first element just in case
 		this.currStrip = document.querySelector(".frame_stage .strip.start");
 		this.currStrip.scrollIntoView(true);
+
 	}
 
 	gotoNextAndPlay(){
@@ -90,6 +106,9 @@ class FrameStage extends Component{
           		setTimeout(this.playFrame.bind(this, i), i*T_STEP)
           	);
 		}
+
+		//update timer
+		_setState_Timer({numFrames: Number(frameCount)});
 	 
 	}
 
@@ -136,7 +155,6 @@ class FrameStage extends Component{
 					 	{/* data.strips is an array of JSON objects */}
 						{data[0]['strips'].map((el_strip,index) => (
 							<span className={`strip${index==0 ? " start" : ""}`} 
-								  id={el_strip.id} 
 								  key={key(el_strip)} 
 								  count={el_strip.frames.length}>
 								{/* TODO: edge case, if el_strip does not have frames */}
@@ -160,6 +178,88 @@ class FrameStage extends Component{
 }
 
 
+// ███████╗ ██████╗██████╗ ██╗   ██╗██████╗ ██████╗ ███████╗██████╗ 
+// ██╔════╝██╔════╝██╔══██╗██║   ██║██╔══██╗██╔══██╗██╔════╝██╔══██╗
+// ███████╗██║     ██████╔╝██║   ██║██████╔╝██████╔╝█████╗  ██████╔╝
+// ╚════██║██║     ██╔══██╗██║   ██║██╔══██╗██╔══██╗██╔══╝  ██╔══██╗
+// ███████║╚██████╗██║  ██║╚██████╔╝██████╔╝██████╔╝███████╗██║  ██║
+// ╚══════╝ ╚═════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝
+                                                                 
+class Scrubber extends Component{
+	constructor(props){
+		super(props);
+		this.state={
+		}
+	}
+
+	render(){
+		return(
+			<div className="frame_scrubber">
+		    	<Timer>
+		    		<span className="frame_icon"/>
+		    	</Timer>
+
+		    </div>
+		) //end: return
+	}
+}
+
+
+// ████████╗██╗███╗   ███╗███████╗██████╗ 
+// ╚══██╔══╝██║████╗ ████║██╔════╝██╔══██╗
+//    ██║   ██║██╔████╔██║█████╗  ██████╔╝
+//    ██║   ██║██║╚██╔╝██║██╔══╝  ██╔══██╗
+//    ██║   ██║██║ ╚═╝ ██║███████╗██║  ██║
+//    ╚═╝   ╚═╝╚═╝     ╚═╝╚══════╝╚═╝  ╚═╝
+                                     
+class Timer extends Component{
+
+	constructor(props){
+		super(props);
+		this.state= {
+			numFrames: 0
+		};
+
+		this.renderChildren = this.renderChildren.bind(this);
+
+
+		//static function
+		_setState_Timer = _setState_Timer.bind(this);
+	
+	}
+
+	renderChildren() {
+		return (
+			Array.apply(null, Array(this.state.numFrames)).map((n,index) => {
+			    return React.cloneElement(this.props.children, {index: index})
+			})
+			
+		) //end: return
+
+  	}
+
+
+	render(){
+		return(
+			<div className="timer">
+				{this.renderChildren()}
+			</div>
+		)
+	}
+
+}
+
+
+
+// ██████╗ ██╗      █████╗ ██╗   ██╗███████╗██████╗ 
+// ██╔══██╗██║     ██╔══██╗╚██╗ ██╔╝██╔════╝██╔══██╗
+// ██████╔╝██║     ███████║ ╚████╔╝ █████╗  ██████╔╝
+// ██╔═══╝ ██║     ██╔══██║  ╚██╔╝  ██╔══╝  ██╔══██╗
+// ██║     ███████╗██║  ██║   ██║   ███████╗██║  ██║
+// ╚═╝     ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝  ╚═╝
+                                                 
+
+
 class FlipbookPlayer extends Component{
 
 	constructor(props){
@@ -170,17 +270,19 @@ class FlipbookPlayer extends Component{
 		}
 	}
 
+
+
 	render (){
 		return (
 			<div className="flipbook_player">
-				{/* -- fit_block frame_load --*/}
+				{/* -Frames are loaded here */}
 				<div className="frame_window">
 					<FrameFeeder endpoint="/api/scene/1/" 
 								render={data => <FrameStage data={data} />} />
 				</div>
 
-				{/* invisible */}
-				
+				{/* Scrubber, to hint which strip you are on */}
+				<Scrubber/>
 
 			</div>
 		)

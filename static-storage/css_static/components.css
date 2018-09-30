@@ -145,7 +145,7 @@
 
 
 
-
+/*http://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=Flipbook*/
 /*
 ███████╗██╗     ██╗██████╗ ██████╗  ██████╗  ██████╗ ██╗  ██╗
 ██╔════╝██║     ██║██╔══██╗██╔══██╗██╔═══██╗██╔═══██╗██║ ██╔╝
@@ -159,6 +159,7 @@
 .flipbook_player{
   display:flex; /*to center the stage*/
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 .flipbook_player .frame_window{
