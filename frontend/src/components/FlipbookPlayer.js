@@ -14,7 +14,7 @@ var T_STEP = 400; //ms
 // 	console.warn("FrameFeeder done. start Key listener");
 // }
 
-function _setState_Timer(newState){
+function _setState_Scrubber(newState){
 	this.setState(newState);
 }
 
@@ -53,7 +53,8 @@ class FrameStage extends Component{
 	}
 
 	// componentWillUpdate(nextProps, nextState){
-		// Could be useful
+		// Don't use this. Consdiered unsafe by doc.
+		// Use componentDidUpdate() instead
 	// }
 
 	componentDidMount(){
@@ -83,6 +84,11 @@ class FrameStage extends Component{
 		this.currStrip = document.querySelector(".frame_stage .strip.start");
 		this.currStrip.scrollIntoView(true);
 
+		// TODO: this seem like a bad place to initialize the Scrubber.
+		//	 	 this pattern is being used because frames are fetched in this component,
+		//		 instead of the parent component to pass it down
+		_setState_Scrubber({numStrips: this.props.data['strips'].length});
+	
 	}
 
 	gotoNextAndPlay(){
@@ -107,8 +113,11 @@ class FrameStage extends Component{
           	);
 		}
 
-		//update timer
-		_setState_Timer({numFrames: Number(frameCount)});
+		//update scrubber
+		_setState_Scrubber({
+			numFrames: Number(frameCount),
+			currStrip: Number(this.currStrip.getAttribute("index"))
+		});
 	 
 	}
 
@@ -116,7 +125,7 @@ class FrameStage extends Component{
 		this.currStrip.scrollIntoView(true);
 
 		//update timer
-		_setState_Timer({currFrame: -1});
+		_setState_Scrubber({currFrame: -1});
 	}
 
 	gotoPrev(){
@@ -126,19 +135,21 @@ class FrameStage extends Component{
 			this.currStrip.scrollIntoView(true);
 		}
 
-		_setState_Timer({numFrames: Number(this.currStrip.getAttribute("count"))});
+		_setState_Scrubber({
+			numFrames: Number(this.currStrip.getAttribute("count")),
+			currStrip: Number(this.currStrip.getAttribute("index"))
+		});
 	}
 
 
 	playFrame(index){
-		console.log("Showing frame " + index);
 
 		var targetFrame = this.currStrip.querySelectorAll(".frame")[index];
 		if (targetFrame != null) { targetFrame.scrollIntoView(true);}
 		else {console.warn("Could not find frame at index " + index)}
 
 		//update timer
-		_setState_Timer({currFrame: index});
+		_setState_Scrubber({currFrame: index});
 
 	}
 
@@ -154,6 +165,7 @@ class FrameStage extends Component{
 
 	render(){
 		return ((data) => {
+			// TODO: why did you do this? haha
 			data = new Array(data); //unify format
 			return (
 				!data || !data.length ? (
@@ -164,7 +176,8 @@ class FrameStage extends Component{
 					 	{/* data.strips is an array of JSON objects */}
 						{data[0]['strips'].map((el_strip,index) => (
 							<span className={`strip${index==0 ? " start" : ""}`} 
-								  key={key(el_strip)} 
+								  key={key(el_strip)}
+								  index={index} 
 								  count={el_strip.frames.length}>
 								{/* TODO: edge case, if el_strip does not have frames */}
 								{el_strip.frames.map(el_frame => {
@@ -187,6 +200,14 @@ class FrameStage extends Component{
 }
 
 
+
+
+
+
+
+
+
+
 // ███████╗ ██████╗██████╗ ██╗   ██╗██████╗ ██████╗ ███████╗██████╗ 
 // ██╔════╝██╔════╝██╔══██╗██║   ██║██╔══██╗██╔══██╗██╔════╝██╔══██╗
 // ███████╗██║     ██████╔╝██║   ██║██████╔╝██████╔╝█████╗  ██████╔╝
@@ -197,21 +218,64 @@ class FrameStage extends Component{
 class Scrubber extends Component{
 	constructor(props){
 		super(props);
+
+		// These states are unknown until FrameStage is mounted
 		this.state={
+			numFrames: 0,
+			currFrame: -1,
+			numStrips: 0,
+			currStrip: -1,
+			
 		}
+
+		//static function
+		_setState_Scrubber = _setState_Scrubber.bind(this);
 	}
+
+	componentDidMount(){
+		console.log("Scrubber mounted!");
+	}
+
+
 
 	render(){
 		return(
 			<div className="frame_scrubber">
-		    	<Timer>
+				{/* Method 1: clone children prop*/}
+		    	<Timer numFrames={this.state.numFrames} 
+		    		   currFrame={this.state.currFrame}>
 		    		<span className="frame_icon"/>
 		    	</Timer>
+
+		    	<div className="scrubber">
+		    		<div className="cell_fill"
+			    		 style={{
+			    		 	width: (this.state.currStrip+1)*(100/this.state.numStrips) + "%"
+			    		 }}
+			    	/>
+
+			    	{/* Method 2: map it directly */}
+			    	<div className="cell_container">
+			    		{Array.apply(null, Array(this.state.numStrips)).map(n => (
+			    			<div className="cell"/>
+			    		))}
+
+			    	</div>
+		    	</div>
+		    	
 
 		    </div>
 		) //end: return
 	}
 }
+
+
+
+
+
+
+
+
 
 
 // ████████╗██╗███╗   ███╗███████╗██████╗ 
@@ -225,25 +289,24 @@ class Timer extends Component{
 
 	constructor(props){
 		super(props);
-		this.state= {
-			numFrames: 0,
-			currFrame: -1
-		};
+		// this.state= {
+		// 	numFrames: 0,
+		// 	currFrame: -1
+		// };
 
 		this.renderChildren = this.renderChildren.bind(this);
 
-
 		//static function
-		_setState_Timer = _setState_Timer.bind(this);
+		//_setState_Scrubber = _setState_Scrubber.bind(this);
 	
 	}
 
 	renderChildren() {
 		return (
-			Array.apply(null, Array(this.state.numFrames)).map((n,index) => {
+			Array.apply(null, Array(this.props.numFrames)).map((n,index) => {
 			    return React.cloneElement(this.props.children, {
 			    	index: index,
-			    	className: "frame_icon" +(index<=this.state.currFrame ? " on" : "")
+			    	className: "frame_icon" +(index<=this.props.currFrame ? " on" : "")
 			    })
 			})
 			
@@ -261,6 +324,15 @@ class Timer extends Component{
 	}
 
 }
+
+
+
+
+
+
+
+
+
 
 
 

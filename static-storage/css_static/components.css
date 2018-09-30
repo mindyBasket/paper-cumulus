@@ -166,7 +166,7 @@
   /* only shows only frame at a time with overflow trick*/
   /* TODO: width and height would need to be determined after frames are loaded */
   height: 500px;
-  overflow-y: scroll;
+  overflow: hidden;
 }
 
 .flipbook_player .frame_stage{
@@ -192,4 +192,8 @@
 .flipbook_player .frame_stage .strip .frame{
   flex-grow: 1;
   width: 100%;
+}
+
+.flipbook_player .frame_scrubber .scrubber{
+  margin: 0 50px;
 }
