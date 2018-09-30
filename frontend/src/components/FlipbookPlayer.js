@@ -48,7 +48,7 @@ class FrameStage extends Component{
 		this.gotoPrev=this.gotoPrev.bind(this);
 
 		this.playFrame=this.playFrame.bind(this);
-		this.stopFrame=this.stopFrame.bind(this);
+		this.killSetTimeOut=this.killSetTimeOut.bind(this);
 
 	}
 
@@ -62,7 +62,7 @@ class FrameStage extends Component{
 
 		document.addEventListener('keydown', (event) => {
 		    if(event.keyCode == 37) {
-		    	this.stopFrame();
+		    	this.killSetTimeOut();
 
 		        if(this.frameState.isStripHead){
 		        	this.gotoPrev(); //go to previous strip
@@ -73,7 +73,7 @@ class FrameStage extends Component{
 		        this.frameState.isStripHead = true;
 		    }
 		    else if(event.keyCode == 39) {
-		    	this.stopFrame();
+		    	this.killSetTimeOut();
 
 		    	this.gotoNextAndPlay();
 		    }
@@ -142,7 +142,7 @@ class FrameStage extends Component{
 
 	}
 
-	stopFrame(){
+	killSetTimeOut(){
 		for(var i=0;i<this.setTimeOutArr.length;i++){
             clearTimeout(this.setTimeOutArr[i]);
         }
