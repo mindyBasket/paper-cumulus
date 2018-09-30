@@ -25,7 +25,6 @@ class FrameFeeder extends Component {
         console.log("Data fetched successfully");
         console.warn(data);
         return this.setState({ data: data, loaded: true });
-
       }
 
       );

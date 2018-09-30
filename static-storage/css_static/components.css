@@ -188,7 +188,7 @@
   flex-direction: column;
 }
 
-.flipbook_player .frame_stage .strip .frame_item{
+.flipbook_player .frame_stage .strip .frame{
   flex-grow: 1;
   width: 100%;
 }
