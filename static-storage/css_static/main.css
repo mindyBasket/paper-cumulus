@@ -445,12 +445,12 @@ a:hover{
     display:inline-block;
     width: 15px; height: 15px;
     border-radius: 15px;
-    border:1px solid #777777;
+    border:1px solid #606060;
     margin: 0 3px;
 }
 
 .frame_scrubber .timer .frame_icon.on{
-    background-color: #777777;
+    background-color: #606060;
 }
     
 .frame_scrubber .timer .frame_icon:last-of-type{
