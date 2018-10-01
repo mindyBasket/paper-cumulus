@@ -12,9 +12,6 @@ var STANDBY_OPACITY = 0.5
 
 // Static functions
 // These are used to make components communicate with each other
-// function startKeyListener(){
-// 	console.warn("FrameFeeder done. start Key listener");
-// }
 
 function _setState_Scrubber(newState){
 	this.setState(newState);

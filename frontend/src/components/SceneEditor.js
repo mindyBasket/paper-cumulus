@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 
 import FrameFeeder from "./FrameFeeder";
-import Form from "./crud/Form";
+import SceneCreateForm from "./crud/Form";
 import Spinner from "./Spinner";
 import key from "weak-key";
 
@@ -388,10 +388,9 @@ class SceneEditor extends Component{
 	render (){
 		return (
 			<div className="scene_editor">
-				{/* -Frames are loaded here */}
-				<button type="submit" className="btn btn-primary btn-lg">
-					Add Strip
-				</button>
+				
+				<SceneCreateForm endpoint={`/api/scene/${"1"}/strip/create/`}/>
+				
 
 			</div>
 
