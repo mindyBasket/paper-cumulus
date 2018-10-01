@@ -230,6 +230,38 @@ class SceneDetailView(generic.DetailView):
         return context
 
 
+class SceneDetailView_REACT(generic.DetailView):
+
+    model = Scene
+    queryset = Scene.objects.all()
+    template_name = "frontend/scene_detail.html"
+
+    def get_context_data(self, *args, **kwargs):
+
+        context = super(SceneDetailView_REACT, self).get_context_data(*args, **kwargs)
+        
+        # For AJAX submits
+        strip_create_form = forms.StripCreateForm(initial={'scene': self.kwargs['pk']})
+        strip_create_form.fields['scene'].widget.attrs['invisible'] = True #hiding by css
+        strip_create_form.fields['scene'].label = ''
+        strip_create_form.fields['description'].widget.attrs['invisible'] = True #hiding by css
+        strip_create_form.fields['description'].label = ''
+        context["strip_create_form"] = strip_create_form
+        context['strip_create_url'] = reverse_lazy("flipbooks:strip-create", kwargs={'scene_pk':self.kwargs['pk'] })
+
+        frame_create_form = forms.FrameCreateForm({"scene_pk": self.kwargs['pk']})
+        frame_create_form.fields['strip'].widget.attrs['invisible'] = True #hiding by css
+        # frame_create_form.fields['frame_image'].widget = f.HiddenInput()
+        context['frame_create_form'] = frame_create_form
+        # context['frame_create_url'] = reverse_lazy("flipbooks:frame-create", kwargs={'strip_pk': 1 })
+        # This doesn't do anything since form submit is intercepted by an API call
+        
+        
+        return context
+
+
+
+
 
 # This one "plays" the frames.
 
