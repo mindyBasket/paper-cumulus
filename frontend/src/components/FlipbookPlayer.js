@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 
 import FrameFeeder from "./FrameFeeder";
+import Spinner from "./Spinner";
 import key from "weak-key";
 
 // Global param
@@ -63,6 +64,7 @@ class FrameStage extends Component{
 	// }
 
 	componentDidMount(){
+
 		// bind keyboard
 		var playNext = this.playNext;
 
@@ -93,22 +95,29 @@ class FrameStage extends Component{
 		//	 	 this pattern is being used because frames are fetched in this component,
 		//		 instead of the parent component to pass it down
 		_setState_Scrubber({numStrips: this.props.data['strips'].length});
+
+		// Tell parent the frame has been loaded
+		// TODO: this is the same problem as above
+		console.warn("frame loaded");
+		_setState_FlipbookPlayer({frameLoaded: true});
 	
 	}
 
 	gotoNextAndPlay(){
 
-		if (!this.frameState.isStripHead && this.currStrip.nextElementSibling != null){
-			//scroll
+		if (!this.frameState.isStripHead && this.currStrip.nextElementSibling != null ){
+			// Go to next Strip
 			this.currStrip = this.currStrip.nextElementSibling;
 			this.currStrip.scrollIntoView(true);
+
+			//TODO: flash some message indicating end of the strip
 		}
 
 		//Enter playing state
 		this.frameState.isPlaying = true;
 		this.frameState.isStripHead = false;
 
-		//Make time line
+		//Make timeline
 		var frameCount = this.currStrip.getAttribute('count');
 		for(var i=0;i<frameCount;i++){
 			// Add reference to stop it later
@@ -134,7 +143,7 @@ class FrameStage extends Component{
 	rewind(){
 		this.currStrip.scrollIntoView(true);
 
-		//update timer
+		// Clear timer
 		_setState_Scrubber({currFrame: -1});
 		_setState_FlipbookPlayer({onStandby: true});
 		
@@ -155,7 +164,6 @@ class FrameStage extends Component{
 			if (this.currStrip.getAttribute("index") == 0){
 				// turn on intro page
 				_setState_FlipbookPlayer({introActive: true});
-
 				_setState_Scrubber({
 					currStrip: -1
 				});
@@ -257,11 +265,8 @@ class Scrubber extends Component{
 		_setState_Scrubber = _setState_Scrubber.bind(this);
 	}
 
-	componentDidMount(){
-		console.log("Scrubber mounted!");
-	}
-
-
+	// componentDidMount(){
+	// }
 
 	render(){
 		return(
@@ -368,11 +373,11 @@ class FlipbookPlayer extends Component{
 
 	constructor(props){
 		super(props);
-		console.log(JSON.stringify(this.props))
 		this.endpoint = "/api/scene/" + this.props.startSceneId + "/";
 		this.state = {
 			introActive: true,
-			onStandby: false
+			onStandby: false,
+			frameLoaded: false
 		}
 
 		//static function
@@ -385,8 +390,11 @@ class FlipbookPlayer extends Component{
 				{/* -Frames are loaded here */}
 				<div className="frame_window" 
 					 style={{ opacity: (this.state.onStandby ? STANDBY_OPACITY : 1) }}>
+
 					<FrameFeeder endpoint = {this.endpoint} 
 								render={data => <FrameStage data={data} />} />
+
+					
 
 					<div className="player_instruction" 
 						 style={{opacity: (this.state.introActive ? 1 : 0) }}>
@@ -402,6 +410,12 @@ class FlipbookPlayer extends Component{
 
 				{/* Scrubber, to hint which strip you are on */}
 				<Scrubber/>
+				
+				{/* Loading spinner. Still looking for a better place to put this*/}
+				<Spinner style="light" 
+						 float={true} 
+						 bgColor="#1d1e1f"
+						 spinning={this.state.frameLoaded ? false : true}/>
 
 			</div>
 		)
@@ -416,9 +430,9 @@ class FlipbookPlayer extends Component{
 
 // render flipbook
 const wrapper = document.getElementById("letterbox");
-const refNode = document.getElementById("ref").querySelector("#ref-content");
-const sceneId = refNode.getAttribute("sceneId");
 
+const refNode = wrapper ? document.getElementById("ref").querySelector("#ref-content") : null;
+const sceneId = wrapper ? refNode.getAttribute("sceneId") : null;
 wrapper ? ReactDOM.render(<FlipbookPlayer startSceneId={sceneId}/>, wrapper) : null;
 
 

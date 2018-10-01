@@ -5,28 +5,103 @@
 {% block title %} {{block.super}} | Scenes{% endblock title %}
 
 {% block left_column %}
-<h3>Scenes Under Chapter object.number</h3>
+<h3>Scenes Under Chapter {{object.number}}</h3>
         
         <p>
-            from Book : object.book.title
+            from Book : {{object.book.title}}
         </p>
 {% endblock %}
-
 
 {% block right_column %}
     <p>You are viewing a chapter detail. This is in a hypothetical chapter "1". Try to imagine one 
     "scene" = "page" in a comic book sense. Viewing a scene should start "playing".</p>
     <p>I also plan this page to also act as a player interface if possible</p>
 
-<h3>Scene list</h3>
-    <div id="app">
-      <!-- React -->
-    </div>
 
+    <div>
+        <ul class="list inline">
+            <li><a href="{% url 'flipbooks-api:list' %}">View api</a></li>
+        </ul>
+    </div>
+    
+    <h3>Scene list</h3>
+    <ul class="list_scenes">
+        {% for scene in object_scene_list %}
+            <li class="scene_container">
+                
+                <a class="flex_item preview_container" href="{% url 'flipbooks:scene-play-react' pk=scene.pk %}">
+
+                    {% with scene.strip_set.all|map_queryset:scene.children_li as mapped_strip_set %}
+                        <div class="preview">
+                            {% for strip in mapped_strip_set|slice:":1" %}
+                                {% with strip.frame_set.all|first as first_frame %}
+                                
+                                    {% if first_frame is None or first_frame.frame_image is None %} 
+                                        <span class="thumb placeholder">
+                                        </span>
+                                    {% else %} 
+                                        <span>
+                                            <img src="{{ first_frame.frame_image.thumb.url }}" width="100%"/>
+                                        </span>
+                                    {% endif %} 
+                                    
+                                {% endwith %}
+                            {% endfor %}
+                        </div>
+                    {% endwith %}
+                </a>
+                
+                <div class="flex_item header">
+                    Order: {{scene.order}} (id: {{scene.id}})
+                    
+                    <a class="scene_edit glyphicon glyphicon-pencil" 
+                       aria-hidden="true" 
+                       style='font-size:1.1em'
+                       href="{% url 'flipbooks:scene-detail' pk=scene.pk %}"></a>
+
+                </div>
+                
+                <!--<div class="flex_item description">
+                    {{scene.description}}
+                </div>-->
+                
+                <div class="flex_item timestamp">
+                    {{ scene.date_created|timesince }}
+                </div>
+
+            </li>
+        {% empty %}
+            <p>No strips could be found</p>
+        
+        {% endfor %}
+        
+    </ul>
+
+
+    
+{% endblock %}
+
+{% block message_layout %}
+<div class="message_container">
+    <div class="message">
+        <h3>Message</h3>
+        {% if messages %}
+            Message recieved:
+            <ul>
+                {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            
+            </ul>
+        {% else %}
+            No message
+        {% endif %}
+    </div>
+   
+</div>
 {% endblock %}
 
 {% block extra_js %}
     {% load static %}
     <script src="{% static 'frontend/main.js' %}"></script>
 {% endblock extra_js %}
-

@@ -61,7 +61,8 @@ class ChapterDetailView(generic.TemplateView):
     model = Chapter
     
     queryset = Chapter.objects.all()
-    template_name = "flipbooks/chapter_detail.html"
+    # template_name = "flipbooks/chapter_detail.html" # OLD
+    template_name = "frontend/chapter_detail.html"
     
     def get_context_data(self, *args, **kwargs):
 

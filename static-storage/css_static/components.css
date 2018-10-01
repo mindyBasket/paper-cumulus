@@ -36,11 +36,23 @@
     padding: 0px;
 }
 
-/* -------------------------------------- */
-/* -------------------------------------- */
-/*             Loading visuals            */
-/* -------------------------------------- */
-/* -------------------------------------- */
+
+
+
+
+
+
+/*
+███████╗██████╗ ██╗███╗   ██╗███╗   ██╗███████╗██████╗ 
+██╔════╝██╔══██╗██║████╗  ██║████╗  ██║██╔════╝██╔══██╗
+███████╗██████╔╝██║██╔██╗ ██║██╔██╗ ██║█████╗  ██████╔╝
+╚════██║██╔═══╝ ██║██║╚██╗██║██║╚██╗██║██╔══╝  ██╔══██╗
+███████║██║     ██║██║ ╚████║██║ ╚████║███████╗██║  ██║
+╚══════╝╚═╝     ╚═╝╚═╝  ╚═══╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝*/
+                                                       
+
+/* NOTE: 'spinny' is old. It's Jquery+CSS animation. */
+/*       Scroll down to find 'spinner', which is a React component */
 
 .spinny{
   position: relative;
@@ -124,6 +136,54 @@
 
 
 
+
+.spinner_playground{
+  /* container that stretched out to fill the whole wrapper/container */
+  /* This is actually copied from my node project. Check "modal.css" */
+
+  display:flex;
+  width: 100%; 
+  min-width: 150px; min-height: 150px; /*to fit spinner*/
+
+  flex-grow: 1; /*stretches to fit the height*/
+  
+  flex-direction: column;
+  justify-content: center;
+  align-items:center;
+
+}
+
+.spinner_playground .spinner{
+  /*loading symbol*/
+  display: inline-block;
+  width: 100px; height: 100px;
+  background-color: #e1e1e1;
+  /*animation: loading 600ms infinite cubic-bezier(0.190, 1.000, 0.220, 1.000);*/
+  animation: loading 1000ms infinite cubic-bezier(0.190, 1.000, 0.220, 1.000);
+} 
+
+@keyframes loading {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(45deg);
+  }
+  100% {
+    transform: rotate(90deg);
+  }
+}
+
+.spinner_playground.float{
+  position: absolute;
+  top: 0; left: 0;
+  height: 100%;
+}
+
+.spinner_playground .spinner.dead{
+
+  animation: none !important;
+}
 
 
 
