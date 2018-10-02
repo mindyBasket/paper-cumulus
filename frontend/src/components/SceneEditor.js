@@ -4,6 +4,8 @@ import PropTypes from "prop-types";
 
 import FrameFeeder from "./FrameFeeder";
 import SceneCreateForm from "./crud/Form";
+import {SceneCard} from "./crud/Cards";
+
 import Spinner from "./Spinner";
 import key from "weak-key";
 
@@ -374,22 +376,35 @@ class SceneEditor extends Component{
 
 	constructor(props){
 		super(props);
-		this.endpoint = "/api/scene/" + this.props.startSceneId + "/";
+		
 		this.state = {
 			introActive: true,
 			onStandby: false,
-			frameLoaded: false
+			frameLoaded: false,
+			sceneId: document.querySelector('#ref-content').getAttribute("sceneId")
 		}
+
+
 
 		//static function
 		_setState_FlipbookPlayer = _setState_FlipbookPlayer.bind(this);
 	}
 
+	// componentDidMount(){
+
+	
+	// }
+
 	render (){
 		return (
 			<div className="scene_editor">
 				
-				<SceneCreateForm endpoint={`/api/scene/${"1"}/strip/create/`}/>
+				
+
+				{/* list of strips */}
+				<SceneCard sceneId={this.state.sceneId}/>
+
+				<SceneCreateForm endpoint={`/api/scene/${this.state.sceneId}/strip/create/`}/>
 				
 
 			</div>

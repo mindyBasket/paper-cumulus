@@ -3,6 +3,8 @@ import axios from 'axios'
 import PropTypes from "prop-types";
 
 
+
+
 class SceneCreateForm extends Component {
 
 	// TODO: does this belong outside like this?
@@ -11,64 +13,84 @@ class SceneCreateForm extends Component {
 		endpoint: PropTypes.string.isRequired
   	};
 
-  	constructor(props){
-  		super(props);
+  constructor(props){
+  	super(props);
 
-  		
-      this.displayMsg = {ready: "component ready"}
-  		this.state = {
-		    field: "",
-        error: false
-		  };
+    this.displayMsg = {ready: "component ready"}
+  	this.state = {
+		  field: "",
+      error: false
+		};
 
-      //connect to form
-      // TODO: I know this is a bad idea
-      this.form = {
-        $node: null,
-        id: "#strip_create_form",
-        $submitBtn: null
-        };  
+    //connect to form
+    // TODO: I know this is a bad idea
+    this.form = {
+      $node: null,
+      id: "#strip_create_form",
+      $submitBtn: null
+    };  
 
-      this.handle_SceneCreate = this.handle_SceneCreate.bind(this);
+    this.handle_SceneCreate = this.handle_SceneCreate.bind(this);
 
-  	}
+  }
 
-    componentDidMount(){
-      // This component trusts a django form is properly rendered.
-      this.form.$node = document.querySelector(this.form.id);
-      if (this.form.$node != null){
-        //grab button
-        this.form.$submitBtn = this.form.$node.querySelector("button");
+  componentDidMount(){
+    // This component trusts a django form is properly rendered.
+    this.form.$node = document.querySelector(this.form.id);
+    if (this.form.$node != null){
+      //grab button
+      this.form.$submitBtn = this.form.$node.querySelector("button");
 
-      } else {
-        this.state.error = true;
-      }
-
-
+    } else {
+      this.state.error = true;
     }
+
+  }
     
   	handleChange(e) {
     	this.setState({ [e.target.name]: e.target.value });
   	}
 
+    serializeForm($form){
+      //make sure it's a form
+      if ($form.nodeName != 'FORM'){return false}
+
+      // iterate through each element
+      // inputArray
+      const ia = $form.querySelectorAll('input, select, textarea, file');
+      var formData = {};
+
+      for (var i=0;i<ia.length;i++){
+        formData[ia[i].getAttribute('name')] = ia[i].value;
+      }
+      return formData;
+    }
 
 
-    handle_SceneCreate(){
+
+    handle_SceneCreate(e){
       e.preventDefault();
 
       // this is a fuax Scene Create. Submit the REAL form on html
       const $form = this.form.$node;
+      var formData = this.serializeForm($form);
+
+      console.log("formData: " + JSON.stringify(formData));
 
       //take information from form, and submit ajaxly
-      const { name, email, message } = this.state;
-      const lead = { name, email, message };
-      const conf = {
-          method: "post",
-          body: JSON.stringify(lead),
-          headers: new Headers({ "Content-Type": "application/json" })
-      };
-    
-      fetch(this.props.endpoint, conf).then(response => console.log(response));
+      axios({
+        method: 'post',
+        url: `/api/scene/${formData.scene}/strip/create/`,
+        data: formData,
+        headers: {"X-CSRFToken": formData.csrfmiddlewaretoken},
+      })
+      .then(response => {
+        console.log("SceneCreate successful: " + JSON.stringify(response));
+      })
+      .catch(error => {
+        console.log(error);
+      })
+          
 
     }
 
@@ -76,7 +98,6 @@ class SceneCreateForm extends Component {
     	const { name, email, message } = this.state;
     	return (
 
-	       
           <div className="fauxForm">
             {/*<form onSubmit={this.handleSubmit}>
             </form>*/}
@@ -87,7 +108,7 @@ class SceneCreateForm extends Component {
               <span className="error">SOMETHING WENT WRONG</span>
             }
 
-            <button class="btn btn-primary btn-lg" onClick={this.handle_SceneCreate}>
+            <button className="btn btn-primary btn-lg" onClick={this.handle_SceneCreate}>
               REAL Add Strip
             </button>
             
@@ -96,4 +117,5 @@ class SceneCreateForm extends Component {
     );
   }
 }
+
 export default SceneCreateForm;
