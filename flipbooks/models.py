@@ -202,13 +202,6 @@ class Strip(models.Model):
             new_children_li = helpers.refresh_children_li(self)
             if new_children_li:
                 self.children_li = new_children_li
-        
-
-        if self.children_index == '';
-            print("WARNING. children_index on this strip is empty. Refreshing children_index.")
-            new_children_index = helpers.refresh_children_index(self)
-            if new_children_index:
-                self.children_index = new_children_index
 
         super(Strip, self).save(*args, **kwargs) # save Strip!
 

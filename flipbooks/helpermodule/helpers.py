@@ -60,9 +60,7 @@ from ..models import (
 #           children_li helpers
 # -------------------------------------------
 # -------------------------------------------
-# NOTE: this is an outdated field. Children_li is intended 
-#       to be depreciated due to the possible vulnerabilities. 
-#       Scroll down to see a slightly different, children_index. 
+
 
 
 ''' Checks if children_li is valid '''
@@ -192,17 +190,17 @@ def remove_child(obj, target_child_id):
 
 
 
-
-
 # -------------------------------------------
 # -------------------------------------------
 #           children_index helpers
 # -------------------------------------------
 # -------------------------------------------
-# Note: basically children_li vers.2.
-#       Instead of listing ids of children, 
-#       children_index only lists index of the children.
-
+# Note: experimental children_li vers.2. This list uses
+#       index of children rather than their id directly. 
+#       Pros: child id is never stored. 
+#       Cons: harder to know which order the child is 
+#             just by looking at the list.
+#             Would need to query children to get the ids.  
 
 # TODO: UPDATE THIS
 ''' Checks if children_li is valid '''
@@ -313,7 +311,7 @@ def update_children_index(obj, child_id, insert_at, is_new):
 
         
 ''' Removes an id out of the children_li '''
-def remove_child(obj, target_child_id):
+def remove_child_index(obj, target_child_id):
     
     new_children_li = []
     
