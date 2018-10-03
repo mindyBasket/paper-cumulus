@@ -175,6 +175,7 @@ class Strip(models.Model):
     
     order = models.IntegerField(default="-1")
     children_li = models.TextField(max_length=500, blank=True, default="")
+    children_index = models.TextField(max_length=500, blank=True, default="")
     
     description = models.TextField(max_length=100, blank=True, default="")
     
@@ -201,8 +202,16 @@ class Strip(models.Model):
             new_children_li = helpers.refresh_children_li(self)
             if new_children_li:
                 self.children_li = new_children_li
-        super(Strip, self).save(*args, **kwargs) # save Strip!
         
+
+        if self.children_index == '';
+            print("WARNING. children_index on this strip is empty. Refreshing children_index.")
+            new_children_index = helpers.refresh_children_index(self)
+            if new_children_index:
+                self.children_index = new_children_index
+
+        super(Strip, self).save(*args, **kwargs) # save Strip!
+
         #2. Position update on children_li of its parent (scene)
         self.scene.children_li = helpers.update_children_li(self.scene, self.id, _insert_at)
         self.scene.save() # save parent!
@@ -305,12 +314,19 @@ class Frame(models.Model):
         # print(self.frame_image.url) #/media/whiteTrip00.png
         # print(self.frame_image.path) #/home/ubuntu/workspace/media/whiteTrip00.png ?
         # store old thumbnail information for deletion later
+
+        # Check if this is a new frame 
+        # ref: https://docs.djangoproject.com/en/2.1/ref/models/instances/#customizing-model-loading
+        is_new = True if self._state.adding else False
+        
+        print("--------- IS THIS A NEW FRAME? : %s" % is_new)
         
         # 1. Save instance
         super(Frame, self).save(*args, **kwargs) # save Frame!
         
         # 2. position update on children_li of its parent (strip)
         self.strip.children_li = helpers.update_children_li(self.strip, self.id, _insert_at)
+        # self.strip.children_index = helpers.update_children_index(self.strip, self.id, _insert_at, is_new)
         self.strip.save() # save parent!
         
         
