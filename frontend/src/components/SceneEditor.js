@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 import FrameFeeder from "./FrameFeeder";
 import SceneCreateForm from "./crud/Form";
-import {SceneCard} from "./crud/Cards";
+import {SceneCardList} from "./crud/Cards";
 
 import Spinner from "./Spinner";
 import key from "weak-key";
@@ -19,13 +19,18 @@ var STANDBY_OPACITY = 0.5
 // 	console.warn("FrameFeeder done. start Key listener");
 // }
 
-function _setState_Scrubber(newState){
+// function _setState_Scrubber(newState){
+// 	this.setState(newState);
+// }
+
+// function _setState_FlipbookPlayer(newState){
+// 	this.setState(newState);
+// }
+
+function _setState_SceneCard(newState){
 	this.setState(newState);
 }
 
-function _setState_FlipbookPlayer(newState){
-	this.setState(newState);
-}
 
 
 // http://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=FrameStage
@@ -363,7 +368,6 @@ class Timer extends Component{
 
 
 
-
 // ███████╗██████╗ ██╗████████╗ ██████╗ ██████╗ 
 // ██╔════╝██╔══██╗██║╚══██╔══╝██╔═══██╗██╔══██╗
 // █████╗  ██║  ██║██║   ██║   ██║   ██║██████╔╝
@@ -381,13 +385,18 @@ class SceneEditor extends Component{
 			introActive: true,
 			onStandby: false,
 			frameLoaded: false,
-			sceneId: document.querySelector('#ref-content').getAttribute("sceneId")
+			sceneId: document.querySelector('#ref-content').getAttribute("sceneId"),
+
+			toSceneCard: null
 		}
 
+		this.setParentState = this.setParentState.bind(this);
 
+	}
 
-		//static function
-		_setState_FlipbookPlayer = _setState_FlipbookPlayer.bind(this);
+	// Function to be used by its children to communicate to parent (this)
+	setParentState(newState){
+		this.setState(newState);
 	}
 
 	// componentDidMount(){
@@ -402,9 +411,11 @@ class SceneEditor extends Component{
 				
 
 				{/* list of strips */}
-				<SceneCard sceneId={this.state.sceneId}/>
+				<SceneCardList sceneId={this.state.sceneId}
+						   dataInbox={this.state.toSceneCardList}/>
 
-				<SceneCreateForm endpoint={`/api/scene/${this.state.sceneId}/strip/create/`}/>
+				<SceneCreateForm endpoint={`/api/scene/${this.state.sceneId}/strip/create/`}
+								 setParentState={this.setParentState}/>
 				
 
 			</div>

@@ -15,7 +15,11 @@ class FrameCard extends Component{
             data: this.props.data,
             loading: true
         }
+
+        
     }
+
+
 
     render(){
         const frame = this.props.data; 
@@ -64,16 +68,108 @@ class FrameCard extends Component{
 
 
 
-
+// ███████╗ ██████╗███████╗███╗   ██╗███████╗
+// ██╔════╝██╔════╝██╔════╝████╗  ██║██╔════╝
+// ███████╗██║     █████╗  ██╔██╗ ██║█████╗  
+// ╚════██║██║     ██╔══╝  ██║╚██╗██║██╔══╝  
+// ███████║╚██████╗███████╗██║ ╚████║███████╗
+// ╚══════╝ ╚═════╝╚══════╝╚═╝  ╚═══╝╚══════╝
+                                          
 
 
 class SceneCard extends Component {
 
     constructor(props){
         super(props);
+        this.$node = React.createRef();
+
+    }
+
+    componentDidMount(){
+        //console.log(JSON.stringify(this.$node.current));
+
+        var mountAnim = anime.timeline();
+            mountAnim
+                .add({
+                    targets: this.$node.current,
+                    scale: 0.5,
+                    duration: 0
+                })    
+                .add({
+                    targets: this.$node.current,
+                    scale: 1,
+                    duration: 500 + Math.random()*300,
+                    elasticity: 400
+                });   
+        
+    }
+
+
+    render(){
+        const strip = this.props.stripObj;
+        const index = this.props.index;
+
+        return (
+            <li className="flex_list" stripid="{strip.id}" key={key({stripkey: strip})} ref={this.$node}>
+   
+                <div className="strip_flex_toolbar">
+                    <div className="header">
+                        <span className="bigtext-2">{index}</span>
+                        <span>id: {strip.id}</span>
+                    </div>
+                    <div className="tools">
+                        <a className="strip_preview glyphicon glyphicon-play" aria-hidden="true"></a>
+                        <a className="strip_upload glyphicon glyphicon-upload" aria-hidden="true"></a>
+                        <a className="strip_edit glyphicon glyphicon-edit" aria-hidden="true"></a>
+                        <a className="strip_delete glyphicon glyphicon-trash" aria-hidden="true"></a>
+                        <a className="strip_options glyphicon glyphicon-option-horizontal" aria-hidden="true"></a>
+                    </div>
+                    
+                </div>
+                    
+                {strip.frames == null || strip.frames.length === 0 || Object.keys(strip.frames).length === 0 ? 
+                    (
+                        <div className="strip_flex_container" stripid={strip.id}>
+                            <div className="tile empty-strip ui-state-disabled">
+                                <span>No frames in this strip. Upload some!</span>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="strip_flex_container" stripid={strip.id}>
+                            {strip.frames.map( (frame, index) => (
+                                <FrameCard data={frame} key={key({frameKey: frame})}/>
+                            ))}
+                        </div>
+                    )
+                }
+
+
+                <div className="strip_flex_editor">
+                    frame rate
+                </div>
+
+            </li>
+        )
+    }
+}
+
+
+
+
+
+
+
+class SceneCardList extends Component {
+
+    constructor(props){
+        super(props);
         this.state = {
             data: null
         }
+
+        // incoming
+        //this.props.toSceneCardList
+
     }
 
     componentDidMount(){
@@ -96,9 +192,50 @@ class SceneCard extends Component {
 
     }
 
-    // componentDidUpdate(){
-  
-    // }
+
+    componentDidUpdate(prevProps, prevState, snapshot){
+        console.log("Component did update");
+
+        // It's okay to setState here. Just make sure it's 
+        // inside a conditional to prevent infinite loop
+
+        // Check inbox
+        if (JSON.stringify(prevProps.dataInbox) != JSON.stringify(this.props.dataInbox)){
+            console.log("MAIL TIME [SceneCardList]");
+            // Mail time!
+            const newData = this.appendData(this.state.data, this.props.dataInbox)
+            this.setState({data: newData});
+
+            //Empty mailbox
+            // oh ...props is read only. ]: I can't do this. 
+            // this.props.dataInbox = {};
+        }
+
+    }
+
+
+    // takes only one key from newData. Rest will be ignored for now.
+    appendData(data, newData){
+        console.log("New DAta looks like this: " + JSON.stringify(newData.newStrip));
+
+        if (newData == null || Object.keys(newData).length === 0) {
+            // newData is invalid. return same data.
+            return data;
+        }
+
+        switch(Object.keys(newData)[0]){
+            case "newStrip":
+                //add it to list of strips
+                if (data.hasOwnProperty("strips")) { data.strips.push(newData.newStrip) }
+
+            default: 
+                return data;
+        }
+
+        return data; 
+    }
+
+
 
     render (){
 
@@ -111,45 +248,7 @@ class SceneCard extends Component {
                 ) : (
                     <ul className="list_strips">
                         {this.state.data['strips'].map( (strip,index) => (
-                            <li className="flex_list" stripid="{strip.id}">
-   
-                                <div className="strip_flex_toolbar">
-                                    <div className="header">
-                                        <span className="bigtext-2">{index}</span>
-                                        <span>id: {strip.id}</span>
-                                    </div>
-                                    <div className="tools">
-                                        <a className="strip_preview glyphicon glyphicon-play" aria-hidden="true"></a>
-                                        <a className="strip_upload glyphicon glyphicon-upload" aria-hidden="true"></a>
-                                        <a className="strip_edit glyphicon glyphicon-edit" aria-hidden="true"></a>
-                                        <a className="strip_delete glyphicon glyphicon-trash" aria-hidden="true"></a>
-                                        <a className="strip_options glyphicon glyphicon-option-horizontal" aria-hidden="true"></a>
-                                    </div>
-                                    
-                                </div>
-                                    
-                                {strip.frames == null || strip.frames.length === 0 || Object.keys(strip.frames).length === 0 ? 
-                                    (
-                                        <div className="strip_flex_container" stripid={strip.id}>
-                                            <div className="tile empty-strip ui-state-disabled">
-                                                <span>No frames in this strip. Upload some!</span>
-                                            </div>
-                                        </div>
-                                    ) : (
-                                        <div className="strip_flex_container" stripid={strip.id}>
-                                            {strip.frames.map( (frame, index) => (
-                                                <FrameCard data={frame}/>
-                                            ))}
-                                        </div>
-                                    )
-                                }
-
-
-                                <div className="strip_flex_editor">
-                                    frame rate
-                                </div>
-
-                            </li> 
+                             <SceneCard stripObj={strip} index={index}/>
                         )) } 
                     </ul>
                     
@@ -164,6 +263,6 @@ class SceneCard extends Component {
 
 
 export {
-    SceneCard,
+    SceneCardList,
     FrameCard
 };

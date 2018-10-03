@@ -2,6 +2,9 @@ import React, { Component } from "react";
 import axios from 'axios'
 import PropTypes from "prop-types";
 
+//helpers?
+import Helper from "./../Helper"
+const h = new Helper();
 
 
 
@@ -78,20 +81,30 @@ class SceneCreateForm extends Component {
       console.log("formData: " + JSON.stringify(formData));
 
       //take information from form, and submit ajaxly
-      axios({
-        method: 'post',
-        url: `/api/scene/${formData.scene}/strip/create/`,
-        data: formData,
-        headers: {"X-CSRFToken": formData.csrfmiddlewaretoken},
-      })
-      .then(response => {
-        console.log("SceneCreate successful: " + JSON.stringify(response));
-      })
-      .catch(error => {
-        console.log(error);
-      })
-          
+      // axios({
+      //   method: 'post',
+      //   url: `/api/scene/${formData.scene}/strip/create/`,
+      //   data: formData,
+      //   headers: {"X-CSRFToken": formData.csrfmiddlewaretoken},
+      // })
+      // .then(response => {
+      //   console.log("SceneCreate successful: " + JSON.stringify(response));
+      // })
+      // .catch(error => {
+      //   console.log(error);
+      // })
 
+      // Package this and sent this to SceneCard
+      // because of the way this gets sent to SceneCard, it be different from prev data.  
+      // The only thing making this data unique is "id", and I am wary of 
+      // relying on it. I may implement custom id later. 
+
+      // So I add extra random string. It just needs to be different from the previous.
+      const newStrip = {id:74,scene:1,order:0,description:"",children_li:"",frames:[]};
+
+      newStrip['key'] = h.getRandomStr(7);
+      this.props.setParentState({toSceneCardList: {newStrip: newStrip } });
+          
     }
 
     render() {
