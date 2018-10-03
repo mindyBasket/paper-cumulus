@@ -12,24 +12,50 @@ class FrameCard extends Component{
         super(props);
         this.thumbWidth = 180, //px
         this.state = {
-            data: this.props.data,
             loading: true
         }
 
+        this.$node = React.createRef();
         
     }
 
 
 
+    componentDidMount(){
+        const delay = this.props.delay;
+        const $node = this.$node.current
+
+        var mountAnim = anime.timeline();
+            mountAnim
+                .add({
+                    targets: $node,
+                    scale: 0,
+                    duration: 0
+                }) 
+                .add({
+                    targets: $node,
+                    scale: 0.5,
+                    delay: delay*80,
+                    duration: 0
+                }) 
+                .add({
+                    targets: $node,
+                    scale: 1,
+                    elasticity: 300
+                });   
+        
+    }
+
     render(){
-        const frame = this.props.data; 
+        const frame = this.props.frameObj; 
         const thumbWidth = this.thumbWidth;
 
         // check if it has valid frames
         if (frame.hasOwnProperty("frame_image") && frame.frame_image != null && frame.frame_image != ""){
 
             return (
-                <div className={"thumb "+ (this.state.loading && "loading")} frameid={frame.id}>
+                <div className={"thumb "+ (this.state.loading && "loading")} 
+                     frameid={frame.id} ref={this.$node}>
       
                     <div className="frame_image stretch">
                         {/* opacity 0. Used only to stretch out the thumbnail box*/}
@@ -50,11 +76,15 @@ class FrameCard extends Component{
                 </div> 
             )
         } else {
-            {/* Frame with invalid image */}
-                <div className="thumb placeholder2" frameid="{frame.id}">
-                <span>Missing Image</span>
-                    <a href="" className="mini_menu edit">frame [{frame.id}]</a>
+            return (
+                <div className="thumb placeholder2" frameid="{frame.id}" ref={this.$node}>
+                    {/* Frame with invalid image */}
+                    <span>Missing Image</span>
+                        <a href="" className="mini_menu edit">frame [{frame.id}]</a>
                 </div>
+            )
+            
+                
         }
         
         
@@ -85,21 +115,37 @@ class SceneCard extends Component {
 
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+
+      if (JSON.stringify(this.props.stripObj) != JSON.stringify(nextProps.stripObj)){
+        return true;
+      }
+      return false;
+    }
+
     componentDidMount(){
         //console.log(JSON.stringify(this.$node.current));
+        const delay = this.props.delay;
+        const $node = this.$node.current
 
         var mountAnim = anime.timeline();
             mountAnim
                 .add({
-                    targets: this.$node.current,
-                    scale: 0.5,
+                    targets: $node,
+                    scale: 0,
                     duration: 0
-                })    
+                }) 
                 .add({
-                    targets: this.$node.current,
+                    targets: $node,
+                    scale: 0.5,
+                    delay: delay*80,
+                    duration: 0
+                }) 
+                .add({
+                    targets: $node,
                     scale: 1,
-                    duration: 500 + Math.random()*300,
-                    elasticity: 400
+                    duration: 400,
+                    elasticity: 200
                 });   
         
     }
@@ -137,7 +183,7 @@ class SceneCard extends Component {
                     ) : (
                         <div className="strip_flex_container" stripid={strip.id}>
                             {strip.frames.map( (frame, index) => (
-                                <FrameCard data={frame} key={key({frameKey: frame})}/>
+                                <FrameCard frameObj={frame} delay={index+this.props.delay} key={key({frameKey: frame})}/>
                             ))}
                         </div>
                     )
@@ -167,6 +213,8 @@ class SceneCardList extends Component {
             data: null
         }
 
+        this.firstLoad = true;
+
         // incoming
         //this.props.toSceneCardList
 
@@ -184,11 +232,14 @@ class SceneCardList extends Component {
           .then(response => {
             console.log( "Fetch successful");
             thisObj.setState({data: response.data});
+
+            this.firstLoad = false;
    
           })
           .catch(error => {
             console.log(error);
           })
+
 
     }
 
@@ -248,7 +299,7 @@ class SceneCardList extends Component {
                 ) : (
                     <ul className="list_strips">
                         {this.state.data['strips'].map( (strip,index) => (
-                             <SceneCard stripObj={strip} index={index}/>
+                             <SceneCard stripObj={strip} delay={this.firstLoad ? index : 1}/>
                         )) } 
                     </ul>
                     
