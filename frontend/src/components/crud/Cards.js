@@ -6,6 +6,19 @@ import Spinner from "./../Spinner";
 import key from "weak-key";
 
 
+
+// http://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=Frame
+
+
+// ███████╗██████╗  █████╗ ███╗   ███╗███████╗
+// ██╔════╝██╔══██╗██╔══██╗████╗ ████║██╔════╝
+// █████╗  ██████╔╝███████║██╔████╔██║█████╗  
+// ██╔══╝  ██╔══██╗██╔══██║██║╚██╔╝██║██╔══╝  
+// ██║     ██║  ██║██║  ██║██║ ╚═╝ ██║███████╗
+// ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝
+                                           
+
+
 class FrameCard extends Component{
 
     constructor(props){
@@ -96,6 +109,32 @@ class FrameCard extends Component{
 
 
 
+// ██████╗ ██╗   ██╗████████╗████████╗ ██████╗ ███╗   ██╗███████╗
+// ██╔══██╗██║   ██║╚══██╔══╝╚══██╔══╝██╔═══██╗████╗  ██║██╔════╝
+// ██████╔╝██║   ██║   ██║      ██║   ██║   ██║██╔██╗ ██║███████╗
+// ██╔══██╗██║   ██║   ██║      ██║   ██║   ██║██║╚██╗██║╚════██║
+// ██████╔╝╚██████╔╝   ██║      ██║   ╚██████╔╝██║ ╚████║███████║
+// ╚═════╝  ╚═════╝    ╚═╝      ╚═╝    ╚═════╝ ╚═╝  ╚═══╝╚══════╝
+                                                              
+
+class Button1 extends Component {
+    constructor(props){
+        super(props);
+
+        this.deleteScene = this.deleteScene.bind(this);
+    }
+
+    deleteScene(){
+        
+    }
+
+    render (){
+        return (
+            <a className="fas fa-trash" onClick={this.deleteScene}></a>
+        )
+    }
+}
+
 
 
 // ███████╗ ██████╗███████╗███╗   ██╗███████╗
@@ -164,11 +203,12 @@ class SceneCard extends Component {
                         <span>id: {strip.id}</span>
                     </div>
                     <div className="tools">
-                        <a className="strip_preview glyphicon glyphicon-play" aria-hidden="true"></a>
-                        <a className="strip_upload glyphicon glyphicon-upload" aria-hidden="true"></a>
-                        <a className="strip_edit glyphicon glyphicon-edit" aria-hidden="true"></a>
-                        <a className="strip_delete glyphicon glyphicon-trash" aria-hidden="true"></a>
-                        <a className="strip_options glyphicon glyphicon-option-horizontal" aria-hidden="true"></a>
+                        <a className="fas fa-play-circle"></a>
+                        <a className="fas fa-file-upload"></a>
+                        <a className="fas fa-pen"></a>
+                        <Button1/>
+                        <a className="fas fa-trash"></a>
+                        <a className="fas fa-ellipsis-h"></a>
                     </div>
                     
                 </div>
@@ -299,7 +339,7 @@ class SceneCardList extends Component {
                 ) : (
                     <ul className="list_strips">
                         {this.state.data['strips'].map( (strip,index) => (
-                             <SceneCard stripObj={strip} delay={this.firstLoad ? index : 1}/>
+                             <SceneCard stripObj={strip} delay={this.firstLoad ? index : 1} index={index+1}/>
                         )) } 
                     </ul>
                     

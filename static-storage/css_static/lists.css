@@ -154,6 +154,13 @@ ul.list_strips .strip_flex_container .tile{
     
     transition-property: opacity;
     transition-duration: 0.2s;
+
+}
+
+.flex_list .strip_flex_toolbar .tools a{
+    /* icon size */
+    font-size: 2em;
+    margin: 0 4px;
 }
 
 .flex_list:hover .strip_flex_toolbar .tools{
