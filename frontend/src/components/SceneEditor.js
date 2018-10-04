@@ -71,9 +71,6 @@ class SceneEditor extends Component{
 				<SceneCardList sceneId={this.sceneId}
 						   dataInbox={this.state.toSceneCardList}/>
 
-				
-				
-
 			</div>
 
 

@@ -436,7 +436,7 @@ class SceneCardList extends Component {
 
 
     render (){
-        
+
         return (
             <div>
             {this.state.data == null ? ( 
@@ -444,7 +444,10 @@ class SceneCardList extends Component {
                 ) : (
                     <ul className="list_strips">
                         {this.state.data['strips'].map( (strip,index) => (
-                             <SceneCard stripObj={strip} delay={this.firstLoad ? index : 1} index={index+1}/>
+                             <SceneCard stripObj={strip} 
+                                        delay={this.firstLoad ? index : 1} 
+                                        index={index+1}
+                                        key={key({stripKey: strip})}/>
                         )) } 
                     </ul>
                     
