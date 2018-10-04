@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, PureComponent } from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 
@@ -204,7 +204,7 @@ class CardCover extends Component {
                                           
 
 
-class SceneCard extends Component {
+class SceneCard extends PureComponent {
 
     constructor(props){
         super(props);
@@ -226,7 +226,8 @@ class SceneCard extends Component {
     // }
 
     componentDidMount(){
-        //console.log(JSON.stringify(this.$node.current));
+        console.error("[MOUNTED] SceneCard");
+
         const delay = this.props.delay;
         const $node = this.$node.current
 
@@ -252,6 +253,9 @@ class SceneCard extends Component {
         
     }
 
+    componentDidUpdate(){
+        console.warn("[UPDATE] SceneCard");
+    }
 
     handle_deleteSceneConfirm(){
         console.log("handle_deleteSceneCONFIRM");
@@ -328,6 +332,7 @@ class SceneCard extends Component {
                     }
 
                     <CardCover on={this.state.cardCoverOn}/>
+
                 </div>
 
 
@@ -362,6 +367,7 @@ class SceneCardList extends Component {
     }
 
     componentDidMount(){
+        console.error("[MOUNTED] SceneCard LIST");
 
         const thisObj = this;
 
@@ -386,7 +392,7 @@ class SceneCardList extends Component {
 
 
     componentDidUpdate(prevProps, prevState, snapshot){
-        console.log("Component did update");
+        console.warn("[UPDATED] SceneCard LIST");
 
         // It's okay to setState here. Just make sure it's 
         // inside a conditional to prevent infinite loop
@@ -430,9 +436,7 @@ class SceneCardList extends Component {
 
 
     render (){
-
-
-
+        
         return (
             <div>
             {this.state.data == null ? ( 
