@@ -104,6 +104,15 @@ ul.list_strips li{ /*flex_list*/
 }
 
 
+.strip_content{
+    /*I added this container to wrap .strip_flex_container 
+    due to nesting issue when rendering in React */
+
+    position :relative;
+
+
+}
+
 .strip_flex_container{
     /*Main flex container for a single srip*/
     position: relative;
@@ -113,9 +122,7 @@ ul.list_strips li{ /*flex_list*/
     align-items: stretch;
     
     background-color: white;
-
 }
-
 
 
 /*flex item*/
@@ -265,6 +272,12 @@ ul.list_strips .strip_flex_container .tile.empty-strip{
     width: 100%;
     
     opacity:0;
+}
+
+.cover.active{
+    pointer-events: auto;
+    opacity: 1;
+
 }
 
 .cover.drag_and_drop,

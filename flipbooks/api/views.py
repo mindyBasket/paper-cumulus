@@ -31,6 +31,15 @@ class FlipbookAPIListView(generics.ListAPIView):
         return Scene.objects.all()
 
 
+
+# http://patorjk.com/software/taag/#p=display&f=Cyberlarge&t=Scene
+# _______ _______ _______ __   _ _______
+# |______ |       |______ | \  | |______
+# ______| |_____  |______ |  \_| |______
+                                       
+
+
+
 class SceneAPIListView(generics.ListAPIView):
     # Similar to above, but only lists scene under a book
 
@@ -58,16 +67,31 @@ class SceneAPIDetailView(generics.RetrieveAPIView):
     #     usernames = [user.username for user in User.objects.all()]
     #     return Response(usernames)
     
-    
+
+
+
+ # _______ _______  ______ _____  _____ 
+ # |______    |    |_____/   |   |_____]
+ # ______|    |    |    \_ __|__ |      
+                                      
+
 class StripCreateAPIView(generics.CreateAPIView):
     serializer_class = StripModelSerializer
 
+class StripDeleteAPIview(generics.DestroyAPIView):
+    serializer_class = StripModelSerializer
+    queryset = Strip.objects.all()
 
-# -------------------------------------------------
-# -------------------------------------------------
-#                     Frame
-# -------------------------------------------------
-# -------------------------------------------------
+    #lookup_field
+
+
+
+
+ # _______  ______ _______ _______ _______
+ # |______ |_____/ |_____| |  |  | |______
+ # |       |    \_ |     | |  |  | |______
+                                        
+
 
 class FrameCreateAPIView(generics.CreateAPIView):
     serializer_class = FrameModelSerializer

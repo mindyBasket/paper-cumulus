@@ -407,9 +407,7 @@ class SceneEditor extends Component{
 	render (){
 		return (
 			<div className="scene_editor">
-				
-				
-
+			
 				{/* list of strips */}
 				<SceneCardList sceneId={this.state.sceneId}
 						   dataInbox={this.state.toSceneCardList}/>

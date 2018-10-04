@@ -19,6 +19,7 @@ import key from "weak-key";
                                            
 
 
+
 class FrameCard extends Component{
 
     constructor(props){
@@ -120,21 +121,78 @@ class FrameCard extends Component{
 class Button1 extends Component {
     constructor(props){
         super(props);
-
-        this.deleteScene = this.deleteScene.bind(this);
-    }
-
-    deleteScene(){
-        
     }
 
     render (){
         return (
-            <a className="fas fa-trash" onClick={this.deleteScene}></a>
+            <a className={this.props.iconClass} onClick={this.props.action}></a>
         )
     }
 }
 
+class StripMenu extends Component {
+    constructor(props){
+        super(props);
+    }
+
+    render(){
+        return (
+            <div className="popup_menu">
+                <ul>   
+                    <li>Upload Image</li>
+                    <li>Batch Edit</li>
+                    <li>Copy</li>
+                    <li>Delete</li>
+                </ul>
+            </div>
+        )
+    }
+}
+
+class StripMenuButton extends Component {
+    constructor(props){
+        super(props);
+        this.state ={
+            menuOpened: false
+        }
+        this.openStripMenu = this.openStripMenu.bind(this);
+    }
+
+    openStripMenu(){
+        this.setState({menuOpened: true});
+    }
+
+    render (){
+        return (
+            <a className={this.props.iconClass} onClick={this.openStripMenu}>
+                {this.state.menuOpened && <StripMenu/>}
+            </a>
+        )
+    }
+}
+
+
+
+class CardCover extends Component {
+    constructor(props){
+        super(props);
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot){
+        console.log("CardCover remounted"); 
+
+    }
+
+    render(){
+        return (
+            <div className={"cover " + (this.props.on ? "active" : "")}>
+                <span className="bigtext 2">Are you sure you want to delete this scene?</span>
+                <span><button>DELETE</button> <button>Cancel</button></span>
+            </div>
+        )
+    }
+
+}
 
 
 // ███████╗ ██████╗███████╗███╗   ██╗███████╗
@@ -151,16 +209,21 @@ class SceneCard extends Component {
     constructor(props){
         super(props);
         this.$node = React.createRef();
+        this.state={
+            cardCoverOn: false
+        }
 
+        this.handle_deleteSceneConfirm = this.handle_deleteSceneConfirm.bind(this);
+        this.handle_deleteScene = this.handle_deleteScene.bind(this);
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
+    // shouldComponentUpdate(nextProps, nextState) {
 
-      if (JSON.stringify(this.props.stripObj) != JSON.stringify(nextProps.stripObj)){
-        return true;
-      }
-      return false;
-    }
+    //   if (JSON.stringify(this.props.stripObj) != JSON.stringify(nextProps.stripObj)){
+    //     return true;
+    //   }
+    //   return false;
+    // }
 
     componentDidMount(){
         //console.log(JSON.stringify(this.$node.current));
@@ -190,6 +253,39 @@ class SceneCard extends Component {
     }
 
 
+    handle_deleteSceneConfirm(){
+        console.log("handle_deleteSceneCONFIRM");
+
+        //light box
+        const $lb = document.querySelector("#light_box_cover");
+        //turn it on
+        $lb.setAttribute("style", "display: initial;");
+
+        // TODO: try using class instead, to take advantage of css transition
+
+        //turn on cover
+        this.setState({cardCoverOn: true});
+    }
+
+    handle_deleteScene(){
+        // DANGER ZONE!
+
+        const strip = this.props.stripObj;
+
+        console.log("handle_deleteScene");
+        // axios({
+        //     method: 'get',
+        //     url: `/api/strip/${strip.id}/delete/`,
+        // })
+        // .then(response => {
+        //     console.log("Delete Request made");
+        // })
+        // .catch(error => {
+        //     console.log(error);
+        // })
+    }
+
+
     render(){
         const strip = this.props.stripObj;
         const index = this.props.index;
@@ -203,31 +299,36 @@ class SceneCard extends Component {
                         <span>id: {strip.id}</span>
                     </div>
                     <div className="tools">
-                        <a className="fas fa-play-circle"></a>
-                        <a className="fas fa-file-upload"></a>
-                        <a className="fas fa-pen"></a>
-                        <Button1/>
-                        <a className="fas fa-trash"></a>
-                        <a className="fas fa-ellipsis-h"></a>
+                        <a className="tool_btn fas fa-play-circle"></a>
+                        <a className="tool_btn fas fa-file-upload"></a>
+                        <a className="tool_btn fas fa-pen"></a>
+                        <Button1 iconClass="tool_btn fas fa-trash" action={this.handle_deleteSceneConfirm}/>
+                        <StripMenuButton iconClass="tool_btn fas fa-ellipsis-h"/>
+
                     </div>
                     
                 </div>
-                    
-                {strip.frames == null || strip.frames.length === 0 || Object.keys(strip.frames).length === 0 ? 
-                    (
-                        <div className="strip_flex_container" stripid={strip.id}>
-                            <div className="tile empty-strip ui-state-disabled">
-                                <span>No frames in this strip. Upload some!</span>
+                
+                <div className="strip_content">
+
+                    {strip.frames == null || strip.frames.length === 0 || Object.keys(strip.frames).length === 0 ? 
+                        (
+                            <div className="strip_flex_container" stripid={strip.id}>
+                                <div className="tile empty-strip ui-state-disabled">
+                                    <span>No frames in this strip. Upload some!</span>
+                                </div>
                             </div>
-                        </div>
-                    ) : (
-                        <div className="strip_flex_container" stripid={strip.id}>
-                            {strip.frames.map( (frame, index) => (
-                                <FrameCard frameObj={frame} delay={index+this.props.delay} key={key({frameKey: frame})}/>
-                            ))}
-                        </div>
-                    )
-                }
+                        ) : (
+                            <div className="strip_flex_container" stripid={strip.id}>
+                                {strip.frames.map( (frame, index) => (
+                                    <FrameCard frameObj={frame} delay={index+this.props.delay} key={key({frameKey: frame})}/>
+                                ))}
+                            </div>
+                        )
+                    }
+
+                    <CardCover on={this.state.cardCoverOn}/>
+                </div>
 
 
                 <div className="strip_flex_editor">

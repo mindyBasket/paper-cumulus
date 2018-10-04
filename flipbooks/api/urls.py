@@ -16,14 +16,18 @@ urlpatterns = [
     path('book/all/', views.FlipbookAPIListView.as_view(), name="list-book"),
     path('chapter/<int:pk>/scene/all/', views.SceneAPIListView.as_view(), name="list-scene"),
 
-    # Scenes 
+    # Scene 
     path('scene/<int:pk>/', views.SceneAPIDetailView.as_view(), name="detail-scene"),
+
+    # Strip
     re_path(r'^scene/(?P<pk>\d+)/strip/create/$', views.StripCreateAPIView.as_view(), name="create-strip-under-scene"),
-    
-    # Strips
-    re_path(r'^strip/(?P<pk>\d+)/frame/create/$', views.FrameCreateAPIView.as_view(), name="create-frame-under-strip"),
+    path('strip/<int:pk>/delete/', views.StripDeleteAPIview.as_view(), name="delete-strip"),
     
     # Frames
+    re_path(r'^strip/(?P<pk>\d+)/frame/create/$', views.FrameCreateAPIView.as_view(), name="create-frame-under-strip"),
+    
+
+
     path('frame/<int:pk>/', views.FrameDetailAPIView.as_view(), name="detail-frame"),
     re_path(r'^frame/(?P<pk>\d+)/update/$', views.FrameUpdateAPIView.as_view(), name="update-frame")
 ]
