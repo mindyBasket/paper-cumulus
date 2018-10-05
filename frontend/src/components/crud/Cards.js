@@ -118,7 +118,7 @@ class FrameCard extends Component{
 // ╚═════╝  ╚═════╝    ╚═╝      ╚═╝    ╚═════╝ ╚═╝  ╚═══╝╚══════╝
                                                               
 
-class Button1 extends Component {
+class MenuButton extends Component {
     constructor(props){
         super(props);
     }
@@ -130,15 +130,45 @@ class Button1 extends Component {
     }
 }
 
+
 class StripMenu extends Component {
+    /* behaves similarly to CardCover */
+
     constructor(props){
         super(props);
+        this.r = React.createRef();
+
+        this.refocus = this.refocus.bind(this);
     }
 
-    render(){
+    componentDidMount(){
+        this.r.current.onblur = () => {
+            if(this.props.on){
+                console.log("you clicked away!");
+                //start deacivation, unless refocus intervenes
+                
+            }
+        };
+    }
+    componentDidUpdate(prevProps, prevState, snapshot){
+        if(this.props.on){
+            this.r.current.focus();
+        }
+    }
+
+    refocus(){
+        console.log("refocus");
+        this.r.current.focus();
+    }
+
+    render (){
         return (
-            <div className="popup_menu">
-                <ul>   
+            <div className={"popup_menu " + (this.props.on ? "active" : "")}>
+                <input className="untouchable" type="text" 
+                       ref={this.r} 
+                       onClick={this.refocus} 
+                       readOnly  />
+                <ul onClick={this.refocus}>   
                     <li>Upload Image</li>
                     <li>Batch Edit</li>
                     <li>Copy</li>
@@ -149,35 +179,11 @@ class StripMenu extends Component {
     }
 }
 
-class StripMenuButton extends Component {
-    constructor(props){
-        super(props);
-        this.state ={
-            menuOpened: false
-        }
-        this.openStripMenu = this.openStripMenu.bind(this);
-    }
-
-    openStripMenu(){
-        this.setState({menuOpened: true});
-    }
-
-    render (){
-        return (
-            <a className={this.props.iconClass} onClick={this.openStripMenu}>
-                {this.state.menuOpened && <StripMenu/>}
-            </a>
-        )
-    }
-}
-
 
 
 class CardCover extends Component {
     constructor(props){
         super(props);
-
-
         this.r = React.createRef();
     }
     componentDidMount(){
@@ -192,7 +198,6 @@ class CardCover extends Component {
         if(this.props.on){
             this.r.current.focus();
         }
-
     }
 
     render(){
@@ -238,12 +243,14 @@ class SceneCard extends PureComponent {
         super(props);
         this.$node = React.createRef();
         this.state={
-            cardCoverOn: false
+            cardCoverOn: false,
+            menuOn: false
         }
 
         this.handle_deleteSceneConfirm = this.handle_deleteSceneConfirm.bind(this);
         this.handle_deleteScene = this.handle_deleteScene.bind(this);
 
+        this.openMenu = this.openMenu.bind(this);
         this.removeCardCover = this.removeCardCover.bind(this);
     }
 
@@ -319,6 +326,10 @@ class SceneCard extends PureComponent {
         // })
     }
 
+    openMenu(){
+        this.setState({menuOn: true});
+    }
+
     removeCardCover(){
         this.setState({cardCoverOn: false});
     }
@@ -329,6 +340,8 @@ class SceneCard extends PureComponent {
 
         return (
             <li className="flex_list" stripid="{strip.id}" ref={this.$node}>
+                {/* Keep flex_list position:relative to allow being "highlightable"
+                    as well as allowing popups and callouts to appear around it */}
    
                 <div className="strip_flex_toolbar">
                     <div className="header">
@@ -339,8 +352,8 @@ class SceneCard extends PureComponent {
                         <a className="tool_btn fas fa-play-circle"></a>
                         <a className="tool_btn fas fa-file-upload"></a>
                         <a className="tool_btn fas fa-pen"></a>
-                        <Button1 iconClass="tool_btn fas fa-trash" action={this.handle_deleteSceneConfirm}/>
-                        <StripMenuButton iconClass="tool_btn fas fa-ellipsis-h"/>
+                        <MenuButton iconClass="tool_btn fas fa-trash" action={this.handle_deleteSceneConfirm}/>
+                        <MenuButton iconClass="tool_btn fas fa-ellipsis-h" action={this.openMenu}/>
 
                     </div>
                     
@@ -373,6 +386,9 @@ class SceneCard extends PureComponent {
                     frame rate
                 </div>
 
+                {/* Call outs */}
+                <StripMenu on={this.state.menuOn}/>
+
             </li>
         )
     }
@@ -381,6 +397,14 @@ class SceneCard extends PureComponent {
 
 
 
+
+// ███████╗ ██████╗███████╗███╗   ██╗███████╗██╗     ██╗███████╗████████╗
+// ██╔════╝██╔════╝██╔════╝████╗  ██║██╔════╝██║     ██║██╔════╝╚══██╔══╝
+// ███████╗██║     █████╗  ██╔██╗ ██║█████╗  ██║     ██║███████╗   ██║   
+// ╚════██║██║     ██╔══╝  ██║╚██╗██║██╔══╝  ██║     ██║╚════██║   ██║   
+// ███████║╚██████╗███████╗██║ ╚████║███████╗███████╗██║███████║   ██║   
+// ╚══════╝ ╚═════╝╚══════╝╚═╝  ╚═══╝╚══════╝╚══════╝╚═╝╚══════╝   ╚═╝   
+                                                                      
 
 
 
