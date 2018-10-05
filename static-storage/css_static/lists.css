@@ -270,24 +270,55 @@ ul.list_strips .strip_flex_container .tile.empty-strip{
       
     height: 100%;
     width: 100%;
-    
+
+    margin-bottom: 20px;
+    background-color: rgba(25, 25, 25, 0.7);
+    color: white;
+    text-align: center;
+
     opacity:0;
+
+    transition-property: opacity;
+    transition-duration: 0.2s;
 }
 
 .cover.active{
     pointer-events: auto;
     opacity: 1;
-
 }
+
+.cover.light{
+    background-color: rgba(255, 255, 255, 0.93);
+    color: #5a5a5a;
+}
+
+/* input.untouchable and cover_message are both absolute
+   in order for the input to maintain focus, but also allow
+   anything in the message to be interactiable.*/
+
+.cover input.untouchable{
+    pointer-events: auto;
+    position: absolute;
+      
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+
+    cursor: default;
+}
+
+.cover .cover_message{
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+
 
 .cover.drag_and_drop,
 .cover.file_upload,
 .cover.preview{
   
-  margin-bottom: 20px;
-  color: white;
   
-  background-color: rgba(25, 25, 25, 0.7);
   transition-property: opacity;
   transition-duration: 0.15s;
   transition-timing-function: ease-in;

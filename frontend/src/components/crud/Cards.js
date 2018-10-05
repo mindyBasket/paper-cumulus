@@ -176,21 +176,49 @@ class StripMenuButton extends Component {
 class CardCover extends Component {
     constructor(props){
         super(props);
-    }
 
+
+        this.r = React.createRef();
+    }
+    componentDidMount(){
+        this.r.current.onblur = () => {
+            if(this.props.on){
+                console.log("you clicked away!");
+                this.props.off();
+            }
+        };
+    }
     componentDidUpdate(prevProps, prevState, snapshot){
-        console.log("CardCover remounted"); 
+        if(this.props.on){
+            this.r.current.focus();
+        }
 
     }
 
     render(){
         return (
-            <div className={"cover " + (this.props.on ? "active" : "")}>
-                <span className="bigtext 2">Are you sure you want to delete this scene?</span>
-                <span><button>DELETE</button> <button>Cancel</button></span>
+            <div className={"cover light delete_confirm " + (this.props.on ? "active" : "")}>
+                {/* the input is used to cause focus*/}
+                <input className="untouchable" type="text" readOnly ref={this.r}/>
+                <div className="cover_message">
+                    <p>
+                    <span className="bigtext 2">Are you sure you want to delete this scene?</span>
+                    </p>
+                    <p>
+                        <span><button className='warning'>DELETE</button> <button>Cancel</button></span>
+                    </p>
+                </div>
+                
+
+                {/* weird trick to allow focus...*/}
+                
             </div>
+
+
         )
     }
+
+    
 
 }
 
@@ -215,6 +243,8 @@ class SceneCard extends PureComponent {
 
         this.handle_deleteSceneConfirm = this.handle_deleteSceneConfirm.bind(this);
         this.handle_deleteScene = this.handle_deleteScene.bind(this);
+
+        this.removeCardCover = this.removeCardCover.bind(this);
     }
 
     // shouldComponentUpdate(nextProps, nextState) {
@@ -261,9 +291,9 @@ class SceneCard extends PureComponent {
         console.log("handle_deleteSceneCONFIRM");
 
         //light box
-        const $lb = document.querySelector("#light_box_cover");
+        //const $lb = document.querySelector("#light_box_cover");
         //turn it on
-        $lb.setAttribute("style", "display: initial;");
+        //$lb.setAttribute("style", "display: initial;");
 
         // TODO: try using class instead, to take advantage of css transition
 
@@ -289,13 +319,16 @@ class SceneCard extends PureComponent {
         // })
     }
 
+    removeCardCover(){
+        this.setState({cardCoverOn: false});
+    }
 
     render(){
         const strip = this.props.stripObj;
         const index = this.props.index;
 
         return (
-            <li className="flex_list" stripid="{strip.id}" key={key({stripkey: strip})} ref={this.$node}>
+            <li className="flex_list" stripid="{strip.id}" ref={this.$node}>
    
                 <div className="strip_flex_toolbar">
                     <div className="header">
@@ -325,13 +358,13 @@ class SceneCard extends PureComponent {
                         ) : (
                             <div className="strip_flex_container" stripid={strip.id}>
                                 {strip.frames.map( (frame, index) => (
-                                    <FrameCard frameObj={frame} delay={index+this.props.delay} key={key({frameKey: frame})}/>
+                                    <FrameCard frameObj={frame} delay={index+this.props.delay} key={"frame"+index}/>
                                 ))}
                             </div>
                         )
                     }
 
-                    <CardCover on={this.state.cardCoverOn}/>
+                    <CardCover on={this.state.cardCoverOn} off={this.removeCardCover}/>
 
                 </div>
 
@@ -379,7 +412,6 @@ class SceneCardList extends Component {
           .then(response => {
             console.log( "Fetch successful");
             thisObj.setState({data: response.data});
-
             this.firstLoad = false;
    
           })
@@ -393,7 +425,6 @@ class SceneCardList extends Component {
 
     componentDidUpdate(prevProps, prevState, snapshot){
         console.warn("[UPDATED] SceneCard LIST");
-
         // It's okay to setState here. Just make sure it's 
         // inside a conditional to prevent infinite loop
 
@@ -403,10 +434,6 @@ class SceneCardList extends Component {
             // Mail time!
             const newData = this.appendData(this.state.data, this.props.dataInbox)
             this.setState({data: newData});
-
-            //Empty mailbox
-            // oh ...props is read only. ]: I can't do this. 
-            // this.props.dataInbox = {};
         }
 
     }
@@ -414,7 +441,7 @@ class SceneCardList extends Component {
 
     // takes only one key from newData. Rest will be ignored for now.
     appendData(data, newData){
-        console.log("New DAta looks like this: " + JSON.stringify(newData.newStrip));
+        console.log("New Data looks like this: " + JSON.stringify(newData.newStrip));
 
         if (newData == null || Object.keys(newData).length === 0) {
             // newData is invalid. return same data.
@@ -425,11 +452,9 @@ class SceneCardList extends Component {
             case "newStrip":
                 //add it to list of strips
                 if (data.hasOwnProperty("strips")) { data.strips.push(newData.newStrip) }
-
             default: 
                 return data;
         }
-
         return data; 
     }
 
@@ -447,7 +472,7 @@ class SceneCardList extends Component {
                              <SceneCard stripObj={strip} 
                                         delay={this.firstLoad ? index : 1} 
                                         index={index+1}
-                                        key={key({stripKey: strip})}/>
+                                        key={"strip"+index}/>
                         )) } 
                     </ul>
                     
