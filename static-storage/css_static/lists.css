@@ -292,13 +292,13 @@ ul.list_strips .strip_flex_container .tile.empty-strip{
     color: #5a5a5a;
 }
 
-/* input.untouchable and cover_message are both absolute
-   in order for the input to maintain focus, but also allow
-   anything in the message to be interactiable.*/
+/* input.untouchable + cover_message duo makes
+   blur-able message box.*/
 
 .cover input.untouchable{
-    pointer-events: auto;
+    pointer-events: none;
     position: absolute;
+    top: 0; left: 0;
       
     height: 100%;
     width: 100%;
@@ -308,7 +308,6 @@ ul.list_strips .strip_flex_container .tile.empty-strip{
 }
 
 .cover .cover_message{
-    position: absolute;
     height: 100%;
     width: 100%;
 }
