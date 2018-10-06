@@ -110,17 +110,19 @@ class FrameCard extends Component{
 
 
 
-// ██████╗ ██╗   ██╗████████╗████████╗ ██████╗ ███╗   ██╗███████╗
-// ██╔══██╗██║   ██║╚══██╔══╝╚══██╔══╝██╔═══██╗████╗  ██║██╔════╝
-// ██████╔╝██║   ██║   ██║      ██║   ██║   ██║██╔██╗ ██║███████╗
-// ██╔══██╗██║   ██║   ██║      ██║   ██║   ██║██║╚██╗██║╚════██║
-// ██████╔╝╚██████╔╝   ██║      ██║   ╚██████╔╝██║ ╚████║███████║
-// ╚═════╝  ╚═════╝    ╚═╝      ╚═╝    ╚═════╝ ╚═╝  ╚═══╝╚══════╝
-                                                              
+
+// ███╗   ███╗ ██████╗ ██████╗  █████╗ ██╗     ███████╗
+// ████╗ ████║██╔═══██╗██╔══██╗██╔══██╗██║     ██╔════╝
+// ██╔████╔██║██║   ██║██║  ██║███████║██║     ███████╗
+// ██║╚██╔╝██║██║   ██║██║  ██║██╔══██║██║     ╚════██║
+// ██║ ╚═╝ ██║╚██████╔╝██████╔╝██║  ██║███████╗███████║
+// ╚═╝     ╚═╝ ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚══════╝
+                                                                                                 
 
 class MenuButton extends Component {
     constructor(props){
         super(props);
+
     }
 
     render (){
@@ -129,6 +131,10 @@ class MenuButton extends Component {
         )
     }
 }
+
+
+
+
 
 
 class StripMenu extends Component {
@@ -140,7 +146,7 @@ class StripMenu extends Component {
 
         this.ignoreBlur = false;
         this.refocus = this.refocus.bind(this);
-        
+        this.blurAndAction = this.blurAndAction.bind(this);
     }
 
     componentDidMount(){
@@ -165,8 +171,13 @@ class StripMenu extends Component {
     refocus(e){
         // any focuses immediately blurred out. See .focus() line in r.current.onblur
             //this.r.current.focus(); 
-        
         this.ignoreBlur = true; // will briefly protect from being blurred
+    }
+
+    //blur out to close the menu, and then execute whatever action 
+    blurAndAction(actionFunc){
+        this.r.current.blur();
+        actionFunc();
     }
 
     render (){
@@ -176,10 +187,11 @@ class StripMenu extends Component {
                        ref={this.r} 
                        readOnly  />
                 <ul onMouseDown={this.refocus}>   
-                    <li onClick={()=>console.log("Upload Image!")}>Upload Image</li>
-                    <li>Batch Edit</li>
+                    <li onClick={()=>console.log("Upload Image!")}>Upload Frames</li>
+                    <li>Batch Frame Edit</li>
+                    <li>Edit</li>
                     <li>Copy</li>
-                    <li>Delete</li>
+                    <li onClick={()=>{this.blurAndAction(this.props.actionDelete)}}>Delete</li>
                 </ul>
             </div>
         )
@@ -188,51 +200,49 @@ class StripMenu extends Component {
 
 
 
+
+
+
 class CardCover extends Component {
     constructor(props){
         super(props);
         this.r = React.createRef();
     }
-    componentDidMount(){
-        this.r.current.onblur = () => {
-            if(this.props.on){
-                console.log("you clicked away!");
-                this.props.off();
-            }
-        };
-    }
+
     componentDidUpdate(prevProps, prevState, snapshot){
-        if(this.props.on){
-            this.r.current.focus();
-        }
+        // if        (!prevProps.on && this.props.on){
+        //     console.log("[CARD COVER] set spotlight on");
+        //     this.props.setParentSpotlight(true);
+        // } else if (prevProps.on && !this.props.on){
+        //     console.log("[CARD COVER] set spotlight off");
+        //     this.props.setParentSpotlight(false);
+        // }
     }
 
     render(){
         return (
             <div className={"cover light delete_confirm " + (this.props.on ? "active" : "")}>
-                {/* the input is used to cause focus*/}
-                <input className="untouchable" type="text" readOnly ref={this.r}/>
+
                 <div className="cover_message">
                     <p>
                     <span className="bigtext 2">Are you sure you want to delete this scene?</span>
                     </p>
                     <p>
-                        <span><button className='warning'>DELETE</button> <button>Cancel</button></span>
+                        <span>
+                            <button className='warning'>DELETE</button>
+                            <button onClick={this.props.off}>Cancel</button></span>
                     </p>
-                </div>
-                
-
-                {/* weird trick to allow focus...*/}
-                
+                </div>           
             </div>
-
-
         )
     }
-
-    
-
 }
+
+
+
+
+
+
 
 
 // ███████╗ ██████╗███████╗███╗   ██╗███████╗
@@ -248,72 +258,107 @@ class SceneCard extends PureComponent {
 
     constructor(props){
         super(props);
+
         this.$node = React.createRef();
+        this.$lb = document.querySelector("#lightbox_bg"); //lightbox
+        
         this.state={
             cardCoverOn: false,
             menuOn: false
         }
 
+        // this is for turning all of them off
+        this.modalStateKeys = ['cardCoverOn', 'menuOn'];
+
         this.handle_deleteSceneConfirm = this.handle_deleteSceneConfirm.bind(this);
         this.handle_deleteScene = this.handle_deleteScene.bind(this);
 
         this.openMenu = this.openMenu.bind(this);
-        this.removeCardCover = this.removeCardCover.bind(this);
+        //this.removeCardCover = this.removeCardCover.bind(this);
         this.hideComponent = this.hideComponent.bind(this); // more generic version of 'removeCardCover'
+        this.setSpotlight = this.setSpotlight.bind(this);
     }
 
-    // shouldComponentUpdate(nextProps, nextState) {
-
-    //   if (JSON.stringify(this.props.stripObj) != JSON.stringify(nextProps.stripObj)){
-    //     return true;
-    //   }
-    //   return false;
-    // }
 
     componentDidMount(){
-        console.error("[MOUNTED] SceneCard");
-
         const delay = this.props.delay;
         const $node = this.$node.current
 
         var mountAnim = anime.timeline();
             mountAnim
                 .add({
-                    targets: $node,
-                    scale: 0,
-                    duration: 0
+                    targets: $node, scale: 0, duration: 0
                 }) 
                 .add({
-                    targets: $node,
-                    scale: 0.5,
-                    delay: delay*80,
-                    duration: 0
+                    targets: $node, scale: 0.5, duration: 0,
+                    delay: delay*80
                 }) 
                 .add({
-                    targets: $node,
-                    scale: 1,
-                    duration: 400,
+                    targets: $node, scale: 1, duration: 400,
                     elasticity: 200
-                });   
+                });  
+
         
     }
 
     componentDidUpdate(){
-        console.warn("[UPDATE] SceneCard");
+        //console.warn("[SCENECARD] SOMETHING UPDATED: " + JSON.stringify(this.state));
+
+        // changes that warrent lightbox
+        if (this.state.cardCoverOn){
+            this.setSpotlight(true);
+        }
+
+    }
+
+    setSpotlight(on){
+        // Set this component in spotlight against lightbox.
+        // Due to the nature of this container, only .flex_list can do this
+
+        // Bind spotlight off event
+        this.$lb.onclick = e => {
+            //console.log("Curr state in onclick: " + JSON.stringify(this.state));
+            this.setSpotlight(false);
+            // NOTE: the reason this is blinding here is because onclick's scope is
+            //       a snapshot when this event is binded. So if onclick is binded
+            //       say componentDidUpdate, the states excessed in setSpotlight is
+            //       all false, so the state never actualy updates properly. 
+            // TODO: look more into how to get around this quirk.
+        }
+        
+        
+        if (on){
+            console.log("setSpotlight " + on);
+
+            this.$node.current.setAttribute('style', 'z-index:1000;');
+            this.$lb.classList.add('active');
+        } else {
+            console.log("setSpotlight " + on);
+            this.$node.current.setAttribute('style', '');
+            this.$lb.classList.remove('active');
+
+            //remove all modals or any callouts
+            this.setState(()=>{
+                let st = {};
+                const keys = this.modalStateKeys;
+                for (var i=0; i<keys.length; i++) {
+                    if (this.state.hasOwnProperty(keys[i])) {
+                        st[keys[i]] = false;
+                    }
+                }
+                return st;
+            });
+        }
+
+        
     }
 
     handle_deleteSceneConfirm(){
         console.log("handle_deleteSceneCONFIRM");
 
-        //light box
-        //const $lb = document.querySelector("#light_box_cover");
-        //turn it on
-        //$lb.setAttribute("style", "display: initial;");
-
-        // TODO: try using class instead, to take advantage of css transition
-
         //turn on cover
         this.setState({cardCoverOn: true});
+    
     }
 
     handle_deleteScene(){
@@ -336,24 +381,29 @@ class SceneCard extends PureComponent {
 
     openMenu(){
         this.setState({menuOn: true});
+        // Note: because Strip Menu is nested inside this container
+        //       it appear behind the next Strip container. 
+        //       By toggling the z-index, it is propped up to the top.
+        this.$node.current.setAttribute('style', 'z-index:1000;');
+        this.$node.current.setAttribute('style', '');
     }
 
-    removeCardCover(){
-        this.setState({cardCoverOn: false});
-    }
 
-    hideComponent(stateName){
+    // Generic function for hiding any modal or callouts
+    hideComponent(stateName, spotlighted){
         if (stateName){
             this.setState(()=>{
                 let s={};
-                s[stateName] = false;
-                console.log("Hiding by using ["+stateName+"]: " + JSON.stringify(s));
+                s[stateName] = false; 
                 return s;
             });
-        }
 
+            if (spotlighted){
+                //remove spotlight
+                this.setSpotlight(false);
+            }
+        }
         return;
-        
     }
 
     render(){
@@ -399,22 +449,26 @@ class SceneCard extends PureComponent {
                         )
                     }
 
-                    <CardCover on={this.state.cardCoverOn} off={this.removeCardCover}/>
+                    
 
                 </div>
 
 
                 <div className="strip_flex_editor">
-                    frame rate
                 </div>
 
-                {/* Call outs */}
-                <StripMenu on={this.state.menuOn} off={()=>{this.hideComponent("menuOn");}}/>
+                {/* Message or modals */}
+                <CardCover on={this.state.cardCoverOn} off={()=>{this.hideComponent("cardCoverOn", true);}}
+                           setParentSpotlight={this.setSpotlight}/>
+                <StripMenu on={this.state.menuOn} off={()=>{this.hideComponent("menuOn");}}
+                           actionDelete={this.handle_deleteSceneConfirm}/>
 
             </li>
         )
     }
 }
+
+
 
 
 

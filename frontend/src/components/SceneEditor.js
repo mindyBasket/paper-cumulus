@@ -6,6 +6,7 @@ import FrameFeeder from "./FrameFeeder";
 import SceneCreateForm from "./crud/Form";
 import {SceneCardList} from "./crud/Cards";
 
+
 import Spinner from "./Spinner";
 import key from "weak-key";
 
@@ -92,6 +93,8 @@ class SceneEditor extends Component{
 				{/* list of strips */}
 				<SceneCardList sceneId={this.sceneId}
 						   dataInbox={this.state.toSceneCardList}/>
+
+
 
 
 			</div>
