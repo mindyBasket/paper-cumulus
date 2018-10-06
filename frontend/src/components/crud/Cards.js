@@ -138,27 +138,35 @@ class StripMenu extends Component {
         super(props);
         this.r = React.createRef();
 
+        this.ignoreBlur = false;
         this.refocus = this.refocus.bind(this);
+        
     }
 
     componentDidMount(){
-        this.r.current.onblur = () => {
+            
+        this.r.current.onblur = (e) => {
             if(this.props.on){
-                console.log("you clicked away!");
-                //start deacivation, unless refocus intervenes
-                
+                if (this.ignoreBlur){
+                    this.ignoreBlur = false; 
+                    this.r.current.focus();
+                    //blur will potentially not be ignored the next click
+                } else {
+                    this.props.off();
+                }
             }
         };
     }
     componentDidUpdate(prevProps, prevState, snapshot){
-        if(this.props.on){
-            this.r.current.focus();
-        }
+        if (this.props.on){ this.r.current.focus() } //focus on
     }
-
-    refocus(){
-        console.log("refocus");
-        this.r.current.focus();
+    
+    // if any element inside the menu is clicked focus on
+    refocus(e){
+        // any focuses immediately blurred out. See .focus() line in r.current.onblur
+            //this.r.current.focus(); 
+        
+        this.ignoreBlur = true; // will briefly protect from being blurred
     }
 
     render (){
@@ -166,10 +174,9 @@ class StripMenu extends Component {
             <div className={"popup_menu " + (this.props.on ? "active" : "")}>
                 <input className="untouchable" type="text" 
                        ref={this.r} 
-                       onClick={this.refocus} 
                        readOnly  />
-                <ul onClick={this.refocus}>   
-                    <li>Upload Image</li>
+                <ul onMouseDown={this.refocus}>   
+                    <li onClick={()=>console.log("Upload Image!")}>Upload Image</li>
                     <li>Batch Edit</li>
                     <li>Copy</li>
                     <li>Delete</li>
@@ -252,6 +259,7 @@ class SceneCard extends PureComponent {
 
         this.openMenu = this.openMenu.bind(this);
         this.removeCardCover = this.removeCardCover.bind(this);
+        this.hideComponent = this.hideComponent.bind(this); // more generic version of 'removeCardCover'
     }
 
     // shouldComponentUpdate(nextProps, nextState) {
@@ -334,6 +342,20 @@ class SceneCard extends PureComponent {
         this.setState({cardCoverOn: false});
     }
 
+    hideComponent(stateName){
+        if (stateName){
+            this.setState(()=>{
+                let s={};
+                s[stateName] = false;
+                console.log("Hiding by using ["+stateName+"]: " + JSON.stringify(s));
+                return s;
+            });
+        }
+
+        return;
+        
+    }
+
     render(){
         const strip = this.props.stripObj;
         const index = this.props.index;
@@ -387,7 +409,7 @@ class SceneCard extends PureComponent {
                 </div>
 
                 {/* Call outs */}
-                <StripMenu on={this.state.menuOn}/>
+                <StripMenu on={this.state.menuOn} off={()=>{this.hideComponent("menuOn");}}/>
 
             </li>
         )

@@ -295,8 +295,8 @@ ul.list_strips .strip_flex_container .tile.empty-strip{
 /* input.untouchable + cover_message duo makes
    blur-able message box.*/
 
-.cover .untouchable{
-    pointer-events: none;
+.untouchable{
+    pointer-events: auto;
     position: absolute;
     top: 0; left: 0;
       

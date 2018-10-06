@@ -3,8 +3,10 @@
 }
 
 .popup_menu{
+	pointer-events: none;
 	position: absolute;
-	top: 28px; right: -10px;
+
+	top: 55px; right: -10px;
 
 	width: 150px;
 
@@ -14,6 +16,7 @@
 }
 
 .popup_menu.active{
+	pointer-events: auto;
 	opacity: 1;
 }
 

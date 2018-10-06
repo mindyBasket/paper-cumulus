@@ -20,6 +20,30 @@ function _setState_SceneCard(newState){
 }
 
 
+class MouseClickTracker extends Component{
+
+	constructor(props){
+		super(props);
+
+		this.returnCoord = this.returnCoord.bind(this);
+	}
+
+	componentDidMount(){
+		document.querySelector('body').onclick = (e)=>{
+			this.x = e.clientX;
+		    this.y = e.clientY;
+
+		    console.log("Clicked at: " + this.x +", " + this.y);
+		}
+
+	}
+
+	returnCoord(){
+		return {x: this.x, y: this.y}
+	}
+
+	render(){return false;}
+}
 
 // http://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=FrameStage
 
@@ -47,18 +71,16 @@ class SceneEditor extends Component{
 
 	}
 
+	// componentDidMount(){
+
+	// }
+
 	// Function to be used by its children to communicate to parent (this)
 	setParentState(newState){
 		this.setState(newState);
 	}
 
-	componentDidMount(){
-		console.error("[MOUNTED] Editor");
-	}
 
-	componentDidUpdate(){
-		console.warn("[UPDATED] Editor");
-	}
 
 	render (){
 		return (
@@ -70,6 +92,7 @@ class SceneEditor extends Component{
 				{/* list of strips */}
 				<SceneCardList sceneId={this.sceneId}
 						   dataInbox={this.state.toSceneCardList}/>
+
 
 			</div>
 
