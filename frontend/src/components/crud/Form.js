@@ -134,7 +134,7 @@ class SceneCreateForm extends Component {
               <span className="error">SOMETHING WENT WRONG</span>
             }
 
-            <button className="btn btn-primary btn-lg" onClick={this.handle_SceneCreate}>
+            <button onClick={this.handle_SceneCreate}>
               REAL Add Strip
             </button>
             

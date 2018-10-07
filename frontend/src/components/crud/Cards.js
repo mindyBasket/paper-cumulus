@@ -299,7 +299,9 @@ function initializeSortable($container, name, callback){
     
 }
 
-class SceneCard extends PureComponent {
+
+
+class StripCard extends PureComponent {
 
     constructor(props){
         super(props);
@@ -355,7 +357,7 @@ class SceneCard extends PureComponent {
     }
 
     componentDidUpdate(){
-        //console.warn("[SCENECARD] SOMETHING UPDATED: " + JSON.stringify(this.state));
+        //console.warn("[STRIPCARD] SOMETHING UPDATED: " + JSON.stringify(this.state));
 
         // changes that warrent lightbox
         if (this.state.cardCoverOn){
@@ -502,9 +504,35 @@ class SceneCard extends PureComponent {
         return;
     }
 
+    // returns list of frame objects in order referencing children_li
+    reorderFrames(strip){
+        const frameIdList = strip.children_li.split(",");
+        if (frameIdList==null || frameIdList==='') {return null;}
+
+        let frameOrderedArr = Array.apply(null, Array(frameIdList.length));
+
+        strip.frames.forEach((f)=>{
+            const insertAt = frameIdList.indexOf(String(f.id));
+            if (insertAt>=0 && insertAt<frameOrderedArr.length){
+                frameOrderedArr[insertAt] = f; 
+            }
+            
+        });
+
+        return frameOrderedArr;
+
+    }
+
     render(){
         const strip = this.props.stripObj;
         const index = this.props.index;
+
+
+        // TODO: map frame list to match children_li
+        const reorderedFrames = this.reorderFrames(strip);
+        
+
+
 
         return (
             <li className="flex_list" stripid="{strip.id}" ref={this.$node}>
@@ -538,7 +566,7 @@ class SceneCard extends PureComponent {
                             </div>
                         ) : (
                             <div className="strip_flex_container" stripid={strip.id}>
-                                {strip.frames.map( (frame, index) => (
+                                {reorderedFrames.map( (frame, index) => (
                                     <FrameCard frameObj={frame} delay={index+this.props.delay} key={"frame"+index}/>
                                 ))}
                             </div>
@@ -657,7 +685,7 @@ class SceneCardList extends Component {
                 ) : (
                     <ul className="list_strips">
                         {this.state.data['strips'].map( (strip,index) => (
-                             <SceneCard stripObj={strip} 
+                             <StripCard stripObj={strip} 
                                         delay={this.firstLoad ? index : 1} 
                                         index={index+1}
                                         key={"strip"+index}/>
