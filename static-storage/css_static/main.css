@@ -172,6 +172,22 @@ a:hover{
     opacity: 0;
 }
 
+/* sortable style*/
+
+
+.thumb.draggable-mirror .frame_image{
+    /* transform on this doesn't work on .draggable-mirro directly
+       because transform property already taken by draggable js*/
+    transform: rotate(7deg); 
+}
+
+.thumb.draggable-source--is-dragging{
+    opacity: 0.5;
+}
+.thumb.draggable--over{
+    opacity: 0.5;
+}
+
 .thumb .overlay_box{
     position:absolute;
     top:-15px; left:0;

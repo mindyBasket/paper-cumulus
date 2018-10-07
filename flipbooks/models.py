@@ -174,8 +174,8 @@ class Scene(models.Model):
 class Strip(models.Model):
     
     order = models.IntegerField(default="-1")
-    children_li = models.TextField(max_length=500, blank=True, default="")
-    children_index = models.TextField(max_length=500, blank=True, default="")
+    children_li = models.TextField(max_length=500, null=True, blank=True, default="")
+    children_index = models.TextField(max_length=500, null=True, blank=True, default="")
     
     description = models.TextField(max_length=100, blank=True, default="")
     

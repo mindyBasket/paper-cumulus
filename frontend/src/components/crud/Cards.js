@@ -2,6 +2,8 @@ import React, { Component, PureComponent } from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 
+import { Sortable } from '@shopify/draggable';
+// import Sortable from 'sortablejs';
 import Spinner from "./../Spinner";
 import key from "weak-key";
 
@@ -100,10 +102,12 @@ class FrameCard extends Component{
             
                 
         }
-        
-        
-
     }
+
+
+
+    
+
 
 }
 
@@ -251,8 +255,49 @@ class CardCover extends Component {
 // ╚════██║██║     ██╔══╝  ██║╚██╗██║██╔══╝  
 // ███████║╚██████╗███████╗██║ ╚████║███████╗
 // ╚══════╝ ╚═════╝╚══════╝╚═╝  ╚═══╝╚══════╝
-                                          
+                                         
 
+
+function initializeSortable($container, name, callback){
+    if ($container == null) {return false;}
+
+
+    const frameSortable = new Sortable($container, {
+        draggable: '.thumb',
+        mirror: {
+            appendTo: document.querySelector('body'),
+            //appendTo: $container.getAttribute("class"),
+            constrainDimensions: true,
+        },
+    });
+
+    frameSortable.on('sortable:start', () => {
+        //tilt the chosen
+        const pickedUp = document.querySelector('.thumb.draggable-mirror');
+    });
+    frameSortable.on('sortable:stop', () => {
+        //get new order
+        let thOrder = [];
+        $container.querySelectorAll(".thumb").forEach(th=>{
+            let thclass = th.getAttribute("class");
+            let id = th.getAttribute("frameid");
+
+            if (!thclass.includes("draggable")){
+                thOrder.push(id);
+            } else if (thclass.includes("draggable-source")){
+                thOrder.push(id);
+            }
+        });
+
+        console.log(thOrder.join(","));
+        callback(thOrder);
+
+        //TODO: animation?
+
+
+    });
+    
+}
 
 class SceneCard extends PureComponent {
 
@@ -272,6 +317,7 @@ class SceneCard extends PureComponent {
 
         this.handle_deleteSceneConfirm = this.handle_deleteSceneConfirm.bind(this);
         this.handle_deleteScene = this.handle_deleteScene.bind(this);
+        this.handle_frameSort = this.handle_frameSort.bind(this);
 
         this.openMenu = this.openMenu.bind(this);
         //this.removeCardCover = this.removeCardCover.bind(this);
@@ -294,11 +340,18 @@ class SceneCard extends PureComponent {
                     delay: delay*80
                 }) 
                 .add({
-                    targets: $node, scale: 1, duration: 400,
+                    targets: $node, scale: 1, duration: 600,
                     elasticity: 200
                 });  
 
-        
+        // Sortable magic
+        initializeSortable(this.$node.current.querySelector('.strip_flex_container'), 
+                           this.props.index,
+                           this.handle_frameSort);
+
+
+
+          
     }
 
     componentDidUpdate(){
@@ -353,6 +406,15 @@ class SceneCard extends PureComponent {
         
     }
 
+
+
+     // _     _ _     _  ______
+     //  \___/  |_____| |_____/
+     // _/   \_ |     | |    \_
+     // _     _ _______ __   _ ______         _______  ______ _______
+     // |_____| |_____| | \  | |     \ |      |______ |_____/ |______
+     // |     | |     | |  \_| |_____/ |_____ |______ |    \_ ______|
+                                                                  
     handle_deleteSceneConfirm(){
         console.log("handle_deleteSceneCONFIRM");
 
@@ -367,6 +429,8 @@ class SceneCard extends PureComponent {
         const strip = this.props.stripObj;
 
         console.log("handle_deleteScene");
+
+        // TODO: this returns "forbidden" error
         // axios({
         //     method: 'get',
         //     url: `/api/strip/${strip.id}/delete/`,
@@ -379,6 +443,38 @@ class SceneCard extends PureComponent {
         // })
     }
 
+    handle_frameSort(idArr){
+
+        const strip = this.props.stripObj;
+        const sortableData = {frame_ids: idArr.join(",")}
+        console.log("ready to send: " +JSON.stringify(sortableData));
+
+        axios({
+            method: "get",
+            params: sortableData,
+            url: `/flipbooks/ajax/strips/${strip.id}/sort-children/`
+ 
+        })
+        .then(response =>{
+            console.log("sucessfully came back: " + response.data["frame_ids"]);
+        })
+        .catch(err => {
+            console.error(JSON.stringify(err));
+            console.error(err.data);
+            console.log(data.status);
+        })
+    }
+
+
+
+     // _______  _____  ______  _______                              
+     // |  |  | |     | |     \ |_____| |                            
+     // |  |  | |_____| |_____/ |     | |_____                       
+                                                                  
+     // _______ _  _  _ _____ _______ _______ _     _ _______ _______
+     // |______ |  |  |   |      |    |       |_____| |______ |______
+     // ______| |__|__| __|__    |    |_____  |     | |______ ______|
+                                                              
     openMenu(){
         this.setState({menuOn: true});
         // Note: because Strip Menu is nested inside this container
@@ -453,10 +549,6 @@ class SceneCard extends PureComponent {
 
                 </div>
 
-
-                <div className="strip_flex_editor">
-                </div>
-
                 {/* Message or modals */}
                 <CardCover on={this.state.cardCoverOn} off={()=>{this.hideComponent("cardCoverOn", true);}}
                            setParentSpotlight={this.setSpotlight}/>
@@ -500,8 +592,6 @@ class SceneCardList extends Component {
     }
 
     componentDidMount(){
-        console.error("[MOUNTED] SceneCard LIST");
-
         const thisObj = this;
 
         // fetch? 
@@ -519,12 +609,10 @@ class SceneCardList extends Component {
             console.log(error);
           })
 
-
     }
 
 
     componentDidUpdate(prevProps, prevState, snapshot){
-        console.warn("[UPDATED] SceneCard LIST");
         // It's okay to setState here. Just make sure it's 
         // inside a conditional to prevent infinite loop
 

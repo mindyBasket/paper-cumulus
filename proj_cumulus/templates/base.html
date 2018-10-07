@@ -24,7 +24,8 @@ dg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">-->
     <!-- external fonts -->
     <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
-    
+
+
     <!-- custom css -->
     <link href="{% static 'css_static/main.css' %}" rel="stylesheet">
     <link href="{% static 'css_static/ui.css' %}" rel="stylesheet">
@@ -54,20 +55,21 @@ dg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">-->
     <div id="lightbox_bg"></div>
     
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <!-- jQuery conflcits with Sortable! --> 
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script> -->
 
     <!-- Library off of CDN -->
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js_external/imagesloaded.pkgd.min.js' %}"></script>
     <script src="{% static 'js_external/anime.min.js' %}"></script>
 
-    
     <!-- scripts written for this project -->
-    <script src="{% static 'js/MASTER.js' %}"></script> <!-- main -->
+    <!-- REPLACED BY REACT -->
+    <script src="{% static 'js/MASTER.js' %}"></script>
     <script src="{% static 'js/form.js' %}"></script>
     
     {% block extra_js %}

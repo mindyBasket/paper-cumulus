@@ -6,7 +6,6 @@ import FrameFeeder from "./FrameFeeder";
 import SceneCreateForm from "./crud/Form";
 import {SceneCardList} from "./crud/Cards";
 
-
 import Spinner from "./Spinner";
 import key from "weak-key";
 
@@ -63,8 +62,6 @@ class SceneEditor extends Component{
 		
 		this.sceneId = document.querySelector('#ref-content').getAttribute("sceneId"),
 		this.state = {
-			
-
 			toSceneCardList: null
 		}
 
@@ -80,7 +77,6 @@ class SceneEditor extends Component{
 	setParentState(newState){
 		this.setState(newState);
 	}
-
 
 
 	render (){
