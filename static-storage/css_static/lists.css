@@ -97,7 +97,7 @@ ul.list_strips li{ /*flex_list*/
     
     counter-increment: stripNum;
     
-    border-bottom: 5px solid #c9c9c9;
+    border-bottom: 5px solid #c5c5c5;
     margin-bottom: 10px;
     
 }

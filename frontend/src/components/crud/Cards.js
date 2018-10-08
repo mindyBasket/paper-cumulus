@@ -28,10 +28,13 @@ class FrameCard extends Component{
         super(props);
         this.thumbWidth = 180, //px
         this.state = {
-            loading: true
+            loading: true,
+            visible: true
         }
 
         this.$node = React.createRef();
+
+        this.toggleVisibility = this.toggleVisibility.bind(this);
         
     }
 
@@ -62,6 +65,18 @@ class FrameCard extends Component{
         
     }
 
+
+    toggleVisibility(){
+
+        this.setState({visible: !this.state.visible});
+
+
+
+    }
+
+
+
+
     render(){
         const frame = this.props.frameObj; 
         const thumbWidth = this.thumbWidth;
@@ -70,7 +85,9 @@ class FrameCard extends Component{
         if (frame.hasOwnProperty("frame_image") && frame.frame_image != null && frame.frame_image != ""){
 
             return (
-                <div className={"thumb "+ (this.state.loading && "loading")} 
+                <div className={"thumb " + 
+                                (this.state.loading && "loading") + " " +
+                                (!this.state.visible && "ignore" )} 
                      frameid={frame.id} ref={this.$node}>
       
                     <div className="frame_image stretch">
@@ -83,10 +100,14 @@ class FrameCard extends Component{
                         
                         <span className="overlay_box" frameid={frame.id}>
                             <a>[ {frame.id} ]</a>
-                            <a className="frame_edit glyphicon glyphicon-pencil" aria-hidden="true" style={{fontSize:'1.2em'}}></a>
-                            <a className="frame_delete glyphicon glyphicon-trash" aria-hidden="true" style={{fontSize:'1.2em'}}></a>
-                            <a className="frame_options glyphicon glyphicon-option-horizontal" aria-hidden="true" style={{fontSize:'1.2em'}}></a>
+                            <a className={"far " + (this.state.visible ? "fa-eye" : "fa-eye-slash")}
+                               onClick={this.toggleVisibility}></a>
+                            <a className="fas fa-ellipsis-h"></a>
                         </span>
+                        
+                    </div>
+
+                    <div class="slashes">
                     </div>
 
                 </div> 
@@ -301,6 +322,8 @@ function initializeSortable($container, name, callback){
 
 
 
+
+
 class StripCard extends PureComponent {
 
     constructor(props){
@@ -326,6 +349,9 @@ class StripCard extends PureComponent {
         this.hideComponent = this.hideComponent.bind(this); // more generic version of 'removeCardCover'
         this.setSpotlight = this.setSpotlight.bind(this);
     }
+
+
+
 
 
     componentDidMount(){
