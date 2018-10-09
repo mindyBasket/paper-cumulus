@@ -261,11 +261,15 @@ ul.list_strips .strip_flex_container .tile.empty-strip{
 
 
 
-
-
-
-/* covers */
-
+/*
+ ██████╗ █████╗ ██████╗ ██████╗  ██████╗ ██████╗ ██╗   ██╗███████╗██████╗ ███████╗
+██╔════╝██╔══██╗██╔══██╗██╔══██╗██╔════╝██╔═══██╗██║   ██║██╔════╝██╔══██╗██╔════╝
+██║     ███████║██████╔╝██║  ██║██║     ██║   ██║██║   ██║█████╗  ██████╔╝███████╗
+██║     ██╔══██║██╔══██╗██║  ██║██║     ██║   ██║╚██╗ ██╔╝██╔══╝  ██╔══██╗╚════██║
+╚██████╗██║  ██║██║  ██║██████╔╝╚██████╗╚██████╔╝ ╚████╔╝ ███████╗██║  ██║███████║
+ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝  ╚═════╝ ╚═════╝   ╚═══╝  ╚══════╝╚═╝  ╚═╝╚══════╝*/
+                                                                                  
+                                                                                  
 .flex_list .cover{
     pointer-events: none;
     position: absolute;
@@ -285,20 +289,31 @@ ul.list_strips .strip_flex_container .tile.empty-strip{
     transition-duration: 0.2s;
 }
 
-.cover.active{
-    pointer-events: auto;
-    opacity: 1;
-}
-
 .cover.light{
     background-color: rgba(255, 255, 255, 0.93);
     color: #5a5a5a;
 }
 
+
+/* Visibility and Tangibility */
+
+.cover.active{
+    pointer-events: auto;
+    opacity: 1;
+}
+
+.cover.active.intangible{
+    /* Note: in case of drag-and-drop cover, it must be intangible,
+             otherwise the moment it appears dragLeave fires*/
+    pointer-events: none;
+}
+
+
+
 /* input.untouchable + cover_message duo makes
    blur-able message box.*/
 
-.untouchable{
+input.untouchable{
     pointer-events: none;
     position: absolute;
     top: 0; left: 0;
@@ -310,25 +325,40 @@ ul.list_strips .strip_flex_container .tile.empty-strip{
     cursor: default;
 }
 
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+/* Style for messages inside the cover
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
 .cover .cover_message{
+    /* center the message content */
     height: 100%;
     width: 100%;
+
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
+.cover_message .color.red{
+    /* TODO: would be nice if I could use variables here */
+    color: #da8d8d;
+}
 
-.cover.drag_and_drop,
+/*.cover.drag_and_drop,
 .cover.file_upload,
 .cover.preview{
-  
   
   transition-property: opacity;
   transition-duration: 0.15s;
   transition-timing-function: ease-in;
   
-  /* low-tech solution to prevent flickering when drag related event fires
-     over children object. The ease-in makes the flickering much milder */
+  low-tech solution to prevent flickering when drag related event fires
+     over children object. The ease-in makes the flickering much milder
+
+    NOTE: probably don't need this anymore now that I have a better
+          way of detecting and changing state of covers
   
-}
+}*/
 
 
 
@@ -337,14 +367,6 @@ ul.list_strips .strip_flex_container .tile.empty-strip{
     /*pointer-events: auto;*/
     background-color: rgba(237, 237, 237, 0.9);
     color: #984242;
-}
-
-
-.cover.drag_and_drop span{
-  position: absolute;
-  top: 50%; left: 50%;
-  
-  transform: translate(-50%, -50%);
 }
 
 .is-dragover .cover.drag_and_drop{

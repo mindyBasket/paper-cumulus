@@ -78,9 +78,20 @@ class SceneEditor extends Component{
 	componentDidMount(){
 		//bind entire body for drag and drop event
 		console.log(document.querySelector('body'));
-		document.querySelector('body').ondragover = e=>{
+		document.querySelector('body').ondragover = e=> {
 			e.preventDefault();
-			this.handle_dragAndDrop();
+			this.handle_dragAndDrop(true);
+		}
+		document.querySelector('body').ondragleave = e=> {
+			e.preventDefault();
+			// warning: the entire body will be covered by lightbox cover, which will
+			//			trigger ondragleave event...
+			this.handle_dragAndDrop(false);
+		}
+		document.querySelector('body').ondrop = e => {
+			e.preventDefault();
+			// exit dragAndDrop
+			this.handle_dragAndDrop(false);
 		}
 	}
 
@@ -93,15 +104,17 @@ class SceneEditor extends Component{
 	setSpotlightAll(on){
         // Set ALL StripCards on spotlight. For individual spotlight, 
         // see each StripCard.
+ 
         
-        // Re-bind spotlight off event
-        this.$lb.onclick = e => {
-            this.setSpotlightAll(false);
-        }
-        
+
         if (on){
             this.setState({spotlightedAll: true}); 
             this.$lb.classList.add('active');
+
+            this.$lb.onclick = e => { // Re-bind spotlight off event
+            console.log("lightbox clicked");
+	        this.setSpotlightAll(false);
+	    }
         } else {
             this.setState({spotlightedAll: false});
             this.$lb.classList.remove('active');
@@ -110,8 +123,9 @@ class SceneEditor extends Component{
         
     }
 
-	handle_dragAndDrop(){
-		this.setSpotlightAll(true);
+	handle_dragAndDrop(on){
+		if (on) { this.setSpotlightAll(true) }
+		else { this.setSpotlightAll(false) }
 	}
 
 
