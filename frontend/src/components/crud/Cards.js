@@ -354,13 +354,17 @@ class StripCard extends PureComponent {
         this.$node = React.createRef();
         this.$lb = document.querySelector("#lightbox_bg"); //lightbox
         
+
         this.state={
             cardCoverOn: false,
             menuOn: false
         }
 
-        // this is for turning all of them off
+        // List of state name that is related to modal. 
+        // This is used when turning all of them off
         this.modalStateKeys = ['cardCoverOn', 'menuOn'];
+
+        this.selfSpotlighted = false; // as opposed to this.props.spotlightedAll
 
         this.handle_deleteSceneConfirm = this.handle_deleteSceneConfirm.bind(this);
         this.handle_deleteScene = this.handle_deleteScene.bind(this);
@@ -407,7 +411,7 @@ class StripCard extends PureComponent {
     componentDidUpdate(){
         //console.warn("[STRIPCARD] SOMETHING UPDATED: " + JSON.stringify(this.state));
 
-        // changes that warrent lightbox
+        // internal changes that warrent lightbox
         if (this.state.cardCoverOn){
             this.setSpotlight(true);
         }
@@ -432,12 +436,12 @@ class StripCard extends PureComponent {
         
         if (on){
             console.log("setSpotlight " + on);
-
-            this.$node.current.setAttribute('style', 'z-index:1000;');
+            //this.$node.current.setAttribute('style', 'z-index:1000;');
             this.$lb.classList.add('active');
+            this.setState({selfSpotlighted: true});
         } else {
             console.log("setSpotlight " + on);
-            this.$node.current.setAttribute('style', '');
+            //this.$node.current.setAttribute('style', '');
             this.$lb.classList.remove('active');
 
             //remove all modals or any callouts
@@ -449,6 +453,9 @@ class StripCard extends PureComponent {
                         st[keys[i]] = false;
                     }
                 }
+                //also remove selfSpotlight
+                st.selfSpotlighted = false
+                
                 return st;
             });
         }
@@ -583,7 +590,8 @@ class StripCard extends PureComponent {
 
 
         return (
-            <li className={"flex_list " + (this.props.spotlighted ? "spotlighted" : "")} 
+            <li className={"flex_list " +
+                           (this.props.spotlightedAll || this.state.selfSpotlighted ? "spotlighted" : "")} 
                 stripid="{strip.id}" 
                 ref={this.$node}>
                 {/* Keep flex_list position:relative to allow being "highlightable"
@@ -740,7 +748,7 @@ class SceneCardList extends Component {
                              <StripCard stripObj={strip} 
                                         delay={this.firstLoad ? index : 1} 
                                         index={index+1}
-                                        spotlighted = {this.props.spotlightedAll}
+                                        spotlightedAll = {this.props.spotlightedAll}
                                         key={"strip"+index}/>
                         )) } 
                     </ul>
