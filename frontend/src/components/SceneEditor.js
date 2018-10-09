@@ -61,34 +61,71 @@ class SceneEditor extends Component{
 		super(props);
 		
 		this.sceneId = document.querySelector('#ref-content').getAttribute("sceneId"),
+		this.$node = React.createRef();
+		// TODO: BAD. $lb is also referenced by each StripCards!
+		this.$lb = document.querySelector("#lightbox_bg"); //lightbox
 		this.state = {
-			toSceneCardList: null
+			toSceneCardList: null,
+			spotlightedAll: false // lightbox is off by default
 		}
 
 		this.setParentState = this.setParentState.bind(this);
+		this.handle_dragAndDrop = this.handle_dragAndDrop.bind(this);
+		this.setSpotlightAll = this.setSpotlightAll.bind(this);
 
 	}
 
-	// componentDidMount(){
+	componentDidMount(){
+		//bind entire body for drag and drop event
+		console.log(document.querySelector('body'));
+		document.querySelector('body').ondragover = e=>{
+			e.preventDefault();
+			this.handle_dragAndDrop();
+		}
+	}
 
-	// }
-
+	
 	// Function to be used by its children to communicate to parent (this)
 	setParentState(newState){
 		this.setState(newState);
 	}
 
+	setSpotlightAll(on){
+        // Set ALL StripCards on spotlight. For individual spotlight, 
+        // see each StripCard.
+        
+        // Re-bind spotlight off event
+        this.$lb.onclick = e => {
+            this.setSpotlightAll(false);
+        }
+        
+        if (on){
+            this.setState({spotlightedAll: true}); 
+            this.$lb.classList.add('active');
+        } else {
+            this.setState({spotlightedAll: false});
+            this.$lb.classList.remove('active');
+        }
+
+        
+    }
+
+	handle_dragAndDrop(){
+		this.setSpotlightAll(true);
+	}
+
 
 	render (){
 		return (
-			<div className="scene_editor">
+			<div className="scene_editor" ref={this.$node}>
 				
 				<SceneCreateForm endpoint={`/api/scene/${this.state.sceneId}/strip/create/`}
 								 setParentState={this.setParentState}/>
 
 				{/* list of strips */}
 				<SceneCardList sceneId={this.sceneId}
-						   dataInbox={this.state.toSceneCardList}/>
+							   spotlightedAll={this.state.spotlightedAll}
+						   	   dataInbox={this.state.toSceneCardList}/>
 
 
 

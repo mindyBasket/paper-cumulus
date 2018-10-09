@@ -107,7 +107,7 @@ class FrameCard extends Component{
                         
                     </div>
 
-                    <div class="slashes">
+                    <div className="slashes">
                     </div>
 
                 </div> 
@@ -256,6 +256,28 @@ class CardCover extends Component {
                         <span>
                             <button className='warning'>DELETE</button>
                             <button onClick={this.props.off}>Cancel</button></span>
+                    </p>
+                </div>           
+            </div>
+        )
+    }
+}
+
+
+
+
+class CardCover2 extends Component {
+    constructor(props){
+        super(props);
+        this.r = React.createRef();
+    }
+
+    render(){
+        return (
+            <div className={"cover light drag_and_drop " + (this.props.on ? "active" : "")}>
+                <div className="cover_message">
+                    <p>
+                    <span className="bigtext 2">Drop images to make frames</span>
                     </p>
                 </div>           
             </div>
@@ -561,7 +583,9 @@ class StripCard extends PureComponent {
 
 
         return (
-            <li className="flex_list" stripid="{strip.id}" ref={this.$node}>
+            <li className={"flex_list " + (this.props.spotlighted && "spotlighted")} 
+                stripid="{strip.id}" 
+                ref={this.$node}>
                 {/* Keep flex_list position:relative to allow being "highlightable"
                     as well as allowing popups and callouts to appear around it */}
    
@@ -604,7 +628,9 @@ class StripCard extends PureComponent {
                 </div>
 
                 {/* Message or modals */}
-                <CardCover on={this.state.cardCoverOn} off={()=>{this.hideComponent("cardCoverOn", true);}}
+                <CardCover on={this.state.cardCoverOn} off={()=>{this.hideComponent("cardCoverOn", true)}}
+                           setParentSpotlight={this.setSpotlight}/>
+                <CardCover2 on={this.state.dragAndDropOn} off={()=>{this.hideComponent("cardCoverOn", true)}}
                            setParentSpotlight={this.setSpotlight}/>
                 <StripMenu on={this.state.menuOn} off={()=>{this.hideComponent("menuOn");}}
                            actionDelete={this.handle_deleteSceneConfirm}/>
@@ -714,6 +740,7 @@ class SceneCardList extends Component {
                              <StripCard stripObj={strip} 
                                         delay={this.firstLoad ? index : 1} 
                                         index={index+1}
+                                        spotlighted = {this.props.spotlightedAll}
                                         key={"strip"+index}/>
                         )) } 
                     </ul>

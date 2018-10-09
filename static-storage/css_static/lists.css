@@ -102,6 +102,10 @@ ul.list_strips li{ /*flex_list*/
     
 }
 
+ul.list_strips li.spotlighted{
+    /* raises z-index above the lightbox cover */
+    z-index: 1000;
+}
 
 .strip_content{
     /*I added this container to wrap .strip_flex_container 
