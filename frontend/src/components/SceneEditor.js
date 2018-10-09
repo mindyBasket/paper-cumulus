@@ -15,9 +15,9 @@ var STANDBY_OPACITY = 0.5
 
 // Static functions
 
-function _setState_SceneCard(newState){
-	this.setState(newState);
-}
+// function _setState_SceneCard(newState){
+// 	this.setState(newState);
+// }
 
 
 class MouseClickTracker extends Component{
@@ -45,6 +45,53 @@ class MouseClickTracker extends Component{
 	render(){return false;}
 }
 
+
+
+
+
+// ██╗     ██╗ ██████╗ ██╗  ██╗████████╗██████╗  ██████╗ ██╗  ██╗
+// ██║     ██║██╔════╝ ██║  ██║╚══██╔══╝██╔══██╗██╔═══██╗╚██╗██╔╝
+// ██║     ██║██║  ███╗███████║   ██║   ██████╔╝██║   ██║ ╚███╔╝ 
+// ██║     ██║██║   ██║██╔══██║   ██║   ██╔══██╗██║   ██║ ██╔██╗ 
+// ███████╗██║╚██████╔╝██║  ██║   ██║   ██████╔╝╚██████╔╝██╔╝ ██╗
+// ╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═════╝  ╚═════╝ ╚═╝  ╚═╝
+                                                              
+// I might move this
+
+function setState_LightBox(newState){
+	this.setState(newState);
+}
+
+class LightBox extends Component{
+	constructor(props){
+		super(props);
+		//this.$node = document.querySelector("#lightbox_bg"); //lightbox
+		this.$node = React.createRef();
+
+		this.state = {
+			active: false,
+			intangible: false
+		}
+
+
+		//public function
+		setState_LightBox = setState_LightBox.bind(this);
+
+	}
+
+	render(){
+		return (
+		
+			<div id={"lightbox_bg " + 
+					 (this.state.intangible ? "intangible" : "") + " " +
+					 (this.state.active ? "active" : "")}
+				 ref={this.$node}>
+			</div>
+		)
+	}
+
+}
+
 // http://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=FrameStage
 
 // ███████╗██████╗ ██╗████████╗ ██████╗ ██████╗ 
@@ -63,7 +110,7 @@ class SceneEditor extends Component{
 		this.sceneId = document.querySelector('#ref-content').getAttribute("sceneId"),
 		this.$node = React.createRef();
 		// TODO: BAD. $lb is also referenced by each StripCards!
-		this.$lb = document.querySelector("#lightbox_bg"); //lightbox
+		// this.$lb = document.querySelector("#lightbox_bg"); //lightbox
 		this.state = {
 			toSceneCardList: null,
 			spotlightedAll: false // lightbox is off by default
@@ -105,19 +152,21 @@ class SceneEditor extends Component{
         // Set ALL StripCards on spotlight. For individual spotlight, 
         // see each StripCard.
  
-        
-
         if (on){
             this.setState({spotlightedAll: true}); 
-            this.$lb.classList.add('active');
+            //this.$lb.classList.add('active');
+            setState_LightBox({active: true});
 
-            this.$lb.onclick = e => { // Re-bind spotlight off event
-            console.log("lightbox clicked");
-	        this.setSpotlightAll(false);
-	    }
+            // TODO: this needs to be re-written 
+      //       this.$lb.onclick = e => { // Re-bind spotlight off event
+	     //        console.log("lightbox clicked");
+		    //     this.setSpotlightAll(false);
+		    // }
+		    // pass it as prop
         } else {
             this.setState({spotlightedAll: false});
-            this.$lb.classList.remove('active');
+            //this.$lb.classList.remove('active');
+            setState_LightBox({active: false})
         }
 
         
@@ -141,7 +190,8 @@ class SceneEditor extends Component{
 							   spotlightedAll={this.state.spotlightedAll}
 						   	   dataInbox={this.state.toSceneCardList}/>
 
-
+				{/* invisible */}
+				<LightBox/>
 
 
 			</div>

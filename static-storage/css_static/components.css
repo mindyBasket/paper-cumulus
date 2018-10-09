@@ -57,6 +57,9 @@
   opacity: 1;
 }
 
+#lightbox_bg.active.intangible{
+  pointer-events: none;
+}
 
 
 
