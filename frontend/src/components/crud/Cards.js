@@ -583,7 +583,7 @@ class StripCard extends PureComponent {
 
 
         return (
-            <li className={"flex_list " + (this.props.spotlighted && "spotlighted")} 
+            <li className={"flex_list " + (this.props.spotlighted ? "spotlighted" : "")} 
                 stripid="{strip.id}" 
                 ref={this.$node}>
                 {/* Keep flex_list position:relative to allow being "highlightable"
