@@ -31,17 +31,20 @@ class FrameCard extends Component{
     constructor(props){
         super(props);
         this.thumbWidth = 180, //px
+
         this.state = {
             loading: true,
             visible: true
         }
+
+        // Props reference
+        //this.props.standby 
 
         this.$node = React.createRef();
 
         this.toggleVisibility = this.toggleVisibility.bind(this);
         
     }
-
 
 
     componentDidMount(){
@@ -66,18 +69,15 @@ class FrameCard extends Component{
                     scale: 1,
                     elasticity: 300
                 });   
+
+        this.setState({loading: false});
         
     }
 
 
     toggleVisibility(){
-
         this.setState({visible: !this.state.visible});
-
-
-
     }
-
 
 
 
@@ -86,47 +86,61 @@ class FrameCard extends Component{
         const thumbWidth = this.thumbWidth;
 
         // check if it has valid frames
-        if (frame.hasOwnProperty("frame_image") && frame.frame_image != null && frame.frame_image != ""){
-
+        if (this.props.standby){
+            // this is used when new Frames are created and it is waiting for API response
             return (
-                <div className={"thumb " + 
-                                (this.state.loading && "loading") + " " +
-                                (!this.state.visible && "ignore" )} 
-                     frameid={frame.id} ref={this.$node}>
-      
-                    <div className="frame_image stretch">
-                        {/* opacity 0. Used only to stretch out the thumbnail box*/}
-                        <img src={frame.frame_image} width={thumbWidth+'px'}/>
-                    </div>
-                    
-                    <div className="frame_image" 
-                         style={{backgroundImage: `url(${frame.frame_image})` }}>
-                        
-                        <span className="overlay_box" frameid={frame.id}>
-                            <a>[ {frame.id} ]</a>
-                            <a className={"far " + (this.state.visible ? "fa-eye" : "fa-eye-slash")}
-                               onClick={this.toggleVisibility}></a>
-                            <a className="fas fa-ellipsis-h"></a>
-                        </span>
-                        
-                    </div>
-
-                    <div className="slashes">
-                    </div>
-
-                </div> 
-            )
-        } else {
-            return (
-                <div className="thumb placeholder2" frameid="{frame.id}" ref={this.$node}>
-                    {/* Frame with invalid image */}
-                    <span>Missing Image</span>
-                        <a href="" className="mini_menu edit">frame [{frame.id}]</a>
+                <div className="thumb standby"
+                     ref={this.$node}>
+                     
+                     <Spinner style="light" 
+                         float={true} 
+                         bgColor="#1d1e1f"
+                         spinning={this.state.frameLoaded ? false : true}/>
                 </div>
             )
-            
-                
-        }
+
+
+        } else {
+            if (frame.hasOwnProperty("frame_image") && frame.frame_image != null && frame.frame_image != ""){
+                return (
+                    <div className={"thumb " + 
+                                    (this.state.loading && "loading") + " " +
+                                    (!this.state.visible && "ignore" )} 
+                         frameid={frame.id} ref={this.$node}>
+          
+                        <div className="frame_image stretch">
+                            {/* opacity 0. Used only to stretch out the thumbnail box*/}
+                            <img src={frame.frame_image} width={thumbWidth+'px'}/>
+                        </div>
+                        
+                        <div className="frame_image" 
+                             style={{backgroundImage: `url(${frame.frame_image})` }}>
+                            
+                            <span className="overlay_box" frameid={frame.id}>
+                                <a>[ {frame.id} ]</a>
+                                <a className={"far " + (this.state.visible ? "fa-eye" : "fa-eye-slash")}
+                                   onClick={this.toggleVisibility}></a>
+                                <a className="fas fa-ellipsis-h"></a>
+                            </span>
+                            
+                        </div>
+
+                        <div className="slashes">
+                        </div>
+
+                    </div> 
+                )
+            } else {
+                return (
+                    <div className="thumb placeholder2" frameid="{frame.id}" ref={this.$node}>
+                        {/* Frame with invalid image */}
+                        <span>Missing Image</span>
+                            <a href="" className="mini_menu edit">frame [{frame.id}]</a>
+                    </div>
+                )  
+            }
+        } // end: standby
+        
     }
 
 
@@ -151,7 +165,6 @@ class FrameCard extends Component{
 class MenuButton extends Component {
     constructor(props){
         super(props);
-
     }
 
     render (){
@@ -162,10 +175,14 @@ class MenuButton extends Component {
 }
 
 
+// http://patorjk.com/software/taag/#p=display&f=Cyberlarge&t=PopupMenu
+// ---------------------------------------------------------------------------
+//  _____   _____   _____  _     _  _____  _______ _______ __   _ _     _
+// |_____] |     | |_____] |     | |_____] |  |  | |______ | \  | |     |
+// |       |_____| |       |_____| |       |  |  | |______ |  \_| |_____|
 
-
-
-
+// ---------------------------------------------------------------------------
+                                                                       
 class StripMenu extends Component {
     /* behaves similarly to CardCover */
 
@@ -231,6 +248,8 @@ class StripMenu extends Component {
 
 
 
+// NOTE: this is an old version of CardCover2 component
+//       might want to absorb this in.
 
 class CardCover_old extends Component {
     constructor(props){
@@ -239,13 +258,7 @@ class CardCover_old extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot){
-        // if        (!prevProps.on && this.props.on){
-        //     console.log("[CARD COVER] set spotlight on");
-        //     this.props.setParentSpotlight(true);
-        // } else if (prevProps.on && !this.props.on){
-        //     console.log("[CARD COVER] set spotlight off");
-        //     this.props.setParentSpotlight(false);
-        // }
+
     }
 
     render(){
@@ -347,8 +360,11 @@ class StripCard extends PureComponent {
         // Props note:
         // this.props.stripObj
         // this.props.index
+        // this.setSceneDataState
 
         this.state={
+            loadingFrames: false,
+
             cardCoverOn: false,
             menuOn: false,
             dragAndDropOn: false,
@@ -399,11 +415,8 @@ class StripCard extends PureComponent {
         initializeSortable(this.$node.current.querySelector('.strip_flex_container'), 
                            this.props.index,
                            this.handle_frameSort);
-
-
-
-          
     }
+
 
     componentDidUpdate(){
         //console.warn("[STRIPCARD] SOMETHING UPDATED: " + JSON.stringify(this.state));
@@ -418,16 +431,12 @@ class StripCard extends PureComponent {
 
     }
 
+
     setSpotlight(on){
         // Set this component in spotlight against lightbox.
         // Due to the nature of this container, only .flex_list can do this
 
-        // Bind spotlight off event
-        // this.$lb.onclick = e => {
-        //     //console.log("Curr state in onclick: " + JSON.stringify(this.state));
-        //     this.setSpotlight(false);
-        // }
-        this.props.setState_LightBox({addToOnClick: ()=>{ console.log("add to lightBox click event"); this.setSpotlight(false); }})
+        this.props.setState_LightBox({addToOnClick: ()=>{ this.setSpotlight(false); }})
         
         if (on){
             console.log("setSpotlight " + on);
@@ -466,7 +475,8 @@ class StripCard extends PureComponent {
 
     
 
-    // http://patorjk.com/software/taag/#p=display&f=Cyberlarge&t=Event%0AHandlers
+    
+    // ---------------------------------------------------------------------------
     // _______ _    _ _______ __   _ _______                        
     // |______  \  /  |______ | \  |    |                           
     // |______   \/   |______ |  \_|    |                           
@@ -474,6 +484,8 @@ class StripCard extends PureComponent {
     // _     _ _______ __   _ ______         _______  ______ _______
     // |_____| |_____| | \  | |     \ |      |______ |_____/ |______
     // |     | |     | |  \_| |_____/ |_____ |______ |    \_ ______|
+
+    // ---------------------------------------------------------------------------
                                         
                                                                                                        
     handle_deleteSceneConfirm(){
@@ -622,33 +634,41 @@ class StripCard extends PureComponent {
             }
         } 
 
-        // Pass event to removeDragData for cleanup
-        //removeDragData(e)
+        // TODO: Pass event to removeDragData for cleanup
+        // removeDragData(e)
 
 
         // If you reached this point, then you avoided all errors from user side.
         // Close drag and drop state!
+        
+
+        // I don't know where to do this yet
+        // make empty frames? 
+        // pass new data? 
+        // console.warn(JSON.stringify(this.props.stripObj));
+        // const newFrame = {"id":119,"note":"","strip":74,"frame_image":""}
+        // this.props.setSceneDataState({"strip": 74}, "add", newFrame);
+        this.setState({loadingFrames: true});
+
+        // crap...I thought any kind of setState is async? if I don't put this
+        // here, anything that happens afterward may or may not happen
         console.warn("Everything okay. Escape dragAndDrop state");
-
-        // this.setState({
-        //     dragAndDropOn: false
-        // });
         this.endModalState("dragAndDropOn", true);
-
-
 
 
     }
 
 
+    // ---------------------------------------------------------------------------
+    // _______  _____  ______  _______                              
+    // |  |  | |     | |     \ |_____| |                            
+    // |  |  | |_____| |_____/ |     | |_____                       
+                                                              
+    // _______ _  _  _ _____ _______ _______ _     _ _______ _______
+    // |______ |  |  |   |      |    |       |_____| |______ |______
+    // ______| |__|__| __|__    |    |_____  |     | |______ ______|
 
-     // _______  _____  ______  _______                              
-     // |  |  | |     | |     \ |_____| |                            
-     // |  |  | |_____| |_____/ |     | |_____                       
-                                                                  
-     // _______ _  _  _ _____ _______ _______ _     _ _______ _______
-     // |______ |  |  |   |      |    |       |_____| |______ |______
-     // ______| |__|__| __|__    |    |_____  |     | |______ ______|
+    // ---------------------------------------------------------------------------
                                                               
     openMenu(){
         this.setState({menuOn: true});
@@ -700,9 +720,14 @@ class StripCard extends PureComponent {
 
 
 
+
+
+    // ---------------------------------------------------------------------------
     //  ______ _______ __   _ ______  _______  ______
     // |_____/ |______ | \  | |     \ |______ |_____/
     // |    \_ |______ |  \_| |_____/ |______ |    \_
+
+    // ---------------------------------------------------------------------------
                                                
     render(){
         const strip = this.props.stripObj;
@@ -749,6 +774,8 @@ class StripCard extends PureComponent {
                                 {reorderedFrames.map( (frame, index) => (
                                     <FrameCard frameObj={frame} delay={index+this.props.delay} key={"frame"+index}/>
                                 ))}
+
+                                {this.state.loadingFrames && <FrameCard standby={true}/>}
                             </div>
                         )
                     }
@@ -835,7 +862,7 @@ class SceneCardList extends Component {
 
     }
 
-
+    
     // takes only one key from newData. Rest will be ignored for now.
     appendData(data, newData){
         console.log("New Data looks like this: " + JSON.stringify(newData.newStrip));
@@ -870,7 +897,9 @@ class SceneCardList extends Component {
                                         delay={this.firstLoad ? index : 1} 
                                         index={index+1}
                                         spotlightedAll = {this.props.spotlightedAll}
+
                                         setState_LightBox = {this.props.setState_LightBox}
+
                                         key={"strip"+index}/>
                         )) } 
                     </ul>
