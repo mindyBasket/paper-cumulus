@@ -69,22 +69,47 @@ class LightBox extends Component{
 		this.$node = React.createRef();
 
 		this.state = {
-			active: false,
-			intangible: false
+			active: false, // applies z-index:1000;
+			intangible: false, // appiles pointer-event: none;
+
+			addToOnClick: null // there is already props for this. Bad? 
 		}
 
+		this.handle_click = this.handle_click.bind(this);
 
 		//public function
 		setState_LightBox = setState_LightBox.bind(this);
 
 	}
 
+	componentDidMount(){
+		//things may be dropped onto LightBox. Expect to be misfire.
+		this.$node.current.ondrop = e => {
+			e.preventDefault();
+		}
+	}
+
+	handle_click(){
+		// this function may be modified by others. But how do I do that? 
+		console.log("lightbox clicked");
+		// also, most likely it will become inactive/hidden
+		this.setState({active: false});
+
+		// There may be additional behavior required by other components
+		if (this.state.addToOnClick) {
+			this.state.addToOnClick();
+		} else if(this.props.addToOnClick) {
+			this.props.addToOnClick();
+		}
+		
+	}
+
 	render(){
 		return (
-		
-			<div id={"lightbox_bg " + 
-					 (this.state.intangible ? "intangible" : "") + " " +
-					 (this.state.active ? "active" : "")}
+			<div id="lightbox_bg"
+				 className={(this.state.intangible ? "intangible" : "") +
+					 		(this.state.active ? " active" : "")}
+			 	 onClick={this.handle_click}
 				 ref={this.$node}>
 			</div>
 		)
@@ -112,6 +137,8 @@ class SceneEditor extends Component{
 		// TODO: BAD. $lb is also referenced by each StripCards!
 		// this.$lb = document.querySelector("#lightbox_bg"); //lightbox
 		this.state = {
+			mounted: false,
+
 			toSceneCardList: null,
 			spotlightedAll: false // lightbox is off by default
 		}
@@ -119,27 +146,34 @@ class SceneEditor extends Component{
 		this.setParentState = this.setParentState.bind(this);
 		this.handle_dragAndDrop = this.handle_dragAndDrop.bind(this);
 		this.setSpotlightAll = this.setSpotlightAll.bind(this);
+		this.addTo_LightBoxOnClick = this.addTo_LightBoxOnClick.bind(this);
 
 	}
 
 	componentDidMount(){
 		//bind entire body for drag and drop event
-		console.log(document.querySelector('body'));
 		document.querySelector('body').ondragover = e=> {
 			e.preventDefault();
+			// Note: The entire body will be covered by lightbox cover, which will
+			//		 trigger ondragleave event. So make it intangible.
+			setState_LightBox({intangible: true});
 			this.handle_dragAndDrop(true);
 		}
 		document.querySelector('body').ondragleave = e=> {
 			e.preventDefault();
-			// warning: the entire body will be covered by lightbox cover, which will
-			//			trigger ondragleave event...
+			setState_LightBox({intangible: false});
 			this.handle_dragAndDrop(false);
 		}
 		document.querySelector('body').ondrop = e => {
 			e.preventDefault();
 			// exit dragAndDrop
+			setState_LightBox({intangible: false});
 			this.handle_dragAndDrop(false);
 		}
+
+		// Attempt at solving issue where sibling-comp's function is set
+		// as a prop before it bind(this)
+		this.setState({mounted: true});
 	}
 
 	
@@ -156,13 +190,6 @@ class SceneEditor extends Component{
             this.setState({spotlightedAll: true}); 
             //this.$lb.classList.add('active');
             setState_LightBox({active: true});
-
-            // TODO: this needs to be re-written 
-      //       this.$lb.onclick = e => { // Re-bind spotlight off event
-	     //        console.log("lightbox clicked");
-		    //     this.setSpotlightAll(false);
-		    // }
-		    // pass it as prop
         } else {
             this.setState({spotlightedAll: false});
             //this.$lb.classList.remove('active');
@@ -178,6 +205,21 @@ class SceneEditor extends Component{
 	}
 
 
+	
+	// _______ ______  ______   _____  __   _                             
+	// |_____| |     \ |     \ |     | | \  |                             
+	// |     | |_____/ |_____/ |_____| |  \_|                             
+	                                                                   
+	// _______ _     _ __   _ _______ _______ _____  _____  __   _ _______
+	// |______ |     | | \  | |          |      |   |     | | \  | |______
+	// |       |_____| |  \_| |_____     |    __|__ |_____| |  \_| ______|
+	                                                                    
+	addTo_LightBoxOnClick(){
+		// This function contain snippet of behavior that is to be
+		// ADDED to default onClick event when LightBox is clicked.
+		this.setSpotlightAll(false);
+	}
+
 	render (){
 		return (
 			<div className="scene_editor" ref={this.$node}>
@@ -188,10 +230,11 @@ class SceneEditor extends Component{
 				{/* list of strips */}
 				<SceneCardList sceneId={this.sceneId}
 							   spotlightedAll={this.state.spotlightedAll}
-						   	   dataInbox={this.state.toSceneCardList}/>
+						   	   dataInbox={this.state.toSceneCardList}
+						   	   setState_LightBox={ this.state.mounted ? setState_LightBox : null }/>
 
 				{/* invisible */}
-				<LightBox/>
+				<LightBox addToOnClick={this.addTo_LightBoxOnClick}/>
 
 
 			</div>

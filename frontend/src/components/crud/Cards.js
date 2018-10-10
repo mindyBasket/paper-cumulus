@@ -297,9 +297,6 @@ function getCardCoverMessage(templateName){
                 </div>
             )
     }
-    
-
-
 }
 
 class CardCover2 extends Component {
@@ -314,7 +311,6 @@ class CardCover2 extends Component {
                             (this.props.on ? "active" : "") + " " +
                             (this.props.intangible ? "intangible" : "")}>
       
-
                     {getCardCoverMessage(this.props.messageType)}
 
       
@@ -476,26 +472,23 @@ class StripCard extends PureComponent {
         // Due to the nature of this container, only .flex_list can do this
 
         // Bind spotlight off event
-        this.$lb.onclick = e => {
-            //console.log("Curr state in onclick: " + JSON.stringify(this.state));
-            this.setSpotlight(false);
-            // NOTE: the reason this is blinding here is because onclick's scope is
-            //       a snapshot when this event is binded. So if onclick is binded
-            //       say componentDidUpdate, the states excessed in setSpotlight is
-            //       all false, so the state never actualy updates properly. 
-            // TODO: look more into how to get around this quirk.
-        }
-        
+        // this.$lb.onclick = e => {
+        //     //console.log("Curr state in onclick: " + JSON.stringify(this.state));
+        //     this.setSpotlight(false);
+        // }
+        this.props.setState_LightBox({addToOnClick: ()=>{ this.setSpotlight(false) }})
         
         if (on){
             console.log("setSpotlight " + on);
             //this.$node.current.setAttribute('style', 'z-index:1000;');
-            this.$lb.classList.add('active');
+            //this.$lb.classList.add('active');
+            this.props.setState_LightBox({active: true});
             this.setState({selfSpotlighted: true});
         } else {
             console.log("setSpotlight " + on);
             //this.$node.current.setAttribute('style', '');
-            this.$lb.classList.remove('active');
+            //this.$lb.classList.remove('active');
+            this.props.setState_LightBox({active: false});
 
             //remove all modals or any callouts
             this.setState(()=>{
@@ -727,6 +720,12 @@ class StripCard extends PureComponent {
 
     }
 
+
+
+    //  ______ _______ __   _ ______  _______  ______
+    // |_____/ |______ | \  | |     \ |______ |_____/
+    // |    \_ |______ |  \_| |_____/ |______ |    \_
+                                               
     render(){
         const strip = this.props.stripObj;
         const index = this.props.index;
@@ -895,6 +894,7 @@ class SceneCardList extends Component {
                                         delay={this.firstLoad ? index : 1} 
                                         index={index+1}
                                         spotlightedAll = {this.props.spotlightedAll}
+                                        setState_LightBox = {this.props.setState_LightBox}
                                         key={"strip"+index}/>
                         )) } 
                     </ul>
