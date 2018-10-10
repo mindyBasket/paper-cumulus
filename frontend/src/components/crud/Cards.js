@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import { Sortable } from '@shopify/draggable';
 // import Sortable from 'sortablejs';
 import Spinner from "./../Spinner";
+import { CardCover2 } from "./CardCover"
 import key from "weak-key";
 
 // Custom helpers
@@ -231,7 +232,7 @@ class StripMenu extends Component {
 
 
 
-class CardCover extends Component {
+class CardCover_old extends Component {
     constructor(props){
         super(props);
         this.r = React.createRef();
@@ -266,98 +267,6 @@ class CardCover extends Component {
     }
 }
 
-
-
-function getCardCoverMessage(templateName){
-
-    switch (templateName){
-        case "default":
-            return (
-                <div className="cover_message">
-                    <p className="color red">
-                        <span className="bigtext-1 fas fa-file-image"/>
-                    </p>
-                    <p>
-                        <span className="bigtext 1">Drop images to make frames</span>
-                    </p>
-                </div>
-            )
-
-        case "frameCreateError":
-            return (
-                <div className="cover_message">
-                    <p className="color red">
-                        <span className="bigtext-1 far fa-frown-open"></span>
-                        <span>Aww, something broke!</span>
-                    </p>
-
-                    <p>
-                        <button>Sorry about that</button>
-                    </p>
-                </div>
-            )
-
-        case "wrongFileType":
-            return (
-                <div className="cover_message">
-                    <p className="color red">
-                        <span className="bigtext-1 far fa-file-image"></span>
-                        <span className="bigtext-1 fas fa-question"></span>
-                    </p>
-
-                    <p> 
-                        <span>Wrong file type. Please upload .png, .gif, or .jpg</span>
-                    </p>
-                </div>
-            )
-
-        case "invalidForm":
-            return (
-                <div className="cover_message">
-                    <p className="color red">
-                        <span className="bigtext-1 far fa-frown-open"></span>
-                    </p>
-
-                    <p><span>Oh no, something broke! Cannot send information.</span></p>
-
-                    <p>
-                        <button>Sorry about that</button>
-                    </p>
-                </div>
-            )
-    }
-}
-
-class CardCover2 extends Component {
-    constructor(props){
-        super(props);
-        this.r = React.createRef();
-
-        // Some cover message is supposed to be intangible, but some messages
-        // have confirmation button, which requires them to be tangible.
-        this.intangibilityMap = {
-            default: true, //probably for drag and drop
-            frameCreateError: false,
-            wrongFileType: true,
-            invalidForm: false,
-        }
-        
-    }
-
-    render(){
-        const intanMap = this.intangibilityMap;
-        const intangible = intanMap.hasOwnProperty(this.props.messageType) ? intanMap[this.props.messageType] : intanMap.default;
-        return (
-            <div className={"cover light drag_and_drop " + 
-                            (this.props.on ? "active" : "") + " " +
-                            (intangible ? "intangible" : "")}
-                 onDrop={(e)=>{e.preventDefault()}}>
-      
-                    {getCardCoverMessage(this.props.messageType)}
-            </div>
-        )
-    }
-}
 
 
 
@@ -460,7 +369,7 @@ class StripCard extends PureComponent {
         this.handle_dragAndDrop = this.handle_dragAndDrop.bind(this);
 
         this.openMenu = this.openMenu.bind(this);
-        //this.removeCardCover = this.removeCardCover.bind(this);
+
         this.endModalState = this.endModalState.bind(this); // more generic version of 'removeCardCover'
         this.setSpotlight = this.setSpotlight.bind(this);
     }
@@ -518,7 +427,7 @@ class StripCard extends PureComponent {
         //     //console.log("Curr state in onclick: " + JSON.stringify(this.state));
         //     this.setSpotlight(false);
         // }
-        this.props.setState_LightBox({addToOnClick: ()=>{ this.setSpotlight(false) }})
+        this.props.setState_LightBox({addToOnClick: ()=>{ console.log("add to lightBox click event"); this.setSpotlight(false); }})
         
         if (on){
             console.log("setSpotlight " + on);
@@ -533,6 +442,7 @@ class StripCard extends PureComponent {
             this.props.setState_LightBox({active: false});
 
             //remove ALL modals or any callouts
+            // TODO: isn't this similar to endModalState()?
             this.setState(()=>{
                 let st = {};
                 const keys = this.modalStateKeys;
@@ -701,6 +611,7 @@ class StripCard extends PureComponent {
 
 
 
+
             }
 
         
@@ -723,6 +634,8 @@ class StripCard extends PureComponent {
         //     dragAndDropOn: false
         // });
         this.endModalState("dragAndDropOn", true);
+
+
 
 
     }
@@ -843,7 +756,7 @@ class StripCard extends PureComponent {
                 </div>
 
                 {/* Message or modals */}
-                <CardCover on={this.state.cardCoverOn} off={()=>{this.endModalState("cardCoverOn", true)}}
+                <CardCover_old on={this.state.cardCoverOn} off={()=>{this.endModalState("cardCoverOn", true)}}
                            setParentSpotlight={this.setSpotlight}/>
                 <CardCover2 on={this.state.dragAndDropOn} off={()=>{this.endModalState("dragAndDropOn", true)}}
                             messageType={this.state.cardCover_messageType}
