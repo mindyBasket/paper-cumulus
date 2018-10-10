@@ -408,8 +408,8 @@ class StripCard extends PureComponent {
         }
 
         // List of state name that is related to modal. 
-        // This is used when turning all of them off
-        this.modalStateKeys = ['cardCoverOn', 'menuOn'];
+        // This roster used when turning all of them off
+        this.modalStateKeys = ['cardCoverOn', 'menuOn', 'dragAndDropOn'];
 
         this.selfSpotlighted = false; // as opposed to this.props.spotlightedAll
 
@@ -607,7 +607,6 @@ class StripCard extends PureComponent {
                 // Just extract csrfToken from it
                 const frameFormData = h.serializeForm(this.$frameForm);
                 console.log(this.$frameForm);
-                console.log(JSON.stringify(frameFormData.csrfmiddlewaretoken));
                 const csrfToken = frameFormData ? (frameFormData.hasOwnProperty("csrfmiddlewaretoken") ? frameFormData.csrfmiddlewaretoken : null) : null;
 
                 if (!csrfToken){
@@ -616,22 +615,27 @@ class StripCard extends PureComponent {
                 }
 
                 // Build formData
-                let formData = new FormData();
-
-                formData.append("strip", this.props.stripObj.id); //does this need to be a number?
-                formData.append("frame_image", file);
+                //let formData = new FormData(); //decided not to use this until I actually understand
+                frameFormData.strip = this.props.stripObj.id;
+                frameFormData.frame_image = file;
                 
-                console.log("Formdata done: " + JSON.stringify(formData));
+                console.log("Formdata done: " + JSON.stringify(frameFormData));
                 //'processData': false,
                 //'contentType': false
-        
+                
+                let fd = new FormData();
+                fd.append("strip", this.props.stripObj.id);
+                fd.append("frame_image", file)
                 // Is this relly supposed to work without the whole " 'multipart/form-data'){ thing??"
                 // Ship it off
                  axios({
                     method: 'post',
-                    url: `/api/strip/${formData.strip}/frame/create/`,
-                    data: formData,
-                    headers: {"X-CSRFToken": formData.csrfmiddlewaretoken}
+                    url: `/api/strip/${this.props.stripObj.id}/frame/create/`,
+                    data: fd,
+                    headers: {
+                                "X-CSRFToken": frameFormData.csrfmiddlewaretoken,
+                                "Content-Type": 'multipart/form-data'
+                             }
                 })
                 .then(response => {
                     console.log("FrameCreate successful: " + JSON.stringify(response));
