@@ -71,6 +71,7 @@ class LightBox extends Component{
 		this.state = {
 			active: false, // applies z-index:1000;
 			intangible: false, // appiles pointer-event: none;
+			isDragAndDrop: false, // response to dragAndDrop behavior, like dragLeave
 
 			addToOnClick: null // there is already props for this. Bad? 
 		}
@@ -101,6 +102,11 @@ class LightBox extends Component{
 		} else if(this.props.addToOnClick) {
 			this.props.addToOnClick();
 		}
+
+		// TODO: clicking on lightbox should also CLOSE EVERYTHING ELSE. 
+		//		 Like a modal, or message, etc. 
+
+
 		
 	}
 
@@ -110,6 +116,9 @@ class LightBox extends Component{
 				 className={(this.state.intangible ? "intangible" : "") +
 					 		(this.state.active ? " active" : "")}
 			 	 onClick={this.handle_click}
+			 	 onDragOver={(e)=>(this.props.handle_dragAndDrop(true))}
+                 onDragLeave={(e)=>(this.props.handle_dragAndDrop(false))}
+                 onDrop={(e)=>(this.props.handle_dragAndDrop(false))}
 				 ref={this.$node}>
 			</div>
 		)
@@ -156,20 +165,22 @@ class SceneEditor extends Component{
 			e.preventDefault();
 			// Note: The entire body will be covered by lightbox cover, which will
 			//		 trigger ondragleave event. So make it intangible.
-			setState_LightBox({intangible: true});
+			// Note: Use this only to initiate drag and drop. Body itself 
+			// 		 shouldn't be any target. Leave it all to the LightBox. 
+			// setState_LightBox({intangible: true});
 			this.handle_dragAndDrop(true);
 		}
-		document.querySelector('body').ondragleave = e=> {
-			e.preventDefault();
-			setState_LightBox({intangible: false});
-			this.handle_dragAndDrop(false);
-		}
-		document.querySelector('body').ondrop = e => {
-			e.preventDefault();
-			// exit dragAndDrop
-			setState_LightBox({intangible: false});
-			this.handle_dragAndDrop(false);
-		}
+		// document.querySelector('body').ondragleave = e=> {
+		// 	e.preventDefault();
+		// 	setState_LightBox({intangible: false});
+		// 	this.handle_dragAndDrop(false);
+		// }
+		// document.querySelector('body').ondrop = e => {
+		// 	e.preventDefault();
+		// 	// exit dragAndDrop
+		// 	setState_LightBox({intangible: false});
+		// 	this.handle_dragAndDrop(false);
+		// }
 
 		// Attempt at solving issue where sibling-comp's function is set
 		// as a prop before it bind(this)
@@ -234,7 +245,8 @@ class SceneEditor extends Component{
 						   	   setState_LightBox={ this.state.mounted ? setState_LightBox : null }/>
 
 				{/* invisible */}
-				<LightBox addToOnClick={this.addTo_LightBoxOnClick}/>
+				<LightBox addToOnClick={this.addTo_LightBoxOnClick}
+						  handle_dragAndDrop={this.handle_dragAndDrop}/>
 
 
 			</div>

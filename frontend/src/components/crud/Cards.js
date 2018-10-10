@@ -296,6 +296,35 @@ function getCardCoverMessage(templateName){
                     </p>
                 </div>
             )
+
+        case "wrongFileType":
+            return (
+                <div className="cover_message">
+                    <p className="color red">
+                        <span className="bigtext-1 far fa-file-image"></span>
+                        <span className="bigtext-1 fas fa-question"></span>
+                    </p>
+
+                    <p> 
+                        <span>Wrong file type. Please upload .png, .gif, or .jpg</span>
+                    </p>
+                </div>
+            )
+
+        case "invalidForm":
+            return (
+                <div className="cover_message">
+                    <p className="color red">
+                        <span className="bigtext-1 far fa-frown-open"></span>
+                    </p>
+
+                    <p><span>Oh no, something broke! Cannot send information.</span></p>
+
+                    <p>
+                        <button>Sorry about that</button>
+                    </p>
+                </div>
+            )
     }
 }
 
@@ -303,17 +332,28 @@ class CardCover2 extends Component {
     constructor(props){
         super(props);
         this.r = React.createRef();
+
+        // Some cover message is supposed to be intangible, but some messages
+        // have confirmation button, which requires them to be tangible.
+        this.intangibilityMap = {
+            default: true, //probably for drag and drop
+            frameCreateError: false,
+            wrongFileType: true,
+            invalidForm: false,
+        }
+        
     }
 
     render(){
+        const intanMap = this.intangibilityMap;
+        const intangible = intanMap.hasOwnProperty(this.props.messageType) ? intanMap[this.props.messageType] : intanMap.default;
         return (
             <div className={"cover light drag_and_drop " + 
                             (this.props.on ? "active" : "") + " " +
-                            (this.props.intangible ? "intangible" : "")}>
+                            (intangible ? "intangible" : "")}
+                 onDrop={(e)=>{e.preventDefault()}}>
       
                     {getCardCoverMessage(this.props.messageType)}
-
-      
             </div>
         )
     }
@@ -421,10 +461,9 @@ class StripCard extends PureComponent {
 
         this.openMenu = this.openMenu.bind(this);
         //this.removeCardCover = this.removeCardCover.bind(this);
-        this.hideComponent = this.hideComponent.bind(this); // more generic version of 'removeCardCover'
+        this.endModalState = this.endModalState.bind(this); // more generic version of 'removeCardCover'
         this.setSpotlight = this.setSpotlight.bind(this);
     }
-
 
 
 
@@ -465,6 +504,9 @@ class StripCard extends PureComponent {
             this.setSpotlight(true);
         }
 
+        // TODO: should card's state reset when lightBox is clicked,
+        //       or when spotlight has returned?
+
     }
 
     setSpotlight(on){
@@ -490,7 +532,7 @@ class StripCard extends PureComponent {
             //this.$lb.classList.remove('active');
             this.props.setState_LightBox({active: false});
 
-            //remove all modals or any callouts
+            //remove ALL modals or any callouts
             this.setState(()=>{
                 let st = {};
                 const keys = this.modalStateKeys;
@@ -600,17 +642,28 @@ class StripCard extends PureComponent {
             // Because the backend cannot hande multiple files yet, use just the FIRST file.
             // If dropped items aren't files, reject them
             if (e.dataTransfer.items[0].kind === 'file') {
+
                 var file = e.dataTransfer.items[0].getAsFile();
-                console.log('... file[' + 0 + '].name = ' + file.name);
+                console.log('>> file[' + 0 + '].name = ' + file.name + " : type = " + file.type);
+
+                // CHECKPOINT 1: image only
+                const allowedImageTypes = ['image/png', 'image/gif', 'image/jpg'];
+                if (!allowedImageTypes.includes(file.type)){
+                    // exit abruptly. This causes this component to remain in dragAndDrop state
+                    this.setState({cardCover_messageType: "wrongFileType"});
+                    return false;
+                }
+
 
                 // Frameform does not actually hold any useful information.
                 // Just extract csrfToken from it
                 const frameFormData = h.serializeForm(this.$frameForm);
-                console.log(this.$frameForm);
                 const csrfToken = frameFormData ? (frameFormData.hasOwnProperty("csrfmiddlewaretoken") ? frameFormData.csrfmiddlewaretoken : null) : null;
 
+                // CHECKPOINT 2: valid CSRF token
                 if (!csrfToken){
-                    console.error("Cannot find CSRF Token. Check if the form rendered correctly.");
+                    // exit abruptly. This causes this component to remain in dragAndDrop state.
+                    this.setState({cardCover_messageType: "invalidForm"});
                     return false;
                 }
 
@@ -620,33 +673,31 @@ class StripCard extends PureComponent {
                 frameFormData.frame_image = file;
                 
                 console.log("Formdata done: " + JSON.stringify(frameFormData));
-                //'processData': false,
-                //'contentType': false
                 
                 let fd = new FormData();
                 fd.append("strip", this.props.stripObj.id);
                 fd.append("frame_image", file)
-                // Is this relly supposed to work without the whole " 'multipart/form-data'){ thing??"
+    
                 // Ship it off
-                 axios({
-                    method: 'post',
-                    url: `/api/strip/${this.props.stripObj.id}/frame/create/`,
-                    data: fd,
-                    headers: {
-                                "X-CSRFToken": frameFormData.csrfmiddlewaretoken,
-                                "Content-Type": 'multipart/form-data'
-                             }
-                })
-                .then(response => {
-                    console.log("FrameCreate successful: " + JSON.stringify(response));
-                    console.log("Congrats!!!");
-                })
-                .catch(error => {
-                    console.log(error);
-                    // Well that didn't work!
-                    this.setState({cardCover_messageType: "frameCreateError"});
+                // axios({
+                //     method: 'post',
+                //     url: `/api/strip/${this.props.stripObj.id}/frame/create/`,
+                //     data: fd,
+                //     headers: {
+                //                 "X-CSRFToken": frameFormData.csrfmiddlewaretoken,
+                //                 //"Content-Type": 'multipart/form-data' // don't need it
+                //              }
+                // })
+                // .then(response => {
+                //     console.log("FrameCreate successful: " + JSON.stringify(response.data));
+                //     console.log("Congrats!!!");
+                // })
+                // .catch(error => {
+                //     console.log(error);
+                //     // Well that didn't work!
+                //     this.setState({cardCover_messageType: "frameCreateError"});
 
-                });
+                // });
 
 
 
@@ -663,9 +714,17 @@ class StripCard extends PureComponent {
         // Pass event to removeDragData for cleanup
         //removeDragData(e)
 
-        this.setState({
-            dragAndDropOn: false
-        });
+
+        // If you reached this point, then you avoided all errors from user side.
+        // Close drag and drop state!
+        console.warn("Everything okay. Escape dragAndDrop state");
+
+        // this.setState({
+        //     dragAndDropOn: false
+        // });
+        this.endModalState("dragAndDropOn", true);
+
+
     }
 
 
@@ -689,8 +748,10 @@ class StripCard extends PureComponent {
 
 
     // Generic function for hiding any modal or callouts
-    hideComponent(stateName, spotlighted){
+    // Use this function to end spotlighted sessions like 'cardCoverOn' or 'dragAndDropOn'
+    endModalState(stateName, spotlighted){
         if (stateName){
+            console.log("Hiding component by state: " + stateName);
             this.setState(()=>{
                 let s={};
                 s[stateName] = false; 
@@ -756,7 +817,6 @@ class StripCard extends PureComponent {
                         <a className="tool_btn fas fa-pen"></a>
                         <MenuButton iconClass="tool_btn fas fa-trash" action={this.handle_deleteSceneConfirm}/>
                         <MenuButton iconClass="tool_btn fas fa-ellipsis-h" action={this.openMenu}/>
-
                     </div>
                     
                 </div>
@@ -783,13 +843,12 @@ class StripCard extends PureComponent {
                 </div>
 
                 {/* Message or modals */}
-                <CardCover on={this.state.cardCoverOn} off={()=>{this.hideComponent("cardCoverOn", true)}}
+                <CardCover on={this.state.cardCoverOn} off={()=>{this.endModalState("cardCoverOn", true)}}
                            setParentSpotlight={this.setSpotlight}/>
-                <CardCover2 on={this.state.dragAndDropOn} off={()=>{this.hideComponent("cardCoverOn", true)}}
-                            intangible={true}
+                <CardCover2 on={this.state.dragAndDropOn} off={()=>{this.endModalState("dragAndDropOn", true)}}
                             messageType={this.state.cardCover_messageType}
                             setParentSpotlight={this.setSpotlight}/>
-                <StripMenu on={this.state.menuOn} off={()=>{this.hideComponent("menuOn");}}
+                <StripMenu on={this.state.menuOn} off={()=>{this.endModalState("menuOn");}}
                            actionDelete={this.handle_deleteSceneConfirm}/>
 
             </li>
