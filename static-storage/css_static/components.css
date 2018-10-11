@@ -245,8 +245,9 @@
 
 .flipbook_player .frame_window{
   /* only shows only frame at a time with overflow trick*/
-  /* TODO: width and height would need to be determined after frames are loaded */
-  height: 500px;
+
+  /* Width and height is set by FrameStage React component*/
+  /*height: 500px;*/
   overflow: hidden;
   position: relative;
 }
@@ -260,9 +261,9 @@
 
   flex-grow: 1;
 
-  /* TODO: width and height would need to be determined after frames are loaded */
-  max-width: 800px;
-  /* height: 500px; Do not set height here. it's a flex container */
+  /* max-width: 800px; height: 500px; */
+  /* DO NOT SET WIDTH, HEIGHT HERE. It's a flex container.
+     Width and height is set by React app onto .frame_window instead. */
 
 }
 
@@ -301,3 +302,31 @@
   margin: 0 50px;
 }
 
+
+/*
+███████╗██╗     ██╗██████╗ ██████╗  ██████╗  ██████╗ ██╗  ██╗    ███╗   ███╗██╗███╗   ██╗██╗
+██╔════╝██║     ██║██╔══██╗██╔══██╗██╔═══██╗██╔═══██╗██║ ██╔╝    ████╗ ████║██║████╗  ██║██║
+█████╗  ██║     ██║██████╔╝██████╔╝██║   ██║██║   ██║█████╔╝     ██╔████╔██║██║██╔██╗ ██║██║
+██╔══╝  ██║     ██║██╔═══╝ ██╔══██╗██║   ██║██║   ██║██╔═██╗     ██║╚██╔╝██║██║██║╚██╗██║██║
+██║     ███████╗██║██║     ██████╔╝╚██████╔╝╚██████╔╝██║  ██╗    ██║ ╚═╝ ██║██║██║ ╚████║██║
+╚═╝     ╚══════╝╚═╝╚═╝     ╚═════╝  ╚═════╝  ╚═════╝ ╚═╝  ╚═╝    ╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝*/
+                                                                                            
+/* Small version of flipbook used as preview in SceneEditor */
+
+.strip_preview_container{
+  height: 0;
+  width: 100%;
+  overflow: hidden;
+  border: 0px solid;
+  background-color: #f9f9f9;
+
+  transition: height 0.3s ease-out;
+
+  /*transition-property: max-height;
+    transition-duration: 0.3s;*/
+}
+
+.strip_preview_container.active{
+  border-bottom: 1px solid #ddd;
+  height: 180px;
+}

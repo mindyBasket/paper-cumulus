@@ -4,6 +4,8 @@ import PropTypes from "prop-types";
 
 import { Sortable } from '@shopify/draggable';
 import Spinner from "./../Spinner";
+import FrameFeeder from "./../FrameFeeder";
+import { FrameStage } from "./../FlipbookPlayer";
 
 // Custom helpers
 import Helper from "./../Helper"
@@ -98,6 +100,57 @@ class FrameMenu extends Component {
 
 
 
+// ███████╗██████╗  █████╗ ███╗   ███╗███████╗██████╗ ██████╗ ██╗   ██╗██╗███████╗██╗    ██╗
+// ██╔════╝██╔══██╗██╔══██╗████╗ ████║██╔════╝██╔══██╗██╔══██╗██║   ██║██║██╔════╝██║    ██║
+// █████╗  ██████╔╝███████║██╔████╔██║█████╗  ██████╔╝██████╔╝██║   ██║██║█████╗  ██║ █╗ ██║
+// ██╔══╝  ██╔══██╗██╔══██║██║╚██╔╝██║██╔══╝  ██╔═══╝ ██╔══██╗╚██╗ ██╔╝██║██╔══╝  ██║███╗██║
+// ██║     ██║  ██║██║  ██║██║ ╚═╝ ██║███████╗██║     ██║  ██║ ╚████╔╝ ██║███████╗╚███╔███╔╝
+// ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝╚═╝     ╚═╝  ╚═╝  ╚═══╝  ╚═╝╚══════╝ ╚══╝╚══╝ 
+                                                                                         
+
+class FramePreviewCard extends Component{
+
+    constructor(props){
+        super(props);
+
+
+    }
+    componentDidUpdate(){
+        console.log(JSON.stringify(this.props));
+    }
+
+    render(){
+        // it expects it in a form of Scene data. So like this 
+        // {"strips": [ {stripObj}, {stripObj}, {stripObj} ]}
+        let data = {strips: [this.props.stripObj]}; 
+        const stripWH = ['300px', false]; // extract it from Strip object 
+
+        return (
+            <div className={"strip_preview_container" + (this.props.on ? " active " : "") + " flipbook_player"}>
+
+                <div className="frame_window"
+                     style={{
+                                width: stripWH[0],
+                                height: ``
+                             }}>
+
+                    {/*This doesn't work right now. it was built to deal with Scene data, not Strips!*/}
+                    {this.props.on && (
+                        <FrameStage data={data} standAlone={true}/>
+                    )}
+                    
+                </div>
+            </div>
+        )
+
+    }
+
+
+}
+
+
+
+
 
 // ███████╗██████╗  █████╗ ███╗   ███╗███████╗
 // ██╔════╝██╔══██╗██╔══██╗████╗ ████║██╔════╝
@@ -112,6 +165,7 @@ class FrameCard extends Component{
     constructor(props){
         super(props);
         this.thumbWidth = 180, //px
+        // TODO: this should be height based, rather then width.
 
         this.state = {
             loading: true,
@@ -251,9 +305,9 @@ class FrameCard extends Component{
             }
 
             return (
-                <div className={"thumb " + 
-                                (this.state.loading ? "loading" : "") + " " +
-                                (!this.state.visible ? "ignore" : "" )} 
+                <div className={"thumb" + 
+                                (this.state.loading ? " loading" : "") +
+                                (!this.state.visible ? " ignore" : "" )} 
                      frameid={frame.id}
                      ref={this.$node}>
       
@@ -278,6 +332,7 @@ class FrameCard extends Component{
 
                     <FrameMenu on={this.state.menuOn} off={()=>{this.endModalState("menuOn");}}
                        actionDelete={this.handle_deleteSceneConfirm}/>
+                    
 
                 </div> 
             )
@@ -288,4 +343,7 @@ class FrameCard extends Component{
 }
 
 
-export default FrameCard;
+export {
+    FrameCard,
+    FramePreviewCard
+};

@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import { Sortable } from '@shopify/draggable';
 // import Sortable from 'sortablejs';
 import Spinner from "./../Spinner";
-import FrameCard from "./FrameCard";
+import { FrameCard, FramePreviewCard } from "./FrameCard";
 import { CardCover2 } from "./CardCover"
 import key from "weak-key";
 
@@ -152,9 +152,6 @@ class CardCover_old extends Component {
 
 
 
-
-
-
                                     
 // ███████╗ ██████╗ ██████╗ ████████╗ █████╗ ██████╗ ██╗     ███████╗
 // ██╔════╝██╔═══██╗██╔══██╗╚══██╔══╝██╔══██╗██╔══██╗██║     ██╔════╝
@@ -169,6 +166,7 @@ function initializeSortable($container, name, callback){
 
     const frameSortable = new Sortable($container, {
         draggable: '.thumb',
+        delay: 200,
         mirror: {
             appendTo: document.querySelector('body'),
             //appendTo: $container.getAttribute("class"),
@@ -234,6 +232,7 @@ class StripCard extends PureComponent {
             cardCoverOn: false,
             menuOn: false,
             dragAndDropOn: false,
+            previewOn: false,
 
             cardCover_messageType: "default"
         }
@@ -251,6 +250,7 @@ class StripCard extends PureComponent {
         this.handle_dragAndDrop = this.handle_dragAndDrop.bind(this);
 
         this.openMenu = this.openMenu.bind(this);
+
 
         this.endModalState = this.endModalState.bind(this); // more generic version of 'removeCardCover'
         this.setSpotlight = this.setSpotlight.bind(this);
@@ -419,8 +419,7 @@ class StripCard extends PureComponent {
             // Use DataTransferItemList interface to access the file.
 
             // Because the backend cannot hande multiple files yet, use just the FIRST file.
-            // If dropped items aren't files, reject them
-            if (e.dataTransfer.items[0].kind === 'file') {
+            if (e.dataTransfer.items[0].kind === 'file') { // check if file 
 
                 var file = e.dataTransfer.items[0].getAsFile();
                 console.log('>> file[' + 0 + '].name = ' + file.name + " : type = " + file.type);
@@ -432,7 +431,6 @@ class StripCard extends PureComponent {
                     this.setState({cardCover_messageType: "wrongFileType"});
                     return false;
                 }
-
 
                 // Frameform does not actually hold any useful information.
                 // Just extract csrfToken from it
@@ -500,29 +498,29 @@ class StripCard extends PureComponent {
         // TODO: Pass event to removeDragData for cleanup
         // removeDragData(e)
 
-
         // If you reached this point, then you avoided all errors from user side.
-        // Close drag and drop state!
         this.setState({loadingFrames: true});
-
         // crap...I thought any kind of setState is async? if I don't put this
         // here, anything that happens afterward may or may not happen
-        console.warn("Everything okay. Escape dragAndDrop state");
+        console.warn("Request send success. Escape dragAndDrop state.");
         this.endModalState("dragAndDropOn", true);
 
 
     }
 
 
-    // ---------------------------------------------------------------------------
-    // _______  _____  ______  _______                              
-    // |  |  | |     | |     \ |_____| |                            
-    // |  |  | |_____| |_____/ |     | |_____                       
-                                                              
-    // _______ _  _  _ _____ _______ _______ _     _ _______ _______
-    // |______ |  |  |   |      |    |       |_____| |______ |______
-    // ______| |__|__| __|__    |    |_____  |     | |______ ______|
 
+
+
+    // ---------------------------------------------------------------------------
+    // _______ _______ __   _ _     _    /  _____  _______ __   _ _______       
+    // |  |  | |______ | \  | |     |   /  |_____] |_____| | \  | |______ |     
+    // |  |  | |______ |  \_| |_____|  /   |       |     | |  \_| |______ |_____
+    //                                /                                         
+    // _______ _  _  _ _____ _______ _______ _     _ _______ _______            
+    // |______ |  |  |   |      |    |       |_____| |______ |______            
+    // ______| |__|__| __|__    |    |_____  |     | |______ ______|            
+                                                                          
     // ---------------------------------------------------------------------------
                                                               
     openMenu(){
@@ -533,6 +531,10 @@ class StripCard extends PureComponent {
         this.$node.current.setAttribute('style', 'z-index:1000;');
         this.$node.current.setAttribute('style', '');
     }
+
+    // openPreview(){
+    // too simple. added as arrow function on onClick        
+    // }
 
 
     // Generic function for hiding any modal or callouts
@@ -576,7 +578,7 @@ class StripCard extends PureComponent {
         if (frameLeftOver.length>0){
             frameOrderedArr.push(...frameLeftOver);
         }
-        
+
         return frameOrderedArr;
 
     }
@@ -613,7 +615,7 @@ class StripCard extends PureComponent {
                         <span>id: {strip.id}</span>
                     </div>
                     <div className="tools">
-                        <a className="tool_btn fas fa-play-circle"></a>
+                        <MenuButton iconClass="tool_btn fas fa-play-circle" action={ ()=>{this.setState({previewOn: true})} }/>
                         <a className="tool_btn fas fa-file-upload"></a>
                         <a className="tool_btn fas fa-pen"></a>
                         <MenuButton iconClass="tool_btn fas fa-trash" action={this.handle_deleteSceneConfirm}/>
@@ -621,9 +623,13 @@ class StripCard extends PureComponent {
                     </div>
                     
                 </div>
-                
+
                 {/* List of frames in this strip*/}
                 <div className="strip_content">
+
+                    {/* panel for frame animation preview */}
+                    <FramePreviewCard on={this.state.previewOn}
+                                      stripObj={strip}/>
 
                     {strip.frames == null || strip.frames.length === 0 || Object.keys(strip.frames).length === 0 ? 
                         (

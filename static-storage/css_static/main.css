@@ -153,7 +153,6 @@ a:hover{
 /*.............................*/
 
 
-
 .thumb {
     position:relative;
 }
@@ -248,64 +247,6 @@ a:hover{
    
     font-size: 1.2em;
 }    
-
-.thumb .popup_menu{
-    position: absolute;
-    top: -20px; left: 50%;
-
-    transform-origin: bottom left;
-    transform: translate(-50%, -100%);
-    width: 90%;
-    background-color: #5C5C5C;
-    border-radius: 5px;
-    
-    color: white;
-    
-    -webkit-box-shadow: 3px 3px 2px 0px rgba(0,0,0,0.25);
-    -moz-box-shadow: 3px 3px 2px 0px rgba(0,0,0,0.25);
-    box-shadow: 3px 3px 2px 0px rgba(0,0,0,0.25);
-}
-
-.thumb .popup_menu:focus{
-    outline: none;
-}
-
-.thumb .popup_menu > .content{
-    padding: 12px;
-}
-
-.thumb .popup_menu ul{
-    padding: 0;
-}
-
-.thumb .popup_menu ul li{padding-top: 8px;}
-.thumb .popup_menu ul li:first-of-type{padding-top: 0px;}
-
-.thumb .popup_menu > .header{
-    display:block;
-    border-radius: 5px 5px 0 0;
-    border-bottom: 1px solid #474747;
-    background-color: #3D3D3D;
-    padding: 6px;
-    color: #C4C4C4;
-}
-
-.thumb .popup_menu ul li a{
-    color: white;
-    cursor: pointer;
-}
-
-.thumb .popup_menu .tickmark{
-    position:absolute;
-    
-    bottom: -14px; left: 50%;
-    width: 0; 
-    height: 0; 
-    border-left: 15px solid transparent;
-    border-right: 15px solid transparent;
-  
-    border-top: 15px solid #5C5C5C;
-}
 
 .thumb.placeholder{
     /* style for .thumb box that has no image */

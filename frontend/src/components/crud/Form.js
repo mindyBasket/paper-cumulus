@@ -125,19 +125,13 @@ class SceneCreateForm extends Component {
     	return (
 
           <div className="fauxForm">
-            {/*<form onSubmit={this.handleSubmit}>
-            </form>*/}
-            {this.state.error == false && 
-              <span className="msg">FauxForm ready</span>
-            }
-            {this.state.error &&
-              <span className="error">SOMETHING WENT WRONG</span>
-            }
-
-            <button onClick={this.handle_SceneCreate}>
-              REAL Add Strip
-            </button>
-            
+            {this.state.error ? (
+                <span className="error">New Strip cannot be created at this time.</span>
+              ) : (
+                <button onClick={this.handle_SceneCreate}>
+                  + Add a new Strip
+                </button>
+            )} 
           </div>
 
     );

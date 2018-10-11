@@ -14,11 +14,20 @@ var STANDBY_OPACITY = 0.5
 // These are used to make components communicate with each other
 
 function _setState_Scrubber(newState){
-	this.setState(newState);
+	try {
+		this.setState(newState);
+	} catch(err){
+		console.warn(err);
+	}
+	
 }
 
 function _setState_FlipbookPlayer(newState){
-	this.setState(newState);
+	try {
+		this.setState(newState);
+	} catch(err){
+		console.warn(err);
+	}
 }
 
 
@@ -38,13 +47,19 @@ class FrameStage extends Component{
 		super(props);
 		this.data = this.props.data;
 		this.currStrip;
+
+
 		this.frameState = {
 			isStripHead: true,
 			isPlaying: false
 		}
+
 		this.setTimeOutArr = []
 		this.state = {
 		}
+
+		// props reference
+		// this.props.standAlone; // this component can be used by itself without scrubber and timer
 
 		this.gotoNextAndPlay=this.gotoNextAndPlay.bind(this);
 		this.rewind=this.rewind.bind(this);
@@ -386,7 +401,11 @@ class FlipbookPlayer extends Component{
 			<div className="flipbook_player">
 				{/* -Frames are loaded here */}
 				<div className="frame_window" 
-					 style={{ opacity: (this.state.onStandby ? STANDBY_OPACITY : 1) }}>
+					 style={{ 
+					 	opacity: (this.state.onStandby ? STANDBY_OPACITY : 1),
+					 	width: '800px',
+					 	height: '500px'
+					 }}>
 
 					<FrameFeeder endpoint = {this.endpoint} 
 								render={data => <FrameStage data={data} />} />
@@ -433,4 +452,7 @@ const sceneId = wrapper ? refNode.getAttribute("sceneId") : null;
 wrapper ? ReactDOM.render(<FlipbookPlayer startSceneId={sceneId}/>, wrapper) : null;
 
 
-//get Django context
+// Can I also export...?
+export {
+    FrameStage
+};
