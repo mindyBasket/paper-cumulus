@@ -239,8 +239,7 @@ class FrameCard extends Component{
         } else {
 
             let frame_physicalContent = false;
-            //console.log("Frame object empty?: " + JSON.stringify(frame));
-            if (!frame && frame.hasOwnProperty("frame_image") && frame.frame_image != null && frame.frame_image != ""){
+            if (frame && frame.hasOwnProperty("frame_image") && frame.frame_image != null && frame.frame_image != ""){
                 frame_physicalContent = <div className="frame_image stretch">
                                             {/* opacity 0. Used only to stretch out the thumbnail box*/}
                                             <img src={frame.frame_image} width={thumbWidth+'px'}/>

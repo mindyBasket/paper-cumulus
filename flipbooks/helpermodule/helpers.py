@@ -44,10 +44,6 @@ def shout():
 
 
 
-
-
-
-
 from ..models import (
     Scene,
     Strip,
@@ -101,6 +97,51 @@ def refresh_children_li(obj):
     #retrieve children
     children_id_li = [ch_obj.id for ch_obj in children_li]
     return ','.join(str(obj_id) for obj_id in children_id_li)
+
+
+
+''' This children_order is just a stringy list that 
+    changes very frequently. So mistakes can happen, like
+    empty element, or extra element that is invalid '''
+def cleanup_children_li(obj):
+
+    children_ref = None
+    child_inst_name = None
+    # how to check instance
+    if(isinstance(obj, Scene)):
+        children_ref = [str(strip.id) for strip in Strip.objects.filter(scene=obj)]
+        child_inst_name = "Strip"
+    elif(isinstance(obj, Strip)):
+        children_ref = [str(frame.id) for frame in Frame.objects.filter(strip=obj)]
+        child_inst_name = "Frame"
+    else:
+        print("This instance does not have children_li")
+        return False
+
+    cleaned_children_li = []
+    
+    children_li = obj.children_li.split(",")
+    for child_id in children_li:
+        is_valid = False
+        child_id = str.strip(str(child_id))
+        
+        # Trial begins
+        if child_id != '' and child_id == str(int(child_id)): #check if it is a valid integer
+
+            try:   
+                children_ref.remove(child_id) # this should check against duplicates
+                is_valid = True
+            except ValueError: 
+                print("cleanup_children_li(): Ignoring foreign/duplicate id({}) of {} in children_li!".format(child_id,child_inst_name))
+        
+        if is_valid: cleaned_children_li.append(child_id)
+
+    # Note: there may be a case where cleaned_children_li may have less children
+    #       then the actual number of children. If this happens, it will be 
+    #       noticed by the React app. Missing children will still render.
+
+
+    return ','.join(str(child_id) for child_id in cleaned_children_li)
 
 
 

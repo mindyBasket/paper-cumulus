@@ -9,8 +9,7 @@ class XhrHandler {
 	            url: `/api/scene/${sceneId}/`,
 	        })
 	        .then(response => {
-	            console.log( "Fetch successful");
-	            console.warn(JSON.stringify(response.data));
+	            console.log("[Scene fetch successful]");
 	            //thisObj.setState({data: response.data});
 	            //this.firstLoad = false;
 	            return response;

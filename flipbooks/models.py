@@ -117,23 +117,21 @@ class Scene(models.Model):
         
     def save(self, *args, **kwargs):
     
-        # clean up children_li
-        unordered_children_li = [str(strip.id) for strip in Strip.objects.filter(scene=self)]
-        cleaned_children_li = []
-        
-        children_li = self.children_li.split(",")
-        for child_id in children_li:
-            is_valid = False
-            child_id = str.strip(str(child_id))
-            
-            # Trial begins
-            if child_id != '' and child_id == str(int(child_id)): #check if it is a valid integer
-                if child_id in unordered_children_li:
-                    is_valid = True
-            
-            if is_valid: cleaned_children_li.append(child_id)
-                
-        self.children_li = ','.join(str(child_id) for child_id in cleaned_children_li)
+        # 1. Check if valid children_li exists:
+        if self.children_li == '' or "".join(self.children_li.split(","))== '':
+            print("WARNING. children_li on this Scene is empty. Refreshing children_li.")
+            new_children_li = helpers.refresh_children_li(self)
+            if new_children_li:
+                self.children_li = new_children_li
+        else:
+            # Children_li exists. Clean up just in case
+            # You are in strip right now, so query it RIGHT
+            cleaned_children_li = helpers.cleanup_children_li(self)
+            if cleaned_children_li:
+                self.children_li = cleaned_children_li
+
+
+
         super(Scene, self).save(*args, **kwargs)
         
         
@@ -196,16 +194,24 @@ class Strip(models.Model):
         _insert_at = int(self.order) 
         self.order = 0 # reset to "do not change position unless specified"
         
-        # 1. Save instance 
-        if self.children_li == '':
+
+        # 1. Check if valid children_li exists:
+        if self.children_li == '' or "".join(self.children_li.split(","))== '':
             print("WARNING. children_li on this strip is empty. Refreshing children_li.")
             new_children_li = helpers.refresh_children_li(self)
             if new_children_li:
                 self.children_li = new_children_li
+        else:
+            # Children_li exists. Clean up just in case
+            # You are in strip right now, so query it RIGHT
+            cleaned_children_li = helpers.cleanup_children_li(self)
+            if cleaned_children_li:
+                self.children_li = cleaned_children_li
+        
+        # 2. Save strip!
+        super(Strip, self).save(*args, **kwargs) 
 
-        super(Strip, self).save(*args, **kwargs) # save Strip!
-
-        #2. Position update on children_li of its parent (scene)
+        # 3. Position update on children_li of its parent (scene)
         self.scene.children_li = helpers.update_children_li(self.scene, self.id, _insert_at)
         self.scene.save() # save parent!
         

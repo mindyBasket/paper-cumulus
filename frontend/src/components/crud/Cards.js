@@ -560,15 +560,23 @@ class StripCard extends PureComponent {
         if (frameIdList==null || frameIdList==='') {return null;}
 
         let frameOrderedArr = Array.apply(null, Array(frameIdList.length));
+        let frameLeftOver = [];
 
         strip.frames.forEach((f)=>{
             const insertAt = frameIdList.indexOf(String(f.id));
             if (insertAt>=0 && insertAt<frameOrderedArr.length){
                 frameOrderedArr[insertAt] = f; 
+            } else if (insertAt==-1){
+                // children not ref'd in children_li is just placed at the end
+                frameLeftOver.push(f);
             }
             
         });
 
+        if (frameLeftOver.length>0){
+            frameOrderedArr.push(...frameLeftOver);
+        }
+        
         return frameOrderedArr;
 
     }
