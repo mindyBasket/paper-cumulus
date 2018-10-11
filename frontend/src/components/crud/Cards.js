@@ -545,6 +545,7 @@ class StripCard extends PureComponent {
             });  
        } else {
             this.setState({
+                selfSpotlighted: false, //selfSpotlightAll should keep it on
                  dragAndDropOn: false
             }); 
        }

@@ -94,25 +94,24 @@ class LightBox extends Component{
 	handle_click(){
 		console.log("lightbox clicked");
 
-		// Clicking on the lightbox is currently assumed to be "cancel everything".
-		// So close everything and hide everything. 
+		// Clicking on the lightbox is currently set to "CANCEL EVERYTHING".
+		// Therefore close everything and hide everything. 
 
 		// A. make itself disappear
 		this.setState({active: false}); 
 
 		// B. Undo any spotlight [spotlighting is done by setting z-index on component]
 		this.props.setParentState({spotlightedAll: false}); 
-		// note: this does not override individual spotlighting
+		// note: this does not override individual 
 
-		// C. Additional behavior required by other components. This is dynamic
+		// TODO: any other default behaviors? Modals perhaps? 
+
+		// D. Individualized additional behavior added by sibling comps.
 		if (this.state.addToOnClick) {
 			this.state.addToOnClick();
 		} else if(this.props.addToOnClick) {
 			this.props.addToOnClick();
 		}
-
-		// TODO: clicking on lightbox should also CLOSE EVERYTHING ELSE. 
-		//		 Like a modal, or message, etc. 
 
 	}
 
