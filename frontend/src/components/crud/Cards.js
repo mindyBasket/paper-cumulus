@@ -424,40 +424,29 @@ class StripCard extends PureComponent {
     }
 
 
-    componentDidUpdate(){
-        //console.warn("[STRIPCARD] SOMETHING UPDATED: " + JSON.stringify(this.state));
-
-        // internal changes that warrent lightbox
-        if (this.state.cardCoverOn){
-            this.setSpotlight(true);
-        }
-
-        // TODO: should card's state reset when lightBox is clicked,
-        //       or when spotlight has returned?
-
-    }
+    // componentDidUpdate(prevProps, prevState, snapshot){
+    // }
 
 
     setSpotlight(on){
         // Set this component in spotlight against lightbox.
         // Due to the nature of this container, only .flex_list can do this
 
+        // modify click event to the LightBox!
         this.props.setState_LightBox({addToOnClick: ()=>{ this.setSpotlight(false); }})
+
         
         if (on){
-            console.log("setSpotlight " + on);
-            //this.$node.current.setAttribute('style', 'z-index:1000;');
-            //this.$lb.classList.add('active');
+            // console.log("setSpotlight " + on);
             this.props.setState_LightBox({active: true});
             this.setState({selfSpotlighted: true});
         } else {
-            console.log("setSpotlight " + on);
-            //this.$node.current.setAttribute('style', '');
-            //this.$lb.classList.remove('active');
+            // console.log("setSpotlight " + on);
             this.props.setState_LightBox({active: false});
 
             //remove ALL modals or any callouts
             // TODO: isn't this similar to endModalState()?
+
             this.setState(()=>{
                 let st = {};
                 const keys = this.modalStateKeys;
@@ -467,7 +456,8 @@ class StripCard extends PureComponent {
                     }
                 }
                 //also remove selfSpotlight
-                st.selfSpotlighted = false
+                st.selfSpotlighted = false;
+                console.warn("Ready to set state?: " + JSON.stringify(st));
                 
                 return st;
             });

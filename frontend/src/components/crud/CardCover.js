@@ -78,8 +78,19 @@ class CardCover2 extends Component {
         this.intangibilityMap = {
             default: true, //probably for drag and drop
             frameCreateError: false,
-            wrongFileType: true,
+            wrongFileType: false,
             invalidForm: false,
+        }
+        
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot){
+        // check if this card was rendered to be active, 
+        // then control lightbox
+        if        (prevProps.on == false && this.props.on == true){
+            this.props.setParentSpotlight(true);
+        } else if (prevProps.on == true && this.props.off == false){
+            this.props.setParentSpotlight(false);
         }
         
     }
