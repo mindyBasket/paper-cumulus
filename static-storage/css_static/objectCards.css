@@ -87,7 +87,7 @@ ul.list_strips{
 }
 
 
-ul.list_strips li{ /*flex_list*/
+ul.list_strips li.strip_card{ 
     
     display:flex;
     flex-direction: column;
@@ -158,7 +158,7 @@ ul.list_strips .strip_flex_container .tile{
     border-bottom: 1px solid #ddd;
 }
 
-.flex_list .strip_flex_toolbar .tools{
+.strip_card .strip_flex_toolbar .tools{
     opacity: 0.1;
     
     transition-property: opacity;
@@ -166,17 +166,17 @@ ul.list_strips .strip_flex_container .tile{
 
 }
 
-.flex_list .strip_flex_toolbar .tools a{
+.strip_card .strip_flex_toolbar .tools a{
     /* icon size */
     font-size: 2em;
     margin: 0 4px;
 }
 
-.flex_list:hover .strip_flex_toolbar .tools{
+.strip_card:hover .strip_flex_toolbar .tools{
     opacity:1;
 }
 
-.flex_list .strip_flex_toolbar .tools .glyphicon{
+.strip_card .strip_flex_toolbar .tools .glyphicon{
     font-size:1.5em;
 }
 .strip_flex_toolbar a{ color: #859297; cursor:pointer;}
@@ -269,7 +269,7 @@ ul.list_strips .strip_flex_container .tile.empty-strip{
  ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝  ╚═════╝ ╚═════╝   ╚═══╝  ╚══════╝╚═╝  ╚═╝╚══════╝*/
                                                                                   
                                                                                   
-.flex_list .cover{
+.strip_card .cover{
     pointer-events: none;
     position: absolute;
     top: 0; left:0;

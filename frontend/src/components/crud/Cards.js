@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import { Sortable } from '@shopify/draggable';
 // import Sortable from 'sortablejs';
 import Spinner from "./../Spinner";
+import FrameCard from "./FrameCard";
 import { CardCover2 } from "./CardCover"
 import key from "weak-key";
 
@@ -16,149 +17,8 @@ const axh = new XhrHandler(); //axios helper
 
 
 
+
 // http://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=Frame
-
-
-// ███████╗██████╗  █████╗ ███╗   ███╗███████╗
-// ██╔════╝██╔══██╗██╔══██╗████╗ ████║██╔════╝
-// █████╗  ██████╔╝███████║██╔████╔██║█████╗  
-// ██╔══╝  ██╔══██╗██╔══██║██║╚██╔╝██║██╔══╝  
-// ██║     ██║  ██║██║  ██║██║ ╚═╝ ██║███████╗
-// ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝
-                                           
-
-
-
-class FrameCard extends Component{
-
-    constructor(props){
-        super(props);
-        this.thumbWidth = 180, //px
-
-        this.state = {
-            loading: true,
-            visible: true
-        }
-
-        // Props reference
-        //this.props.standby 
-
-        this.$node = React.createRef();
-
-        this.toggleVisibility = this.toggleVisibility.bind(this);
-        
-    }
-
-
-    componentDidMount(){
-        const delay = this.props.delay;
-        const $node = this.$node.current
-
-        var mountAnim = anime.timeline();
-            mountAnim
-                .add({
-                    targets: $node,
-                    scale: 0,
-                    duration: 0
-                }) 
-                .add({
-                    targets: $node,
-                    scale: 0.5,
-                    delay: delay*80,
-                    duration: 0
-                }) 
-                .add({
-                    targets: $node,
-                    scale: 1,
-                    elasticity: 300
-                });   
-
-        this.setState({loading: false});
-        
-    }
-
-
-    toggleVisibility(){
-        this.setState({visible: !this.state.visible});
-    }
-
-
-
-    render(){
-        const frame = this.props.frameObj; 
-        const thumbWidth = this.thumbWidth;
-
-
-        // check if it has valid frames
-        if (this.props.standby){
-            // this is used when new Frames are created and it is waiting for API response
-            return (
-                <div className="tile standby"
-                     ref={this.$node}>
-                     
-                     <Spinner style="light" 
-                         float={false}
-                         bgColor={"#f7f7f7"}
-                         playgroundStyle={`width: ${thumbWidth}px; height: 100%; min-height: initial;`}
-                         spinnerStyle={`width: 30px; height: 30px;`}
-                         spinning={true}/>
-                </div>
-            )
-
-
-        } else {
-            if (frame.hasOwnProperty("frame_image") && frame.frame_image != null && frame.frame_image != ""){
-                return (
-                    <div className={"thumb " + 
-                                    (this.state.loading ? "loading" : "") + " " +
-                                    (!this.state.visible ? "ignore" : "" )} 
-                         frameid={frame.id} ref={this.$node}>
-          
-                        <div className="frame_image stretch">
-                            {/* opacity 0. Used only to stretch out the thumbnail box*/}
-                            <img src={frame.frame_image} width={thumbWidth+'px'}/>
-                        </div>
-                        
-                        <div className="frame_image" 
-                             style={{backgroundImage: `url(${frame.frame_image})` }}>
-                            
-                            <span className="overlay_box" frameid={frame.id}>
-                                <a>[ {frame.id} ]</a>
-                                <a className={"far " + (this.state.visible ? "fa-eye" : "fa-eye-slash")}
-                                   onClick={this.toggleVisibility}></a>
-                                <a className="fas fa-ellipsis-h"></a>
-                            </span>
-                            
-                        </div>
-
-                        <div className="slashes">
-                        </div>
-
-                    </div> 
-                )
-            } else {
-                return (
-                    <div className="thumb placeholder2" frameid="{frame.id}" ref={this.$node}>
-                        {/* Frame with invalid image */}
-                        <span>Missing Image</span>
-                            <a href="" className="mini_menu edit">frame [{frame.id}]</a>
-                    </div>
-                )  
-            }
-        } // end: standby
-        
-    }
-
-
-
-    
-
-
-}
-
-
-
-
 
 // ███╗   ███╗ ██████╗ ██████╗  █████╗ ██╗     ███████╗
 // ████╗ ████║██╔═══██╗██╔══██╗██╔══██╗██║     ██╔════╝
@@ -430,7 +290,7 @@ class StripCard extends PureComponent {
 
     setSpotlight(on){
         // Set this component in spotlight against lightbox.
-        // Due to the nature of this container, only .flex_list can do this
+        // Due to the nature of this container, only .strip_card can do this
 
         // modify click event to the LightBox!
         this.props.setState_LightBox({addToOnClick: ()=>{ this.setSpotlight(false); }})
@@ -730,13 +590,13 @@ class StripCard extends PureComponent {
         const reorderedFrames = this.reorderFrames(strip);
         
         return (
-            <li className={"flex_list " +
+            <li className={"strip_card " +
                            (this.props.spotlightedAll || this.state.selfSpotlighted ? "spotlighted" : "")} 
                 onDragOver={(e)=>(this.handle_dragMessageToggle(e, true))}
                 onDragLeave={(e)=>(this.handle_dragMessageToggle(e, false))}
                 onDrop={this.handle_dragAndDrop}
                 ref={this.$node}>
-                {/* Keep flex_list position:relative to allow being "highlightable"
+                {/* Keep strip_card position:relative to allow being "highlightable"
                     as well as allowing popups and callouts to appear around it */}
    
                 <div className="strip_flex_toolbar">
@@ -824,29 +684,10 @@ class SceneCardList extends Component {
     }
 
     componentDidMount(){
-        const thisObj = this;
-
-        // moved to XHRHandler:
-        // axios({
-        //     method: 'get',
-        //     url: `/api/scene/${this.props.sceneId}/`,
-        //   })
-        //   .then(response => {
-        //     console.log( "Fetch successful");
-        //     thisObj.setState({data: response.data});
-        //     this.firstLoad = false;
-   
-        //   })
-        //   .catch(error => {
-        //     console.log(error);
-        //   });
         this.handle_fetchScene();
     }
 
     componentDidUpdate(prevProps, prevState, snapshot){
-        // It's okay to setState here. Just make sure it's 
-        // inside a conditional to prevent infinite loop
-
         // Check inbox
         if (JSON.stringify(prevProps.dataInbox) != JSON.stringify(this.props.dataInbox)){
             console.log("MAIL TIME [SceneCardList]");

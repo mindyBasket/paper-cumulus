@@ -5,15 +5,14 @@
 .popup_menu{
 	pointer-events: none;
 	position: absolute;
-
 	top: 55px; right: -10px;
-
 	width: 150px;
-
 	z-index: 1000;
 
 	opacity: 0;
 }
+
+
 
 .popup_menu.active{
 	pointer-events: auto;
@@ -33,13 +32,13 @@
 
 	padding: 0;
 
-
 }
 
 .popup_menu ul li{
 
 	font-weight: normal;
 	font-size: 12pt;
+	list-style-type: none;
 
 	border-bottom: 1px solid #685656;
 	margin: 0;

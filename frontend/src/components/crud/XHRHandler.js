@@ -10,6 +10,7 @@ class XhrHandler {
 	        })
 	        .then(response => {
 	            console.log( "Fetch successful");
+	            console.warn(JSON.stringify(response.data));
 	            //thisObj.setState({data: response.data});
 	            //this.firstLoad = false;
 	            return response;
