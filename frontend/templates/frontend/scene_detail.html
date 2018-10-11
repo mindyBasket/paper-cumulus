@@ -43,8 +43,6 @@
 
     <div>
         <ul class="list inline">
-            <li><a href="{% url 'flipbooks:strip-create' scene_pk=object.id %}">Create new strip onto scene {{object.id}}</a></li>
-            <li><a href="#">Create new strip onto scene {{object.id}} (AJAX)</a></li>
             <li><a href="{% url 'flipbooks-api:list' %}">View api</a></li>
             <li><a href="{% url 'flipbooks-api:detail-scene' pk=object.id%}">View scene api</a></li>
         </ul>
@@ -64,103 +62,6 @@
         <!-- ////////// -->
     </div>
 
-    
-
-
-
-    <h3>Scene id {{object.id}}</h3>
-    <p>description: {{object.description}}</p>
-
-    <ul class="list_strips">
-
-        <!-- {- for strip in ordered_strip_set -}-->
-        {% for strip in object.strip_set.all|map_queryset:object.children_li %}
-            <li class="flex_list" stripid="{{strip.id}}">
-                
-                <div class="strip_flex_toolbar">
-                    <div class="header">
-                        <span class="bigtext-2">{{forloop.counter}}</span>
-                        <span>id: {{strip.id}}</span>
-                    </div>
-                    <div class="tools">
-                        <a class="strip_preview glyphicon glyphicon-play" aria-hidden="true"></a>
-                        <a class="strip_upload glyphicon glyphicon-upload" aria-hidden="true"></a>
-                        <a class="strip_edit glyphicon glyphicon-edit" aria-hidden="true"></a>
-                        <a class="strip_delete glyphicon glyphicon-trash" aria-hidden="true"></a>
-                        <a class="strip_options glyphicon glyphicon-option-horizontal" aria-hidden="true"></a>
-                    </div>
-                    
-                </div>
-                
-                <div class="strip_flex_container" stripid="{{strip.id}}">
-                    <!-- {- for frame in strip.frame_set.all -}--> 
-                    {% for frame in strip.frame_set.all|map_queryset:strip.children_li %}
-                        {% if frame|is_displayable:"frame" %} 
-                        
-                           {% include "flipbooks/partials/thumbnail_partial.html" with frame=frame %}
-                               
-                        {% else %} 
-                            <!-- Frame with invalid image -->
-                            <div class="thumb placeholder2" frameid="{{frame.id}}">
-                            <span>Missing Image</span>
-                                <a href="" class="mini_menu edit">frame [{{frame.id}}]</a>
-                            </div>
-                     
-                        {% endif %}
-                           
-                    {% empty %}
-         
-                        <div class="tile empty-strip ui-state-disabled">
-                            <span>No frames in this strip. Upload some!</span>
-                        </div>
-
-                    {% endfor %}
-                    
-       
-                    <!-- open frame_form 
-                    <div class="tile frame_form ui-state-disabled" displaytype="add" for="{{strip.id}}">
-                        <span style="font-size:4em">+</span>
-                        Add Frames
-                    </div>-->
-            
-                    
-                    
-                    <!-- indicator when a file is being dragged -->
-                    <div class="cover drag_and_drop">
-                        <span class="bigtext-2">Upload to scene {{forloop.counter}}</span>
-                    </div>
-                    
-                    <!-- file upload guide and form -->
-                    <div class="cover file_upload">
-                        <span class="bigtext-2">
-                            <a href="#" class="btn btn-default frame_create_form_condensed" role="button" style="font-size:1em">Browse</a> or Drag Image here
-                            </span>
-                    </div>
-                    
-                    <!-- animated preview -->
-                    <div class="cover preview">
-                        <a class="close_preview glyphicon glyphicon-remove"></a>
-                        <span class="frame_items"></span>
-                    </div>
-                    
-                </div>
-                
-                <div class="strip_flex_editor">
-                    frame rate
-                </div>
-
-            </li>
-        {% empty %}
-        
-            <p>No strips could be found</p>
-        
-        {% endfor %}
-        
-
-    </ul>
-    
-    
-    
 
     <!-- form/partial/other interactives pre-load -->
     
@@ -169,11 +70,6 @@
     <!-- frame_create_form ready to move-->
     {% include "flipbooks/partials/frame_create_partial.html" with form=frame_create_form action_url=frame_create_url form_id="frame_create_form" %}
     
-    <!-- popup_menu (hidden by default) -->
-    {% include "flipbooks/partials/popup_menu_partial.html" %}
-    <!-- popup_menu for strip (hidden by default) -->
-    {% include "flipbooks/partials/popup_menu_strip_partial.html" %}
-        
 {% endblock %}
 
     

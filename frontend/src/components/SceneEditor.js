@@ -235,14 +235,16 @@ class SceneEditor extends Component{
 		return (
 			<div className="scene_editor" ref={this.$node}>
 				
-				<SceneCreateForm endpoint={`/api/scene/${this.state.sceneId}/strip/create/`}
-								 setParentState={this.setParentState}/>
+				
 
 				{/* list of strips */}
 				<SceneCardList sceneId={this.sceneId}
 							   spotlightedAll={this.state.spotlightedAll}
 						   	   dataInbox={this.state.toSceneCardList}
 						   	   setState_LightBox={ this.state.mounted ? setState_LightBox : null }/>
+
+				<SceneCreateForm endpoint={`/api/scene/${this.state.sceneId}/strip/create/`}
+								 setParentState={this.setParentState}/>
 
 				{/* invisible */}
 				<LightBox addToOnClick={this.addTo_LightBoxOnClick}

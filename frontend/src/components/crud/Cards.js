@@ -11,6 +11,9 @@ import key from "weak-key";
 // Custom helpers
 import Helper from "./../Helper"
 const h = new Helper();
+import XhrHandler from "./XHRHandler"
+const axh = new XhrHandler(); //axios helper
+
 
 
 // http://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=Frame
@@ -85,17 +88,20 @@ class FrameCard extends Component{
         const frame = this.props.frameObj; 
         const thumbWidth = this.thumbWidth;
 
+
         // check if it has valid frames
         if (this.props.standby){
             // this is used when new Frames are created and it is waiting for API response
             return (
-                <div className="thumb standby"
+                <div className="tile standby"
                      ref={this.$node}>
                      
                      <Spinner style="light" 
-                         float={true} 
-                         bgColor="#1d1e1f"
-                         spinning={this.state.frameLoaded ? false : true}/>
+                         float={false}
+                         bgColor={"#f7f7f7"}
+                         playgroundStyle={`width: ${thumbWidth}px; height: 100%; min-height: initial;`}
+                         spinnerStyle={`width: 30px; height: 30px;`}
+                         spinning={true}/>
                 </div>
             )
 
@@ -104,8 +110,8 @@ class FrameCard extends Component{
             if (frame.hasOwnProperty("frame_image") && frame.frame_image != null && frame.frame_image != ""){
                 return (
                     <div className={"thumb " + 
-                                    (this.state.loading && "loading") + " " +
-                                    (!this.state.visible && "ignore" )} 
+                                    (this.state.loading ? "loading" : "") + " " +
+                                    (!this.state.visible ? "ignore" : "" )} 
                          frameid={frame.id} ref={this.$node}>
           
                         <div className="frame_image stretch">
@@ -601,28 +607,34 @@ class StripCard extends PureComponent {
                 fd.append("frame_image", file)
     
                 // Ship it off
-                // axios({
-                //     method: 'post',
-                //     url: `/api/strip/${this.props.stripObj.id}/frame/create/`,
-                //     data: fd,
-                //     headers: {
-                //                 "X-CSRFToken": frameFormData.csrfmiddlewaretoken,
-                //                 //"Content-Type": 'multipart/form-data' // don't need it
-                //              }
-                // })
-                // .then(response => {
-                //     console.log("FrameCreate successful: " + JSON.stringify(response.data));
-                //     console.log("Congrats!!!");
-                // })
-                // .catch(error => {
-                //     console.log(error);
-                //     // Well that didn't work!
-                //     this.setState({cardCover_messageType: "frameCreateError"});
+                axios({
+                    method: 'post',
+                    url: `/api/strip/${this.props.stripObj.id}/frame/create/`,
+                    data: fd,
+                    headers: {
+                                "X-CSRFToken": frameFormData.csrfmiddlewaretoken,
+                                //"Content-Type": 'multipart/form-data' // don't need it
+                             }
+                })
+                .then(response => {
+                    console.log("FrameCreate successful: " + JSON.stringify(response.data));
+                    console.log("Congrats!!!");
 
-                // });
+                    // stop loading state
+                    // TODO: In the future, it may not be just one request
+                    this.setState({loadingFrames: false}); 
 
+                    //RE-fetch. God, how do I do that.
+                    // This is a function in SceneCardList 
+                    this.props.handle_fetchScene();
 
+                })
+                .catch(error => {
+                    console.log(error);
+                    // Well that didn't work!
+                    this.setState({cardCover_messageType: "frameCreateError"});
 
+                });
 
             }
 
@@ -640,14 +652,6 @@ class StripCard extends PureComponent {
 
         // If you reached this point, then you avoided all errors from user side.
         // Close drag and drop state!
-        
-
-        // I don't know where to do this yet
-        // make empty frames? 
-        // pass new data? 
-        // console.warn(JSON.stringify(this.props.stripObj));
-        // const newFrame = {"id":119,"note":"","strip":74,"frame_image":""}
-        // this.props.setSceneDataState({"strip": 74}, "add", newFrame);
         this.setState({loadingFrames: true});
 
         // crap...I thought any kind of setState is async? if I don't put this
@@ -822,6 +826,7 @@ class SceneCardList extends Component {
 
         this.firstLoad = true;
 
+        this.handle_fetchScene = this.handle_fetchScene.bind(this);
         // incoming
         //this.props.toSceneCardList
 
@@ -830,23 +835,22 @@ class SceneCardList extends Component {
     componentDidMount(){
         const thisObj = this;
 
-        // fetch? 
-        axios({
-            method: 'get',
-            url: `/api/scene/${this.props.sceneId}/`,
-          })
-          .then(response => {
-            console.log( "Fetch successful");
-            thisObj.setState({data: response.data});
-            this.firstLoad = false;
+        // moved to XHRHandler:
+        // axios({
+        //     method: 'get',
+        //     url: `/api/scene/${this.props.sceneId}/`,
+        //   })
+        //   .then(response => {
+        //     console.log( "Fetch successful");
+        //     thisObj.setState({data: response.data});
+        //     this.firstLoad = false;
    
-          })
-          .catch(error => {
-            console.log(error);
-          })
-
+        //   })
+        //   .catch(error => {
+        //     console.log(error);
+        //   });
+        this.handle_fetchScene();
     }
-
 
     componentDidUpdate(prevProps, prevState, snapshot){
         // It's okay to setState here. Just make sure it's 
@@ -862,7 +866,13 @@ class SceneCardList extends Component {
 
     }
 
-    
+    handle_fetchScene(){
+        axh.fetchScene(this.props.sceneId).then(res =>{
+            this.setState({data: res.data});
+            this.firstLoad = false;
+        });
+    }
+
     // takes only one key from newData. Rest will be ignored for now.
     appendData(data, newData){
         console.log("New Data looks like this: " + JSON.stringify(newData.newStrip));
@@ -898,6 +908,7 @@ class SceneCardList extends Component {
                                         index={index+1}
                                         spotlightedAll = {this.props.spotlightedAll}
 
+                                        handle_fetchScene = {this.handle_fetchScene}
                                         setState_LightBox = {this.props.setState_LightBox}
 
                                         key={"strip"+index}/>
