@@ -173,10 +173,11 @@ class Strip(models.Model):
     
     order = models.IntegerField(default="-1")
     children_li = models.TextField(max_length=500, null=True, blank=True, default="")
-    children_index = models.TextField(max_length=500, null=True, blank=True, default="")
-    
+    children_index = models.TextField(max_length=500, null=True, blank=True, default="") #currently not used
+
     description = models.TextField(max_length=100, blank=True, default="")
-    
+    dimension = models.CharField(max_length=9, blank=True, default="")
+
     scene = models.ForeignKey(Scene, on_delete=models.CASCADE)
     
     date_created = models.DateTimeField(auto_now_add=True)
@@ -207,11 +208,18 @@ class Strip(models.Model):
             cleaned_children_li = helpers.cleanup_children_li(self)
             if cleaned_children_li:
                 self.children_li = cleaned_children_li
-        
-        # 2. Save strip!
+
+        # # 2. Initialize dimension, if applicable
+        if self.dimension == '' and self.frame_set.count() > 0:
+            thumbnail_dimension = self.frame_set.first().frame_image._get_image_dimensions() #returns tuple
+            # print(dir(thumbnail_obj)) 
+            dimension_li =  [str(val) for val in thumbnail_dimension]
+            self.dimension = "x".join(dimension_li)
+
+        # 3. Save self!
         super(Strip, self).save(*args, **kwargs) 
 
-        # 3. Position update on children_li of its parent (scene)
+        # 4. Position update on children_li of its parent (scene)
         self.scene.children_li = helpers.update_children_li(self.scene, self.id, _insert_at)
         self.scene.save() # save parent!
         

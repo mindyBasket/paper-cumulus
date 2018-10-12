@@ -250,7 +250,7 @@ class StripCard extends PureComponent {
         this.handle_dragAndDrop = this.handle_dragAndDrop.bind(this);
 
         this.openMenu = this.openMenu.bind(this);
-
+        this.openPreview = this.openPreview.bind(this);
 
         this.endModalState = this.endModalState.bind(this); // more generic version of 'removeCardCover'
         this.setSpotlight = this.setSpotlight.bind(this);
@@ -536,7 +536,10 @@ class StripCard extends PureComponent {
     // too simple. added as arrow function on onClick        
     // }
 
-
+    openPreview(){
+        this.setState({previewOn: true});
+    }
+    
     // Generic function for hiding any modal or callouts
     // Use this function to end spotlighted sessions like 'cardCoverOn' or 'dragAndDropOn'
     endModalState(stateName, spotlighted){
@@ -615,7 +618,7 @@ class StripCard extends PureComponent {
                         <span>id: {strip.id}</span>
                     </div>
                     <div className="tools">
-                        <MenuButton iconClass="tool_btn fas fa-play-circle" action={ ()=>{this.setState({previewOn: true})} }/>
+                        <MenuButton iconClass="tool_btn fas fa-play-circle" action={this.openPreview}/>
                         <a className="tool_btn fas fa-file-upload"></a>
                         <a className="tool_btn fas fa-pen"></a>
                         <MenuButton iconClass="tool_btn fas fa-trash" action={this.handle_deleteSceneConfirm}/>
