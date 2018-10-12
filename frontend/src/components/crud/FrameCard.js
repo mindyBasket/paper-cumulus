@@ -123,15 +123,25 @@ class FramePreviewCard extends Component{
         // it expects it in a form of Scene data. So like this 
         // {"strips": [ {stripObj}, {stripObj}, {stripObj} ]}
         let data = {strips: [this.props.stripObj]}; 
-        const stripWH = ['300px', false]; // extract it from Strip object 
+        const di_string = this.props.stripObj.dimension;
+        const di = di_string.split("x");
+        const defaultWidth = 400; //px
+        // TODO: what to do if dimension is not set?
+        let strip_di = [`${defaultWidth}px`, false]; // default for safety
+
+        if(di_string != '' && di.length == 2){
+            const h = Math.round( (defaultWidth*di[1])/di[0] );
+            strip_di = [`${defaultWidth}px`, `${h}px`];
+        } 
 
         return (
-            <div className={"strip_preview_container" + (this.props.on ? " active " : "") + " flipbook_player"}>
+            <div className={"strip_preview_container" + (this.props.on ? " active " : "") + " flipbook_player"}
+                 style={this.props.on ? {height: strip_di[1]} : {}}>
 
                 <div className="frame_window"
                      style={{
-                                width: stripWH[0],
-                                height: ``
+                                width: strip_di[0],
+                                height: strip_di[1]
                              }}>
 
                     {/*This doesn't work right now. it was built to deal with Scene data, not Strips!*/}

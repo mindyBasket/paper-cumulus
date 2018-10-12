@@ -318,7 +318,7 @@
   width: 100%;
   overflow: hidden;
   border: 0px solid;
-  background-color: #f9f9f9;
+  background-color: #494949;
 
   transition: height 0.3s ease-out;
 
@@ -328,5 +328,5 @@
 
 .strip_preview_container.active{
   border-bottom: 1px solid #ddd;
-  height: 180px;
+  /*height: 180px;*/ /* Height is dynamically determined in the FramePreviewCard*/
 }
