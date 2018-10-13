@@ -6,6 +6,7 @@ import { Sortable } from '@shopify/draggable';
 // import Sortable from 'sortablejs';
 import Spinner from "./../Spinner";
 import { FrameCard, FramePreviewCard } from "./FrameCard";
+import { playFrameStage } from "./../FlipbookPlayer";
 import { CardCover2 } from "./CardCover"
 import key from "weak-key";
 
@@ -254,6 +255,7 @@ class StripCard extends PureComponent {
 
         this.endModalState = this.endModalState.bind(this); // more generic version of 'removeCardCover'
         this.setSpotlight = this.setSpotlight.bind(this);
+
     }
 
 
@@ -286,7 +288,6 @@ class StripCard extends PureComponent {
 
     // componentDidUpdate(prevProps, prevState, snapshot){
     // }
-
 
     setSpotlight(on){
         // Set this component in spotlight against lightbox.
@@ -537,9 +538,17 @@ class StripCard extends PureComponent {
     // }
 
     openPreview(){
-        this.setState({previewOn: true});
+
+        // Play if preview already opened
+        if (this.state.previewOn){
+            playFrameStage();
+        } else {
+            this.setState({previewOn: true});
+            // FrameStage component is set to autoplay upon mount, only when standlone
+        }
+        
     }
-    
+
     // Generic function for hiding any modal or callouts
     // Use this function to end spotlighted sessions like 'cardCoverOn' or 'dragAndDropOn'
     endModalState(stateName, spotlighted){
@@ -631,7 +640,7 @@ class StripCard extends PureComponent {
                 <div className="strip_content">
 
                     {/* panel for frame animation preview */}
-                    <FramePreviewCard on={this.state.previewOn}
+                    <FramePreviewCard on={this.state.previewOn} off={()=>{this.endModalState("previewOn", true)}}
                                       stripObj={strip}/>
 
                     {strip.frames == null || strip.frames.length === 0 || Object.keys(strip.frames).length === 0 ? 

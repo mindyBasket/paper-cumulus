@@ -112,44 +112,58 @@ class FramePreviewCard extends Component{
 
     constructor(props){
         super(props);
-
-
     }
-    componentDidUpdate(){
-        console.log(JSON.stringify(this.props));
-    }
+
+    // componentDidUpdate(prevProps, prevState, snapshot){
+
+    // }
+
 
     render(){
         // it expects it in a form of Scene data. So like this 
         // {"strips": [ {stripObj}, {stripObj}, {stripObj} ]}
         let data = {strips: [this.props.stripObj]}; 
-        const di_string = this.props.stripObj.dimension;
-        const di = di_string.split("x");
-        const defaultWidth = 400; //px
-        // TODO: what to do if dimension is not set?
-        let strip_di = [`${defaultWidth}px`, false]; // default for safety
+        const strip = this.props.stripObj;
+        
+        // Calc width and height of frame window based on first frame
+        const defaultWidth = 450; //px
+        if (!strip.frames || strip.frames.length == 0){return false;}
 
-        if(di_string != '' && di.length == 2){
-            const h = Math.round( (defaultWidth*di[1])/di[0] );
-            strip_di = [`${defaultWidth}px`, `${h}px`];
-        } 
+        // this comes out EMPTY because the dimension is not initialized. 
+        // TODO: can it request on demand?
+        const di_str = this.props.stripObj.frames[0].dimension;
+        const di = di_str.split("x");
+        let h;
 
+        if(di_str != '' && di.length >= 2){
+            try {
+                h = Math.round( (defaultWidth*di[1])/di[0] );
+            } catch(err){
+                console.error("Height could not be calculated: " + err);
+                return false;
+            }
+        } else { return false; } 
+
+        let frame_window_di = [`${defaultWidth}px`, `${h}px`]; 
         return (
             <div className={"strip_preview_container" + (this.props.on ? " active " : "") + " flipbook_player"}
-                 style={this.props.on ? {height: strip_di[1]} : {}}>
+                 style={this.props.on ? {height: frame_window_di[1]} : {}}>
 
                 <div className="frame_window"
                      style={{
-                                width: strip_di[0],
-                                height: strip_di[1]
+                                width: frame_window_di[0],
+                                height: frame_window_di[1]
                              }}>
 
                     {/*This doesn't work right now. it was built to deal with Scene data, not Strips!*/}
                     {this.props.on && (
-                        <FrameStage data={data} standAlone={true}/>
+                        <FrameStage data={data} 
+                                    standAlone={true} 
+                                    on={this.props.on}
+                        />
                     )}
-                    
                 </div>
+                <div className="float_btn fas fa-times" onClick={this.props.off}></div>
             </div>
         )
 

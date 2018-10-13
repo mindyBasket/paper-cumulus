@@ -17,7 +17,7 @@ function _setState_Scrubber(newState){
 	try {
 		this.setState(newState);
 	} catch(err){
-		console.warn(err);
+		console.warn("Scrubber not found.");
 	}
 	
 }
@@ -26,8 +26,12 @@ function _setState_FlipbookPlayer(newState){
 	try {
 		this.setState(newState);
 	} catch(err){
-		console.warn(err);
+		console.warn("Flipbook Player not found.");
 	}
+}
+
+function playFrameStage(){
+	this.setState({playNow: true});
 }
 
 
@@ -47,7 +51,7 @@ class FrameStage extends Component{
 		super(props);
 		this.data = this.props.data;
 		this.currStrip;
-
+		this.$node = React.createRef(); 
 
 		this.frameState = {
 			isStripHead: true,
@@ -68,61 +72,77 @@ class FrameStage extends Component{
 		this.playFrame=this.playFrame.bind(this);
 		this.killSetTimeOut=this.killSetTimeOut.bind(this);
 
+		// public function
+		playFrameStage = playFrameStage.bind(this);
+
 	}
 
-	// componentWillUpdate(nextProps, nextState){
-		// Don't use this. Consdiered unsafe by doc.
-		// Use componentDidUpdate() instead
-	// }
-
 	componentDidMount(){
-
-		// bind keyboard
-		var playNext = this.playNext;
-
-		document.addEventListener('keydown', (event) => {
-		    if(event.keyCode == 37) {
-		    	this.killSetTimeOut();
-
-		        if(this.frameState.isStripHead){
-		        	this.gotoPrev(); //go to previous strip
-		        } else {
-		        	this.rewind(); //rewind to beginning of strip
-		        }
-		        //doing either action places you at the head of Strip
-		        this.frameState.isStripHead = true;
-		    }
-		    else if(event.keyCode == 39) {
-		    	this.killSetTimeOut();
-
-		    	this.gotoNextAndPlay();
-		    }
-		});
-
 		// scroll to first element just in case
-		this.currStrip = document.querySelector(".frame_stage .strip.start");
+		// this.currStrip = document.querySelector(".frame_stage .strip.start");
+		this.currStrip = this.$node.current.querySelector('.strip.start');
 		this.currStrip.scrollIntoView(true);
 
-		// TODO: this seem like a bad place to initialize the Scrubber.
-		//	 	 this pattern is being used because frames are fetched in this component,
-		//		 instead of the parent component to pass it down
-		_setState_Scrubber({numStrips: this.props.data['strips'].length});
+		 if (this.props.standAlone){
+		 	// This component can be used by itself. Currently used in
+		 	// SceneEditor's preview
+		 	this.$node.current.click(); // autoplay
 
-		// Tell parent the frame has been loaded
-		// TODO: this is the same problem as above
-		console.warn("frame loaded");
-		_setState_FlipbookPlayer({frameLoaded: true});
+		 } else {
+			// bind keyboard
+			// TODO: this variable appears to be not being used.
+			var playNext = this.playNext;
+
+			document.addEventListener('keydown', (event) => {
+			    if(event.keyCode == 37) {
+			    	this.killSetTimeOut();
+
+			        if(this.frameState.isStripHead){
+			        	this.gotoPrev(); //go to previous strip
+			        } else {
+			        	this.rewind(); //rewind to beginning of strip
+			        }
+			        //doing either action places you at the head of Strip
+			        this.frameState.isStripHead = true;
+			    }
+			    else if(event.keyCode == 39) {
+			    	this.gotoNextAndPlay();
+			    }
+			});
+
+			// TODO: this seem like a bad place to initialize the Scrubber.
+			//	 	 this pattern is being used because frames are fetched in this component,
+			//		 instead of the parent component to pass it down
+			_setState_Scrubber({numStrips: this.props.data['strips'].length});
+
+			// Tell parent the frame has been loaded
+			// TODO: this is the same problem as above
+			_setState_FlipbookPlayer({frameLoaded: true});
+		}
 	
 	}
 
+	componentDidUpdate(prevProps, prevState, snapshot){
+		console.log("[UPDATE] FrameStage");
+		if (!prevState.playNow && this.state.playNow){
+			this.gotoNextAndPlay();
+			// can I do this...?
+			this.state.playNow = false; // I don't want it to componentUpdate
+		}
+	}
+
+
 	gotoNextAndPlay(){
+		// Kill any preexisting animation
+		this.killSetTimeOut();
 
 		if (!this.frameState.isStripHead && this.currStrip.nextElementSibling != null ){
 			// Go to next Strip
 			this.currStrip = this.currStrip.nextElementSibling;
 			this.currStrip.scrollIntoView(true);
 
-			//TODO: flash some message indicating end of the strip
+			// Note: it became a positive feature to replay the last existing strip.
+			//		 For now, do not add extra behavior to indicate end of Scene.	 
 		}
 
 		//Enter playing state
@@ -139,16 +159,19 @@ class FrameStage extends Component{
 		}
 
 		//update scrubber
-		_setState_Scrubber({
-			numFrames: Number(frameCount),
-			currStrip: Number(this.currStrip.getAttribute("index"))
-		});
+		if (!this.props.standAlone){
+			_setState_Scrubber({
+				numFrames: Number(frameCount),
+				currStrip: Number(this.currStrip.getAttribute("index"))
+			});
 
-		_setState_FlipbookPlayer({onStandby: false});
+			_setState_FlipbookPlayer({onStandby: false});
 
-		if(this.currStrip.getAttribute("index") == 0){
-			_setState_FlipbookPlayer({introActive: false});
+			if(this.currStrip.getAttribute("index") == 0){
+				_setState_FlipbookPlayer({introActive: false});
+			}
 		}
+		
 	 
 	}
 
@@ -214,9 +237,9 @@ class FrameStage extends Component{
 			data = new Array(data); //unify format
 			return (
 				!data || !data.length ? (
-					<p>Nothing to show</p>
+					<p ref={this.$node}>No frame registered to this strip</p>
 				) : (
-					<div className="frame_stage">
+					<div className="frame_stage" onClick={this.gotoNextAndPlay} ref={this.$node}>
 				 
 					 	{/* data.strips is an array of JSON objects */}
 						{data[0]['strips'].map((el_strip,index) => (
@@ -454,5 +477,6 @@ wrapper ? ReactDOM.render(<FlipbookPlayer startSceneId={sceneId}/>, wrapper) : n
 
 // Can I also export...?
 export {
-    FrameStage
+    FrameStage,
+    playFrameStage
 };

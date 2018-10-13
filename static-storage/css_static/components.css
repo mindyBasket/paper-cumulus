@@ -318,7 +318,7 @@
   width: 100%;
   overflow: hidden;
   border: 0px solid;
-  background-color: #494949;
+  background-color: #3c3c3c;
 
   transition: height 0.3s ease-out;
 
@@ -329,4 +329,16 @@
 .strip_preview_container.active{
   border-bottom: 1px solid #ddd;
   /*height: 180px;*/ /* Height is dynamically determined in the FramePreviewCard*/
+}
+
+.float_btn{
+  cursor: pointer;
+  position: absolute;
+  top: 0; right:0;
+  padding: 10px;
+  font-size: 3em;
+}
+
+.float_btn:hover{
+  color: #e1e1e1;
 }
