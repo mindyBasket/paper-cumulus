@@ -79,9 +79,8 @@ class FrameStage extends Component{
 
 	componentDidMount(){
 		// scroll to first element just in case
-		// this.currStrip = document.querySelector(".frame_stage .strip.start");
 		this.currStrip = this.$node.current.querySelector('.strip.start');
-		this.currStrip.scrollIntoView(true);
+		//this.currStrip.scrollIntoView(true); // This may be unnecessary scrolling
 
 		 if (this.props.standAlone){
 		 	// This component can be used by itself. Currently used in
@@ -125,21 +124,27 @@ class FrameStage extends Component{
 	componentDidUpdate(prevProps, prevState, snapshot){
 		console.log("[UPDATE] FrameStage");
 		if (!prevState.playNow && this.state.playNow){
-			this.gotoNextAndPlay();
-			// can I do this...?
-			this.state.playNow = false; // I don't want it to componentUpdate
+			const useScrollTop = true;
+			this.gotoNextAndPlay(useScrollTop);
+			// can I do this...? Will this help update trigger again?
+			this.state.playNow = false; 
 		}
 	}
 
 
-	gotoNextAndPlay(){
+	gotoNextAndPlay(useScrollTop){
 		// Kill any preexisting animation
 		this.killSetTimeOut();
 
 		if (!this.frameState.isStripHead && this.currStrip.nextElementSibling != null ){
 			// Go to next Strip
 			this.currStrip = this.currStrip.nextElementSibling;
-			this.currStrip.scrollIntoView(true);
+
+			if (useScrollTop){
+				this.$node.current.parentElement.scrollTop = currStrip.offsetTop;
+			} else { 
+				this.currStrip.scrollIntoView(true);
+			}
 
 			// Note: it became a positive feature to replay the last existing strip.
 			//		 For now, do not add extra behavior to indicate end of Scene.	 
@@ -154,9 +159,10 @@ class FrameStage extends Component{
 		for(var i=0;i<frameCount;i++){
 			// Add reference to stop it later
           	this.setTimeOutArr.push(
-          		setTimeout(this.playFrame.bind(this, i), i*T_STEP)
+          		setTimeout(this.playFrame.bind(this, i, useScrollTop), i*T_STEP)
           	);
 		}
+
 
 		//update scrubber
 		if (!this.props.standAlone){
@@ -164,7 +170,6 @@ class FrameStage extends Component{
 				numFrames: Number(frameCount),
 				currStrip: Number(this.currStrip.getAttribute("index"))
 			});
-
 			_setState_FlipbookPlayer({onStandby: false});
 
 			if(this.currStrip.getAttribute("index") == 0){
@@ -210,10 +215,18 @@ class FrameStage extends Component{
 	}
 
 
-	playFrame(index){
+	playFrame(index,useScrollTop){
 
 		var targetFrame = this.currStrip.querySelectorAll(".frame")[index];
-		if (targetFrame != null) { targetFrame.scrollIntoView(true);}
+		if (targetFrame != null) {
+			if (useScrollTop){
+				this.$node.current.parentElement.scrollTop = targetFrame.offsetTop;
+				console.log(targetFrame.offsetTop);
+			} else {
+				targetFrame.scrollIntoView(true);
+			}
+			
+		}
 		else {console.warn("Could not find frame at index " + index)}
 
 		//update timer

@@ -320,7 +320,7 @@
   border: 0px solid;
   background-color: #3c3c3c;
 
-  transition: height 0.3s ease-out;
+  transition: height 0.2s ease-out;
 
   /*transition-property: max-height;
     transition-duration: 0.3s;*/

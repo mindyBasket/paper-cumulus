@@ -138,6 +138,7 @@ class FramePreviewCard extends Component{
         if(di_str != '' && di.length >= 2){
             try {
                 h = Math.round( (defaultWidth*di[1])/di[0] );
+                // Note: subtracting 1 for a cheap fix for overshoot issue
             } catch(err){
                 console.error("Height could not be calculated: " + err);
                 return false;

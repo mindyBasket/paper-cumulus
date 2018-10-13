@@ -289,6 +289,8 @@ class Frame(models.Model):
         #thumbnail_storage='frame_images/thumbTest/thumbs/', #I don't know how to use this
         blank=False
     )
+    
+    ignored = models.BooleanField(default=False)
 
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)

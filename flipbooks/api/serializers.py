@@ -21,6 +21,7 @@ class FrameModelSerializer(serializers.ModelSerializer):
         model = Frame
         fields = [
             'id',
+            'ignored',
             'note',
             'strip',
             'dimension',

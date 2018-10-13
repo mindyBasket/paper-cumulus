@@ -196,9 +196,6 @@ function initializeSortable($container, name, callback){
         console.log(thOrder.join(","));
         callback(thOrder);
 
-        //TODO: animation?
-
-
     });
 }
 
