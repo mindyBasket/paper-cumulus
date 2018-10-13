@@ -19,6 +19,31 @@ class XhrHandler {
 	        })
 	    )
 	}
+
+
+
+	createStrip(sceneId, formData, csrfToken){
+		return (
+			axios({
+	            method: 'post',
+	            url: `/api/scene/${sceneId}/strip/create/`,
+	            data: formData,
+	            headers: {"X-CSRFToken": csrfToken}
+	        })
+	        .then(response => {
+	            console.log("[New Strip created]");
+	            //thisObj.setState({data: response.data});
+	            //this.firstLoad = false;
+	            return response;
+	        })
+	        .catch(error => {
+	        	console.log(error);
+	        })
+	    )
+	}
+
+
+
 	
 }
 

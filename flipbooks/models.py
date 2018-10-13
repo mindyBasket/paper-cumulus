@@ -209,17 +209,11 @@ class Strip(models.Model):
             if cleaned_children_li:
                 self.children_li = cleaned_children_li
 
-        # # 2. Initialize dimension, if applicable
-        if self.dimension == '' and self.frame_set.count() > 0:
-            thumbnail_dimension = self.frame_set.first().frame_image._get_image_dimensions() #returns tuple
-            # print(dir(thumbnail_obj)) 
-            dimension_li =  [str(val) for val in thumbnail_dimension]
-            self.dimension = "x".join(dimension_li)
 
-        # 3. Save self!
+        # 2. Save self!
         super(Strip, self).save(*args, **kwargs) 
 
-        # 4. Position update on children_li of its parent (scene)
+        # 3. Position update on children_li of its parent (scene)
         self.scene.children_li = helpers.update_children_li(self.scene, self.id, _insert_at)
         self.scene.save() # save parent!
         
@@ -288,6 +282,7 @@ class Frame(models.Model):
     strip = models.ForeignKey(Strip, blank=True, null=True, on_delete=models.CASCADE)
     
     #frame images
+    dimension = models.CharField(max_length=9, blank=True, default="")
     frame_image = ThumbnailerImageField(
         upload_to = frame_upload_path,
         #resize_source=dict(size=(100, 100)),
@@ -325,9 +320,16 @@ class Frame(models.Model):
         # Check if this is a new frame 
         # ref: https://docs.djangoproject.com/en/2.1/ref/models/instances/#customizing-model-loading
         is_new = True if self._state.adding else False
-        
         print("--------- IS THIS A NEW FRAME? : %s" % is_new)
         
+        # Monitor image dimension
+        if self.frame_image:
+            thumbnail_dimension = self.frame_image._get_image_dimensions() #returns tuple
+            # print(dir(thumbnail_obj)) 
+            dimension_li =  [str(val) for val in thumbnail_dimension]
+            self.dimension = "x".join(dimension_li)
+
+
         # 1. Save instance
         super(Frame, self).save(*args, **kwargs) # save Frame!
         

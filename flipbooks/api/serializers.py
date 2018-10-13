@@ -23,6 +23,7 @@ class FrameModelSerializer(serializers.ModelSerializer):
             'id',
             'note',
             'strip',
+            'dimension',
             'frame_image'
             ]
         #read_only_fields = ('frame_image',)
