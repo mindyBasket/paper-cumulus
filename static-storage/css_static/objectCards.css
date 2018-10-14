@@ -338,10 +338,7 @@ input.untouchable{
     justify-content: center;
 }
 
-.cover_message .color.red{
-    /* TODO: would be nice if I could use variables here */
-    color: #da8d8d;
-}
+
 
 /*.cover.drag_and_drop,
 .cover.file_upload,

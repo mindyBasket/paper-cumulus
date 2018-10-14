@@ -44,6 +44,9 @@ class ToolButton extends Component{
     			break;
     		case "submit":
     			this.iconClassName = "fas fa-check";
+    			break;
+    		case "loading":
+    			this.iconClassName = "fas fa-spinner loading";
     	}
 
     	return (

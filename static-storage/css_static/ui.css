@@ -33,9 +33,9 @@ button.warning:hover{
 
 .tool_btn{
 	position: absolute;
-	font-size: 15pt;
+	font-size: 10pt;
 	color: #ffffff8f;
-	padding: 10px; margin: 7px;
+	padding: 8px; margin: 5px;
 	background-color: #00000036;
 
 	border-radius: 5px;
@@ -43,7 +43,13 @@ button.warning:hover{
 	cursor: pointer;
 }
 
-.tool_btn:hover{
+
+.tool_btn:not(.loading):hover{
 	color: white;
 	border: 1px solid #ffffff52;
+}
+
+.tool_btn.loading{
+	background-color: transparent;
+	color: #bba2da;
 }

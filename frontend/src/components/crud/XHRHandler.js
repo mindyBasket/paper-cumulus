@@ -71,9 +71,6 @@ class XhrHandler {
 	            headers: {"X-CSRFToken": csrfToken}
 	        })
 	        .then(response => {
-	            console.log("[New Strip created]");
-	            //thisObj.setState({data: response.data});
-	            //this.firstLoad = false;
 	            return response;
 	        })
 	        .catch(error => {

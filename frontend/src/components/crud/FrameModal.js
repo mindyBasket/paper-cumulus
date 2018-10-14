@@ -47,39 +47,72 @@ class EditableField extends Component{
     constructor(props){
         super(props);
         this.state={
+            loading: false,
             editing: false
         }
 
+        this.handle_submit = this.handle_submit.bind(this);
         this.openEditable = this.openEditable.bind(this);
 
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot){
+        // Check if field value changed
+        if (prevProps.fieldValue != this.props.fieldValue){
+            this.setState({editing: false, loading: false});
+        }
+
+    }
+
+    handle_submit(){
+        // no longer editing. Enter waiting state
+        this.setState({editing: false, loading: true});
+        this.props.action();
     }
 
     openEditable(){
         this.setState({editing: true})
     }
 
-    render(){
-        return (
-            <div className="editable_field">
-                <span className="field_label">{this.props.fieldLabel}</span>
+    
 
-                {this.state.editing ? (
-                    <div className="field_input">
-                        <input type="text" defaultValue={this.props.fieldValue}/>
-                        <span>Editing...</span>
-                        <ToolButton iconType="submit" position="top right" 
-                                    action={this.props.action}}/>
-                    </div>
-                    
-                ) : (
-                    <span className="field_value" onClick={this.openEditable}>
-                        {this.props.fieldValue}
-                        <ToolButton iconType="edit" position="top right"/>
+    render(){
+
+        if (this.state.editing) {
+            return (
+                <div className="editable_field">
+                    <span className="field_label">{this.props.fieldLabel}</span>
+                        <div className="field_input">
+                            <input type="text" value={this.props.fieldValue}/>
+                            {/* submit acion */}
+                            <ToolButton iconType="submit"
+                                        position="top right" 
+                                        action={this.handle_submit}/>
+                        </div>
+                </div>
+            )
+        } else {
+            return (
+                <div className={"editable_field " + (this.props.readOnly ? "read_only" : "")}>
+                    <span className="field_label">{this.props.fieldLabel}</span>
+                    <span className={"field_value " + ( (this.state.loading || this.props.readOnly ) ? "read_only" : "")}
+                          onClick={()=>{
+                            if(!this.props.readOnly && !this.state.loading) {this.openEditable();} 
+                          }}>
+                        
+                        <span class={ this.props.contentType == "error" ? "color red" : "" }>
+                            {this.props.fieldValue}
+                        </span>
+
+                        {!this.props.readOnly && 
+                            <ToolButton iconType={(this.state.loading ? "loading" : "edit")}
+                                        position="top right"/>}
+                        
                     </span>
-                )}
-                
-            </div>   
-        )
+
+                </div>   
+            )
+        }
     }
 }
 
@@ -102,7 +135,10 @@ class FrameModal extends Component{
         this.hello = "Hello! :D";
         this.state = {
             on: false,
-            frameObj: null
+            frameObj: null,
+
+            // Used to reset Fields. Set immediately back to "false" after "true"
+            fieldReset: false 
         }
 
         this.refreshFrame = this.refreshFrame.bind(this);
@@ -122,8 +158,7 @@ class FrameModal extends Component{
             pub_LightBox_addToOnClick(()=>{pub_FrameModal_openModal(false)}); 
         } else if (prevState.on == true && this.state.off == false){
             pub_LightBox_off();
-        }
-        
+        }  
     }
 
 
@@ -172,10 +207,9 @@ class FrameModal extends Component{
 
 
     refreshFrame(){
-        console.log("Refreshing frame...");
         const frame = this.state.frameObj;
         const csrfToken = axh.getCSRFToken();
-        const formData = h.makeFormData({});
+        const formData = h.makeFormData({}); // Just refreshing. No new data.
 
         axh.editFrame(frame.id, formData, csrfToken).then(res => {
             console.log("Frame Refreshed!")
@@ -183,14 +217,20 @@ class FrameModal extends Component{
 
             // refresh data 
             this.setState({frameObj:res.data});
+
         });
     }
 
 
     render(){
         const frame = this.state.frameObj;
+        console.log("[RE-RENDER] Curr obj: " + JSON.stringify(this.state.frameObj));
+
         return (
-            this.state.frameObj ? (
+            <div>
+            {this.state.frameObj == null ? (
+                <p>Could not fetch frame information. Please try again.</p>
+            ) : (
                 <div id="light_box_modal" className={this.state.on ? "active" : ""}>
 
                     <div id="field_frame_image">
@@ -203,15 +243,14 @@ class FrameModal extends Component{
                     <div className="frame_content">
                         
                         {/* image info */}
-                        {frame.dimension ? 
-                            <EditableField fieldLabel="Image" fieldValue={frame.dimension}/>
+                        {frame.dimension != '' ? 
+                            <EditableField fieldLabel="Image" fieldValue={this.state.frameObj['dimension']}
+                                           readOnly={true}/>
                             : 
-                            <EditableField fieldLabel="Image" fieldValue="???x???"
+                            <EditableField fieldLabel="Image" fieldValue="???x??? [Please resubmit to refresh]"
+                                           contentType="error"
                                            action={this.refreshFrame}/>
                         }
-     
-                        
-
 
                         <EditableField fieldLabel="Note" fieldValue={frame.note}/>
                         <EditableField fieldLabel="Ignore" fieldValue={frame.ignore}/>
@@ -219,9 +258,8 @@ class FrameModal extends Component{
                     </div>
 
                 </div>
-            ) : (
-                false
-            )
+            )}
+            </div>
         ) // end: return
 
 

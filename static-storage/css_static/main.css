@@ -38,6 +38,12 @@ a:hover{
 }
 
 
+.color.red{
+    /* TODO: would be nice if I could use variables here */
+    color: #da8d8d;
+}
+
+
 /* -------------------------------------- */
 /* -------------------------------------- */
 /*                Base layout             */
