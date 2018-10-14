@@ -4,8 +4,11 @@ import PropTypes from "prop-types";
 
 import { Sortable } from '@shopify/draggable';
 import Spinner from "./../Spinner";
+
+import { pub_FrameModal_openModal } from "./FrameModal";
 import FrameFeeder from "./../FrameFeeder";
 import { FrameStage } from "./../FlipbookPlayer";
+
 
 // Custom helpers
 import Helper from "./../Helper"
@@ -334,6 +337,7 @@ class FrameCard extends Component{
                                 (this.state.loading ? " loading" : "") +
                                 (!this.state.visible ? " ignore" : "" )} 
                      frameid={frame.id}
+                     onClick={()=>{pub_FrameModal_openModal(frame);}}
                      ref={this.$node}>
       
                     {frame_physicalContent}

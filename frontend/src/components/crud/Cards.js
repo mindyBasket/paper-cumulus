@@ -624,11 +624,11 @@ class StripCard extends PureComponent {
                         <span>id: {strip.id}</span>
                     </div>
                     <div className="tools">
-                        <MenuButton iconClass="tool_btn fas fa-play-circle" action={this.openPreview}/>
-                        <a className="tool_btn fas fa-file-upload"></a>
-                        <a className="tool_btn fas fa-pen"></a>
-                        <MenuButton iconClass="tool_btn fas fa-trash" action={this.handle_deleteSceneConfirm}/>
-                        <MenuButton iconClass="tool_btn fas fa-ellipsis-h" action={this.openMenu}/>
+                        <MenuButton iconClass="menu_btn fas fa-play-circle" action={this.openPreview}/>
+                        <a className="menu_btn fas fa-file-upload"></a>
+                        <a className="menu_btn fas fa-pen"></a>
+                        <MenuButton iconClass="menu_btn fas fa-trash" action={this.handle_deleteSceneConfirm}/>
+                        <MenuButton iconClass="menu_btn fas fa-ellipsis-h" action={this.openMenu}/>
                     </div>
                     
                 </div>
@@ -772,6 +772,7 @@ class SceneCardList extends Component {
                     
                 ) //end: ternary
             }
+
             </div>
         ) //end: return
     } //end: render()

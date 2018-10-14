@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import FrameFeeder from "./FrameFeeder";
 import SceneCreateForm from "./crud/Form";
 import {SceneCardList} from "./crud/Cards";
+import {FrameModal} from "./crud/FrameModal";
 
 import Spinner from "./Spinner";
 import key from "weak-key";
@@ -61,6 +62,18 @@ class MouseClickTracker extends Component{
 function setState_LightBox(newState){
 	this.setState(newState);
 }
+function pub_LightBox_on(){
+	console.log("[LightBox] on");
+	this.setState({active: true});
+}
+function pub_LightBox_off(){
+	console.log("[LightBox] off");
+	this.setState({active: false});
+}
+function pub_LightBox_addToOnClick(func){
+	this.setState({addToOnClick: func});
+}
+
 
 class LightBox extends Component{
 	constructor(props){
@@ -80,7 +93,9 @@ class LightBox extends Component{
 
 		//public function
 		setState_LightBox = setState_LightBox.bind(this);
-
+		pub_LightBox_on = pub_LightBox_on.bind(this);
+		pub_LightBox_off = pub_LightBox_off.bind(this);
+		pub_LightBox_addToOnClick = pub_LightBox_addToOnClick.bind(this);
 	}
 
 	componentDidMount(){
@@ -256,6 +271,11 @@ class SceneEditor extends Component{
 						  handle_dragAndDrop={this.handle_dragAndDrop}
 						  setParentState={this.setParentState}/>
 
+				{/* A bit unsure where is the best place to put this */}
+	            <FrameModal/>
+
+	    
+
 
 			</div>
 
@@ -278,4 +298,10 @@ const wrapper = document.getElementById("scene_editor_wrapper");
 wrapper ? ReactDOM.render(<SceneEditor/>, wrapper) : null;
 
 
-//get Django context
+
+
+export {
+    pub_LightBox_on,
+    pub_LightBox_off,
+    pub_LightBox_addToOnClick
+};

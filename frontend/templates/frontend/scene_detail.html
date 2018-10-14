@@ -65,10 +65,12 @@
 
     <!-- form/partial/other interactives pre-load -->
     
-    <!-- strip_create_form ready to move-->
+    <!-- strip_create_form -->
     {% include "flipbooks/includes/form_dynamic.html" with form=strip_create_form action_url=strip_create_url form_id="strip_create_form" btn_title='Add Strip' %}
-    <!-- frame_create_form ready to move-->
+    <!-- frame_create_form -->
     {% include "flipbooks/partials/frame_create_partial.html" with form=frame_create_form action_url=frame_create_url form_id="frame_create_form" %}
+
+
     
 {% endblock %}
 

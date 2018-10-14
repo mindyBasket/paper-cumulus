@@ -14,27 +14,100 @@
 }
 
 #light_box_modal{
+    pointer-events: none;
     position: fixed;
+    opacity: 0;
     
-    top: 40px; left: 50%;
+    top: 50px; left: 50%;
     transform: translate(-50%, 0);
     display:inline-block;
     
-    width: 700px; height: 90%;
-    background-color: white;
-    border-radius: 6px;
-    
+    width: 750px; height: 85%;
+    background-color: #efecea;
+    border-radius: 7px;
 }
 
-#light_box_modal .header{
+#light_box_modal .icon{
+  font-size: 3em;
+}
+
+#light_box_modal.active{
+  pointer-events: auto;
+  opacity: 1;
+}
+
+/*#light_box_modal .header{
     font-size: 2em;
     padding: 10px 30px;
     border-bottom: 1px solid #d1d1d1;
-}
+}*/
 
 #light_box_modal .frame_content{
-    padding: 0px;
+    padding: 20px;
 }
+
+#light_box_modal #field_frame_image{
+  overflow:hidden;
+  position: relative;
+  border-top-left-radius: 7px;
+  border-top-right-radius: 7px;
+
+  background-color: #403f3f;
+  text-align: center;
+}
+#light_box_modal #field_frame_image img{
+  margin: 0 auto;
+  height: 250px;
+}
+
+
+.editable_field{
+  display: flex;
+}
+
+.editable_field .field_label{
+  font-weight: bold;
+  padding: 20px;
+}
+
+.editable_field .field_value{
+  position: relative;
+  flex-grow: 1;
+  border-radius: 5px;
+  border-top: 3px solid transparent;
+  border-left: 3px solid transparent;
+  padding: 20px;
+}
+.editable_field .field_value:hover{
+  background-color: #e1d9d8;
+}
+
+
+.editable_field .field_input{
+  position: relative;
+  display: flex;
+  flex-grow: 1;
+  border-radius: 5px;
+  box-sizing: border-box;
+
+  background-color: white;
+  border-top: 3px solid #92a6cc;
+  border-left: 3px solid #92a6cc;
+
+}
+
+.editable_field .field_input input[type='text']{
+  flex-grow: 1;
+  border:0px solid;
+  padding: 0 20px;
+}
+
+.editable_field .field_input input[type='text']:focus{
+  outline: none;
+}
+
+
+
 
 /* ----- REACT version ------- */
 

@@ -15,6 +15,10 @@ button:hover{
 	background-color: #6a5458;
 }
 
+button:focus{
+	outline: none;
+}
+
 button.warning{
 	background-color: #e85f53;
 	border-color: #bf5151;
@@ -22,4 +26,24 @@ button.warning{
 
 button.warning:hover{
 	background-color: #ec3b3b;
+}
+
+
+/* note: '.menu_btn' is in menu.css */
+
+.tool_btn{
+	position: absolute;
+	font-size: 15pt;
+	color: #ffffff8f;
+	padding: 10px; margin: 7px;
+	background-color: #00000036;
+
+	border-radius: 5px;
+	border: 1px solid #ffffff00;
+	cursor: pointer;
+}
+
+.tool_btn:hover{
+	color: white;
+	border: 1px solid #ffffff52;
 }
