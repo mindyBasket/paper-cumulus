@@ -16,7 +16,10 @@ var lightBox_publicFunctions = {
 	},
 	pub_LightBox_off: function(){
 		console.log("[LightBox] off");
-		this.setState({active: false});
+		//this.setState({active: false});
+		// Closing lightbox is more involved then opening it. 
+		// So call the function that you use when clicking on it
+
 	},
 	pub_LightBox_addToOnClick: function(func){
 		this.setState({addToOnClick: func});
@@ -89,7 +92,7 @@ class LightBox extends Component{
 
 		// B. Undo any spotlight [spotlighting is done by setting z-index on component]
 		this.props.setParentState({spotlightedAll: false}); 
-		// note: this does not override individual 
+		// note: this does overrides individual 
 
 		// TODO: any other default behaviors? Modals perhaps? 
 

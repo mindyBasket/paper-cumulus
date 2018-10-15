@@ -267,43 +267,35 @@ class StripCard extends PureComponent {
     // componentDidUpdate(prevProps, prevState, snapshot){
     // }
 
-    setSpotlight(on){
-        // Set this component in spotlight against lightbox.
-        // Due to the nature of this container, only .strip_card can do this
+    
+    // returns list of frame objects in order referencing children_li
+    reorderFrames(strip){
+        const frameIdList = strip.children_li.split(",");
+        if (frameIdList==null || frameIdList==='') {return null;}
 
-        // modify click event to the LightBox!
-        this.props.setState_LightBox({addToOnClick: ()=>{ this.setSpotlight(false); }})
+        let frameOrderedArr = Array.apply(null, Array(frameIdList.length));
+        let frameLeftOver = [];
 
-        
-        if (on){
-            // console.log("setSpotlight " + on);
-            this.props.setState_LightBox({active: true});
-            this.setState({selfSpotlighted: true});
-        } else {
-            // console.log("setSpotlight " + on);
-            this.props.setState_LightBox({active: false});
+        strip.frames.forEach((f)=>{
+            const insertAt = frameIdList.indexOf(String(f.id));
+            if (insertAt>=0 && insertAt<frameOrderedArr.length){
+                frameOrderedArr[insertAt] = f; 
+            } else if (insertAt==-1){
+                // children not ref'd in children_li is just placed at the end
+                frameLeftOver.push(f);
+            }
+            
+        });
 
-            //remove ALL modals or any callouts
-            // TODO: isn't this similar to endModalState()?
-
-            this.setState(()=>{
-                let st = {};
-                const keys = this.modalStateKeys;
-                for (var i=0; i<keys.length; i++) {
-                    if (this.state.hasOwnProperty(keys[i])) {
-                        st[keys[i]] = false;
-                    }
-                }
-                //also remove selfSpotlight
-                st.selfSpotlighted = false;
-                console.warn("Ready to set state?: " + JSON.stringify(st));
-                
-                return st;
-            });
+        if (frameLeftOver.length>0){
+            frameOrderedArr.push(...frameLeftOver);
         }
 
-        
+        return frameOrderedArr;
     }
+
+
+
 
 
 
@@ -451,7 +443,6 @@ class StripCard extends PureComponent {
                 })
                 .then(response => {
                     console.log("FrameCreate successful: " + JSON.stringify(response.data));
-                    console.log("Congrats!!!");
 
                     // stop loading state
                     // TODO: In the future, it may not be just one request
@@ -487,10 +478,20 @@ class StripCard extends PureComponent {
         // crap...I thought any kind of setState is async? if I don't put this
         // here, anything that happens afterward may or may not happen
         console.warn("Request send success. Escape dragAndDrop state.");
-        this.endModalState("dragAndDropOn", true);
-
+        
+        // Close
+        // DragAndDrop is a bit unique in a sense that it can be initated by SceneEditor, the parent.
+        // But it can still be triggered by individual StripCard.
+        
+        //this.endModalState("dragAndDropOn", true); // This doesn't turn off setSpotlightAll        
+        this.setSpotlight(false); // This doesn't turn off setSpotlightAll
+        // Right now, this just turns off LightBox visual and turn off selfSpotlight.
+        // But setSpotlightAll takes priority. So the highlight remains...
 
     }
+
+
+
 
 
 
@@ -532,6 +533,47 @@ class StripCard extends PureComponent {
         
     }
 
+
+
+    setSpotlight(on){
+        // Set this component in spotlight against lightbox.
+        // Due to the nature of this container, only .strip_card can do this
+
+        // modify click event to the LightBox!
+        this.props.setState_LightBox({addToOnClick: ()=>{ this.setSpotlight(false); }})
+
+        
+        if (on){
+            // console.log("setSpotlight " + on);
+            this.props.setState_LightBox({active: true});
+            this.setState({selfSpotlighted: true});
+        } else {
+            // console.log("setSpotlight " + on);
+            this.props.setState_LightBox({active: false});
+            // might be safer to CLICK on the lightbox actually...but I don't have access to that. 
+
+
+            //remove ALL modals or any callouts
+            // TODO: isn't this similar to endModalState()?
+
+            this.setState(()=>{
+                let st = {};
+                const keys = this.modalStateKeys;
+                for (var i=0; i<keys.length; i++) {
+                    if (this.state.hasOwnProperty(keys[i])) {
+                        st[keys[i]] = false;
+                    }
+                }
+                //also remove selfSpotlight
+                st.selfSpotlighted = false;
+                console.warn("Ready to set state?: " + JSON.stringify(st));
+                
+                return st;
+            });
+        }
+    }
+
+
     // Generic function for hiding any modal or callouts
     // Use this function to end spotlighted sessions like 'cardCoverOn' or 'dragAndDropOn'
     endModalState(stateName, spotlighted){
@@ -566,42 +608,13 @@ class StripCard extends PureComponent {
             return s;
         });
 
-        // if (spotlighted){
-        //     //remove spotlight
-        //     this.setSpotlight(false);
-        // }
-        // should already be taken care of, by the component's componentDidUpdate.
+        // Note: do not setSpotlight(false) here. 
+        // It should taken care of, by the component's componentDidUpdate.
         
-
   
     }
 
-    // returns list of frame objects in order referencing children_li
-    reorderFrames(strip){
-        const frameIdList = strip.children_li.split(",");
-        if (frameIdList==null || frameIdList==='') {return null;}
-
-        let frameOrderedArr = Array.apply(null, Array(frameIdList.length));
-        let frameLeftOver = [];
-
-        strip.frames.forEach((f)=>{
-            const insertAt = frameIdList.indexOf(String(f.id));
-            if (insertAt>=0 && insertAt<frameOrderedArr.length){
-                frameOrderedArr[insertAt] = f; 
-            } else if (insertAt==-1){
-                // children not ref'd in children_li is just placed at the end
-                frameLeftOver.push(f);
-            }
-            
-        });
-
-        if (frameLeftOver.length>0){
-            frameOrderedArr.push(...frameLeftOver);
-        }
-
-        return frameOrderedArr;
-
-    }
+    
 
 
 

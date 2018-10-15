@@ -238,22 +238,13 @@ ul.list_strips .strip_flex_container .tile{
 }
 
 ul.list_strips .strip_flex_container .tile.empty-strip{
-    
+    border: 0px solid;
     width: 100%;
-    
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none;
 }
 
 .strip_flex_container .tile.empty-strip span{
     width: 100%;
-    margin: 10px;
-    border: 2px dotted #a4bbde;
-    border-radius: 10px;
     height: 100px;
-    
-    padding-top:15px;
     text-align: center;
 }
 
