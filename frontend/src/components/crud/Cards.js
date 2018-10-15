@@ -535,12 +535,15 @@ class StripCard extends PureComponent {
     // Generic function for hiding any modal or callouts
     // Use this function to end spotlighted sessions like 'cardCoverOn' or 'dragAndDropOn'
     endModalState(stateName, spotlighted){
-        if (stateName === undefined || typeof stateName != "string" || (stateName != "All" && !this.modalStateKeys.includes(stateName)) ){
+        if (stateName === undefined || typeof stateName != "string" ){
             console.error("[endModalState()] No valid stateName provided");
             return false;
         }
 
         console.log("Hiding component by state: " + stateName);
+        if (stateName != "All" && !this.modalStateKeys.includes(stateName)){
+            console.warn(`'${stateName}' is not found in modalStateKeys, but will try to close it anyway`);
+        }
 
         this.setState(()=>{
             let s={};
@@ -563,10 +566,11 @@ class StripCard extends PureComponent {
             return s;
         });
 
-        if (spotlighted){
-            //remove spotlight
-            this.setSpotlight(false);
-        }
+        // if (spotlighted){
+        //     //remove spotlight
+        //     this.setSpotlight(false);
+        // }
+        // should already be taken care of, by the component's componentDidUpdate.
         
 
   
