@@ -7,6 +7,7 @@ import SceneCreateForm from "./crud/Form";
 import {SceneCardList} from "./crud/Cards";
 import {FrameModal} from "./crud/FrameModal";
 
+import { LightBox, lightBox_publicFunctions as lb } from "./LightBox";
 import Spinner from "./Spinner";
 import key from "weak-key";
 
@@ -50,101 +51,106 @@ class MouseClickTracker extends Component{
 
 
 
-// ██╗     ██╗ ██████╗ ██╗  ██╗████████╗██████╗  ██████╗ ██╗  ██╗
-// ██║     ██║██╔════╝ ██║  ██║╚══██╔══╝██╔══██╗██╔═══██╗╚██╗██╔╝
-// ██║     ██║██║  ███╗███████║   ██║   ██████╔╝██║   ██║ ╚███╔╝ 
-// ██║     ██║██║   ██║██╔══██║   ██║   ██╔══██╗██║   ██║ ██╔██╗ 
-// ███████╗██║╚██████╔╝██║  ██║   ██║   ██████╔╝╚██████╔╝██╔╝ ██╗
-// ╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═════╝  ╚═════╝ ╚═╝  ╚═╝
+// // ██╗     ██╗ ██████╗ ██╗  ██╗████████╗██████╗  ██████╗ ██╗  ██╗
+// // ██║     ██║██╔════╝ ██║  ██║╚══██╔══╝██╔══██╗██╔═══██╗╚██╗██╔╝
+// // ██║     ██║██║  ███╗███████║   ██║   ██████╔╝██║   ██║ ╚███╔╝ 
+// // ██║     ██║██║   ██║██╔══██║   ██║   ██╔══██╗██║   ██║ ██╔██╗ 
+// // ███████╗██║╚██████╔╝██║  ██║   ██║   ██████╔╝╚██████╔╝██╔╝ ██╗
+// // ╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═════╝  ╚═════╝ ╚═╝  ╚═╝
                                                               
-// I might move this
+// // I might move this
 
-function setState_LightBox(newState){
-	this.setState(newState);
-}
-function pub_LightBox_on(){
-	console.log("[LightBox] on");
-	this.setState({active: true});
-}
-function pub_LightBox_off(){
-	console.log("[LightBox] off");
-	this.setState({active: false});
-}
-function pub_LightBox_addToOnClick(func){
-	this.setState({addToOnClick: func});
-}
-
-
-class LightBox extends Component{
-	constructor(props){
-		super(props);
-		//this.$node = document.querySelector("#lightbox_bg"); //lightbox
-		this.$node = React.createRef();
-
-		this.state = {
-			active: false, // applies z-index:1000;
-			intangible: false, // appiles pointer-event: none;
-			isDragAndDrop: false, // response to dragAndDrop behavior, like dragLeave
-
-			addToOnClick: null // there is already props for this. Bad? 
-		}
-
-		this.handle_click = this.handle_click.bind(this);
-
-		//public function
-		setState_LightBox = setState_LightBox.bind(this);
-		pub_LightBox_on = pub_LightBox_on.bind(this);
-		pub_LightBox_off = pub_LightBox_off.bind(this);
-		pub_LightBox_addToOnClick = pub_LightBox_addToOnClick.bind(this);
-	}
-
-	componentDidMount(){
-		//things may be dropped onto LightBox. Expect to be misfire.
-		this.$node.current.ondrop = e => {
-			e.preventDefault();
-		}
-	}
+// function setState_LightBox(newState){
+// 	this.setState(newState);
+// }
+// function pub_LightBox_on(){
+// 	console.log("[LightBox] on");
+// 	this.setState({active: true});
+// }
+// function pub_LightBox_off(){
+// 	console.log("[LightBox] off");
+// 	this.setState({active: false});
+// }
+// function pub_LightBox_addToOnClick(func){
+// 	this.setState({addToOnClick: func});
+// }
 
 
-	handle_click(){
-		console.log("lightbox clicked");
+// class LightBox extends Component{
+// 	constructor(props){
+// 		super(props);
+// 		//this.$node = document.querySelector("#lightbox_bg"); //lightbox
+// 		this.$node = React.createRef();
 
-		// Clicking on the lightbox is currently set to "CANCEL EVERYTHING".
-		// Therefore close everything and hide everything. 
+// 		this.state = {
+// 			active: false, // applies z-index:1000;
+// 			intangible: false, // appiles pointer-event: none;
+// 			isDragAndDrop: false, // response to dragAndDrop behavior, like dragLeave
 
-		// A. make itself disappear
-		this.setState({active: false}); 
+// 			addToOnClick: null // there is already props for this. Bad? 
+// 		}
 
-		// B. Undo any spotlight [spotlighting is done by setting z-index on component]
-		this.props.setParentState({spotlightedAll: false}); 
-		// note: this does not override individual 
+// 		this.handle_click = this.handle_click.bind(this);
 
-		// TODO: any other default behaviors? Modals perhaps? 
+// 		//public function
+// 		setState_LightBox = setState_LightBox.bind(this);
+// 		pub_LightBox_on = pub_LightBox_on.bind(this);
+// 		pub_LightBox_off = pub_LightBox_off.bind(this);
+// 		pub_LightBox_addToOnClick = pub_LightBox_addToOnClick.bind(this);
+// 	}
 
-		// D. Individualized additional behavior added by sibling comps.
-		if (this.state.addToOnClick) {
-			this.state.addToOnClick();
-		} else if(this.props.addToOnClick) {
-			this.props.addToOnClick();
-		}
+// 	componentDidMount(){
+// 		//things may be dropped onto LightBox. Expect to be misfire.
+// 		this.$node.current.ondrop = e => {
+// 			e.preventDefault();
+// 		}
+// 	}
 
-	}
 
-	render(){
-		return (
-			<div id="lightbox_bg"
-				 className={(this.state.intangible ? "intangible" : "") +
-					 		(this.state.active ? " active" : "")}
-			 	 onClick={this.handle_click}
-			 	 onDragOver={(e)=>(this.props.handle_dragAndDrop(true))}
-                 onDragLeave={(e)=>(this.props.handle_dragAndDrop(false))}
-                 onDrop={(e)=>(this.props.handle_dragAndDrop(false))}
-				 ref={this.$node}>
-			</div>
-		)
-	}
+// 	handle_click(){
+// 		console.log("lightbox clicked");
 
-}
+// 		// Clicking on the lightbox is currently set to "CANCEL EVERYTHING".
+// 		// Therefore close everything and hide everything. 
+
+// 		// A. make itself disappear
+// 		this.setState({active: false}); 
+
+// 		// B. Undo any spotlight [spotlighting is done by setting z-index on component]
+// 		this.props.setParentState({spotlightedAll: false}); 
+// 		// note: this does not override individual 
+
+// 		// TODO: any other default behaviors? Modals perhaps? 
+
+// 		// D. Individualized additional behavior added by sibling comps.
+// 		if (this.state.addToOnClick) {
+// 			this.state.addToOnClick();
+// 		} else if(this.props.addToOnClick) {
+// 			this.props.addToOnClick();
+// 		}
+
+// 	}
+
+// 	render(){
+// 		return (
+// 			<div id="lightbox_bg"
+// 				 className={(this.state.intangible ? "intangible" : "") +
+// 					 		(this.state.active ? " active" : "")}
+// 			 	 onClick={this.handle_click}
+// 			 	 onDragOver={(e)=>(this.props.handle_dragAndDrop(true))}
+//                  onDragLeave={(e)=>(this.props.handle_dragAndDrop(false))}
+//                  onDrop={(e)=>(this.props.handle_dragAndDrop(false))}
+// 				 ref={this.$node}>
+// 			</div>
+// 		)
+// 	}
+
+// }
+
+
+
+
+
 
 // http://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=FrameStage
 
@@ -220,11 +226,11 @@ class SceneEditor extends Component{
         if (on){
             this.setState({spotlightedAll: true}); 
             //this.$lb.classList.add('active');
-            setState_LightBox({active: true});
+            lb.setState_LightBox({active: true});
         } else {
             this.setState({spotlightedAll: false});
             //this.$lb.classList.remove('active');
-            setState_LightBox({active: false})
+            lb.setState_LightBox({active: false})
         }
 
         
@@ -261,7 +267,7 @@ class SceneEditor extends Component{
 				<SceneCardList sceneId={this.sceneId}
 							   spotlightedAll={this.state.spotlightedAll}
 						   	   dataInbox={this.state.toSceneCardList}
-						   	   setState_LightBox={ this.state.mounted ? setState_LightBox : null }/>
+						   	   setState_LightBox={ this.state.mounted ? lb.setState_LightBox : null }/>
 
 				<SceneCreateForm endpoint={`/api/scene/${this.state.sceneId}/strip/create/`}
 								 setParentState={this.setParentState}/>

@@ -105,6 +105,11 @@ ul.list_strips li.strip_card{
 ul.list_strips li.spotlighted{
     /* raises z-index above the lightbox cover */
     z-index: 1000;
+
+    /* DEBUG */
+    box-sizing: border-box;
+    border: 2px solid #ffb4b4;
+    /* END: DEBUG */
 }
 
 .strip_content{

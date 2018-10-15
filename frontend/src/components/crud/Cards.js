@@ -4,10 +4,13 @@ import PropTypes from "prop-types";
 
 import { Sortable } from '@shopify/draggable';
 // import Sortable from 'sortablejs';
-import Spinner from "./../Spinner";
+
 import { FrameCard, FramePreviewCard } from "./FrameCard";
 import { playFrameStage } from "./../FlipbookPlayer";
-import { CardCover2 } from "./CardCover"
+import { CardCover } from "./CardCover"
+
+// import { lightBox_publicFunctions as lb } from "./LightBox";
+import Spinner from "./../Spinner";
 import key from "weak-key";
 
 // Custom helpers
@@ -124,40 +127,6 @@ class StripMenu extends Component {
 }
 
 
-
-
-
-// NOTE: this is an old version of CardCover2 component
-//       might want to absorb this in.
-
-class CardCover_old extends Component {
-    constructor(props){
-        super(props);
-        this.r = React.createRef();
-    }
-
-    componentDidUpdate(prevProps, prevState, snapshot){
-
-    }
-
-    render(){
-        return (
-            <div className={"cover light delete_confirm " + (this.props.on ? "active" : "")}>
-
-                <div className="cover_message">
-                    <p>
-                    <span className="bigtext 2">Are you sure you want to delete this scene?</span>
-                    </p>
-                    <p>
-                        <span>
-                            <button className='warning'>DELETE</button>
-                            <button onClick={this.props.off}>Cancel</button></span>
-                    </p>
-                </div>           
-            </div>
-        )
-    }
-}
 
 
 
@@ -358,7 +327,12 @@ class StripCard extends PureComponent {
         console.log("handle_deleteSceneCONFIRM");
 
         //turn on cover
-        this.setState({cardCoverOn: true});
+        this.setState({
+            cardCoverOn: true,
+            // cardCover_messageType: "deleteConfirm" 
+            // this is a shared state between 2 CardCovers. Might be bad idea.
+        });
+
     
     }
 
@@ -561,20 +535,41 @@ class StripCard extends PureComponent {
     // Generic function for hiding any modal or callouts
     // Use this function to end spotlighted sessions like 'cardCoverOn' or 'dragAndDropOn'
     endModalState(stateName, spotlighted){
-        if (stateName){
-            console.log("Hiding component by state: " + stateName);
-            this.setState(()=>{
-                let s={};
-                s[stateName] = false; 
-                return s;
-            });
-
-            if (spotlighted){
-                //remove spotlight
-                this.setSpotlight(false);
-            }
+        if (stateName === undefined || typeof stateName != "string" || (stateName != "All" && !this.modalStateKeys.includes(stateName)) ){
+            console.error("[endModalState()] No valid stateName provided");
+            return false;
         }
-        return;
+
+        console.log("Hiding component by state: " + stateName);
+
+        this.setState(()=>{
+            let s={};
+            // TODO: WARNING, endModalState(All) is needed in setSpotlight
+            //       but...this function calls setSpotlight()...infinite loop.
+
+            if (stateName === "All") { // --- Set EVERYTHING to false
+               
+                const keys = this.modalStateKeys;
+                for (var i=0; i<keys.length; i++) {
+                    if (this.state.hasOwnProperty(keys[i])) {
+                        s[keys[i]] = false;
+                    }
+                }
+            } else { // --------------------- Set just specified state to false
+                s[stateName] = false; 
+            }
+            // remove selfSpotlight
+            s.selfSpotlighted = false;
+            return s;
+        });
+
+        if (spotlighted){
+            //remove spotlight
+            this.setSpotlight(false);
+        }
+        
+
+  
     }
 
     // returns list of frame objects in order referencing children_li
@@ -673,11 +668,15 @@ class StripCard extends PureComponent {
                 </div>
 
                 {/* Message or modals */}
-                <CardCover_old on={this.state.cardCoverOn} off={()=>{this.endModalState("cardCoverOn", true)}}
-                           setParentSpotlight={this.setSpotlight}/>
-                <CardCover2 on={this.state.dragAndDropOn} off={()=>{this.endModalState("dragAndDropOn", true)}}
+                <CardCover on={this.state.cardCoverOn} off={()=>{this.endModalState("cardCoverOn", true)}}
+                            messageType="deleteConfirm"
+                            setParentSpotlight={this.setSpotlight}
+                            name="deleteConfirm"/>
+
+                <CardCover on={this.state.dragAndDropOn} off={()=>{this.endModalState("dragAndDropOn", true)}}
                             messageType={this.state.cardCover_messageType}
-                            setParentSpotlight={this.setSpotlight}/>
+                            setParentSpotlight={this.setSpotlight}
+                            name="dragAndDrop"/>
                 <StripMenu on={this.state.menuOn} off={()=>{this.endModalState("menuOn");}}
                            actionDelete={this.handle_deleteSceneConfirm}/>
 

@@ -228,7 +228,7 @@ class FrameModal extends Component{
 
     render(){
         const frame = this.state.frameObj;
-        console.log("[RE-RENDER] Curr obj: " + JSON.stringify(this.state.frameObj));
+        console.log("[FRAME MODAL RE-RENDER] Curr obj: " + JSON.stringify(this.state.frameObj));
 
         return (
             <div>
