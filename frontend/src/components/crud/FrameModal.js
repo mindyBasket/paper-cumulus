@@ -2,12 +2,11 @@ import React, { Component, PureComponent } from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 
+import { pub_handle_fetchScene } from "./Cards";
+
+import { lightBox_publicFunctions as lb } from "./../LightBox";
 import Spinner from "./../Spinner";
 import { ToolButton } from "./../UI";
-import { pub_handle_fetchScene } from "./Cards";
-import { pub_LightBox_on, 
-         pub_LightBox_off,
-         pub_LightBox_addToOnClick } from "./../SceneEditor"; // TODO: move LightBox to its own module
 
 
 // Custom helpers
@@ -180,10 +179,10 @@ class FrameModal extends Component{
         // then control lightbox
         if        (prevState.on == false && this.state.on == true){
             // turn on Lightbox, and bind closeModal when clicking
-            pub_LightBox_on();
-            pub_LightBox_addToOnClick(()=>{pub_FrameModal_openModal(false)}); 
+            lb.pub_LightBox_on();
+            lb.pub_LightBox_addToOnClick(()=>{pub_FrameModal_openModal(false)}); 
         } else if (prevState.on == true && this.state.off == false){
-            pub_LightBox_off();
+            lb.pub_LightBox_off();
         }  
     }
 
