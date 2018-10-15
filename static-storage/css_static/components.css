@@ -90,7 +90,7 @@
 }
 
 
-.editable_field .field_input{
+.editable_field .field_value.editing{
   position: relative;
   display: flex;
   flex-grow: 1;
@@ -100,16 +100,20 @@
   background-color: white;
   border-top: 3px solid #c2b8cb;
   border-left: 3px solid #c2b8cb;
-
+}
+.editable_field .field_value.editing:hover{
+  background-color: white;
 }
 
-.editable_field .field_input input[type='text']{
+
+.editable_field .field_value input[type='text']{
   flex-grow: 1;
+
+  background-color: transparent;
   border:0px solid;
-  padding: 0 10px;
 }
 
-.editable_field .field_input input[type='text']:focus{
+.editable_field .field_value input[type='text']:focus{
   outline: none;
 }
 

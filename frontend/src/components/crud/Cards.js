@@ -19,15 +19,27 @@ const axh = new XhrHandler(); //axios helper
 
 
 
-// http://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=Frame
 
-// ███╗   ███╗ ██████╗ ██████╗  █████╗ ██╗     ███████╗
-// ████╗ ████║██╔═══██╗██╔══██╗██╔══██╗██║     ██╔════╝
-// ██╔████╔██║██║   ██║██║  ██║███████║██║     ███████╗
-// ██║╚██╔╝██║██║   ██║██║  ██║██╔══██║██║     ╚════██║
-// ██║ ╚═╝ ██║╚██████╔╝██████╔╝██║  ██║███████╗███████║
-// ╚═╝     ╚═╝ ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚══════╝
-                                                                                                 
+
+
+function pub_handle_fetchScene(){
+    // bind to SceneCardList
+    this.handle_fetchScene();
+}
+
+
+
+
+
+// http://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=CallOuts
+
+//  ██████╗ █████╗ ██╗     ██╗      ██████╗ ██╗   ██╗████████╗███████╗
+// ██╔════╝██╔══██╗██║     ██║     ██╔═══██╗██║   ██║╚══██╔══╝██╔════╝
+// ██║     ███████║██║     ██║     ██║   ██║██║   ██║   ██║   ███████╗
+// ██║     ██╔══██║██║     ██║     ██║   ██║██║   ██║   ██║   ╚════██║
+// ╚██████╗██║  ██║███████╗███████╗╚██████╔╝╚██████╔╝   ██║   ███████║
+//  ╚═════╝╚═╝  ╚═╝╚══════╝╚══════╝ ╚═════╝  ╚═════╝    ╚═╝   ╚══════╝
+                                                                                                                                                           
 
 class MenuButton extends Component {
     constructor(props){
@@ -701,6 +713,7 @@ class SceneCardList extends Component {
         this.firstLoad = true;
 
         this.handle_fetchScene = this.handle_fetchScene.bind(this);
+        pub_handle_fetchScene = pub_handle_fetchScene.bind(this);
         // incoming
         //this.props.toSceneCardList
 
@@ -783,5 +796,5 @@ class SceneCardList extends Component {
 
 export {
     SceneCardList,
-    FrameCard
+    pub_handle_fetchScene
 };
