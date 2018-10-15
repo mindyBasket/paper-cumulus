@@ -197,7 +197,7 @@ class FrameCard extends Component{
 
         this.state = {
             loading: true,
-            visible: true,
+            visible: !this.props.frameObj.ignored,
             menuOn: false
         }
 
@@ -279,7 +279,20 @@ class FrameCard extends Component{
     }
 
     toggleVisibility(){
+        const visibility = !this.state.visible;
         this.setState({visible: !this.state.visible});
+
+        const frame = this.props.frameObj; 
+        const csrfToken = axh.getCSRFToken();
+        const formData = h.makeFormData({"ignored" : !visibility}); 
+
+        // patch update to frame
+        axh.editFrame(frame.id, formData, csrfToken).then(res => {
+            console.log("Frame Toggled!")
+            // A little unsafe, but not refreshing the frame list for now.
+            console.log(res.data);
+        });
+
     }
 
 
@@ -346,7 +359,7 @@ class FrameCard extends Component{
                          style={{backgroundImage: `url(${frame.frame_image})` }}>
                         {/* this is what is actually visible to the user */}
                         
-                        <span className="overlay_box" frameid={frame.id}>
+                        <span className="overlay_box" frameid={frame.id} onClick={(e)=>{e.stopPropagation()}}>
                             <a>[ {frame.id} ]</a>
                             <a className={"far " + (this.state.visible ? "fa-eye" : "fa-eye-slash")}
                                onClick={this.toggleVisibility}></a>

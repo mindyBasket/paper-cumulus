@@ -42,6 +42,11 @@ class XhrHandler {
 
 
 	createStrip(sceneId, formData, csrfToken){
+
+		if (csrfToken === undefined){
+			csrfToken = this.getCSRFToken();
+		}
+		
 		return (
 			axios({
 	            method: 'post',
@@ -75,6 +80,7 @@ class XhrHandler {
 	        })
 	        .catch(error => {
 	        	console.log(error);
+	        	// TODO: add better error message that is visible on frontend
 	        })
 	    )
 	}

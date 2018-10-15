@@ -162,6 +162,9 @@ a:hover{
 .thumb {
     position:relative;
 }
+.thumb:focus {
+    outline: none;
+}
 
 .thumb .frame_image{
     cursor: pointer;
