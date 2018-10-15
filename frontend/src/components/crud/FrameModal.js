@@ -262,7 +262,7 @@ class FrameModal extends Component{
                                        fieldLabel="note" fieldValue={frame.note}
                                        action={this.updateFrame}/>
                         <EditableField fieldDisplayLabel="Ignored?" 
-                                       fieldLabel="ignored" fieldValue={frame.ignore}
+                                       fieldLabel="ignored" fieldValue={frame.ignored}
                                        action={this.updateFrame}/>
                         
                     </div>

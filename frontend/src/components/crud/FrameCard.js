@@ -197,7 +197,7 @@ class FrameCard extends Component{
 
         this.state = {
             loading: true,
-            visible: !this.props.frameObj.ignored,
+            visible: !this.props.frameObj.ignored, // INITIALIZE ONLY
             menuOn: false
         }
 

@@ -18,10 +18,10 @@ urlpatterns = [
     # project homepage for now
     # url(r'^$', home, name='home'),
 
-    # /// REACT FRONT END TESTS ///
-    # path('', include(('frontend.urls','frontend'), namespace='frontend' )),
-    re_path(r'^scene/(?P<pk>\d+)/flip/$', views.ScenePlayView_REACT.as_view(), name='scene-play-react'), #play!
-    re_path(r'^scene/r/(?P<pk>\d+)/$', views.SceneDetailView_REACT.as_view(), name='scene-detail-react'), #detail/EDIT!
+
+
+    
+    
 
     # Book Urls
     path('books/', views.BookListView.as_view(), name='book-list'),
@@ -31,8 +31,11 @@ urlpatterns = [
     
     # Scene Urls
     # url(r'^scenes/$', views.SceneListView.as_view(), name="scene-list"),
-    re_path(r'^scene/(?P<pk>\d+)/flip_old/$', views.ScenePlayView.as_view(), name='scene-play'), #play!
-    re_path(r'^scene/(?P<pk>\d+)/$', views.SceneDetailView.as_view(), name='scene-detail'),
+    re_path(r'^scene/legacy/(?P<pk>\d+)/flip/$', views.ScenePlayView.as_view(), name='scene-play-legacy'), #play!
+    re_path(r'^scene/(?P<pk>\d+)/flip/$', views.ScenePlayView_REACT.as_view(), name='scene-play'), #play REACT!
+
+    re_path(r'^scene/legacy/(?P<pk>\d+)/$', views.SceneDetailView.as_view(), name='scene-detail-legacy'),
+    re_path(r'^scene/(?P<pk>\d+)/$', views.SceneDetailView_REACT.as_view(), name='scene-edit'), #detail/EDIT!
     
     # Strip Urls
     re_path(r'^scene/(?P<scene_pk>\d+)/strip/create/$', views.StripCreateView.as_view(), name='strip-create'),

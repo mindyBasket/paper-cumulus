@@ -19,8 +19,6 @@
     
     <p>
         <a href="{% url 'flipbooks:chapter-detail' book_pk=object.chapter.book.id chapter_number=object.chapter.number %}">< Chapter detail</a>
-
-        <p>YOU ARE LOOKING AT REACT VERSION</p>
     </p>
     
     
@@ -50,7 +48,7 @@
     </div>
 
     
-    <h3>Scene id {{object.id}} [REACT]</h3>
+    <h3>Scene id {{object.id}}</h3>
     <p>description: {{object.description}}</p>
 
     <div id="ref-content" 

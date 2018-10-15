@@ -9,6 +9,8 @@
 {% block top_content %}
     <h3>Scene {{scene.id}}</h3>
     <a href="{% url 'flipbooks:chapter-detail' book_pk=scene.chapter.book.id chapter_number=scene.chapter.number%}">< return </a>
+    <span>|</span>
+    <a href="{% url 'flipbooks:scene-edit' pk=scene.id%}">Edit this scene</a>
 {% endblock %}
 
 {% block letterbox %}
