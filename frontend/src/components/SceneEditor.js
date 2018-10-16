@@ -38,7 +38,7 @@ class SceneEditor extends Component{
 		// TODO: BAD. $lb is also referenced by each StripCards!
 		// this.$lb = document.querySelector("#lightbox_bg"); //lightbox
 		this.state = {
-			mounted: false,
+			mounted: false, 
 
 			toSceneCardList: null,
 			spotlightedAll: false // lightbox is off by default
@@ -52,31 +52,17 @@ class SceneEditor extends Component{
 	}
 
 	componentDidMount(){
-		//bind entire body for drag and drop event
+		// Bind entire body to prevent misfires from opening the file on the browser tab
+	
 		document.querySelector('body').ondragover = e=> {
 			e.preventDefault();
-			// Note: The entire body will be covered by LightBox cover, which will
-			//		 trigger ondragleave event. So make LightBox intangible.
-			// Note: Use this only to INITIATE drag and drop. Body itself 
-			// 		 shouldn't be any target. Leave it all to the LightBox. 
-			this.handle_dragAndDrop(true);
-
-			// Also reset any leftover state from previous DragAndDrop Attempt
-			
-
+			// Note: it seems I need ondragover in order to preventDefault on ondrop.
 		}
-
-		// document.querySelector('body').ondragleave = e=> {
-		// 	e.preventDefault();
-		// 	setState_LightBox({intangible: false});
-		// 	this.handle_dragAndDrop(false);
-		// }
-		// document.querySelector('body').ondrop = e => {
-		// 	e.preventDefault();
-		// 	// exit dragAndDrop
-		// 	setState_LightBox({intangible: false});
-		// 	this.handle_dragAndDrop(false);
-		// }
+			
+		document.querySelector('body').ondrop = e => {
+			e.preventDefault();
+			console.log("DragAndDrop Misfire: do nothing");
+		}
 
 		// Attempt at solving issue where sibling-comp's function is set
 		// as a prop before it bind(this)
@@ -90,8 +76,10 @@ class SceneEditor extends Component{
 	}
 
 	setSpotlightAll(on){
-        // Set ALL StripCards on spotlight. For individual spotlight, 
-        // see each StripCard.
+        // Set ALL StripCards on spotlight. 
+        // For individual spotlight, see each StripCard's 'selfSpotlighted'.
+        // Currently, this function is not used. Setting ALL StripCard added
+        // needless complications turning spotligh on and off.
  
         if (on){
             this.setState({spotlightedAll: true}); 
@@ -106,6 +94,7 @@ class SceneEditor extends Component{
     
 
 	handle_dragAndDrop(on){
+		// Might get rid of this...
 		if (on) { this.setSpotlightAll(true) }
 		else { this.setSpotlightAll(false) }
 	}

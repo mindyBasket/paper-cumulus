@@ -117,6 +117,10 @@ class FramePreviewCard extends Component{
 
     constructor(props){
         super(props);
+
+        this.state={
+            isError: false
+        }
     }
 
     // componentDidUpdate(prevProps, prevState, snapshot){
@@ -138,6 +142,7 @@ class FramePreviewCard extends Component{
         // TODO: can it request on demand?
         const di_str = this.props.stripObj.frames[0].dimension;
         const di = di_str.split("x");
+        let isError = false;
         let h;
 
         if(di_str != '' && di.length >= 2){
@@ -146,29 +151,48 @@ class FramePreviewCard extends Component{
                 // Note: subtracting 1 for a cheap fix for overshoot issue
             } catch(err){
                 console.error("Height could not be calculated: " + err);
-                return false;
+                isError = true;
+                //return false;
             }
-        } else { return false; } 
+        } else { isError = true; } 
+
+        if (isError){
+            h = 100; 
+        }
 
         let frame_window_di = [`${defaultWidth}px`, `${h}px`]; 
+
+
         return (
             <div className={"strip_preview_container" + (this.props.on ? " active " : "") + " flipbook_player"}
                  style={this.props.on ? {height: frame_window_di[1]} : {}}>
 
-                <div className="frame_window"
-                     style={{
-                                width: frame_window_di[0],
-                                height: frame_window_di[1]
-                             }}>
+                {isError ? (
+                    <div className="msg">
+                        <p>
+                            <span className="bigtext-1 fas fa-exclamation-circle"/>
+                        </p>
+                        <p>
+                            Invalid dimension. Check width and height of the first frame. 
+                        </p>
+                    </div>
+                ) : (
+                    <div className="frame_window"
+                         style={{
+                                    width: frame_window_di[0],
+                                    height: frame_window_di[1]
+                                 }}>
 
-                    {/*This doesn't work right now. it was built to deal with Scene data, not Strips!*/}
-                    {this.props.on && (
-                        <FrameStage data={data} 
-                                    standAlone={true} 
-                                    on={this.props.on}
-                        />
-                    )}
-                </div>
+                        {this.props.on && (
+                            <FrameStage data={data} 
+                                        standAlone={true} 
+                                        on={this.props.on}
+                                        playPreviewNow={this.props.playPreviewNow} 
+                            />
+                        )}
+                    </div>
+                )}
+                
                 <div className="float_btn fas fa-times" onClick={this.props.off}></div>
             </div>
         )

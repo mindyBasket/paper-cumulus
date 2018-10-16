@@ -17,7 +17,7 @@ function _setState_Scrubber(newState){
 	try {
 		this.setState(newState);
 	} catch(err){
-		console.warn("Scrubber not found.");
+		// console.warn("Scrubber not found.");
 	}
 	
 }
@@ -26,11 +26,15 @@ function _setState_FlipbookPlayer(newState){
 	try {
 		this.setState(newState);
 	} catch(err){
-		console.warn("Flipbook Player not found.");
+		// console.warn("Flipbook Player not found.");
 	}
 }
 
 function playFrameStage(){
+	// BAD!!!: this is binded to only ONE FrameStage. If you want to
+	//		   be able to switch from multiple FrameStage, make sure
+	//		   you provide Id or something.
+	// TODO: I don't think I can utilize this function. Remove any uses. 
 	this.setState({playNow: true});
 }
 
@@ -123,11 +127,12 @@ class FrameStage extends Component{
 
 	componentDidUpdate(prevProps, prevState, snapshot){
 		console.log("[UPDATE] FrameStage");
-		if (!prevState.playNow && this.state.playNow){
+
+		// Note: Used for SceneEditor's Strip animation previews
+		console.log(prevProps.playPreviewNow + " =? " + this.props.playPreviewNow);
+		if (prevProps.playPreviewNow != this.props.playPreviewNow){
 			const useScrollTop = true;
 			this.gotoNextAndPlay(useScrollTop);
-			// can I do this...? Will this help update trigger again?
-			this.state.playNow = false; 
 		}
 	}
 

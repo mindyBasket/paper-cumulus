@@ -80,6 +80,7 @@ class LightBox extends Component{
 		//things may be dropped onto LightBox. Expect to be misfire.
 		this.$node.current.ondrop = e => {
 			e.preventDefault();
+			console.log("DROPPED TO LIGHTBOX");
 		}
 	}
 
@@ -117,10 +118,14 @@ class LightBox extends Component{
 				 className={(this.state.intangible ? "intangible" : "") +
 					 		(this.state.active ? " active" : "")}
 			 	 onClick={this.handle_click}
-			 	 onDragOver={(e)=>(this.props.handle_dragAndDrop(true))}
+			 	 ref={this.$node}>
+			 	 
+			 	 {/* Note: dragAndDrop events disabled for now. May be needed 
+			 	 	 again when dragAndDrop behavior is returned to the whole body */}
+			 	 {/*onDragOver={(e)=>(this.props.handle_dragAndDrop(true))}
                  onDragLeave={(e)=>(this.props.handle_dragAndDrop(false))}
-                 onDrop={(e)=>(this.props.handle_dragAndDrop(false))}
-				 ref={this.$node}>
+                 onDrop={(e)=>(this.props.handle_dragAndDrop(false))}*/}
+				 
 			</div>
 		)
 	}

@@ -327,6 +327,7 @@
   flex-wrap: wrap;
 }
 
+
 .flipbook_player .frame_window{
   /* only shows only frame at a time with overflow trick*/
 
@@ -348,6 +349,10 @@
   /* max-width: 800px; height: 500px; */
   /* DO NOT SET WIDTH, HEIGHT HERE. It's a flex container.
      Width and height is set by React app onto .frame_window instead. */
+
+  user-drag: none; 
+  user-select: none;
+}
 
 }
 
@@ -398,6 +403,7 @@
 /* Small version of flipbook used as preview in SceneEditor */
 
 .strip_preview_container{
+  display:flex; /* for vertical centering */
   height: 0;
   width: 100%;
   overflow: hidden;
@@ -413,6 +419,12 @@
 .strip_preview_container.active{
   border-bottom: 1px solid #ddd;
   /*height: 180px;*/ /* Height is dynamically determined in the FramePreviewCard*/
+}
+
+.strip_preview_container .msg{
+  align-self: center;
+  color: #a2a2a2;
+  text-align: center;
 }
 
 .float_btn{

@@ -321,8 +321,10 @@ class StripCard extends PureComponent {
         //turn on cover
         this.setState({
             cardCoverOn: true,
-            // cardCover_messageType: "deleteConfirm" 
+            cardCover_messageType: "deleteConfirm" 
             // this is a shared state between 2 CardCovers. Might be bad idea.
+            // Update: unified into just ONE CardCover.
+            // Note: lightBox and spotlighting is controlled inside the CardCover
         });
 
     
@@ -360,7 +362,7 @@ class StripCard extends PureComponent {
             url: `/flipbooks/ajax/strips/${strip.id}/sort-children/`
  
         })
-        .then(response =>{
+        .then(response =>{ 
             console.log("sucessfully came back: " + response.data["frame_ids"]);
         })
         .catch(err => {
@@ -377,12 +379,13 @@ class StripCard extends PureComponent {
         if (on){
             this.setState({
                 selfSpotlighted: true,
-                dragAndDropOn: true
+                cardCoverOn: true,
+                cardCover_messageType: "dragAndDrop",
             });  
        } else {
             this.setState({
                 selfSpotlighted: false, //selfSpotlightAll should keep it on
-                 dragAndDropOn: false
+                cardCoverOn: false
             }); 
        }
     }
@@ -390,6 +393,7 @@ class StripCard extends PureComponent {
     handle_dragAndDrop(e){
         // parse data?
         e.preventDefault();
+        console.log("DROPPED TO STRIP");
 
         if (e.dataTransfer.items) {
             // Use DataTransferItemList interface to access the file.
@@ -518,15 +522,16 @@ class StripCard extends PureComponent {
         this.$node.current.setAttribute('style', '');
     }
 
-    // openPreview(){
-    // too simple. added as arrow function on onClick        
-    // }
-
+ 
     openPreview(){
 
         // Play if preview already opened
         if (this.state.previewOn){
-            playFrameStage();
+            // playFrameStage();// BAD PRACTICE. Can't bind to more than one FrameStage to a public function.
+
+            // Anti-pattern? Using increments to cause it to refresh every setState
+            console.log("Curr playPreviewNow count: " + this.state.playPreviewNow);
+            this.setState({playPreviewNow: this.state.playPreviewNow ? this.state.playPreviewNow+1 : 1}); 
         } else {
             this.setState({previewOn: true});
             // FrameStage component is set to autoplay upon mount, only when standlone
@@ -575,12 +580,19 @@ class StripCard extends PureComponent {
 
 
         // Reset DragAndDrop CardCover's state
-        this.setState({cardCover_messageType: "default"});
+        //this.setState({cardCover_messageType: "default"});
+
     }
 
 
     // Generic function for hiding any modal or callouts
     // Use this function to end spotlighted sessions like 'cardCoverOn' or 'dragAndDropOn'
+
+    // TODO: this function's purpose is getting reduced to just setting spotlight off and on. 
+    //       CardCover and Menus are being built to take care of visibility on its own. 
+    //       Well, it's not as simple. They can both be closed by external source. That's 
+    //       What's causing the complexity. 
+
     endModalState(stateName, spotlighted){
         if (stateName === undefined || typeof stateName != "string" ){
             console.error("[endModalState()] No valid stateName provided");
@@ -667,7 +679,8 @@ class StripCard extends PureComponent {
 
                     {/* panel for frame animation preview */}
                     <FramePreviewCard on={this.state.previewOn} off={()=>{this.endModalState("previewOn", true)}}
-                                      stripObj={strip}/>
+                                      stripObj={strip}
+                                      playPreviewNow={this.state.playPreviewNow}/>
 
                     {strip.frames == null || strip.frames.length === 0 || Object.keys(strip.frames).length === 0 ? 
                         (
@@ -679,7 +692,7 @@ class StripCard extends PureComponent {
                         ) : (
                             <div className="strip_flex_container" stripid={strip.id}>
                                 {reorderedFrames.map( (frame, index) => (
-                                    <FrameCard frameObj={frame} delay={index+this.props.delay} key={"frame"+index}/>
+                                    <FrameCard frameObj={frame} delay={index+this.props.delay} key={"frame"+frame.id}/>
                                 ))}
 
                                 {this.state.loadingFrames && <FrameCard standby={true}/>}
@@ -690,16 +703,19 @@ class StripCard extends PureComponent {
                 </div>
 
                 {/* Message or modals */}
-                <CardCover on={this.state.cardCoverOn} off={()=>{this.endModalState("cardCoverOn", true)}}
+                {/*<CardCover on={this.state.cardCoverOn} off={()=>{this.endModalState("cardCoverOn", true)}}
                             messageType="deleteConfirm"
                             setParentSpotlight={this.setSpotlight}
-                            name="deleteConfirm"/>
+                            name="deleteConfirm"/>*/}
 
-                <CardCover on={this.state.dragAndDropOn} off={()=>{this.endModalState("dragAndDropOn", true)}}
-                            messageType={this.state.cardCover_messageType}
-                            setParentSpotlight={this.setSpotlight}
-                            name="dragAndDrop"/>
-                <StripMenu on={this.state.menuOn} off={()=>{this.endModalState("menuOn");}}
+                <CardCover on={this.state.dragAndDropOn || this.state.cardCoverOn } 
+                           off={()=>{this.endModalState("cardCoverOn", true)}}
+                           messageType={this.state.cardCover_messageType}
+                           setParentSpotlight={this.setSpotlight}
+                           name="dragAndDrop"/>
+
+                <StripMenu on={this.state.menuOn} 
+                           off={()=>{this.endModalState("menuOn");}}
                            actionDelete={this.handle_deleteSceneConfirm}/>
 
             </li>
@@ -800,7 +816,7 @@ class SceneCardList extends Component {
                                         handle_fetchScene = {this.handle_fetchScene}
                                         setState_LightBox = {this.props.setState_LightBox}
 
-                                        key={"strip"+index}/>
+                                        key={"strip"+strip.id}/>
                         )) } 
                     </ul>
                     

@@ -5,8 +5,19 @@ import ReactDOM from "react-dom";
 import Helper from "./../Helper"
 const h = new Helper();
 
+function getRandomGreeting(){
 
+    const greetings = [
+        "Hello!",
+        "What's up?",
+        "Guten Tag!",
+        "Hey friend!",
+        "How are you?",
+        "안녕하세요!"
+    ]
 
+    return greetings[ Math.round(Math.random()*(greetings.length-1)) ];
+}
 
 function getCardCoverMessage(templateName, offFunc){
 
@@ -17,7 +28,17 @@ function getCardCoverMessage(templateName, offFunc){
         case "default":
             return (
                 <div className="cover_message">
+                    <p>
+                        <span className="bigtext 1">{getRandomGreeting()}</span>
+                    </p>
+                </div>
+            )
+
+        case "dragAndDrop":
+            return (
+                <div className="cover_message">
                     <p className="color red">
+                        <span className="bigtext-1 fas fa-plus-circle"/>
                         <span className="bigtext-1 fas fa-file-image"/>
                     </p>
                     <p>
@@ -35,7 +56,8 @@ function getCardCoverMessage(templateName, offFunc){
                     <p>
                         <span>
                             <button className='warning'>DELETE</button>
-                            <button onClick={offFunc}>Cancel</button></span>
+                            <button onClick={offFunc}>Cancel</button>
+                        </span>
                     </p>
                 </div>           
          
@@ -65,6 +87,10 @@ function getCardCoverMessage(templateName, offFunc){
 
                     <p> 
                         <span>Wrong file type. Please upload .png, .gif, or .jpg</span>
+                    </p>
+
+                    <p>
+                        <button onClick={offFunc}>Doh</button>
                     </p>
                 </div>
             )
@@ -100,30 +126,57 @@ class CardCover extends PureComponent {
             wrongFileType: false,
             invalidForm: false,
         }
+
+        this.behaviorMap = {
+            default:            {intangible: true, spotlight: true},
+            dragAndDrop:        {intangible: true, spotlight: false},
+            deleteConfirm:      {intangible: false, spotlight: true},
+            frameCreateError:   {intangible: false, spotlight: true},
+            wrongFileType:      {intangible: false, spotlight: false},
+            invalidForm:        {intangible: false, spotlight: false}
+        }
         
+        
+        this.getBehavior = this.getBehavior.bind(this);
+
+        // public
         getCardCoverMessage = getCardCoverMessage.bind(this);
+
     }
 
     componentDidUpdate(prevProps, prevState, snapshot){
+        console.log("Message type set to: " + this.props.messageType);
+        const behavior = this.getBehavior(this.props.messageType);
+
         // check if this card was rendered to be active, 
         // then control lightbox
         if        (prevProps.on == false && this.props.on == true){
-            this.props.setParentSpotlight(true);
+            if (behavior.spotlight) { this.props.setParentSpotlight(true); }
+
         } else if (prevProps.on == true && this.props.on == false){
             this.props.setParentSpotlight(false);
         }
     }
 
+
+    getBehavior(msgType){
+        const bmap = this.behaviorMap;
+        return bmap.hasOwnProperty(msgType) ? bmap[msgType] : bmap.default;
+    }
+
     render(){
         const intanMap = this.intangibilityMap;
-        const intangible = intanMap.hasOwnProperty(this.props.messageType) ? intanMap[this.props.messageType] : intanMap.default;
+        const bmap = this.behaviorMap;
+        const msgType = this.props.messageType;
+        
+        let intangible = bmap.hasOwnProperty(msgType) ? bmap[msgType].intangible : bmap.default.intangible;
         return (
-            <div className={"cover light drag_and_drop " + 
-                            (this.props.on ? "active" : "") + " " +
-                            (intangible ? "intangible" : "")}
+            <div className={"cover light drag_and_drop" + 
+                            (this.props.on ? " active" : "") +
+                            (intangible ? " intangible" : "")}
                  onDrop={(e)=>{e.preventDefault()}}>
       
-                    {getCardCoverMessage(this.props.messageType, this.props.off)}
+                    {getCardCoverMessage(msgType, this.props.off)}
             </div>
         )
     }
