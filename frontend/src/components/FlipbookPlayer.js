@@ -284,9 +284,16 @@ class FrameStage extends Component{
 								{/* TODO: edge case, if el_strip does not have frames */}
 								{h.reorderFrames(el_strip).map(el_frame => {
 									{/* TODO: edge case there are no frames */}
-									return (
-										<img src={el_frame.frame_image} className="frame" key={el_frame.id}/>
-									);
+									if (el_frame && el_frame.frame_image) {
+										return (
+											<img src={el_frame.frame_image} className="frame" key={el_frame.id}/>
+										)
+									} else {
+										return (
+											<p>CANNOT FIND IMAGE</p>
+										)
+									}
+									
 								})}
 							</span>
 						))} {/* end of data.map() */}

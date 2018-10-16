@@ -62,21 +62,26 @@ class Helper {
         let frameLeftOver = [];
 
         strip.frames.forEach((f)=>{
-            const insertAt = frameIdList.indexOf(String(f.id));
-            if (insertAt>=0 && insertAt<frameOrderedArr.length){
-                frameOrderedArr[insertAt] = f; 
-            } else if (insertAt==-1){
-                // children not ref'd in children_li is just placed at the end
-                frameLeftOver.push(f);
+            if (!f.ignored){
+                const insertAt = frameIdList.indexOf(String(f.id));
+
+                if (insertAt>=0 && insertAt<frameOrderedArr.length){
+                    frameOrderedArr[insertAt] = f; 
+                } else if (insertAt==-1){
+                    frameLeftOver.push(f);
+                }
             }
+            
             
         });
 
+        // children not ref'd in children_li is just placed at the end
         if (frameLeftOver.length>0){
             frameOrderedArr.push(...frameLeftOver);
         }
 
         console.warn("Reordered frames with: " + frameIdList);
+        console.warn(JSON.stringify(frameOrderedArr));
         return frameOrderedArr;
     }
 
