@@ -128,10 +128,15 @@ class FramePreviewCard extends Component{
     // }
 
 
+
     render(){
         // it expects it in a form of Scene data. So like this 
         // {"strips": [ {stripObj}, {stripObj}, {stripObj} ]}
         let data = {strips: [this.props.stripObj]}; 
+            //data = h.reorderFrames(data);
+
+
+
         const strip = this.props.stripObj;
         
         // Calc width and height of frame window based on first frame

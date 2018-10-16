@@ -269,6 +269,9 @@ class StripCard extends PureComponent {
 
     
     // returns list of frame objects in order referencing children_li
+    // TODO: this function doesn't consider "ignored" field of each Frame. 
+    //       Updated version of function of same name [BAD. Don't leave it this way]
+    //       in FlipbookPlayer.js
     reorderFrames(strip){
         const frameIdList = strip.children_li.split(",");
         if (frameIdList==null || frameIdList==='') {return null;}

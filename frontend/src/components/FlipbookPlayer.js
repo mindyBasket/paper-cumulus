@@ -6,12 +6,19 @@ import FrameFeeder from "./FrameFeeder";
 import Spinner from "./Spinner";
 import key from "weak-key";
 
+// Custom helpers
+import Helper from "./Helper"
+const h = new Helper();
+
+
 // Global param
 var T_STEP = 400; //ms
 var STANDBY_OPACITY = 0.5
 
 // Static functions
 // These are used to make components communicate with each other
+
+
 
 function _setState_Scrubber(newState){
 	try {
@@ -29,6 +36,14 @@ function _setState_FlipbookPlayer(newState){
 		// console.warn("Flipbook Player not found.");
 	}
 }
+
+var flipbook_publicFunctions = {
+
+	// TODO: move the setState functions in here...
+}
+
+
+
 
 function playFrameStage(){
 	// BAD!!!: this is binded to only ONE FrameStage. If you want to
@@ -265,12 +280,12 @@ class FrameStage extends Component{
 								  key={key(el_strip)}
 								  index={index} 
 								  count={el_strip.frames.length}>
+
 								{/* TODO: edge case, if el_strip does not have frames */}
-								{el_strip.frames.map(el_frame => {
-									JSON.stringify(el_frame[1]);
+								{h.reorderFrames(el_strip).map(el_frame => {
 									{/* TODO: edge case there are no frames */}
 									return (
-										<img src={el_frame.frame_image} className="frame" key={key(el_frame)}/>
+										<img src={el_frame.frame_image} className="frame" key={el_frame.id}/>
 									);
 								})}
 							</span>
