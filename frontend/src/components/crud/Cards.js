@@ -572,6 +572,10 @@ class StripCard extends PureComponent {
                 return st;
             });
         }
+
+
+        // Reset DragAndDrop CardCover's state
+        this.setState({cardCover_messageType: "default"});
     }
 
 

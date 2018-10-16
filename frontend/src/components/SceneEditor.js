@@ -55,13 +55,17 @@ class SceneEditor extends Component{
 		//bind entire body for drag and drop event
 		document.querySelector('body').ondragover = e=> {
 			e.preventDefault();
-			// Note: The entire body will be covered by lightbox cover, which will
-			//		 trigger ondragleave event. So make it intangible.
-			// Note: Use this only to initiate drag and drop. Body itself 
+			// Note: The entire body will be covered by LightBox cover, which will
+			//		 trigger ondragleave event. So make LightBox intangible.
+			// Note: Use this only to INITIATE drag and drop. Body itself 
 			// 		 shouldn't be any target. Leave it all to the LightBox. 
-			// setState_LightBox({intangible: true});
 			this.handle_dragAndDrop(true);
+
+			// Also reset any leftover state from previous DragAndDrop Attempt
+			
+
 		}
+
 		// document.querySelector('body').ondragleave = e=> {
 		// 	e.preventDefault();
 		// 	setState_LightBox({intangible: false});
