@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import { Sortable } from '@shopify/draggable';
 import Spinner from "./../Spinner";
 
+import { pub_handle_fetchScene } from "./Cards";
 import { pub_FrameModal_openModal } from "./FrameModal";
 import FrameFeeder from "./../FrameFeeder";
 import { FrameStage } from "./../FlipbookPlayer";
@@ -77,7 +78,8 @@ class FrameMenu extends Component {
     }
 
     //blur out to close the menu, and then execute whatever action 
-    blurAndAction(actionFunc){
+    blurAndAction(e,actionFunc){
+        e.stopPropagation();
         this.r.current.blur();
         actionFunc();
     }
@@ -90,7 +92,7 @@ class FrameMenu extends Component {
                        readOnly  />
                 <ul onMouseDown={this.refocus}>
                     <li>Detail Edit</li>
-                    <li onClick={()=>{this.blurAndAction(this.props.actionDelete)}}>Delete</li>
+                    <li onClick={(e)=>{this.blurAndAction(e,this.props.actionDelete)}}>Delete</li>
                 </ul>
             </div>
         )
@@ -197,7 +199,8 @@ class FrameCard extends Component{
 
         this.state = {
             loading: true,
-            visible: !this.props.frameObj.ignored, // INITIALIZE ONLY
+            dying: false,
+            visible: (this.props.frameObj && !this.props.frameObj.ignored), // INITIALIZE ONLY
             menuOn: false
         }
 
@@ -206,6 +209,7 @@ class FrameCard extends Component{
 
         this.$node = React.createRef();
 
+        this.handle_deleteFrameConfirm = this.handle_deleteFrameConfirm.bind(this);
         this.openMenu = this.openMenu.bind(this);
         this.toggleVisibility = this.toggleVisibility.bind(this);
         
@@ -238,6 +242,29 @@ class FrameCard extends Component{
         this.setState({loading: false});
         
     }
+
+
+
+
+
+    handle_deleteFrameConfirm(){
+        // Blur out thumb that is about to be DEEESSSTRRRROOYYED
+        this.setState({dying:true});
+
+        console.log("[FRAME DELETE] deleteFrameConfirm");
+        const frame = this.props.frameObj; 
+        console.log("Frame Prep: " + frame);
+
+        const csrfToken = axh.getCSRFToken();
+        console.log("CSRF token grabbed for FrameDelete: " + csrfToken);
+        axh.destoryFrame(frame.id, csrfToken).then(res=>{
+            // Destroy successful. Re-fetch.
+            pub_handle_fetchScene();
+        })
+    }
+
+
+
 
     // ---------------------------------------------------------------------------
     // _______  _____  ______  _______                              
@@ -347,8 +374,9 @@ class FrameCard extends Component{
 
             return (
                 <div className={"thumb" + 
-                                (this.state.loading ? " loading" : "") +
-                                (!this.state.visible ? " ignore" : "" )} 
+                                (this.state.loading ?  " loading" : "") +
+                                (!this.state.visible ? " ignore" : "" ) + 
+                                (this.state.dying ?    " dying" : "")} 
                      frameid={frame.id}
                      onClick={()=>{pub_FrameModal_openModal(frame);}}
                      ref={this.$node}>
@@ -373,7 +401,7 @@ class FrameCard extends Component{
                     </div>
 
                     <FrameMenu on={this.state.menuOn} off={()=>{this.endModalState("menuOn");}}
-                       actionDelete={this.handle_deleteSceneConfirm}/>
+                       actionDelete={this.handle_deleteFrameConfirm}/>
                     
 
                 </div> 

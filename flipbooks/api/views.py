@@ -222,6 +222,15 @@ class FrameUpdateAPIView(generics.UpdateAPIView):
             # PATCH request that does not include frame_image
             print("This PATCH request contains no thumbnail request")
             return super(FrameUpdateAPIView, self).partial_update(request, *args, **kwargs)
-        
+
+
+
+class FrameDeleteAPIview(generics.DestroyAPIView):
+    serializer_class = FrameModelSerializer
+    queryset = Frame.objects.all()
+
+    #lookup_field
+
+
 # custom helper functions 
 from ..helpermodule import thumbnailer_helpers

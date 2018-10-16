@@ -3,24 +3,19 @@ import ReactDOM from "react-dom";
 
 
 
-                                         
-
+                                        
 var lightBox_publicFunctions = {
 
 	setState_LightBox: function(newState){
 		this.setState(newState);
 	},
 	pub_LightBox_on: function(){
-		console.log("[LightBox] on");
 		this.setState({active: true});
 	},
 	pub_LightBox_off: function(){
-		console.log("[LightBox] off");
-		//this.setState({active: false});
-		// Closing lightbox is more involved then opening it. 
-		// So call the function that you use when clicking on it
-
+		this.handle_click();
 	},
+
 	pub_LightBox_addToOnClick: function(func){
 		this.setState({addToOnClick: func});
 	}
@@ -44,6 +39,16 @@ const lb = lightBox_publicFunctions
 // ███████╗██║╚██████╔╝██║  ██║   ██║   ██████╔╝╚██████╔╝██╔╝ ██╗
 // ╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═════╝  ╚═════╝ ╚═╝  ╚═╝
 
+/*
+How to turn LightBox on:
+- Use {active: true}
+
+How to turn LightBox off:
+- Use {active: false} BUT!! closing is more involved then opening it,
+  because it must also close other related elements, or end their states.
+- LightBox can be closed by clicking on it, or may be told to close 
+  by another component.  
+*/
 
 class LightBox extends Component{
 	constructor(props){
@@ -82,21 +87,21 @@ class LightBox extends Component{
 
 
 	handle_click(){
-		console.log("lightbox clicked");
-
 		// Clicking on the lightbox is currently set to "CANCEL EVERYTHING".
 		// Therefore close everything and hide everything. 
+		console.log("lightbox clicked");
 
+		
 		// A. make itself disappear
 		this.setState({active: false}); 
 
-		// B. Undo any spotlight [spotlighting is done by setting z-index on component]
+		// B. Undo group spotlight [spotlighting is done by setting z-index on component]
 		this.props.setParentState({spotlightedAll: false}); 
-		// note: this does overrides individual 
+		// note: this overrides individual 'selfSpotlight'
 
 		// TODO: any other default behaviors? Modals perhaps? 
 
-		// D. Individualized additional behavior added by sibling comps.
+		// C. Individualized additional behavior added by sibling comps.
 		//	  Usually for closing individual modal/callout that is opened.
 		if (this.state.addToOnClick) {
 			this.state.addToOnClick();

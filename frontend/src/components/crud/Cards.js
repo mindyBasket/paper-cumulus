@@ -9,7 +9,7 @@ import { FrameCard, FramePreviewCard } from "./FrameCard";
 import { playFrameStage } from "./../FlipbookPlayer";
 import { CardCover } from "./CardCover"
 
-// import { lightBox_publicFunctions as lb } from "./LightBox";
+import { lightBox_publicFunctions as lb } from "./../LightBox";
 import Spinner from "./../Spinner";
 import key from "weak-key";
 
@@ -487,6 +487,7 @@ class StripCard extends PureComponent {
         this.setSpotlight(false); // This doesn't turn off setSpotlightAll
         // Right now, this just turns off LightBox visual and turn off selfSpotlight.
         // But setSpotlightAll takes priority. So the highlight remains...
+        lb.pub_LightBox_off();
 
     }
 

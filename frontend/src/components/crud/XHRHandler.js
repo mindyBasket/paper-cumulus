@@ -85,6 +85,26 @@ class XhrHandler {
 	    )
 	}
 
+	destoryFrame(frameId, csrfToken){
+		console.log("[Internal] CSRF token grabbed for FrameDelete: " + this.getCSRFToken());
+
+		return (
+			axios({
+	            method: 'delete',
+	            url: `/api/frame/${frameId}/`,
+	            headers: {"X-CSRFToken": csrfToken}
+	        })
+	        .then(response => {
+	            return response;
+	        })
+	        .catch(error => {
+	        	console.log(error);
+	        	// TODO: add better error message that is visible on frontend
+	        })
+	    )
+	}
+
+
 	
 }
 

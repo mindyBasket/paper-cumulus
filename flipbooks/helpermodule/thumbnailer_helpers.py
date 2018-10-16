@@ -1,4 +1,5 @@
 import os, re
+from pathlib import Path #new in Python 3.4+
 from django.conf import settings
  
 ''' Takes path to thumbnail image and its dimension to 
@@ -41,11 +42,23 @@ def delete_frame_images(frame):
     
     if frame and frame.frame_image: 
         image_path = frame.frame_image.path
-        image_name = image_path.split("/")[-1].split(".")[0]
-        folder_name = image_path.split("/")[-2]
-        print("Removing folder: {} ==? {}".format(image_name, folder_name))
+
+        im_path = Path(image_path)
+        print(im_path.parts)
+
+        # print(im_path.name)
+        # print(im_path.suffix)
+        image_name = im_path.stem
+        folder_name = im_path.parts[-2]
+
+        print("[PATH] Removing folder: {} ==? {}".format(image_name, folder_name))
+
+        # image_name = image_path.split("/")[-1].split(".")[0]
+        # print("Image_path: {}".format(image_path.split("/")))
+        # folder_name = image_path.split("/")[-2]
+        # print("Removing folder: {} ==? {}".format(image_name, folder_name))
         
-        if folder_name == image_name:
+        if str(folder_name) == str(image_name):
             #remove contents of folder 
             folder_path = "/".join(str(elem) for elem in image_path.split("/")[:-1])
             if os.path.exists(folder_path):
@@ -58,10 +71,14 @@ def delete_frame_images(frame):
                         os.remove(f_path)
                 
                 # should be empty now
+                print("Images in {} removed.".format(folder_name))
                 os.rmdir(folder_path) 
                 ## TODO: does this a little naively. Need to add an exception
+            else:
+                print("[ERROR] Cannot find path: {}".format(folder_path))
     
         else: 
+            print("Image does not match with folder. Older system?")
             # assume it is in an old upload path; no subfolder, just dumped
             # in a large "reservoir". Do your best to remove them.
             

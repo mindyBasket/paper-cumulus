@@ -251,11 +251,23 @@ a:hover{
     opacity: 1;
 }
 
+
+.thumb.dying {
+    /* this is when thumb is about to be deleted */
+    background-color: black;
+}
+.thumb.dying .frame_image{
+    opacity: 0.5;
+}
+
+
+
+
 .thumb .overlay_box .mini_menu{
     /*small menu that pops up when you hover over .thumb*/
    
     font-size: 1.2em;
-}    
+}   
 
 .thumb.placeholder{
     /* style for .thumb box that has no image */

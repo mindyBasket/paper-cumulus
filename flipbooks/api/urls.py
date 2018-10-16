@@ -25,6 +25,7 @@ urlpatterns = [
     
     # Frames
     re_path(r'^strip/(?P<pk>\d+)/frame/create/$', views.FrameCreateAPIView.as_view(), name="create-frame-under-strip"),
+    path('frame/<int:pk>/', views.FrameDeleteAPIview.as_view(), name="delete-frame"),
     
 
 
