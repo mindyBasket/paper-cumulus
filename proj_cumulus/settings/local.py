@@ -25,7 +25,7 @@ SECRET_KEY = '$k3(_qgf48hzeddm(fw-8^aj1pk%u0l%w8sa2&kzpyr$ufjj8@'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost, agile-cliffs-66542.herokuapp.com"]
+ALLOWED_HOSTS = ["localhost", "agile-cliffs-66542.herokuapp.com"]
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
