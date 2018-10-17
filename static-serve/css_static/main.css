@@ -1,0 +1,536 @@
+html, body{
+    /* keep these property to make flexbox fill whole screen*/
+    margin: 0;
+    height: 100%;
+}
+
+body{
+    background-color: #efecea;
+
+    /*font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;*/
+    font-family: 'Quicksand', sans-serif;
+    color: #808080;
+}
+
+a {
+    color: #da8d8d;
+    
+}
+
+a:hover{
+    color: #2f2abf;
+    text-decoration: none;
+}
+
+
+
+/* -------------------------------------- */
+/* -------------------------------------- */
+/*        globally used text styles       */
+/* -------------------------------------- */
+/* -------------------------------------- */
+
+.bigtext-1{
+    font-size: 3em;
+}
+.bigtext-2{
+    font-size: 2em;
+}
+
+
+.color.red{
+    /* TODO: would be nice if I could use variables here */
+    color: #b97682;
+}
+
+
+/* -------------------------------------- */
+/* -------------------------------------- */
+/*                Base layout             */
+/* -------------------------------------- */
+/* -------------------------------------- */
+.content_wrapper{
+    display:flex;
+    flex-direction: column;
+    min-height: 100%; 
+    
+    /*padding-bottom: 60px; /*height of footer*/
+    
+}
+
+/* in a columned layout, the contents stretched to fill the rest of the page */
+.content_wrapper.columned .container{ 
+    /* stretched to fill rest of screen*/
+    display: flex;
+    flex-grow: 1;
+    flex-basis: auto;
+}
+
+.content_wrapper.columned .container .row{
+    /* ALSO stretched to fill rest of screen*/
+    display: flex;
+    flex-grow: 1;
+    flex-basis: auto;
+}
+
+.content_wrapper.columned .container .right_column{
+    /* ALSO stretched to fill rest of screen*/
+    flex-grow: 1;
+    flex-basis: auto;
+    border-left: 1px solid #cfcfcf;
+}
+
+
+.letterbox{
+    display: block;
+    width: 100%;
+    background-color: #1e1e1e;
+}
+
+.footer {
+    display: flex;
+    flex-grow: 1; /*will fill the rest of the page */
+    
+}
+
+.footer span{
+    text-align: right;
+    align-self: flex-end;
+    display: block;
+    height: 60px; width: 100%;
+
+    background-color: #c7c2c2;
+    padding: 20px;
+ 
+    color: #946363;
+}
+
+
+/* -------------------------------------- */
+/* -------------------------------------- */
+/*          generic views stuff           */
+/* -------------------------------------- */
+/* -------------------------------------- */
+
+.book-list{
+    padding: 0;
+}
+
+.book-list li{
+    list-style: none;
+    
+    margin: 5px 0 0 0;
+    
+}
+
+.book-list .card-link.wide{ 
+    /*the <a>*/
+    
+    display: block;
+    height: 150px;
+    background-color: PaleTurquoise;
+}
+
+.book-list .card-link.wide:hover{
+    background-color: #baf4f4;
+}
+
+.book-list .card-link.wide span:nth-of-type(1){
+    display:inline-block;
+    
+    background-color: DarkTurquoise;
+    height: 100%;
+    padding: 0 20px 0 15px;
+    font-size: 2em;
+    
+    -webkit-clip-path: polygon(0 0, 100% 0%, 70% 100%, 0% 100%);
+    clip-path: polygon(0 0, 100% 0%, 70% 100%, 0% 100%);
+}
+
+.book-list .card-link.wide[inActive='true']{
+    background-color: LightGray;
+}    
+
+
+
+
+/*.............................*/
+/*  mini menu for thumbnails   */
+/*.............................*/
+
+
+.thumb {
+    position:relative;
+}
+.thumb:focus {
+    outline: none;
+}
+
+.thumb .frame_image{
+    cursor: pointer;
+    position: absolute;
+    top: 0; left:0;
+    width: 100%; height: 100%;
+    
+    overflow: hidden;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.thumb .frame_image.stretch{
+    /* used to stretch the container size to fit the thumbnail */
+    position: relative;
+    opacity: 0;
+}
+
+/* sortable style*/
+
+
+.thumb.draggable-mirror .frame_image{
+    /* transform on this doesn't work on .draggable-mirro directly
+       because transform property already taken by draggable js*/
+    transform: rotate(7deg); 
+}
+
+.thumb.draggable-source--is-dragging{
+    opacity: 0.5;
+}
+.thumb.draggable--over{
+    opacity: 0.5;
+}
+
+.thumb .overlay_box{
+    position:absolute;
+    top:-15px; left:0;
+    display: block;
+    width: 100%;
+    background-color: rgba(0,0,0,0.5);
+    text-align: right;
+    
+    padding: 3px 5px;
+    color: white;
+    
+    opacity: 0;
+    
+    transition-property: opacity top;
+    transition-duration: 0.2s;
+    
+}
+
+.thumb:hover .overlay_box{
+    /*small menu that pops up when you hover over .thumb*/
+    opacity: 1;
+    top: 0px;
+
+    z-index: 1; /*places it over the "slashes" layer */
+}    
+
+.thumb:hover .overlay_box a{
+    color: white;
+    font-size: 1.2em;
+    margin: 0px 2px;
+}    
+.thumb:hover .overlay_box a:hover{
+    text-decoration: none;
+    color: #bcf2f2;
+}    
+
+
+
+.thumb .slashes{
+    pointer-events: none;
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-image: url('img/slashes.png');
+
+    opacity: 0;
+}
+
+.thumb.ignore .slashes{
+    opacity: 1;
+}
+
+
+.thumb.dying {
+    /* this is when thumb is about to be deleted */
+    background-color: black;
+}
+.thumb.dying .frame_image{
+    opacity: 0.5;
+}
+
+
+
+
+.thumb .overlay_box .mini_menu{
+    /*small menu that pops up when you hover over .thumb*/
+   
+    font-size: 1.2em;
+}   
+
+.thumb.placeholder{
+    /* style for .thumb box that has no image */
+    width: 150px;
+    height: 100px;
+    border: 4px dashed #a8a8a8;
+    background-color: #ededed;
+}
+
+
+/*   ______      _    */
+/*  / __/ /_____(_)__ */
+/* _\ \/ __/ __/ / _ \*/
+/*/___/\__/_/ /_/ .__/*/
+/*             /_/    */
+/*.............................*/
+/*     mini menu for strip     */
+/*.............................*/
+
+.pmenu_strip{
+    /* popup menu for strip */
+    position: absolute;
+    
+    /* This setting can be changed in the Popup obj*/
+    top: 20px;
+    right: 15px;
+    /*width: 150px;*/
+
+    transform-origin: top left;
+    transform: translate(-110%, -10%);
+   
+    background-color: white;
+    border-radius: 5px;
+    border:1px solid #e5e5e5;
+
+    color: #5b5b5b;
+
+    -webkit-box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.25);
+    -moz-box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.25);
+    box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.25);
+    
+    z-index: 100;
+}
+
+.pmenu_strip:focus{
+    outline: none;
+}
+
+.pmenu_strip .tickmark{
+    position:absolute;
+    
+    top:  6px; right: -9px;
+    width: 0; 
+    height: 0; 
+    border-top: 11px solid transparent;
+    border-bottom: 11px solid transparent;
+    border-left: 11px solid white;
+
+}
+
+.menu_strip{ /*little button for opening menu*/
+    text-decoration: none;
+    cursor:pointer;
+}
+
+.pmenu_strip .header{ 
+    display:block;
+    padding: 10px;
+    border-bottom: 1px solid #dbdbdb;
+}
+.pmenu_strip .content{ 
+    padding: 10px;
+}
+
+.pmenu_strip ul{
+    padding: 0;
+}
+
+.pmenu_strip ul li{padding-top: 8px;}
+.pmenu_strip ul li:first-of-type{padding-top: 0px;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* -------------------------------------- */
+/* -------------------------------------- */
+/*           Elements for Player          */
+/* -------------------------------------- */
+/* -------------------------------------- */
+
+.frame_view{
+    position: relative;
+    display: block;
+    /*width and height set by init_frame_imgs_and_container()*/
+    width: 800px; height: 500px; /*default height so that it will be visible*/
+    margin: 0 auto;
+}
+
+.frame_view > .fit_block{
+    display: inline-block;
+    position: absolute;
+    top:0; left:0;
+    width: 100%;
+    height: 100%;
+}
+
+.frame_view .stage{
+    /* container that hides pile of images that are
+       currently not active */
+    background-color: #1d1e1f;
+    z-index: 1000;
+}
+.frame_view.wide .cover{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    z-index: 1000;
+}
+
+.frame_view.wide .cover span{
+
+    vertical-align: middle;
+    color: white;
+    font-size: 3em;
+}
+
+
+
+/*instruction initially hidden*/
+.frame_view.wide .cover #msg_instruction{
+    display: none;
+}
+
+.frame_load {
+    position: relative;
+}
+
+.frame_load > .strip{
+    position: absolute;
+    top: 0; left: 0;
+    
+    opacity: 0; /*becomes 1 in flip.js*/
+}
+
+.frame_load > .strip img{
+    position: absolute;
+    top: 0; left: 0;
+    height: 650px;
+}
+
+/*pull first one to top*/
+/*.frame_view.wide span:nth-of-type(1) > img:nth-of-type(1){
+    z-index: 1000;
+}*/
+
+.frame_scrubber{
+
+    /* only appears when the play page is rewind mode */
+    /* That's when the user hits left arrow key */
+    opacity: 1;
+    transition-property: opacity;
+    transition-duration: 1s;
+
+    width: 100%;
+}
+
+.frame_scrubber .timer{
+    width: 100%;
+    min-height: 60px;
+    padding-top: 10px;
+    text-align: center;
+}
+
+.frame_scrubber .timer .frame_icon{
+    display:inline-block;
+    width: 15px; height: 15px;
+    border-radius: 15px;
+    border:1px solid #3c3c3c;
+    margin: 0 3px;
+}
+
+.frame_scrubber .timer .frame_icon.on{
+    background-color: #3c3c3c;
+}
+    
+.frame_scrubber .timer .frame_icon:last-of-type{
+    border:1px solid tomato;
+}
+.frame_scrubber .timer .frame_icon.on:last-of-type{
+    background-color: tomato;
+}
+
+.frame_scrubber .cell_fill{
+    display:inline-block;
+    height: 10px;
+    margin-bottom: -10px; /*height of .cell*/
+    width: 0%; /*filled up in flip.js */
+    background-color: tomato;
+    float: left;
+}
+
+.frame_scrubber .cell_container{
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    justify-content: flex-start;
+    
+    background-color: #121212;
+    width: 100%;
+    
+}
+
+.frame_scrubber .cell_container .cell{
+    flex-grow: 1;
+    height: 10px;
+ 
+    border:2px solid #1d1e1f;
+}
+
+
+
+
+/* -------------------------------------- */
+/* -------------------------------------- */
+/*         form and msg related           */
+/* -------------------------------------- */
+/* -------------------------------------- */
+
+.placeholder{
+    display:inline-block;
+    width:100px; height: 60px;
+    border: 1px solid #ccc;
+    vertical-align: middle;
+}
+
+.placeholder.new{
+    border:1px solid blue;
+}
+
+.message_container{
+    position: absolute;
+    top: -100%;
+    left:50%;
+    
+    transition: top 2s;
+}
+
+.message{
+    display: inline-block;
+    height: 80px; width: 600px;
+    background-color: white;
+    
+    position: relative;
+    left:-50%;
+    
+}

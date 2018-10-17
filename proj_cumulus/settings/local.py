@@ -140,12 +140,13 @@ STATIC_URL = '/static/'
 
 # If /static/ above doesn't exist, it will look at the following paths.
 # Wait...this IS served directly when I run this app.
+# When production, static files are collected from here. 
 STATICFILES_DIRS = [ 
     os.path.join(BASE_DIR, "static-storage"),
-    '/var/www/static/'
+    #'/var/www/static/'
 ]
 
-#Is served
+#Is served from (or collectStatic'd into)
 STATIC_ROOT = os.path.join(BASE_DIR, "static-serve")
 
 

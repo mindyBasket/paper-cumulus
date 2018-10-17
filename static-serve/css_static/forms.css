@@ -1,0 +1,49 @@
+form select[invisible],
+form textarea[invisible]{
+    display:none;
+}
+
+
+form button[type='submit']{
+    background-color:#826e72;
+    border: 0px;
+    border-bottom: 4px solid #615154;
+}
+
+#strip_create_form,
+#frame_create_form{
+    display:inline-block;
+    width: 0; height: 0;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Frame Edit Form elements */
+#frame_image_form{
+    background-color: #efedeb;
+}
+
+
+#frame_image_form #field_frame_image{
+    background-color: #4a4949;
+    padding: 7px;
+}
+    
+#frame_image_form #field_frame_image .field_value{
+    display:block;
+    text-align:center;
+    
+    width: 100%;
+    /*min-height: 250px;
+    max-height: 450px;*/
+    /* Cannot use min/max height for image size to auto fit */
+    height: 400px;
+}
+
+#frame_image_form #field_frame_image .field_value img{
+    max-width: 100%;
+    max-height: 100%;
+    
+    border:1px solid #292929;
+    outline-offset: 5px;
+}

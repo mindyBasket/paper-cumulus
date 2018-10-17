@@ -1,0 +1,10 @@
+body.dark{
+    background-color: #1d1e1f;
+    color: #777777;
+}
+
+body.dark .footer span{
+    background-color: #141414;
+    color: #808080;
+    
+}

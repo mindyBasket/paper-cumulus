@@ -1,0 +1,18 @@
+.ui-sortable-placeholder{
+    /* Placeholder container when you've lifted a sortable*/
+    
+    /* This is the default class used for sortable,
+    but you can use the same class as a custom container too*/
+    
+    width: 200px; /*Width of all thumb tiles*/
+    min-height: 100px;
+    margin: 10px; /*Margin around the tiles. See lists.css*/
+    background-color: #a0a0a0;
+}
+
+.ui-sortable-helper{
+    -ms-transform: rotate(3deg); /* IE 9 */
+    -webkit-transform: rotate(3deg); /* Safari 3-8 */
+    transform: rotate(3deg);
+}
+
