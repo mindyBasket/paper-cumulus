@@ -37,6 +37,18 @@ class Helper {
         return formData;
     }
 
+    getUnignoredFrames(strip){
+        if(!strip.hasOwnProperty("frames") || strip.frames.length == 0){
+            return [];
+        }
+
+        let unignoredFrameArr = [];
+        strip.frames.forEach((f)=>{
+            if(!f.ignored){unignoredFrameArr.push(f)}
+        });
+
+        return unignoredFrameArr;
+    }
 
     reorderFrames(strip){
         // get list of frames and sort and list
@@ -51,38 +63,46 @@ class Helper {
         }
         if (!strip.hasOwnProperty('children_li') || !strip.children_li || strip.children_li.trim() == ''){
             // no children_li. Return frame array as is
-            console.warn("No valid children_li");
+            console.error("No valid children_li");
             return strip.frames
         }
 
         const frameIdList = strip.children_li.split(",");
         if (!frameIdList || frameIdList==='') {return strip.frames;}
 
-        let frameOrderedArr = Array.apply(null, Array(frameIdList.length));
+        let frameNewArr = Array.apply(null, Array(frameIdList.length));
         let frameLeftOver = [];
 
+        let ignoredCount = 0;
         strip.frames.forEach((f)=>{
             if (!f.ignored){
                 const insertAt = frameIdList.indexOf(String(f.id));
-
-                if (insertAt>=0 && insertAt<frameOrderedArr.length){
-                    frameOrderedArr[insertAt] = f; 
+                if (insertAt>=0 && insertAt<frameNewArr.length){
+                    frameNewArr[insertAt] = f; 
                 } else if (insertAt==-1){
                     frameLeftOver.push(f);
                 }
-            }
-            
-            
+            } else { ignoredCount++; }
         });
+
+        // Remove empty cells caused by ignored frames
+        let frameNewArr_cleaned = [];
+        if (ignoredCount>0){
+            frameNewArr.forEach((f)=>{
+                if(f){frameNewArr_cleaned.push(f)}
+            });
+        } else {
+            frameNewArr_cleaned = frameNewArr;
+        }
+
 
         // children not ref'd in children_li is just placed at the end
         if (frameLeftOver.length>0){
-            frameOrderedArr.push(...frameLeftOver);
+            frameNewArr_cleaned.push(...frameLeftOver);
         }
 
-        console.warn("Reordered frames with: " + frameIdList);
-        console.warn(JSON.stringify(frameOrderedArr));
-        return frameOrderedArr;
+        console.warn(`Prepped frame for stripId=${strip.id} : frames of length ${frameNewArr_cleaned.length}`);
+        return frameNewArr_cleaned;
     }
 
 

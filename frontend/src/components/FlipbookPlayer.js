@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, PureComponent } from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 
@@ -64,7 +64,7 @@ function playFrameStage(){
 // ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚══════╝
                                                                                      
 
-class FrameStage extends Component{
+class FrameStage extends PureComponent{
 
 	constructor(props){
 		super(props);
@@ -277,11 +277,10 @@ class FrameStage extends Component{
 					 	{/* data.strips is an array of JSON objects */}
 						{data[0]['strips'].map((el_strip,index) => (
 							<span className={`strip${index==0 ? " start" : ""}`} 
-								  key={key(el_strip)}
+								  key={"strip"+el_strip.id}
 								  index={index} 
-								  count={el_strip.frames.length}>
+								  count={h.getUnignoredFrames(el_strip).length}>
 
-								{/* TODO: edge case, if el_strip does not have frames */}
 								{h.reorderFrames(el_strip).map(el_frame => {
 									{/* TODO: edge case there are no frames */}
 									if (el_frame && el_frame.frame_image) {
