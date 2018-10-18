@@ -19,7 +19,7 @@ function getRandomGreeting(){
     return greetings[ Math.round(Math.random()*(greetings.length-1)) ];
 }
 
-function getCardCoverMessage(templateName, offFunc){
+function getCardCoverMessage(templateName, offFunc, handle_deleteScene){
 
     // WARNING: This function is used by all of CardCovers. Do not bind(this) to it.
     //          It will only work for the first binder. 
@@ -55,7 +55,7 @@ function getCardCoverMessage(templateName, offFunc){
                     </p>
                     <p>
                         <span>
-                            <button className='warning'>DELETE</button>
+                            <button onClick={()=>{offFunc(); handle_deleteScene();}} className='warning'>DELETE</button>
                             <button onClick={offFunc}>Cancel</button>
                         </span>
                     </p>
@@ -117,6 +117,9 @@ class CardCover extends PureComponent {
         super(props);
         this.r = React.createRef();
 
+        // prop reference
+        // this.props.setStripState // for communication with parent(Strip)
+
         // Some cover message is supposed to be intangible, but some messages
         // have confirmation button, which requires them to be tangible.
         this.intangibilityMap = {
@@ -176,7 +179,7 @@ class CardCover extends PureComponent {
                             (intangible ? " intangible" : "")}
                  onDrop={(e)=>{e.preventDefault()}}>
       
-                    {getCardCoverMessage(msgType, this.props.off)}
+                    {getCardCoverMessage(msgType, this.props.off, this.props.handle_deleteScene )}
             </div>
         )
     }

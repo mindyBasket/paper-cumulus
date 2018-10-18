@@ -104,8 +104,36 @@ class XhrHandler {
 	    )
 	}
 
+	destroyStrip(stripId, csrfToken){
+		return this.makeXHR('delete', null, `/api/strip/${stripId}/`, csrfToken);
+	}
 
-	
+	// Attempt at generic
+	makeXHR(method, data, endpoint, csrfToken){
+
+		// TODO: investigate why using this.getCSRFToken gets 403 error
+		if (csrfToken === undefined) {const csrfToken = this.getCSRFToken();}
+
+		return (
+			axios({
+	            method: method,
+	            url: endpoint,
+	            data: data,
+	            headers: {"X-CSRFToken": csrfToken}
+	        })
+	        .then(response => {
+	            return response;
+	        })
+	        .catch(error => {
+	        	console.log(error);
+	        	// TODO: add better error message that is visible on frontend
+	        })
+	    )
+
+	}
+
+
+
 }
 
 

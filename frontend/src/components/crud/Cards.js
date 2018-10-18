@@ -232,6 +232,7 @@ class StripCard extends PureComponent {
         this.openPreview = this.openPreview.bind(this);
 
         this.endModalState = this.endModalState.bind(this); // more generic version of 'removeCardCover'
+        this.setStripState = this.setStripState.bind(this); // for communication
         this.setSpotlight = this.setSpotlight.bind(this);
 
     }
@@ -298,7 +299,9 @@ class StripCard extends PureComponent {
     }
 
 
-
+    setStripState(newState){
+        this.setState(newState);
+    }
 
 
 
@@ -338,19 +341,13 @@ class StripCard extends PureComponent {
 
         const strip = this.props.stripObj;
 
-        console.log("handle_deleteScene");
-
-        // TODO: this returns "forbidden" error
-        // axios({
-        //     method: 'get',
-        //     url: `/api/strip/${strip.id}/delete/`,
-        // })
-        // .then(response => {
-        //     console.log("Delete Request made");
-        // })
-        // .catch(error => {
-        //     console.log(error);
-        // })
+        console.log("handle_deleteScene for Strip id: " + this.props.stripObj.id);
+        const csrfToken = axh.getCSRFToken();
+        axh.destroyStrip(strip.id, csrfToken).then(res=>{
+            // Destroy successful. Re-fetch.
+            console.log("[Strip destory] response came back");
+            pub_handle_fetchScene();
+        })
     }
 
     handle_frameSort(idArr){
@@ -408,7 +405,7 @@ class StripCard extends PureComponent {
                 console.log('>> file[' + 0 + '].name = ' + file.name + " : type = " + file.type);
 
                 // CHECKPOINT 1: image only
-                const allowedImageTypes = ['image/png', 'image/gif', 'image/jpg'];
+                const allowedImageTypes = ['image/png', 'image/gif', 'image/jpg', 'image/jpeg'];
                 if (!allowedImageTypes.includes(file.type)){
                     // exit abruptly. This causes this component to remain in dragAndDrop state
                     this.setState({cardCover_messageType: "wrongFileType"});
@@ -715,6 +712,7 @@ class StripCard extends PureComponent {
                            off={()=>{this.endModalState("cardCoverOn", true)}}
                            messageType={this.state.cardCover_messageType}
                            setParentSpotlight={this.setSpotlight}
+                           handle_deleteScene={this.handle_deleteScene}
                            name="dragAndDrop"/>
 
                 <StripMenu on={this.state.menuOn} 

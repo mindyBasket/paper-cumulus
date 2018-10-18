@@ -280,7 +280,7 @@ class FrameCard extends Component{
         // Blur out thumb that is about to be DEEESSSTRRRROOYYED
         this.setState({dying:true});
 
-        console.log("[FRAME DELETE] deleteFrameConfirm");
+        console.log("[FRAME DELETE] deleteFrame (No Confirm)");
         const frame = this.props.frameObj; 
         console.log("Frame Prep: " + frame);
 
