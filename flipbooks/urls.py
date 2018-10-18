@@ -59,6 +59,9 @@ urlpatterns = [
     re_path(r'^json_partials/frame_edit_form/(?P<pk>\d+)/$', views_jsonpr.return_frame_edit_form, name='json_partial__frame_edit_form'), 
     re_path(r'^json_partials/frame_container/empty/$',       views_jsonpr.return_empty_thumbnail_partial, name='json_partial__empty_thumb_container'), 
     re_path(r'^json_partials/frame_container/(?P<pk>\d+)/$', views_jsonpr.return_thumbnail_partial, name='json_partial__frame_thumb_container'), 
+
+    # React helper
+    path('rh/get_url_by_name/<slug:url_name>/<int:pk>/', views_jsonpr.get_url_by_name, name='reacthelper__get-url-by-name'),
 ]
 
 if settings.DEBUG == True:

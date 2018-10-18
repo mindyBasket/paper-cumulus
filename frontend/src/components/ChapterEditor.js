@@ -69,7 +69,20 @@ class SceneCreateModal extends PureComponent{
 			console.log(JSON.stringify(res.data));
 
 			// take the user there
-			//window.location.href = "//";
+			// since I don't want to hardcode any url...trying to call DJango for this.
+			// const args = h.makeFormData({'budgie': "inay"}); // yeah doesn't work like that
+
+			axh.django_getSceneUrl("flipbooks:scene-edit", {'pk': res.data.id}).then(res=>{
+				if (res.data && res.data.hasOwnProperty('url') && res.data.url ) {
+					window.location.href = res.data.url;
+				} else {
+					console.error("Something went wrong while creating new Scene");
+				}
+				
+			});
+
+
+			
 		});
 	}
 

@@ -91,3 +91,18 @@ def return_empty_thumbnail_partial(request, *args, **kwargs):
     )
     
     return JsonResponse({'html_template': html_template})
+
+
+
+
+
+
+# Help React take advantage of Django magic
+
+def get_url_by_name(request, *args, **kwargs):
+    print("kwargs: {}".format(kwargs))
+    print("args: {}".format(args))
+
+    url_name = kwargs['url_name']
+    pk = kwargs['pk']
+    return JsonResponse({'url': reverse_lazy(url_name, kwargs={'pk': pk})  })  

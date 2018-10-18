@@ -135,6 +135,16 @@ class XhrHandler {
 
 
 
+
+	// Trying this out
+	django_getSceneUrl(name, data){
+
+		return this.makeXHR('get', null, `/flipbooks/rh/get_url_by_name/${name}/${data.pk}/`, null);
+	}
+
+
+
+
 	// Attempt at generic
 	makeXHR(method, data, endpoint, csrfToken){
 
