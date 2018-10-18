@@ -5,11 +5,28 @@ const h = new Helper();
 class XhrHandler {
 
 	getCSRFToken(formId){
-
         // This function require django rendered form in the template
-        let $form;
+        const possibleForms = ["#scene_create_form", "#strip_create_form", "#frame_create_form"];
+
+
+        let $form = null;
         if (formId === undefined){
-        	$form = document.querySelector("#strip_create_form");
+       
+        	let grabbed;
+        	for (let i=0; i<possibleForms.length;i++){
+        		grabbed = document.querySelector(possibleForms[i]);
+        		if (grabbed != null){
+        			$form = grabbed;
+        			break;
+        		}
+
+        	}
+
+        	if ($form == null){
+        		console.error("Cannot find any form to grab CSRFToken!");
+        		return false;
+        	}
+        	
         } else {
         	$form = document.querySelector(formId);
         }
@@ -66,6 +83,14 @@ class XhrHandler {
 	    )
 	}
 
+	createScene(chapterId, formData, csrfToken){
+		return this.makeXHR('post', formData, `/api/chapter/${chapterId}/scene/create/`, csrfToken);
+	}
+
+
+
+
+
 
 	editFrame(frameId, formData, csrfToken){
 		return (
@@ -108,11 +133,13 @@ class XhrHandler {
 		return this.makeXHR('delete', null, `/api/strip/${stripId}/`, csrfToken);
 	}
 
+
+
 	// Attempt at generic
 	makeXHR(method, data, endpoint, csrfToken){
 
 		// TODO: investigate why using this.getCSRFToken gets 403 error
-		if (csrfToken === undefined) {const csrfToken = this.getCSRFToken();}
+		// if (csrfToken === undefined) {const csrfToken = this.getCSRFToken();}
 
 		return (
 			axios({
@@ -127,6 +154,7 @@ class XhrHandler {
 	        .catch(error => {
 	        	console.log(error);
 	        	// TODO: add better error message that is visible on frontend
+	        	return false;
 	        })
 	    )
 

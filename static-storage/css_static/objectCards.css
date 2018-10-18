@@ -7,7 +7,7 @@ ul.list_scenes{
     list-style: none;
 }
 
-ul.list_scenes li.scene_container{ /*flex item*/
+ul.list_scenes .scene_container{ /*flex item*/
     display:flex;
     flex-direction: column;
     
@@ -18,6 +18,13 @@ ul.list_scenes li.scene_container{ /*flex item*/
     /* Or just set a width */
     width: 180px;
     margin: 3px;
+
+    color: white;
+
+}
+
+ul.list_scenes .scene_container:hover{
+    background-color: black;
 }
 
 .scene_container .flex_item:last-child{
@@ -25,7 +32,17 @@ ul.list_scenes li.scene_container{ /*flex item*/
 }
 
 .scene_container .header{
-    padding: 5px;
+    padding: 3px 12px 10px 12px;
+    background-color:#2f2f2f;
+    color: #7d7d7d;
+
+    transition-property: background-color, color;
+    transition-duration: 0.3s;
+}
+
+.scene_container:hover .header{
+    color: white;
+    background-color: black;
 }
 
 .scene_container .header a{
@@ -50,7 +67,7 @@ ul.list_scenes li.scene_container{ /*flex item*/
     transition-duration: 0.3s;
 }
 
-.scene_container .preview_container:hover{
+.scene_container:hover .preview_container{
     border-top: 30px solid black;
     border-bottom: 30px solid black;
 }

@@ -97,7 +97,13 @@ class LightBox extends Component{
 		this.setState({active: false}); 
 
 		// B. Undo group spotlight [spotlighting is done by setting z-index on component]
-		this.props.setParentState({spotlightedAll: false}); 
+		try {
+			this.props.setParentState({spotlightedAll: false}); 
+		}
+		catch(err){
+			// Do nothing. Not all usage of lightbox will have effect on parent.
+		}
+		
 		// note: this overrides individual 'selfSpotlight'
 
 		// TODO: any other default behaviors? Modals perhaps? 

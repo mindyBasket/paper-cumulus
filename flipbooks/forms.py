@@ -1,38 +1,37 @@
 from django.contrib import messages
 from django import forms
+import pprint
 
 from .models import (
-    Frame,
-    Strip,
-    Scene,
     Book,
-    Chapter
+    Chapter,
+    Scene,
+    Strip,
+    Frame
 )
 
 
-# .................................................. 
-# .................................................. 
-#                   Frame forms 
-# .................................................. 
-# .................................................. 
 
-class FrameForm(forms.ModelForm):
-    class Meta:
-        model = Frame
-        fields = ['note', 'order', 'frame_image', 'strip']
+# ███████╗ ██████╗███████╗███╗   ██╗███████╗
+# ██╔════╝██╔════╝██╔════╝████╗  ██║██╔════╝
+# ███████╗██║     █████╗  ██╔██╗ ██║█████╗  
+# ╚════██║██║     ██╔══╝  ██║╚██╗██║██╔══╝  
+# ███████║╚██████╗███████╗██║ ╚████║███████╗
+# ╚══════╝ ╚═════╝╚══════╝╚═╝  ╚═══╝╚══════╝
 
+# ███████╗ ██████╗ ██████╗ ███╗   ███╗███████╗
+# ██╔════╝██╔═══██╗██╔══██╗████╗ ████║██╔════╝
+# █████╗  ██║   ██║██████╔╝██╔████╔██║███████╗
+# ██╔══╝  ██║   ██║██╔══██╗██║╚██╔╝██║╚════██║
+# ██║     ╚██████╔╝██║  ██║██║ ╚═╝ ██║███████║
+# ╚═╝      ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝                                
 
-        
-class FrameCreateForm(forms.ModelForm):
-    # Note: this will not have its own createView. 
-    #       I plan to make this "spawn" in chapter_detail.
-
+class SceneCreateForm(forms.ModelForm):
+    
     def __init__(self, *args, **kwargs):
-        super(FrameCreateForm, self).__init__(*args, **kwargs)
-
-        # Currently, custom arg being passed from SceneDetailView().
-        # Unsure if this will interfere with anything. Investigate
-        # usage of *args and **kwargs like this more.
+        super(SceneCreateForm, self).__init__(*args, **kwargs)
+        
+        # Custom arg being passed from ChapterDetailView().
         
         arg_dict = {}
         for arg in args:
@@ -40,43 +39,39 @@ class FrameCreateForm(forms.ModelForm):
                 arg_dict = arg
                 
         # Limit possible strip choice by the scene it belongs to.
-        if 'scene_pk' in arg_dict:
-            self.fields['strip'].queryset = Strip.objects.filter(scene__id=arg_dict['scene_pk'])
+        pprint.pprint(args)
+        if 'chapter_number' in arg_dict:
+            self.fields['chapter'].queryset = Chapter.objects.filter(number=arg_dict['chapter_number'])
         else:
-            self.fields['strip'].queryset = Strip.objects.all()
+            self.fields['chapter'].queryset = Chapter.objects.all()
 
-    
-    class Meta:
-        # Critical note: the "frame_image" field will not upload image 
-        #                if the form element does not have 
-        #                enctype="multipart/form-data"!
-        model = Frame
-        fields = ['strip', 'frame_image']
-        labels = {
-            'frame_image': 'Add image:',
-            
-        }
-    
-class FrameEditForm(forms.ModelForm):
+
 
     class Meta:
-        # Critical note: the "frame_image" field will not upload image 
-        #                if the form element does not have 
-        #                enctype="multipart/form-data"!
-        model = Frame
-        fields = ['order', 'note', 'frame_image']
+        # Note: currently none of these fields appear. I don't need it, but it is concerning.
+        model = Scene
+        fields = ['chapter'] 
         labels = {
-            'frame_image': 'Add image:',
-            
+            'chapter': 'Under chapter'
         }
-    
         
 
-# .................................................. 
-# .................................................. 
-#                   Strip forms 
-# .................................................. 
-# .................................................. 
+
+# ███████╗████████╗██████╗ ██╗██████╗ 
+# ██╔════╝╚══██╔══╝██╔══██╗██║██╔══██╗
+# ███████╗   ██║   ██████╔╝██║██████╔╝
+# ╚════██║   ██║   ██╔══██╗██║██╔═══╝ 
+# ███████║   ██║   ██║  ██║██║██║     
+# ╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝╚═╝     
+
+# ███████╗ ██████╗ ██████╗ ███╗   ███╗███████╗
+# ██╔════╝██╔═══██╗██╔══██╗████╗ ████║██╔════╝
+# █████╗  ██║   ██║██████╔╝██╔████╔██║███████╗
+# ██╔══╝  ██║   ██║██╔══██╗██║╚██╔╝██║╚════██║
+# ██║     ╚██████╔╝██║  ██║██║ ╚═╝ ██║███████║
+# ╚═╝      ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝
+                                            
+                                    
 
 def string2List(stringyList):
     # assumes items are listed with "," only (for now)
@@ -188,3 +183,77 @@ class StripUpdateForm(forms.ModelForm):
     #         self.order = get_last_order(self)
         
     #     super(Strip, self).save()
+
+
+
+
+# ███████╗██████╗  █████╗ ███╗   ███╗███████╗
+# ██╔════╝██╔══██╗██╔══██╗████╗ ████║██╔════╝
+# █████╗  ██████╔╝███████║██╔████╔██║█████╗  
+# ██╔══╝  ██╔══██╗██╔══██║██║╚██╔╝██║██╔══╝  
+# ██║     ██║  ██║██║  ██║██║ ╚═╝ ██║███████╗
+# ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝
+
+# ███████╗ ██████╗ ██████╗ ███╗   ███╗███████╗
+# ██╔════╝██╔═══██╗██╔══██╗████╗ ████║██╔════╝
+# █████╗  ██║   ██║██████╔╝██╔████╔██║███████╗
+# ██╔══╝  ██║   ██║██╔══██╗██║╚██╔╝██║╚════██║
+# ██║     ╚██████╔╝██║  ██║██║ ╚═╝ ██║███████║
+# ╚═╝      ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝
+                                           
+
+class FrameForm(forms.ModelForm):
+    class Meta:
+        model = Frame
+        fields = ['note', 'order', 'frame_image', 'strip']
+
+
+        
+class FrameCreateForm(forms.ModelForm):
+    # Note: this will not have its own createView. 
+    #       I plan to make this "spawn" in chapter_detail.
+
+    def __init__(self, *args, **kwargs):
+        super(FrameCreateForm, self).__init__(*args, **kwargs)
+
+        # Currently, custom arg being passed from SceneDetailView().
+        # Unsure if this will interfere with anything. Investigate
+        # usage of *args and **kwargs like this more.
+        
+        arg_dict = {}
+        for arg in args:
+            if arg:
+                arg_dict = arg
+                
+        # Limit possible strip choice by the scene it belongs to.
+        if 'scene_pk' in arg_dict:
+            self.fields['strip'].queryset = Strip.objects.filter(scene__id=arg_dict['scene_pk'])
+        else:
+            self.fields['strip'].queryset = Strip.objects.all()
+
+    
+    class Meta:
+        # Critical note: the "frame_image" field will not upload image 
+        #                if the form element does not have 
+        #                enctype="multipart/form-data"!
+        model = Frame
+        fields = ['strip', 'frame_image']
+        labels = {
+            'frame_image': 'Add image:',
+            
+        }
+    
+class FrameEditForm(forms.ModelForm):
+
+    class Meta:
+        # Critical note: the "frame_image" field will not upload image 
+        #                if the form element does not have 
+        #                enctype="multipart/form-data"!
+        model = Frame
+        fields = ['order', 'note', 'frame_image']
+        labels = {
+            'frame_image': 'Add image:',
+            
+        }
+    
+        

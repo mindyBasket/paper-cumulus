@@ -56,6 +56,7 @@ class SceneModelSerializer(serializers.ModelSerializer):
         model = Scene
         fields = [
             'id',
+            'chapter',
             'children_li',
             'name',
             'strips',

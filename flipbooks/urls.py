@@ -27,8 +27,9 @@ urlpatterns = [
     path('books/', views.BookListView.as_view(), name='book-list'),
     
     # Chapter Urls
-    re_path(r'^(?P<book_pk>\d+)/(?P<chapter_number>\d+)/$', views.ChapterDetailView.as_view(), name='chapter-detail'),
-    
+    re_path(r'^(?P<book_pk>\d+)/legacy/(?P<chapter_number>\d+)/$', views.ChapterDetailView.as_view(), name='chapter-detail-legacy'),
+    re_path(r'^(?P<book_pk>\d+)/(?P<chapter_number>\d+)/$', views.ChapterDetailView_REACT.as_view(), name='chapter-detail'),
+
     # Scene Urls
     # url(r'^scenes/$', views.SceneListView.as_view(), name="scene-list"),
     re_path(r'^scene/legacy/(?P<pk>\d+)/flip/$', views.ScenePlayView.as_view(), name='scene-play-legacy'), #play!

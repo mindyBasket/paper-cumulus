@@ -2,4 +2,5 @@
 //import Flipbook from "./components/Flipbook";
 import FlipbookPlayer from "./components/FlipbookPlayer";
 
-import SceneEditor from "./components/SceneEditor"
+import ChapterEditor from "./components/ChapterEditor";
+import SceneEditor from "./components/SceneEditor";

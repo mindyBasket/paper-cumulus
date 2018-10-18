@@ -17,6 +17,7 @@ urlpatterns = [
     path('chapter/<int:pk>/scene/all/', views.SceneAPIListView.as_view(), name="list-scene"),
 
     # Scene 
+    path('chapter/<int:pk>/scene/create/', views.SceneCreateAPIView.as_view(), name="create-scene-under-chapter"),
     path('scene/<int:pk>/', views.SceneAPIDetailView.as_view(), name="detail-scene"),
 
     # Strip

@@ -28,6 +28,13 @@ button.warning:hover{
 	background-color: #ec3b3b;
 }
 
+button.disabled{
+	margin-top: 9px;
+	border: 0px solid;
+	background-color: #b9b9b9;
+	color: #dedede;
+
+}
 
 /* note: '.menu_btn' is in menu.css */
 
@@ -52,4 +59,10 @@ button.warning:hover{
 .tool_btn.loading{
 	background-color: transparent;
 	color: #bba2da;
+}
+
+
+
+.align_right{
+	text-align: right;
 }

@@ -9,6 +9,7 @@
     top:0; left:0;
     display:block;
     width: 100%; height: 100%;
+
     
     background-color:rgba(0, 0, 0, 0.5);
 }
@@ -34,13 +35,35 @@
 #light_box_modal.active{
   pointer-events: auto;
   opacity: 1;
+  z-index: 100;
 }
 
-/*#light_box_modal .header{
-    font-size: 2em;
+
+
+
+/* Modal for Scene Create. Should be simple */
+#light_box_modal[object='scene']{
+  display: flex;
+  flex-direction: column;
+  width: 450px;
+  height: auto;
+}
+
+#light_box_modal[object='scene'] .scene_form_content{
+  display: flex;
+  flex-direction: column;
+
+  padding: 10px 30px;
+}
+
+#light_box_modal .header{
     padding: 10px 30px;
     border-bottom: 1px solid #d1d1d1;
-}*/
+}
+
+
+
+/* Modal for Frame Edit */
 
 #light_box_modal .frame_content{
     padding: 20px;
@@ -129,6 +152,8 @@
   top:0; left:0;
   display:block;
   width: 100%; height: 100%;
+
+  z-index: 10; /* LightBox not always rendered last */
 
   background-color:rgba(0, 0, 0, 0.5);
 

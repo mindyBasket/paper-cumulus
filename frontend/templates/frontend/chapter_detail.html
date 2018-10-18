@@ -5,70 +5,67 @@
 {% block title %} {{block.super}} | Scenes{% endblock title %}
 
 {% block left_column %}
-<h3>Scenes Under Chapter {{object.number}}</h3>
-        
-        <p>
-            from Book : {{object.book.title}}
-        </p>
+    <h3>Scenes Under Chapter {{object.number}}</h3>
+            
+    <p>
+        from Book : {{object.book.title}}
+    </p>
+
+    <div id="ref-content" 
+         chapterId="{{object_chapter.id}}"
+         chapterTitle="{{object_chapter.title}}"></div>
+
+    <div id="chapter_editor_wrapper">
+        <!-- REACT -->
+    </div>
+
 {% endblock %}
 
 {% block right_column %}
-    <p>You are viewing a chapter detail. This is in a hypothetical chapter "1". Try to imagine one 
-    "scene" = "page" in a comic book sense. Viewing a scene should start "playing".</p>
-    <p>I also plan this page to also act as a player interface if possible</p>
 
-
-    <div>
-        <ul class="list inline">
-            <li><a href="{% url 'flipbooks-api:list' %}">View api</a></li>
-        </ul>
-    </div>
     
-    <h3>Scene list</h3>
+    <h3>Scene list [REACT]</h3>
     <ul class="list_scenes">
         {% for scene in object_scene_list %}
-            <li class="scene_container">
-                
-                <a class="flex_item preview_container" href="{% url 'flipbooks:scene-play' pk=scene.pk %}">
 
-                    {% with scene.strip_set.all|map_queryset:scene.children_li as mapped_strip_set %}
-                        <div class="preview">
-                            {% for strip in mapped_strip_set|slice:":1" %}
-                                {% with strip.frame_set.all|first as first_frame %}
-                                
-                                    {% if first_frame is None or first_frame.frame_image is None %} 
-                                        <span class="thumb placeholder">
-                                        </span>
-                                    {% else %} 
-                                        <span>
-                                            <img src="{{ first_frame.frame_image.thumb.url }}" width="100%"/>
-                                        </span>
-                                    {% endif %} 
+            <li>
+                <a class="scene_container" href="{% url 'flipbooks:scene-play' pk=scene.pk %}">
+                    <span class="flex_item preview_container">
+
+                        {% with scene.strip_set.all|map_queryset:scene.children_li as mapped_strip_set %}
+                            <div class="preview">
+                                {% for strip in mapped_strip_set|slice:":1" %}
+                                    {% with strip.frame_set.all|first as first_frame %}
                                     
-                                {% endwith %}
-                            {% endfor %}
-                        </div>
-                    {% endwith %}
-                </a>
-                
-                <div class="flex_item header">
-                    Order: {{scene.order}} (id: {{scene.id}})
+                                        {% if first_frame is None or first_frame.frame_image is None %} 
+                                            <span class="thumb placeholder">
+                                            </span>
+                                        {% else %} 
+                                            <span>
+                                                <img src="{{ first_frame.frame_image.thumb.url }}" width="100%"/>
+                                            </span>
+                                        {% endif %} 
+                                        
+                                    {% endwith %}
+                                {% endfor %}
+                            </div>
+                        {% endwith %}
+                    </span>
                     
-                    <a class="scene_edit glyphicon glyphicon-pencil" 
-                       aria-hidden="true" 
-                       style='font-size:1.1em'
-                       href="{% url 'flipbooks:scene-edit' pk=scene.pk %}"></a>
+                    <span class="flex_item header">
+                        Order: {{scene.order}} (id: {{scene.id}})
 
-                </div>
-                
-                <!--<div class="flex_item description">
-                    {{scene.description}}
-                </div>-->
-                
-                <div class="flex_item timestamp">
-                    {{ scene.date_created|timesince }}
-                </div>
-
+                    </span>
+                    
+                    <!--<div class="flex_item description">
+                        {{scene.description}}
+                    </div>-->
+                    <a class="scene_edit" href="{% url 'flipbooks:scene-edit' pk=scene.pk %}">Edit</a>
+                    
+                    <div class="flex_item timestamp">
+                        {{ scene.date_created|timesince }} ago
+                    </div>
+                </a>
             </li>
         {% empty %}
             <p>No strips could be found</p>
@@ -76,6 +73,10 @@
         {% endfor %}
         
     </ul>
+
+
+    <!-- scene_create_form -->
+    {% include "flipbooks/includes/form_dynamic.html" with form=scene_create_form form_id="scene_create_form" btn_title='Add Scene' %}
 
 
     

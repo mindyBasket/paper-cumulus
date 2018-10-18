@@ -68,6 +68,12 @@ class SceneAPIDetailView(generics.RetrieveAPIView):
     #     return Response(usernames)
     
 
+    
+class SceneCreateAPIView(generics.CreateAPIView):
+    serializer_class = SceneModelSerializer
+
+
+
 
 
  # _______ _______  ______ _____  _____ 
