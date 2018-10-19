@@ -49,9 +49,6 @@ class SceneCreateModal extends PureComponent{
 
 	handle_nameChange(){
 		const nameField = this.r_form.current.querySelector("#scene_name");
-		if (nameField.value != ''){
-			console.log("has valuw");
-		}
 
 		if (nameField && nameField.value != ''){
 			this.setState({valid: true});
@@ -65,9 +62,7 @@ class SceneCreateModal extends PureComponent{
 		const formData = h.makeFormData(h.serializeForm(this.r_form.current));
 			  formData.append("chapter", chapter.id);
 
-
 		axh.createScene(chapter.id, formData, axh.getCSRFToken()).then(res=>{
-			console.log("Something came back");
 			console.log(JSON.stringify(res.data));
 
 			// take the user there

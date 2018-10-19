@@ -232,7 +232,9 @@ class FrameModal extends Component{
         return (
             <div>
             {!this.state.frameObj ? (
-                <p>Could not fetch frame information. Please try again.</p>
+                <div id="light_box_modal" className={this.state.on ? "active" : ""}>
+                    <p>Could not fetch frame information. Please try again.</p>
+                </div>
             ) : (
                 <div id="light_box_modal" className={this.state.on ? "active" : ""}>
 

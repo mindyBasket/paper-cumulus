@@ -24,12 +24,10 @@ const axh = new XhrHandler(); //axios helper
 
 
 
-
 function pub_handle_fetchScene(){
     // bind to SceneCardList
     this.handle_fetchScene();
 }
-
 
 
 
@@ -244,19 +242,23 @@ class StripCard extends PureComponent {
         const delay = this.props.delay;
         const $node = this.$node.current
 
-        var mountAnim = anime.timeline();
-            mountAnim
-                .add({
-                    targets: $node, scale: 0, duration: 0
-                }) 
-                .add({
-                    targets: $node, scale: 0.5, duration: 0,
-                    delay: delay*80
-                }) 
-                .add({
-                    targets: $node, scale: 1, duration: 600,
-                    elasticity: 200
-                });  
+        if (delay != -1){ // Note: decided to remove animation when it first mounts.
+
+            var mountAnim = anime.timeline();
+                mountAnim
+                    .add({
+                        targets: $node, scale: 0, duration: 0
+                    }) 
+                    .add({
+                        targets: $node, scale: 0.5, duration: 0,
+                        delay: delay*80
+                    }) 
+                    .add({
+                        targets: $node, scale: 1, duration: 600,
+                        elasticity: 200
+                    });  
+        }
+        
 
         // Sortable magic
         initializeSortable(this.$node.current.querySelector('.strip_flex_container'), 
@@ -744,6 +746,9 @@ class SceneCardList extends Component {
 
     constructor(props){
         super(props);
+
+        this.stripCount = Number(document.querySelector('#ref-content').getAttribute("stripSetCount"));
+
         this.state = {
             data: null
         }
@@ -804,26 +809,30 @@ class SceneCardList extends Component {
 
         return (
             <div>
+
             {this.state.data == null ? ( 
-                    <p>Strip List Loading...</p>
-                ) : (
-                    <ul className="list_strips">
-                        {this.state.data['strips'].map( (strip,index) => (
-                             <StripCard stripObj={strip} 
-                                        delay={this.firstLoad ? index : 1} 
-                                        index={index+1}
-                                        spotlightedAll = {this.props.spotlightedAll}
+                <ul className="loading_strips">
+                    {Array.apply(null, Array(this.stripCount>4 ? 4 : this.stripCount)).map((el)=>{
+                        return (<li><span className="bigtext-1 fas fa-hourglass-half"></span></li>)
+                    })}
+                </ul>
+            ) : (
+                <ul className="list_strips">
+                    {this.state.data['strips'].map( (strip,index) => (
+                         <StripCard stripObj={strip} 
+                                    delay={this.firstLoad ? -1 : 1} 
+                                    index={index+1}
+                                    spotlightedAll = {this.props.spotlightedAll}
 
-                                        handle_fetchScene = {this.handle_fetchScene}
-                                        setState_LightBox = {this.props.setState_LightBox}
+                                    handle_fetchScene = {this.handle_fetchScene}
+                                    setState_LightBox = {this.props.setState_LightBox}
 
-                                        key={"strip"+strip.id}/>
-                        )) } 
-                    </ul>
-                    
-                ) //end: ternary
-            }
-
+                                    key={"strip"+strip.id}/>
+                    )) } 
+                </ul>
+                
+            )} 
+            
             </div>
         ) //end: return
     } //end: render()

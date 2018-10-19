@@ -30,16 +30,14 @@
     
 {% block right_column %}
 
-    <p>
-    </p>
-
+    <!--
     <div>
         <ul class="list inline">
             <li><a href="{% url 'flipbooks-api:list' %}">View api</a></li>
             <li><a href="{% url 'flipbooks-api:detail-scene' pk=object.id%}">View scene api</a></li>
         </ul>
-        
     </div>
+    -->
 
     
     <h3>Editing Scene: {% if object.name %}{{object.name}}{% else %}#{{object.id}}{% endif %}</h3>
@@ -48,7 +46,8 @@
     {% endif %}
 
     <div id="ref-content" 
-         sceneId="{{scene.id}}"/>
+         sceneId="{{scene.id}}"
+         stripSetCount="{{scene.strip_set.all|length}}"/>
 
     <div id="scene_editor_wrapper">
         <!-- ////////// -->

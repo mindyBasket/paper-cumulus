@@ -33,7 +33,7 @@ class SceneEditor extends Component{
 	constructor(props){
 		super(props);
 		
-		this.sceneId = document.querySelector('#ref-content').getAttribute("sceneId"),
+		this.sceneId = document.querySelector('#ref-content').getAttribute("sceneId");
 		this.$node = React.createRef();
 		// TODO: BAD. $lb is also referenced by each StripCards!
 		// this.$lb = document.querySelector("#lightbox_bg"); //lightbox
