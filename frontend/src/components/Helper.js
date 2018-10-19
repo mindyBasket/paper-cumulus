@@ -11,7 +11,8 @@ class Helper {
         // Note: this does NOT RETURN FORMDATA. It just returns an object.
 
         //make sure it's a form
-        if ($form.nodeName != 'FORM'){return false}
+        //if ($form.nodeName != 'FORM'){return false}
+        // the node might be a faux form, in that case, it's not a form
 
         // iterate through each element
         // inputArray

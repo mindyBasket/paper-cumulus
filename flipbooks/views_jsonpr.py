@@ -103,6 +103,11 @@ def get_url_by_name(request, *args, **kwargs):
     print("kwargs: {}".format(kwargs))
     print("args: {}".format(args))
 
-    url_name = kwargs['url_name']
+
+
+    url_name_data = kwargs['url_name']
+    url_name = ":".join(url_name_data.split("--colon--"))
     pk = kwargs['pk']
+    print("-------------------------------------------")
+    print ("Ready to respond? {} : {} ".format(url_name, pk))
     return JsonResponse({'url': reverse_lazy(url_name, kwargs={'pk': pk})  })  

@@ -62,21 +62,27 @@ class SceneCreateModal extends PureComponent{
 	
 	handle_createScene(){
 		const chapter = this.props.chapterObj;
-		const fd = h.makeFormData({chapter: chapter.id })
+		const formData = h.makeFormData(h.serializeForm(this.r_form.current));
+			  formData.append("chapter", chapter.id);
 
-		axh.createScene(chapter.id, fd, axh.getCSRFToken()).then(res=>{
+
+		axh.createScene(chapter.id, formData, axh.getCSRFToken()).then(res=>{
 			console.log("Something came back");
 			console.log(JSON.stringify(res.data));
 
 			// take the user there
 			// since I don't want to hardcode any url...trying to call DJango for this.
 			// const args = h.makeFormData({'budgie': "inay"}); // yeah doesn't work like that
+			if (!res || !res.data){
+				console.error("Nothing valid returned for scene create");
+				return false;
+			}
 
 			axh.django_getSceneUrl("flipbooks:scene-edit", {'pk': res.data.id}).then(res=>{
 				if (res.data && res.data.hasOwnProperty('url') && res.data.url ) {
 					window.location.href = res.data.url;
 				} else {
-					console.error("Something went wrong while creating new Scene");
+					console.error("Cannot find the new Scene. Something went wrong while creating a new scene.");
 				}
 				
 			});
@@ -93,14 +99,14 @@ class SceneCreateModal extends PureComponent{
 				 className={this.props.on ? "active" : ""} 
 				 object="scene">
 
-				<div class="header">
-					<span class="bigtext-2">{chapter.title}</span>
-					|
+				<div className="header">
+					<span className="bigtext-2">{chapter.title}</span>
+					<span className="divider bigtext-3">|</span>
 					<span>New scene</span>
 				</div>
 
 				<div className="scene_form_content" ref={this.r_form}>
-				 	<span>Name: <input id="scene_name" type="text" onChange={this.handle_nameChange}/></span>
+				 	<span>Name: <input id="scene_name" name="title" type="text" onChange={this.handle_nameChange}/></span>
 
 				 	<span className="align_right">
 				 		<button className={this.state.valid ? "" : "disabled"}

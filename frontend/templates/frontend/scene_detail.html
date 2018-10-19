@@ -22,12 +22,6 @@
     </p>
     
     
-    <p>
-        <ul>
-            <li>Make new strip</li>
-        </ul>
-    </p>
- 
 
 
 
@@ -48,8 +42,10 @@
     </div>
 
     
-    <h3>Scene id {{object.id}}</h3>
-    <p>description: {{object.description}}</p>
+    <h3>Editing Scene: {% if object.name %}{{object.name}}{% else %}#{{object.id}}{% endif %}</h3>
+    {% if object.description %}
+        <p>description: {{object.description}}</p>
+    {% endif %}
 
     <div id="ref-content" 
          sceneId="{{scene.id}}"/>

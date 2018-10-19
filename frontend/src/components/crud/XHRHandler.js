@@ -138,8 +138,11 @@ class XhrHandler {
 
 	// Trying this out
 	django_getSceneUrl(name, data){
+		// django seem to really hate it when there is ":" in the url...
 
-		return this.makeXHR('get', null, `/flipbooks/rh/get_url_by_name/${name}/${data.pk}/`, null);
+		let parsedName = name.split(":");
+			parsedName = parsedName.join("--colon--");
+		return this.makeXHR('get', null, `/flipbooks/rh/get_url_by_name/${parsedName}/${data.pk}/`, null);
 	}
 
 

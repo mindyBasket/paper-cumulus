@@ -63,6 +63,18 @@ button.disabled{
 
 
 
+/* text decorations */
+
 .align_right{
 	text-align: right;
+}
+
+.divider{
+	display:inline-block;
+	border-left: 1px solid #00000029;
+	height: 100%;
+	width: 1px;
+	margin: 0px 10px;
+
+	color: transparent;
 }
