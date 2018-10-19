@@ -17,7 +17,6 @@ class Helper {
         if(dimension != '' && di.length >= 2){
             try {
                 h = Math.round( (defaultWidth*di[1])/di[0] );
-                // Note: subtracting 1 for a cheap fix for overshoot issue
             } catch(err){
                 console.error("Height could not be calculated: " + err);
                 isError = true;
@@ -25,9 +24,6 @@ class Helper {
             }
         } else { isError = true; } 
 
-        // if (isError){
-        //     h = 100; 
-        // }
         const DEFAULT_HEIGHT = 100;
         if (isError){ return (heightIfFail === undefined ? DEFAULT_HEIGHT : heightIfFail);}
         else { return h;}

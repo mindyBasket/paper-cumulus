@@ -36,15 +36,24 @@ class SceneCreateModal extends PureComponent{
 
 	componentDidUpdate(prevProps, prevStates){
 
-
 		// check if this card was rendered to be active, 
-        // then control lightbox
-        // if        (prevProps.on == false && this.props.on == true){
-        //     //if (behavior.spotlight) { this.props.setParentSpotlight(true); }
+  		// then control lightbox
+        if        (prevProps.on == false && this.props.on == true){
+        	// clear any previous text
+        	const textFields = this.r_form.current.querySelectorAll('input[type="text"]');
+        	textFields.forEach((t)=>{
+        		t.value = "";
+        	});
+            lb.pub_LightBox_on();
 
-        // } else if (prevProps.on == true && this.props.on == false){
-        //     //this.props.setParentSpotlight(false);
-        // }
+        } else if (prevProps.on == true && this.props.on == false){
+            lb.pub_LightBox_off();
+        }
+
+
+        
+
+
 	}
 
 	handle_nameChange(){
@@ -152,8 +161,8 @@ class ChapterEditor extends Component{
 
 	handle_openSceneCreateModal(){
 		console.log("Create scene under chapter " + this.chapterId);
-		lb.pub_LightBox_addToOnClick( ()=>{this.setState({sceneCreateOn: false})} );
-		lb.pub_LightBox_on();
+		lb.pub_LightBox_addToOnClick( ()=>{this.setState({sceneCreateOn: false}) });
+		
 		this.setState({sceneCreateOn: true});
 		
 
