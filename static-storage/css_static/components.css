@@ -360,6 +360,8 @@
   /*height: 500px;*/
   overflow: hidden;
   position: relative;
+
+  cursor: pointer;
 }
 
 .flipbook_player .frame_stage{

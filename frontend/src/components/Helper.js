@@ -5,6 +5,34 @@ class Helper {
 	getRandomStr(len){
 		return (Math.random() + 1).toString(36).substring(len);
 	}
+
+    calcHeight(defaultWidth, dimension, heightIfFail){
+        // TODO: this function only accepts dimension in String, 
+        //       in a form of "[num]x[num]". Do I need to be more flexible?
+
+        const di = dimension.split("x");
+        let isError = false;
+        let h;
+
+        if(dimension != '' && di.length >= 2){
+            try {
+                h = Math.round( (defaultWidth*di[1])/di[0] );
+                // Note: subtracting 1 for a cheap fix for overshoot issue
+            } catch(err){
+                console.error("Height could not be calculated: " + err);
+                isError = true;
+                //return false;
+            }
+        } else { isError = true; } 
+
+        // if (isError){
+        //     h = 100; 
+        // }
+        const DEFAULT_HEIGHT = 100;
+        if (isError){ return (heightIfFail === undefined ? DEFAULT_HEIGHT : heightIfFail);}
+        else { return h;}
+
+    }
 	
 
 	serializeForm($form){

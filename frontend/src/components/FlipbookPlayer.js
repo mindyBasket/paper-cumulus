@@ -13,7 +13,8 @@ const h = new Helper();
 
 // Global param
 var T_STEP = 400; //ms
-var STANDBY_OPACITY = 0.5
+var STANDBY_OPACITY = 0.5;
+var TEMP_WIDTH = 800;
 
 // Static functions
 // These are used to make components communicate with each other
@@ -40,7 +41,40 @@ function _setState_FlipbookPlayer(newState){
 var flipbook_publicFunctions = {
 
 	// TODO: move the setState functions in here...
+	pub_recalcDimension: function($strip){
+		let width = this.state.windowWidth;
+		let height = this.state.windowHeight;
+
+
+		const frameImages = $strip.querySelectorAll('img');
+		let di = null;
+		for(let i=0;i<frameImages.length;i++){
+			di = frameImages[i].getAttribute("dimension");
+			if (di) {break}
+		}
+
+		if (!di) {
+			// TODO: implement alternatie way to get dimension if none of 
+			//		 the frames contain dimensions
+			return false;
+		}
+
+		// Calc new aspect ratio
+		// Currently, width is fixed, so change the height
+		let newHeight = h.calcHeight(width, di);
+
+	
+		//return newHeight;
+		this.setState({windowHeight: newHeight});
+
+
+
+	}
 }
+
+//alias
+var flpb = flipbook_publicFunctions
+
 
 
 
@@ -170,6 +204,9 @@ class FrameStage extends PureComponent{
 			//		 For now, do not add extra behavior to indicate end of Scene.	 
 		}
 
+		// set frame_window to the right aspect ratio
+		flpb.pub_recalcDimension(this.currStrip);
+
 		//Enter playing state
 		this.frameState.isPlaying = true;
 		this.frameState.isStripHead = false;
@@ -214,6 +251,9 @@ class FrameStage extends PureComponent{
 			//scroll
 			this.currStrip = this.currStrip.previousElementSibling;
 			this.currStrip.scrollIntoView(true);
+
+			// set frame_window to the right aspect ratio
+			flpb.pub_recalcDimension(this.currStrip);
 
 			_setState_Scrubber({
 				numFrames: Number(this.currStrip.getAttribute("count")),
@@ -285,7 +325,10 @@ class FrameStage extends PureComponent{
 									{/* TODO: edge case there are no frames */}
 									if (el_frame && el_frame.frame_image) {
 										return (
-											<img src={el_frame.frame_image} className="frame" key={el_frame.id}/>
+											<img src={el_frame.frame_image}
+												 className="frame" 
+												 dimension={el_frame.dimension} 
+												 key={el_frame.id}/>
 										)
 									} else {
 										return (
@@ -448,31 +491,39 @@ class FlipbookPlayer extends Component{
 	constructor(props){
 		super(props);
 		this.endpoint = "/api/scene/" + this.props.startSceneId + "/";
+
+
+
 		this.state = {
 			introActive: true,
 			onStandby: false,
-			frameLoaded: false
+			frameLoaded: false,
+
+			windowHeight: 500, 
+			windowWidth: TEMP_WIDTH, // using a hardcoded width for now
+
 		}
 
 		//static function
 		_setState_FlipbookPlayer = _setState_FlipbookPlayer.bind(this);
+		flpb.pub_recalcDimension = flpb.pub_recalcDimension.bind(this);
 	}
 
 	render (){
 		return (
 			<div className="flipbook_player">
+				
+
 				{/* -Frames are loaded here */}
 				<div className="frame_window" 
 					 style={{ 
 					 	opacity: (this.state.onStandby ? STANDBY_OPACITY : 1),
-					 	width: '800px',
-					 	height: '500px'
+					 	width: this.state.windowWidth + "px", 
+					 	height: this.state.windowHeight + "px"
 					 }}>
 
 					<FrameFeeder endpoint = {this.endpoint} 
 								render={data => <FrameStage data={data} />} />
-
-					
 
 					<div className="player_instruction" 
 						 style={{opacity: (this.state.introActive ? 1 : 0) }}>

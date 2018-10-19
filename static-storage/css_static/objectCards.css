@@ -271,13 +271,13 @@ ul.list_strips .strip_flex_container .tile.empty-strip{
 /* loading strips. Just gray blocks */
 
 ul.loading_strips li{
-    display:block;
+    display:inline-block;
     height: 177px; width: 100%;
     margin-bottom: 20px;
 
     background-color: #c7c7c7;
-    color: white;
 }
+
 
 
 

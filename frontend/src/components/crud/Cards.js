@@ -813,7 +813,7 @@ class SceneCardList extends Component {
             {this.state.data == null ? ( 
                 <ul className="loading_strips">
                     {Array.apply(null, Array(this.stripCount>4 ? 4 : this.stripCount)).map((el)=>{
-                        return (<li><span className="bigtext-1 fas fa-hourglass-half"></span></li>)
+                        return (<li></li>)
                     })}
                 </ul>
             ) : (
