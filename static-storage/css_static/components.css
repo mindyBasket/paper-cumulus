@@ -394,7 +394,8 @@
 }
 
 .flipbook_player .frame_scrubber .scrubber{
-  margin: 0 50px;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 
@@ -427,13 +428,7 @@
 }
 
 
-
-
-
-
-
-
-.frame_window_decorations .standby_cover{
+.flipbook_player .standby_cover{
   position: absolute;
   top: 0; left: 0;
   width: 100%; height: 100%;

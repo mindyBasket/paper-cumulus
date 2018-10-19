@@ -244,7 +244,7 @@ class FrameStage extends PureComponent{
 			if(this.currStrip.getAttribute("index") == 0){
 				//_setState_FlipbookPlayer({introActive: false});
 				console.warn("Current Strip index is 0, so put cover back");
-				flpb.pub_setIntroCover({onIntro: false});
+				flpb.pub_setIntroCover(false);
 			}
 		}
 		
@@ -278,7 +278,7 @@ class FrameStage extends PureComponent{
 			if (this.currStrip.getAttribute("index") == 0){
 				// turn on intro page
 				//_setState_FlipbookPlayer({introActive: true});
-				flpb.pub_setIntroCover({onIntro: true});
+				flpb.pub_setIntroCover(true);
 				_setState_Scrubber({
 					currStrip: -1
 				});
@@ -416,6 +416,8 @@ class FrameWindow extends Component{
 				 	height: (hOv ? hOv : this.state.windowHeight + "px")
 				 }}>
 
+				 
+
 				{this.state.isStandAlone ? (
 
                     <FrameStage data={this.props.data} 
@@ -442,10 +444,10 @@ class FrameWindow extends Component{
 								<span className="bigtext-2 far fa-caret-square-right"></span>
 							</span>
 						</div>
-
-						<div className={"standby_cover " + (this.state.onStandby ? "active" : "")}></div>
 					</div>
 				}
+
+				{/*<div className={"standby_cover " + (this.state.onStandby ? "active" : "")}></div>*/}
 				
 			</div>
 		)
@@ -485,11 +487,7 @@ class Scrubber extends Component{
 	render(){
 		return(
 			<div className="frame_scrubber">
-				{/* Method 1: clone children prop*/}
-		    	<Timer numFrames={this.state.numFrames} 
-		    		   currFrame={this.state.currFrame}>
-		    		<span className="frame_icon"/>
-		    	</Timer>
+				
 
 		    	<div className="scrubber">
 		    		<div className="cell_fill"
@@ -507,6 +505,12 @@ class Scrubber extends Component{
 
 			    	</div>
 		    	</div>
+
+		    	{/* Method 1: clone children prop*/}
+		    	<Timer numFrames={this.state.numFrames} 
+		    		   currFrame={this.state.currFrame}>
+		    		<span className="frame_icon"/>
+		    	</Timer>
 		    	
 
 		    </div>
@@ -605,12 +609,14 @@ class FlipbookPlayer extends Component{
 		return (
 			<div className="flipbook_player">
 				
+				{/* Scrubber, to hint which strip you are on */}
+				<Scrubber/>
 
 				{/* Through FrameWindow, you only see one frame at a time */}
 				<FrameWindow startSceneId={this.props.startSceneId}/>
 
-				{/* Scrubber, to hint which strip you are on */}
-				<Scrubber/>
+
+				
 				
 				{/* Loading spinner. Still looking for a better place to put this*/}
 				<Spinner style="light" 

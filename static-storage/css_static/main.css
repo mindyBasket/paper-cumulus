@@ -84,6 +84,19 @@ a:hover{
 }
 
 
+
+
+.headband_wrapper{
+    /* I was going to call this 'header' but that is used for other stuff */
+    display: flex;
+    height: 50px;
+}
+
+.headband{
+    align-self: center;
+    padding: 0 20px;
+}
+
 .letterbox{
     display: block;
     width: 100%;
@@ -449,8 +462,7 @@ a:hover{
 
 .frame_scrubber .timer{
     width: 100%;
-    min-height: 60px;
-    padding-top: 10px;
+    padding: 10px;
     text-align: center;
 }
 
