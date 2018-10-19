@@ -6,7 +6,7 @@ import { Sortable } from '@shopify/draggable';
 // import Sortable from 'sortablejs';
 
 import { FrameCard, FramePreviewCard } from "./FrameCard";
-import { playFrameStage } from "./../FlipbookPlayer";
+import { FrameWindow } from "./../FlipbookPlayer";
 import { CardCover } from "./CardCover"
 
 import { lightBox_publicFunctions as lb } from "./../LightBox";
@@ -529,8 +529,6 @@ class StripCard extends PureComponent {
 
         // Play if preview already opened
         if (this.state.previewOn){
-            // playFrameStage();// BAD PRACTICE. Can't bind to more than one FrameStage to a public function.
-
             // Anti-pattern? Using increments to cause it to refresh every setState
             console.log("Curr playPreviewNow count: " + this.state.playPreviewNow);
             this.setState({playPreviewNow: this.state.playPreviewNow ? this.state.playPreviewNow+1 : 1}); 

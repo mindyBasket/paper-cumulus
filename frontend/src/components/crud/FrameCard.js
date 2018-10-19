@@ -135,8 +135,6 @@ class FramePreviewCard extends Component{
         let data = {strips: [this.props.stripObj]}; 
             //data = h.reorderFrames(data);
 
-
-
         const strip = this.props.stripObj;
         
         // Calc width and height of frame window based on first frame
@@ -182,20 +180,18 @@ class FramePreviewCard extends Component{
                         </p>
                     </div>
                 ) : (
-                    <div className="frame_window"
-                         style={{
-                                    width: frame_window_di[0],
-                                    height: frame_window_di[1]
-                                 }}>
 
-                        {this.props.on && (
-                            <FrameStage data={data} 
-                                        standAlone={true} 
-                                        on={this.props.on}
-                                        playPreviewNow={this.props.playPreviewNow} 
-                            />
-                        )}
-                    </div>
+
+                    
+
+                    <FrameWindow data={data}
+                                 widthOverride ={frame_window_di[0]} heightOverride ={frame_window_di[1]}
+                                 isStandAlone={true}
+                                 on={this.props.on}
+                                 playPreviewNow={this.props.playPreviewNow}
+                                 />
+
+
                 )}
                 
                 <div className="float_btn fas fa-times" onClick={this.props.off}></div>

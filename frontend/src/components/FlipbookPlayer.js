@@ -13,7 +13,7 @@ const h = new Helper();
 
 // Global param
 var T_STEP = 400; //ms
-var STANDBY_OPACITY = 0.5;
+var STANDBY_OPACITY = 0.7;
 var TEMP_WIDTH = 800;
 
 // Static functions
@@ -41,9 +41,22 @@ function _setState_FlipbookPlayer(newState){
 var flipbook_publicFunctions = {
 
 	// TODO: move the setState functions in here...
+
+	// Bind to FrameWindow
+	pub_setStandy: function(on){
+		this.setState({onStandby: on});
+	},
+
+	pub_setIntroCover: function(on){
+		this.setState({onIntro: on})
+	},
+
+
+	// Bind to FrameWindow
 	pub_recalcDimension: function($strip){
 		let width = this.state.windowWidth;
 		let height = this.state.windowHeight;
+
 
 
 		const frameImages = $strip.querySelectorAll('img');
@@ -116,7 +129,7 @@ class FrameStage extends PureComponent{
 		}
 
 		// props reference
-		// this.props.standAlone; // this component can be used by itself without scrubber and timer
+		// this.props.isStandAlone; // this component can be used by itself without scrubber and timer
 
 		this.gotoNextAndPlay=this.gotoNextAndPlay.bind(this);
 		this.rewind=this.rewind.bind(this);
@@ -125,8 +138,6 @@ class FrameStage extends PureComponent{
 		this.playFrame=this.playFrame.bind(this);
 		this.killSetTimeOut=this.killSetTimeOut.bind(this);
 
-		// public function
-		playFrameStage = playFrameStage.bind(this);
 
 	}
 
@@ -135,7 +146,7 @@ class FrameStage extends PureComponent{
 		this.currStrip = this.$node.current.querySelector('.strip.start');
 		//this.currStrip.scrollIntoView(true); // This may be unnecessary scrolling
 
-		 if (this.props.standAlone){
+		 if (this.props.isStandAlone){
 		 	// This component can be used by itself. Currently used in
 		 	// SceneEditor's preview
 		 	this.$node.current.click(); // autoplay
@@ -222,15 +233,18 @@ class FrameStage extends PureComponent{
 
 
 		//update scrubber
-		if (!this.props.standAlone){
+		if (!this.props.isStandAlone){
 			_setState_Scrubber({
 				numFrames: Number(frameCount),
 				currStrip: Number(this.currStrip.getAttribute("index"))
 			});
-			_setState_FlipbookPlayer({onStandby: false});
+			
+			flpb.pub_setStandy(false);
 
 			if(this.currStrip.getAttribute("index") == 0){
-				_setState_FlipbookPlayer({introActive: false});
+				//_setState_FlipbookPlayer({introActive: false});
+				console.warn("Current Strip index is 0, so put cover back");
+				flpb.pub_setIntroCover({onIntro: false});
 			}
 		}
 		
@@ -242,7 +256,7 @@ class FrameStage extends PureComponent{
 
 		// Clear timer
 		_setState_Scrubber({currFrame: -1});
-		_setState_FlipbookPlayer({onStandby: true});
+		flpb.pub_setStandy(true);
 		
 	}
 
@@ -263,7 +277,8 @@ class FrameStage extends PureComponent{
 			// check if you reached the beginning
 			if (this.currStrip.getAttribute("index") == 0){
 				// turn on intro page
-				_setState_FlipbookPlayer({introActive: true});
+				//_setState_FlipbookPlayer({introActive: true});
+				flpb.pub_setIntroCover({onIntro: true});
 				_setState_Scrubber({
 					currStrip: -1
 				});
@@ -305,6 +320,13 @@ class FrameStage extends PureComponent{
 	}
 
 	render(){
+
+		// If this component is StandAlone, mostly likely will be multiple of these in one page.
+		// To reduce number of DOM elements, StandALone FrameStage that is not "on", will not render.
+		if (this.props.isStandAlone && !this.props.on){
+			return false;
+		}
+
 		return ((data) => {
 			// TODO: why did you do this? haha
 			data = new Array(data); //unify format
@@ -352,9 +374,84 @@ class FrameStage extends PureComponent{
 
 
 
+// ███████╗██████╗  █████╗ ███╗   ███╗███████╗██╗    ██╗██╗███╗   ██╗██████╗  ██████╗ ██╗    ██╗
+// ██╔════╝██╔══██╗██╔══██╗████╗ ████║██╔════╝██║    ██║██║████╗  ██║██╔══██╗██╔═══██╗██║    ██║
+// █████╗  ██████╔╝███████║██╔████╔██║█████╗  ██║ █╗ ██║██║██╔██╗ ██║██║  ██║██║   ██║██║ █╗ ██║
+// ██╔══╝  ██╔══██╗██╔══██║██║╚██╔╝██║██╔══╝  ██║███╗██║██║██║╚██╗██║██║  ██║██║   ██║██║███╗██║
+// ██║     ██║  ██║██║  ██║██║ ╚═╝ ██║███████╗╚███╔███╔╝██║██║ ╚████║██████╔╝╚██████╔╝╚███╔███╔╝
+// ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝ ╚══╝╚══╝ ╚═╝╚═╝  ╚═══╝╚═════╝  ╚═════╝  ╚══╝╚══╝ 
+                                                                                             
+class FrameWindow extends Component{
+
+	constructor(props){
+		super(props);
+		this.endpoint = "/api/scene/" + this.props.startSceneId + "/";
+
+		// prop ref
+		// this.props.widthOverride // should be passed down if standAlone
+		// this.props.heightOverride 
+
+		this.state={
+			isStandAlone: false,
+			onStandby: false,
+			onIntro: true,
+
+			windowHeight: 500, 
+			windowWidth: TEMP_WIDTH, // using a hardcoded width for now
+		}
+
+		flpb.pub_recalcDimension = flpb.pub_recalcDimension.bind(this);
+		flpb.pub_setStandy = flpb.pub_setStandy.bind(this);
+		flpb.pub_setIntroCover = flpb.pub_setIntroCover.bind(this);
+	}
+
+	render(){
+		const wOv = this.props.widthOverride;
+		const hOv = this.props.heightOverride;
+		return (
+			<div className="frame_window" 
+				 style={{ 
+				 	opacity: (this.state.onStandby ? STANDBY_OPACITY : 1),
+				 	width: (wOv ? wOv : this.state.windowWidth + "px"), 
+				 	height: (hOv ? hOv : this.state.windowHeight + "px")
+				 }}>
+
+				{this.state.isStandAlone ? (
+
+                    <FrameStage data={this.props.data} 
+                                isStandAlone={true} 
+                                on={this.props.on}
+                                playPreviewNow={this.props.playPreviewNow} 
+                    />
+
+				) : (
+
+					<FrameFeeder endpoint = {this.endpoint} 
+								 render={data => <FrameStage data={data} />} />
+				)}
+				
 
 
+				{!this.state.isStandAlone && 
+					<div className="frame_window_decorations">
+						<div className="player_instruction" 
+							 style={{opacity: (this.state.onIntro ? 1 : 0) }}>
+							<span>Use keyboard to navigate</span>
+							<span>
+								<span className="bigtext-2 far fa-caret-square-left"></span>
+								<span className="bigtext-2 far fa-caret-square-right"></span>
+							</span>
+						</div>
 
+						<div className={"standby_cover " + (this.state.onStandby ? "active" : "")}></div>
+					</div>
+				}
+				
+			</div>
+		)
+	}
+
+}
 
 
 
@@ -455,7 +552,6 @@ class Timer extends Component{
 
   	}
 
-
 	render(){
 		return(
 			<div className="timer">
@@ -463,7 +559,6 @@ class Timer extends Component{
 			</div>
 		)
 	}
-
 }
 
 
@@ -474,9 +569,13 @@ class Timer extends Component{
 
 
 
-
-
-
+// ███╗   ███╗ █████╗ ██╗███╗   ██╗
+// ████╗ ████║██╔══██╗██║████╗  ██║
+// ██╔████╔██║███████║██║██╔██╗ ██║
+// ██║╚██╔╝██║██╔══██║██║██║╚██╗██║
+// ██║ ╚═╝ ██║██║  ██║██║██║ ╚████║
+// ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝
+                                
 // ██████╗ ██╗      █████╗ ██╗   ██╗███████╗██████╗ 
 // ██╔══██╗██║     ██╔══██╗╚██╗ ██╔╝██╔════╝██╔══██╗
 // ██████╔╝██║     ███████║ ╚████╔╝ █████╗  ██████╔╝
@@ -490,23 +589,16 @@ class FlipbookPlayer extends Component{
 
 	constructor(props){
 		super(props);
-		this.endpoint = "/api/scene/" + this.props.startSceneId + "/";
-
-
+		
 
 		this.state = {
-			introActive: true,
-			onStandby: false,
+			// introActive: true, -> changed to 'onIntro' and moved into FrameWindow
 			frameLoaded: false,
-
-			windowHeight: 500, 
-			windowWidth: TEMP_WIDTH, // using a hardcoded width for now
-
 		}
 
 		//static function
 		_setState_FlipbookPlayer = _setState_FlipbookPlayer.bind(this);
-		flpb.pub_recalcDimension = flpb.pub_recalcDimension.bind(this);
+		
 	}
 
 	render (){
@@ -514,28 +606,8 @@ class FlipbookPlayer extends Component{
 			<div className="flipbook_player">
 				
 
-				{/* -Frames are loaded here */}
-				<div className="frame_window" 
-					 style={{ 
-					 	opacity: (this.state.onStandby ? STANDBY_OPACITY : 1),
-					 	width: this.state.windowWidth + "px", 
-					 	height: this.state.windowHeight + "px"
-					 }}>
-
-					<FrameFeeder endpoint = {this.endpoint} 
-								render={data => <FrameStage data={data} />} />
-
-					<div className="player_instruction" 
-						 style={{opacity: (this.state.introActive ? 1 : 0) }}>
-						<span>Use keyboard to navigate</span>
-						<span>
-							<span className="bigtext-2 far fa-caret-square-left"></span>
-							<span className="bigtext-2 far fa-caret-square-right"></span>
-						</span>
-					</div>
-
-				</div>
-
+				{/* Through FrameWindow, you only see one frame at a time */}
+				<FrameWindow startSceneId={this.props.startSceneId}/>
 
 				{/* Scrubber, to hint which strip you are on */}
 				<Scrubber/>
@@ -569,5 +641,5 @@ wrapper ? ReactDOM.render(<FlipbookPlayer startSceneId={sceneId}/>, wrapper) : n
 // Can I also export...?
 export {
     FrameStage,
-    playFrameStage
+    FrameWindow,
 };

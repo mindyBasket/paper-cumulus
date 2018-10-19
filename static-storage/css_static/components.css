@@ -80,7 +80,7 @@
 }
 #light_box_modal #field_frame_image img{
   margin: 0 auto;
-  height: 250px;
+  height: 300px;
 }
 
 
@@ -393,9 +393,21 @@
   width: 100%;
 }
 
+.flipbook_player .frame_scrubber .scrubber{
+  margin: 0 50px;
+}
+
+
+/* Things in frame_window decoration float over the frame_window */
+.frame_window_decorations{ 
+  position: absolute; top: 0; left: 0; 
+  width: 100%; height: 100%;
+
+}
+
 .flipbook_player .player_instruction{
   /* this div overlaps over .frame_window*/
-  position: absolute; top: 0; left: 0;
+  
   display:flex;
   flex-direction: column;
   justify-content: center;
@@ -414,8 +426,18 @@
   text-align: center;
 }
 
-.flipbook_player .frame_scrubber .scrubber{
-  margin: 0 50px;
+
+
+
+
+
+
+
+.frame_window_decorations .standby_cover{
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-image: ('img/slashes_h.png');
 }
 
 
