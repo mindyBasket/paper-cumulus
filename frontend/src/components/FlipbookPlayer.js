@@ -57,8 +57,6 @@ var flipbook_publicFunctions = {
 		let width = this.state.windowWidth;
 		let height = this.state.windowHeight;
 
-
-
 		const frameImages = $strip.querySelectorAll('img');
 		let di = null;
 		for(let i=0;i<frameImages.length;i++){
@@ -142,13 +140,20 @@ class FrameStage extends PureComponent{
 	}
 
 	componentDidMount(){
+
+		if (!this.$node || !this.$node.current){
+			// why would this be empty..?
+			return false;
+		}	
+
+		// NOTE: update this.$node to this.currStrip. It is not always aware. 
+
 		// scroll to first element just in case
 		this.currStrip = this.$node.current.querySelector('.strip.start');
 		//this.currStrip.scrollIntoView(true); // This may be unnecessary scrolling
 
 		 if (this.props.isStandAlone){
-		 	// This component can be used by itself. Currently used in
-		 	// SceneEditor's preview
+		 	// This component can be used by itself. Currently used in SceneEditor's preview
 		 	this.$node.current.click(); // autoplay
 
 		 } else {
@@ -190,6 +195,7 @@ class FrameStage extends PureComponent{
 
 		// Note: Used for SceneEditor's Strip animation previews
 		console.log(prevProps.playPreviewNow + " =? " + this.props.playPreviewNow);
+		console.log("Ref set?: " + this.$node +", " + this.$node.current);
 		if (prevProps.playPreviewNow != this.props.playPreviewNow){
 			const useScrollTop = true;
 			this.gotoNextAndPlay(useScrollTop);
@@ -201,6 +207,8 @@ class FrameStage extends PureComponent{
 		// Kill any preexisting animation
 		this.killSetTimeOut();
 
+		console.log("[GOTO NEXT AND PLAY] Is currStrip null?: " + this.currStrip);
+		console.log(this.$node + ", " + this.$node.current);
 		if (!this.frameState.isStripHead && this.currStrip.nextElementSibling != null ){
 			// Go to next Strip
 			this.currStrip = this.currStrip.nextElementSibling;
@@ -213,10 +221,12 @@ class FrameStage extends PureComponent{
 
 			// Note: it became a positive feature to replay the last existing strip.
 			//		 For now, do not add extra behavior to indicate end of Scene.	 
+
+			// set frame_window to the right aspect ratio matching new strip
+			flpb.pub_recalcDimension(this.currStrip);
 		}
 
-		// set frame_window to the right aspect ratio
-		flpb.pub_recalcDimension(this.currStrip);
+		
 
 		//Enter playing state
 		this.frameState.isPlaying = true;
@@ -324,6 +334,9 @@ class FrameStage extends PureComponent{
 		// If this component is StandAlone, mostly likely will be multiple of these in one page.
 		// To reduce number of DOM elements, StandALone FrameStage that is not "on", will not render.
 		if (this.props.isStandAlone && !this.props.on){
+			// Oh...this actually breaks 
+			// This causes this.$node to be null, even if the component became mounted.
+
 			return false;
 		}
 
@@ -388,11 +401,11 @@ class FrameWindow extends Component{
 		this.endpoint = "/api/scene/" + this.props.startSceneId + "/";
 
 		// prop ref
+		// this.props.isStandAlone 
 		// this.props.widthOverride // should be passed down if standAlone
 		// this.props.heightOverride 
 
 		this.state={
-			isStandAlone: false,
 			onStandby: false,
 			onIntro: true,
 
@@ -418,7 +431,7 @@ class FrameWindow extends Component{
 
 				 
 
-				{this.state.isStandAlone ? (
+				{this.props.isStandAlone ? (
 
                     <FrameStage data={this.props.data} 
                                 isStandAlone={true} 
@@ -434,7 +447,7 @@ class FrameWindow extends Component{
 				
 
 
-				{!this.state.isStandAlone && 
+				{!this.props.isStandAlone && 
 					<div className="frame_window_decorations">
 						<div className="player_instruction" 
 							 style={{opacity: (this.state.onIntro ? 1 : 0) }}>

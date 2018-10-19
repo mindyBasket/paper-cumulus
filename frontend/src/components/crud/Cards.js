@@ -14,9 +14,9 @@ import Spinner from "./../Spinner";
 import key from "weak-key";
 
 // Custom helpers
-import Helper from "./../Helper"
+import Helper from "./../Helper";
 const h = new Helper();
-import XhrHandler from "./XHRHandler"
+import XhrHandler from "./XHRHandler";
 const axh = new XhrHandler(); //axios helper
 
 
@@ -810,8 +810,8 @@ class SceneCardList extends Component {
 
             {this.state.data == null ? ( 
                 <ul className="loading_strips">
-                    {Array.apply(null, Array(this.stripCount>4 ? 4 : this.stripCount)).map((el)=>{
-                        return (<li></li>)
+                    {Array.apply(null, Array(this.stripCount>4 ? 4 : this.stripCount)).map((el,index)=>{
+                        return (<li key={index}></li>)
                     })}
                 </ul>
             ) : (

@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import { Sortable } from '@shopify/draggable';
 import Spinner from "./../Spinner";
 
+import { FrameWindow } from "./../FlipbookPlayer";
 import { pub_handle_fetchScene } from "./Cards";
 import { pub_FrameModal_openModal } from "./FrameModal";
 import FrameFeeder from "./../FrameFeeder";
@@ -181,16 +182,12 @@ class FramePreviewCard extends Component{
                     </div>
                 ) : (
 
-
-                    
-
                     <FrameWindow data={data}
                                  widthOverride ={frame_window_di[0]} heightOverride ={frame_window_di[1]}
                                  isStandAlone={true}
                                  on={this.props.on}
                                  playPreviewNow={this.props.playPreviewNow}
                                  />
-
 
                 )}
                 
