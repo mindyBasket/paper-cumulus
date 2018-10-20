@@ -191,6 +191,7 @@ class FramePreviewCard extends Component{
 
                 )}
                 
+                {/* CLOSE button */}
                 <div className="float_btn fas fa-times" onClick={this.props.off}></div>
             </div>
         )

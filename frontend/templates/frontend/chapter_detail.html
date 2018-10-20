@@ -5,10 +5,10 @@
 {% block title %} {{block.super}} | Scenes{% endblock title %}
 
 {% block left_column %}
-    <h3>Scenes Under Chapter {{object.number}}</h3>
+    <h3>Chapter {{object_chapter.number}}</h3>
             
     <p>
-        from Book : {{object.book.title}}
+        from Book : {{object_chapter.book.title}}
     </p>
 
     <div id="ref-content" 
@@ -23,8 +23,7 @@
 
 {% block right_column %}
 
-    
-    <h3>Scene list [REACT]</h3>
+    <h3>Scenes</h3>
     <ul class="list_scenes">
         {% for scene in object_scene_list %}
 

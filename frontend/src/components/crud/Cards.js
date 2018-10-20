@@ -678,7 +678,10 @@ class StripCard extends PureComponent {
                 <div className="strip_content">
 
                     {/* panel for frame animation preview */}
-                    <FramePreviewCard on={this.state.previewOn} off={()=>{this.endModalState("previewOn", true)}}
+                    <FramePreviewCard on={this.state.previewOn} 
+                                      off={()=>{
+                                          this.endModalState("previewOn", true);
+                                      }}
                                       stripObj={strip}
                                       playPreviewNow={this.state.playPreviewNow}/>
 

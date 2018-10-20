@@ -18,7 +18,7 @@ a {
 }
 
 a:hover{
-    color: #2f2abf;
+    color: #e65f89;
     text-decoration: none;
 }
 
@@ -87,9 +87,10 @@ a:hover{
 
 
 .headband_wrapper{
-    /* I was going to call this 'header' but that is used for other stuff */
+    /* I was going to call this 'header' but that name is used in other places */
     display: flex;
-    height: 50px;
+    justify-content: space-between;
+    height: 60px;
 }
 
 .headband{

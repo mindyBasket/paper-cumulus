@@ -12,7 +12,10 @@
         <span>|</span>
         <a href="{% url 'flipbooks:chapter-detail' book_pk=scene.chapter.book.id chapter_number=scene.chapter.number%}">Back to Chapter</a>
 
-        <span>|</span>
+        
+    </div>
+
+    <div class="headband">
         <a href="{% url 'flipbooks:scene-edit' pk=scene.id%}">Edit this scene</a>
     </div>
     

@@ -52,6 +52,7 @@ var flipbook_publicFunctions = {
 	},
 
 
+
 	// Bind to FrameWindow
 	pub_recalcDimension: function($strip){
 		let width = this.state.windowWidth;
@@ -135,8 +136,6 @@ class FrameStage extends PureComponent{
 
 		this.playFrame=this.playFrame.bind(this);
 		this.killSetTimeOut=this.killSetTimeOut.bind(this);
-
-
 	}
 
 	componentDidMount(){
@@ -190,12 +189,15 @@ class FrameStage extends PureComponent{
 	
 	}
 
+	componentWillUnmount(){
+		// this component have a lot of setTimeOuts flying around. Kill them all.
+		this.killSetTimeOut();
+
+	}
 	componentDidUpdate(prevProps, prevState, snapshot){
 		console.log("[UPDATE] FrameStage");
 
 		// Note: Used for SceneEditor's Strip animation previews
-		console.log(prevProps.playPreviewNow + " =? " + this.props.playPreviewNow);
-		console.log("Ref set?: " + this.$node +", " + this.$node.current);
 		if (prevProps.playPreviewNow != this.props.playPreviewNow){
 			const useScrollTop = true;
 			this.gotoNextAndPlay(useScrollTop);
@@ -206,9 +208,6 @@ class FrameStage extends PureComponent{
 	gotoNextAndPlay(useScrollTop){
 		// Kill any preexisting animation
 		this.killSetTimeOut();
-
-		console.log("[GOTO NEXT AND PLAY] Is currStrip null?: " + this.currStrip);
-		console.log(this.$node + ", " + this.$node.current);
 		if (!this.frameState.isStripHead && this.currStrip.nextElementSibling != null ){
 			// Go to next Strip
 			this.currStrip = this.currStrip.nextElementSibling;
@@ -222,11 +221,11 @@ class FrameStage extends PureComponent{
 			// Note: it became a positive feature to replay the last existing strip.
 			//		 For now, do not add extra behavior to indicate end of Scene.	 
 
-			// set frame_window to the right aspect ratio matching new strip
-			flpb.pub_recalcDimension(this.currStrip);
+			
 		}
 
-		
+		// set frame_window to the right aspect ratio matching new strip
+		flpb.pub_recalcDimension(this.currStrip);
 
 		//Enter playing state
 		this.frameState.isPlaying = true;
@@ -331,14 +330,10 @@ class FrameStage extends PureComponent{
 
 	render(){
 
-		// If this component is StandAlone, mostly likely will be multiple of these in one page.
-		// To reduce number of DOM elements, StandALone FrameStage that is not "on", will not render.
-		if (this.props.isStandAlone && !this.props.on){
-			// Oh...this actually breaks 
-			// This causes this.$node to be null, even if the component became mounted.
-
-			return false;
-		}
+		// Note: do not do it like this. It causes this.$node to be sometimes null. 
+		//		 which consequently messed up this.currStrip. Instead, make the whole 
+		//		 component not render from its parents.
+		//if (this.props.isStandAlone && !this.props.on){ return false;}
 
 		return ((data) => {
 			// TODO: why did you do this? haha
@@ -431,7 +426,9 @@ class FrameWindow extends Component{
 
 				 
 
-				{this.props.isStandAlone ? (
+				{/* If stand alone, render Frames only if it is on. 
+					Otherwise, it's too many unseen elements on the page. */}
+				{ (this.props.isStandAlone && this.props.on) && (
 
                     <FrameStage data={this.props.data} 
                                 isStandAlone={true} 
@@ -439,13 +436,13 @@ class FrameWindow extends Component{
                                 playPreviewNow={this.props.playPreviewNow} 
                     />
 
-				) : (
+				)} 
 
+				{ !this.props.isStandAlone && (
 					<FrameFeeder endpoint = {this.endpoint} 
 								 render={data => <FrameStage data={data} />} />
 				)}
 				
-
 
 				{!this.props.isStandAlone && 
 					<div className="frame_window_decorations">
@@ -661,4 +658,5 @@ wrapper ? ReactDOM.render(<FlipbookPlayer startSceneId={sceneId}/>, wrapper) : n
 export {
     FrameStage,
     FrameWindow,
+    flipbook_publicFunctions
 };
