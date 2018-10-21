@@ -1,4 +1,7 @@
 from rest_framework import serializers
+import easy_thumbnails.files as easy_th_files
+from django.conf import settings
+
 
 from ..models import (
     Scene,
@@ -13,10 +16,84 @@ from ..models import (
 # .................................................. 
 # .................................................. 
 
+
+# http://patorjk.com/software/taag/#p=display&f=Cyberlarge&t=Frame
+# .................................................. 
+# _______  ______ _______ _______ _______
+# |______ |_____/ |_____| |  |  | |______
+# |       |    \_ |     | |  |  | |______
+# ..................................................                                   
+# Custom field for retrieving thumbnail paths 
+
+
+
+class ThumbnailField(serializers.Field):
+
+    # By default field values are treated as mapping to an attribute on the object. 
+    # If you need to customize how the field value is accessed and set you need to override 
+    # using get_attribute()
+    def get_attribute(self, instance):
+
+        # We pass the object instance onto `to_representation`,
+        # not just the field attribute.
+        
+
+        return instance
+
+    #  convert the initial datatype into a primitive, serializable datatype.
+    def to_representation(self, value):
+        """
+        Serialize the value's class name.
+        """
+        print(" ============ ThumbnailField repr =============")
+        # print("Instance?: {}".format(instance))
+        thumbnailer = easy_th_files.get_thumbnailer(value.frame_image)
+        aliases = settings.THUMBNAIL_ALIASES['']
+        thumb_dict = {}
+
+        for alias, val in aliases.items():
+            # Problem, the 'size' tuple is converted into an array when passed through DRF.
+            if 'size' in val:
+                val['size'] = tuple(val['size']) # it's pointing, so no need to replace/append
+            
+            thumb = thumbnailer.get_existing_thumbnail(val)
+            if thumb != None:
+                thumb_dict[alias] = thumb.url
+
+        if not thumb_dict:
+            print("No thumb found...trying old alias options")
+            # if no thumb is found, it may be using old options for each alias
+            aliases_old = {
+                'cell': {'size': (100, 100), 'autocrop': True},
+                'thumb': {'size': (300, 300), 'autocrop': True}
+            }       
+            for alias, val in aliases_old.items():
+                thumb = thumbnailer.get_existing_thumbnail(val)
+                if thumb != None:
+                    thumb_dict[alias] = thumb.url
+
+
+        # print(thumbnailer.get_existing_thumbnail())
+        print("===============================================")
+        return thumb_dict
+
+    # restore a primitive datatype into its internal python representation. 
+    # This method should raise a serializers.ValidationError if the data is invalid.
+    def to_internal_value(self, data):
+        # data = data.strip('rgb(').rstrip(')')
+        # red, green, blue = [int(col) for col in data.split(',')]
+        
+        # if not re.match(r'^rgb\([0-9]+,[0-9]+,[0-9]+\)$', data):
+        # raise ValidationError('Incorrect format. Expected `rgb(#,#,#)`.')
+
+        # return Color(red, green, blue)
+        return "to_internal_value not implemented."
+
+
 class FrameModelSerializer(serializers.ModelSerializer):
     
     # strip = serializers.PrimaryKeyRelatedField(source='strip', read_only=True, required=True)
-    # frame_image_thumbs = serializers
+    frame_image_thumbs = ThumbnailField()
 
     class Meta:
         model = Frame
@@ -27,8 +104,23 @@ class FrameModelSerializer(serializers.ModelSerializer):
             'strip',
             'dimension',
             'frame_image',
+            "frame_image_thumbs",
             ]
         #read_only_fields = ('frame_image',)
+
+
+
+
+
+
+
+
+# ..................................................  
+# _______ _______  ______ _____  _____ 
+# |______    |    |_____/   |   |_____]
+# ______|    |    |    \_ __|__ |      
+# ..................................................                                        
+
 
 class StripModelSerializer(serializers.ModelSerializer):
 

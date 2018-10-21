@@ -383,6 +383,8 @@ class FrameCard extends Component{
 
         } else {
 
+            // Physical Content is what determines the physical width and height of the thumb.
+            // If you want the container or the thumb to be of certain dimension, control it here!
             let frame_physicalContent = false;
             if (frame && frame.hasOwnProperty("frame_image") && frame.frame_image != null && frame.frame_image != ""){
                 frame_physicalContent = <div className="frame_image stretch">
@@ -404,6 +406,7 @@ class FrameCard extends Component{
                      onClick={()=>{pub_FrameModal_openModal(frame);}}
                      ref={this.$node}>
       
+                    {/* this is what determines the dimension */}
                     {frame_physicalContent}
                     
                     <div className="frame_image" 
