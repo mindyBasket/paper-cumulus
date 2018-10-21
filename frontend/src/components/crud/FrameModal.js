@@ -208,8 +208,9 @@ class FrameModal extends Component{
             // turn on Lightbox, and bind closeModal when clicking
             lb.pub_LightBox_on();
             lb.pub_LightBox_addToOnClick(()=>{pub_FrameModal_openModal(false)}); 
-        } else if (prevState.on == true && this.state.off == false){
-            lb.pub_LightBox_off();
+        } else if (prevState.on == true && this.state.on == false){
+            //lb.pub_LightBox_off();
+            this.endModalState("All"); // close anything else 
         }  
     }
 
@@ -304,7 +305,6 @@ class FrameModal extends Component{
             //       but...this function calls setSpotlight()...infinite loop.
 
             if (stateName === "All") { // --- Set EVERYTHING to false
-               
                 const keys = this.modalStateKeys;
                 for (var i=0; i<keys.length; i++) {
                     if (this.state.hasOwnProperty(keys[i])) {
