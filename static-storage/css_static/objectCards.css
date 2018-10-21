@@ -291,7 +291,7 @@ ul.loading_strips li{
  ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝  ╚═════╝ ╚═════╝   ╚═══╝  ╚══════╝╚═╝  ╚═╝╚══════╝*/
                                                                                   
                                                                                   
-.strip_card .cover{
+.cover{
     pointer-events: none;
     position: absolute;
     top: 0; left:0;
@@ -314,6 +314,8 @@ ul.loading_strips li{
     background-color: rgba(255, 255, 255, 0.80);
     color: #5a5a5a;
 }
+
+
 
 
 /* Visibility and Tangibility */

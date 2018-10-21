@@ -16,7 +16,8 @@ from ..models import (
 class FrameModelSerializer(serializers.ModelSerializer):
     
     # strip = serializers.PrimaryKeyRelatedField(source='strip', read_only=True, required=True)
-    
+    # frame_image_thumbs = serializers
+
     class Meta:
         model = Frame
         fields = [
@@ -25,7 +26,7 @@ class FrameModelSerializer(serializers.ModelSerializer):
             'note',
             'strip',
             'dimension',
-            'frame_image'
+            'frame_image',
             ]
         #read_only_fields = ('frame_image',)
 

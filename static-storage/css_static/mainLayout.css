@@ -198,6 +198,8 @@ a:hover{
     /* used to stretch the container size to fit the thumbnail */
     position: relative;
     opacity: 0;
+
+    min-width:110px;
 }
 
 /* sortable style*/

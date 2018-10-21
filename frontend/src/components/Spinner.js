@@ -89,8 +89,10 @@ class Spinner extends Component{
  	}
 
 	render(){
+		const float = this.props.float;
+
 		return (
-			<div className={"spinner_playground " + (this.props.float ? "float" : "")} 
+			<div className={"spinner_playground " + (float == false  ? "" : "float")} 
 				 ref={this.$node}
 				 style={{backgroundColor: this.props.bgColor}}>
 	        	<div className={'spinner ' + this.props.style} />

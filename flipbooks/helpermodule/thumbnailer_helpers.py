@@ -1,7 +1,7 @@
 import os, re
 from pathlib import Path #new in Python 3.4+
 from django.conf import settings
- 
+
 ''' Takes path to thumbnail image and its dimension to 
     figure out what easy-thumbnail alias it is under.
     Returns dict in format of {<alias>: <path>} so that you can
@@ -15,12 +15,20 @@ def get_alias_dict(thumbnail_path, thumbnail_dimension):
     last_slash = thumbnail_path.rfind("/")
     thumbnail_name = thumbnail_path[last_slash:]
 
-    match_result = re.search(r'(\d{2,4}[x]\d{2,4})', thumbnail_name, flags=0)
+    match_result = re.search(r'([\.]\d{2,4}[x]\d{1,4})', thumbnail_name, flags=0)
+    # second digit matches 1-4, because height may be set to "0" to indicate "auto".
     
     # see if valid. 
-    # For now, I will assume all thumbnail alias dimension is [num]x[same num]
-    di = match_result.group().split("x")
-    if len(di) == 2 and di[0] == di[1]:
+    # Current assumption: thumbnail alias dimension is [num]x[0], 0 means "auto"
+    try:
+        # remove period
+        match_result = match_result.replace(".", "")
+        di = match_result.group().split("x")
+    except AttributeError: 
+        print("Thumbnail's name does not match with expected pattern of [num{2,4}]x[num{1,4}]")
+        return {"error": thumbnail_path}
+
+    if len(di) == 2:
         #find alias of this size
         alias_match = ''
         alias_dict = settings.THUMBNAIL_ALIASES['']
@@ -43,6 +51,8 @@ def delete_frame_images(frame):
     if frame and frame.frame_image: 
         image_path = frame.frame_image.path
 
+        # New in python 3.4+: 'Path'
+        # A subclass of PurePath, which represents concrete paths of the SYSTEM's path flavour
         im_path = Path(image_path)
         print(im_path.parts)
 
@@ -59,23 +69,27 @@ def delete_frame_images(frame):
         # print("Removing folder: {} ==? {}".format(image_name, folder_name))
         
         if str(folder_name) == str(image_name):
+            print("Image name and folder name matches. Getting folder path...")
             #remove contents of folder 
-            folder_path = "/".join(str(elem) for elem in image_path.split("/")[:-1])
+            folder_path = im_path.parent
+            print("Folder_path extracted: {}".format(folder_path))
             if os.path.exists(folder_path):
                 # list all items 
                 # from os.path import isfile, join
                 # onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
+                counter = 0
                 for f in os.listdir(folder_path):
                     f_path = os.path.join(folder_path, f)
                     if os.path.isfile(f_path):
+                        counter = counter+1
                         os.remove(f_path)
                 
                 # should be empty now
-                print("Images in {} removed.".format(folder_name))
+                print("{} Images in {} removed.".format(counter, folder_name))
                 os.rmdir(folder_path) 
                 ## TODO: does this a little naively. Need to add an exception
             else:
-                print("[ERROR] Cannot find path: {}".format(folder_path))
+                print("[ERROR] Cannot find dir of that folder_path ): : {}".format(folder_path))
     
         else: 
             print("Image does not match with folder. Older system?")

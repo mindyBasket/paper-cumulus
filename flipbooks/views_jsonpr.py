@@ -6,6 +6,8 @@ from django.urls import reverse_lazy
 from django.template.loader import render_to_string
 from django.shortcuts import render, get_object_or_404
 
+import easy_thumbnails.files as easy_th_files
+
 #import your models
 from .models import (
         Book,
@@ -103,11 +105,44 @@ def get_url_by_name(request, *args, **kwargs):
     print("kwargs: {}".format(kwargs))
     print("args: {}".format(args))
 
-
-
     url_name_data = kwargs['url_name']
     url_name = ":".join(url_name_data.split("--colon--"))
     pk = kwargs['pk']
     print("-------------------------------------------")
     print ("Ready to respond? {} : {} ".format(url_name, pk))
     return JsonResponse({'url': reverse_lazy(url_name, kwargs={'pk': pk})  })  
+
+
+
+def test_thumbnail(requets, *args, **kwargs):
+    print("------------ THUMBNAIL TEST ------------")
+    print("----------- for frame id: {} ------------".format(kwargs['frame_pk']))
+
+    frame = get_object_or_404(Frame, pk=kwargs['frame_pk'])
+
+    #get ThumbnailER isntance
+    thumbnailer = easy_th_files.get_thumbnailer(frame.frame_image)
+    print("Thumbnailer instance: {}".format(thumbnailer))
+    # get_thumbnailER will return instance, get_thumbnAIL will return thumbnail
+
+
+    # let's try generating it
+    thumbnail_options = {'crop': True}  
+    thumbnail_options.update({'size': (500, 0)})
+    # for size in (50, 100, 250):
+    #     thumbnail_options.update({'size': (size, size)})
+    #     thumbnailer.get_thumbnail(thumbnail_options) #GENERATES NEW THUMBNAIL
+
+    thumb = thumbnailer.get_thumbnail(thumbnail_options) #GENERATES NEW THUMBNAIL
+    # thumb is a ThumbnailFILE instance: 
+    # https://easy-thumbnails.readthedocs.io/en/latest/ref/files/#easy_thumbnails.files.ThumbnailFile
+    
+    
+    print("Thumb generated? : {}".format(thumb))
+    #print(dir(thumb))
+
+    return JsonResponse({
+        'hello': "world",
+        'thumb': thumb.url,
+        # 'names': thumbnailer.get_thumbnail_name({'size': (500,0)}) #this generatesb name. doesn't return name of actual existing thumb
+    })

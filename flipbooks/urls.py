@@ -55,6 +55,7 @@ urlpatterns = [
     re_path(r'^ajax/strips/(?P<pk>\d+)/sort-children/$', views.sort_children, name='strip-sort-children'),
     
     # returns json objects
+    # TODO: since REACT conversion, none of them are used. Confirm it and remove.
     re_path(r'^json_partials/strip_container/(?P<pk>\d+)/$', views_jsonpr.return_strip_container_tmplt, name='json_partial__strip_container'), 
     re_path(r'^json_partials/frame_edit_form/(?P<pk>\d+)/$', views_jsonpr.return_frame_edit_form, name='json_partial__frame_edit_form'), 
     re_path(r'^json_partials/frame_container/empty/$',       views_jsonpr.return_empty_thumbnail_partial, name='json_partial__empty_thumb_container'), 
@@ -62,6 +63,7 @@ urlpatterns = [
 
     # React helper
     path('rh/get_url_by_name/<slug:url_name>/<int:pk>/', views_jsonpr.get_url_by_name, name='reacthelper__get-url-by-name'),
+    path('rh/test_thumbnail/<int:frame_pk>/', views_jsonpr.test_thumbnail, name="reacthelper__test-thumbnail"),
 ]
 
 if settings.DEBUG == True:

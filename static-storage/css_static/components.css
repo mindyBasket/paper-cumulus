@@ -75,8 +75,12 @@
   border-top-left-radius: 7px;
   border-top-right-radius: 7px;
 
+  min-height: 200px;
+
   background-color: #403f3f;
   text-align: center;
+
+
 }
 #light_box_modal #field_frame_image img{
   margin: 0 auto;
@@ -273,6 +277,7 @@
 
   display:flex;
   width: 100%; 
+  height: 100%;
   min-width: 150px; min-height: 150px; /*to fit spinner*/
 
   flex-grow: 1; /*stretches to fit the height*/
@@ -287,7 +292,7 @@
   /*loading symbol*/
   display: inline-block;
   width: 100px; height: 100px;
-  background-color: #e1e1e1;
+
   /*animation: loading 600ms infinite cubic-bezier(0.190, 1.000, 0.220, 1.000);*/
   animation: loading 1000ms infinite cubic-bezier(0.190, 1.000, 0.220, 1.000);
 } 
@@ -302,6 +307,13 @@
   100% {
     transform: rotate(90deg);
   }
+}
+
+.spinner.light{
+  background-color: #e1e1e1;
+}
+.spinner.dark{
+  background-color: #5c5c5c;
 }
 
 .spinner_playground.float{

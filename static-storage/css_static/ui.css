@@ -1,3 +1,7 @@
+.far,
+.fas{
+	margin: 0 5px;
+}
 button{
 	padding: 10px 15px;
 	margin: 5px;
@@ -28,12 +32,19 @@ button.warning:hover{
 	background-color: #ec3b3b;
 }
 
+button.action{
+	background-color:#7079a4;
+	border-color: #575e80;
+}
+button.action:hover{
+	background-color: #575e80;
+}
+
 button.disabled{
 	margin-top: 9px;
 	border: 0px solid;
 	background-color: #b9b9b9;
 	color: #dedede;
-
 }
 
 /* note: '.menu_btn' is in menu.css */

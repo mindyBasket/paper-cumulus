@@ -189,12 +189,12 @@ class FrameUpdateAPIView(generics.UpdateAPIView):
                 # intercept!!
                 resp = super(FrameUpdateAPIView, self).partial_update(request, *args, **kwargs)
                 
-                
                 print("")
                 print("========= PATCH response ==========")
 
                 frame = Frame.objects.filter(pk=kwargs['pk'])[0] # re-retrieve
                 
+                # build list of thumbnails generated to send it off 
                 frame_thumbnails = {}
                 for thumbnail in frame.frame_image.get_thumbnails():
                     # print("url: {}".format(thumbnail.url))
