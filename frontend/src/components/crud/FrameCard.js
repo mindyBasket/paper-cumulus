@@ -217,7 +217,7 @@ class FrameCard extends Component{
 
     constructor(props){
         super(props);
-        this.thumbWidth = 180, //px
+        this.thumbHeight = 80, //px
         // TODO: this should be height based, rather then width.
 
         this.state = {
@@ -361,7 +361,7 @@ class FrameCard extends Component{
                                                
     render(){
         const frame = this.props.frameObj; 
-        const thumbWidth = this.thumbWidth;
+        const thumbHeight = this.thumbHeight;
 
 
         // check if it has valid frames
@@ -374,7 +374,7 @@ class FrameCard extends Component{
                      <Spinner style="light" 
                          float={false}
                          bgColor={"#f7f7f7"}
-                         playgroundStyle={`width: ${thumbWidth}px; height: 100%; min-height: initial;`}
+                         playgroundStyle={`width: 100%; height: ${thumbHeight}px; min-height: initial;`}
                          spinnerStyle={`width: 30px; height: 30px;`}
                          spinning={true}/>
                 </div>
@@ -386,14 +386,23 @@ class FrameCard extends Component{
             // Physical Content is what determines the physical width and height of the thumb.
             // If you want the container or the thumb to be of certain dimension, control it here!
             let frame_physicalContent = false;
-            if (frame && frame.hasOwnProperty("frame_image") && frame.frame_image != null && frame.frame_image != ""){
+            let thumbPath = null;
+            if (frame && frame.hasOwnProperty("frame_image_thumbs") 
+                      && frame.frame_image_thumbs != null 
+                      && Object.keys(frame.frame_image_thumbs) != 0){
+                // get valid path
+                thumbPath = frame.frame_image_thumbs.hasOwnProperty("thumb") ? 
+                                frame.frame_image_thumbs.thumb 
+                                :
+                                frame.frame_image_thumbs[Object.keys(frame.frame_image_thumbs)[0]]
+
                 frame_physicalContent = <div className="frame_image stretch">
-                                            {/* opacity 0. Used only to stretch out the thumbnail box*/}
-                                            <img src={frame.frame_image} width={thumbWidth+'px'}/>
+                                            {/* opacity 0. Used ONLY TO STRETCH out the thumbnail box*/}
+                                            <img src={thumbPath} height={thumbHeight+'px'}/>
                                         </div>
             } else {
-                frame_physicalContent = <div>
-                                            <span>Missing Image</span>
+                frame_physicalContent = <div style={{minWidth: "110px", minHeight: `${thumbHeight}px`}}>
+                                            <span>Missing Thumbnail</span>
                                         </div>
             }
 
@@ -410,7 +419,7 @@ class FrameCard extends Component{
                     {frame_physicalContent}
                     
                     <div className="frame_image" 
-                         style={{backgroundImage: `url(${frame.frame_image})` }}>
+                         style={{backgroundImage: `url(${thumbPath})` }}>
                         {/* this is what is actually visible to the user */}
                         
                         <span className="overlay_box" frameid={frame.id} onClick={(e)=>{e.stopPropagation()}}>

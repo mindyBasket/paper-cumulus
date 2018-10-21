@@ -43,10 +43,8 @@ class ThumbnailField(serializers.Field):
     #  convert the initial datatype into a primitive, serializable datatype.
     def to_representation(self, value):
         """
-        Serialize the value's class name.
+        Serialize Frame's thumbnail.
         """
-        print(" ============ ThumbnailField repr =============")
-        # print("Instance?: {}".format(instance))
         thumbnailer = easy_th_files.get_thumbnailer(value.frame_image)
         aliases = settings.THUMBNAIL_ALIASES['']
         thumb_dict = {}
@@ -61,7 +59,6 @@ class ThumbnailField(serializers.Field):
                 thumb_dict[alias] = thumb.url
 
         if not thumb_dict:
-            print("No thumb found...trying old alias options")
             # if no thumb is found, it may be using old options for each alias
             aliases_old = {
                 'cell': {'size': (100, 100), 'autocrop': True},
@@ -72,9 +69,6 @@ class ThumbnailField(serializers.Field):
                 if thumb != None:
                     thumb_dict[alias] = thumb.url
 
-
-        # print(thumbnailer.get_existing_thumbnail())
-        print("===============================================")
         return thumb_dict
 
     # restore a primitive datatype into its internal python representation. 

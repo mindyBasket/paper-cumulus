@@ -661,8 +661,7 @@ class StripCard extends PureComponent {
    
                 <div className="strip_flex_toolbar">
                     <div className="header">
-                        <span className="bigtext-2">{index}</span>
-                        <span>id: {strip.id}</span>
+                        <span className="bigtext-3">{index}</span>
                     </div>
                     <div className="tools">
                         <MenuButton iconClass="menu_btn fas fa-play-circle" action={this.openPreview}/>
