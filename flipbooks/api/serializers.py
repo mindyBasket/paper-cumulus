@@ -33,18 +33,18 @@ class ThumbnailField(serializers.Field):
     # If you need to customize how the field value is accessed and set you need to override 
     # using get_attribute()
     def get_attribute(self, instance):
-
+        print("============ get_attribute =============")
         # We pass the object instance onto `to_representation`,
         # not just the field attribute.
-        
-
         return instance
+        
 
     #  convert the initial datatype into a primitive, serializable datatype.
     def to_representation(self, value):
         """
         Serialize Frame's thumbnail.
         """
+        print("============ thumbnail repr =============")
         thumbnailer = easy_th_files.get_thumbnailer(value.frame_image)
         aliases = settings.THUMBNAIL_ALIASES['']
         thumb_dict = {}
@@ -81,13 +81,14 @@ class ThumbnailField(serializers.Field):
         # raise ValidationError('Incorrect format. Expected `rgb(#,#,#)`.')
 
         # return Color(red, green, blue)
+        print("============ to_internal_value =============")
         return "to_internal_value not implemented."
 
 
 class FrameModelSerializer(serializers.ModelSerializer):
     
     # strip = serializers.PrimaryKeyRelatedField(source='strip', read_only=True, required=True)
-    frame_image_thumbs = ThumbnailField()
+    frame_image_thumbs = ThumbnailField(required=False)
 
     class Meta:
         model = Frame

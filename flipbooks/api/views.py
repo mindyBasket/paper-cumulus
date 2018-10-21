@@ -115,12 +115,12 @@ class FrameCreateAPIView(generics.CreateAPIView):
         
         
     def create(self, request, *args, **kwargs):
-        print("------------- create --------------")
-        print(request.FILES)
-        print(request.data)
+        print("------------- [API Frame] Create --------------")
+        print("Files: {}".format(request.FILES))
+        print("Data: {}".format(request.data))
         #test = self.request.FILES['frame_image']
         #print("image?: {}".format(test))
-        print("-----------------------------------")
+        print("-----------------------------------------------")
         
         return super(FrameCreateAPIView, self).create(request, *args, **kwargs)
     
@@ -128,7 +128,7 @@ class FrameCreateAPIView(generics.CreateAPIView):
     def perform_create(self, serializer):
         
         #print(self.request.data)
-     
+        print("--------------------------- performing create...")
         if self.request.data.get('frame_image') is not None:
             frame_image = self.request.data.get('frame_image')
             serializer.save(frame_image=frame_image)
