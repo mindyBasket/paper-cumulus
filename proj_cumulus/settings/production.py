@@ -4,7 +4,7 @@ from .base import *
 # SECRET_KEY = '$k3(_qgf48hzeddm(fw-8^aj1pk%u0l%w8sa2&kzpyr$ufjj8@'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 
 # Additional apps for local dev
@@ -28,23 +28,61 @@ DATABASES = {
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
-STATIC_URL = '/static/'
-
-# Storage and serves
-
-# If /static/ above doesn't exist, it will look at the following paths.
-# Wait...this IS served directly when I run this app.
-# When production, static files are collected from here. 
-STATICFILES_DIRS = [ 
+# Collect static from this:
+STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static-storage"),
-    #'/var/www/static/'
 ]
 
-#Is served from (or collectStatic'd into)
-STATIC_ROOT = os.path.join(BASE_DIR, "static-serve")
+
+AWS_ACCESS_KEY_ID = 'AKIAJQVCEM4JS2TZM44Q'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'paper-cumulus-s3'
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+AWS_LOCATION = 'static'
+
+# UserWarning: The default behavior of S3Boto3Storage is insecure and will change in 
+# django-storages 2.0. By default files and new buckets are saved with an ACL of 
+# 'public-read' (globally publicly readable). Version 2.0 will default to using 
+# the bucket's ACL. To opt into the new behavior set AWS_DEFAULT_ACL = None, 
+# otherwise to silence this warning explicitly set AWS_DEFAULT_ACL.
+AWS_DEFAULT_ACL = None
 
 
-# Uploaded Media
-# https://docs.djangoproject.com/en/1.11/howto/static-files/#serving-files-uploaded-by-a-user-during-development
-MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# No STATIC_ROOT ? 
+
+
+# Media stuff
+
+# MEDIA_URL = "/media/"
+# MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+# https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html
+# https://www.linkedin.com/pulse/using-aws-s3-storage-backend-your-django-application-naved-khan/
+DEFAULT_FILE_STORAGE = 'proj_cumulus.media_backends.MediaStorage'
+
+
+
+# STATIC_URL = '/static/'
+
+# # Storage and serves
+
+# # If /static/ above doesn't exist, it will look at the following paths.
+# # Wait...this IS served directly when I run this app.
+# # When production, static files are collected from here. 
+# STATICFILES_DIRS = [ 
+#     os.path.join(BASE_DIR, "static-storage"),
+#     #'/var/www/static/'
+# ]
+
+# #Is served from (or collectStatic'd into)
+# STATIC_ROOT = os.path.join(BASE_DIR, "static-serve")
+
+
+# # Uploaded Media
+# # https://docs.djangoproject.com/en/1.11/howto/static-files/#serving-files-uploaded-by-a-user-during-development
+# MEDIA_URL = "/media/"
+# MEDIA_ROOT = os.path.join(BASE_DIR, "media")
