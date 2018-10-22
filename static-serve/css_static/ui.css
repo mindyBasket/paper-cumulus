@@ -1,3 +1,7 @@
+.far,
+.fas{
+	margin: 0 5px;
+}
 button{
 	padding: 10px 15px;
 	margin: 5px;
@@ -28,6 +32,20 @@ button.warning:hover{
 	background-color: #ec3b3b;
 }
 
+button.action{
+	background-color:#7079a4;
+	border-color: #575e80;
+}
+button.action:hover{
+	background-color: #575e80;
+}
+
+button.disabled{
+	margin-top: 9px;
+	border: 0px solid;
+	background-color: #b9b9b9;
+	color: #dedede;
+}
 
 /* note: '.menu_btn' is in menu.css */
 
@@ -52,4 +70,22 @@ button.warning:hover{
 .tool_btn.loading{
 	background-color: transparent;
 	color: #bba2da;
+}
+
+
+
+/* text decorations */
+
+.align_right{
+	text-align: right;
+}
+
+.divider{
+	display:inline-block;
+	border-left: 1px solid #00000029;
+	height: 100%;
+	width: 1px;
+	margin: 0px 10px;
+
+	color: transparent;
 }

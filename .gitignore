@@ -4,6 +4,7 @@ env
 *.pyo 
 *.pyc
 
+static-serve
 node_modules
 package-lock.json
 env.json
