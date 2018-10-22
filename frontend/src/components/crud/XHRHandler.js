@@ -92,6 +92,10 @@ class XhrHandler {
 
 
 
+	createFrame(stripId, formData, csrfToken){
+		return this.makeXHR('post', formData, `/api/strip/${stripId}/frame/create/`, csrfToken)
+	}
+
 	editFrame(frameId, formData, csrfToken){
 		return (
 			axios({
@@ -167,7 +171,7 @@ class XhrHandler {
 	        .catch(error => {
 	        	console.log(error);
 	        	// TODO: add better error message that is visible on frontend
-	        	return false;
+
 	        })
 	    )
 

@@ -338,6 +338,8 @@ class StripCard extends PureComponent {
     
     }
 
+
+
     handle_deleteScene(){
         // DANGER ZONE!
 
@@ -351,6 +353,8 @@ class StripCard extends PureComponent {
             pub_handle_fetchScene();
         })
     }
+
+
 
     handle_frameSort(idArr){
 
@@ -374,6 +378,8 @@ class StripCard extends PureComponent {
         })
     }
 
+
+
     handle_dragMessageToggle(e, on){
         // probably already true'd by setSpotlightALL, but just in case
         e.stopPropagation();
@@ -392,6 +398,8 @@ class StripCard extends PureComponent {
        }
     }
 
+
+
     handle_dragAndDrop(e){
         // parse data?
         e.preventDefault();
@@ -406,7 +414,7 @@ class StripCard extends PureComponent {
                 var file = e.dataTransfer.items[0].getAsFile();
                 console.log('>> file[' + 0 + '].name = ' + file.name + " : type = " + file.type);
 
-                // CHECKPOINT 1: image only
+                /////// CHECKPOINT 1: image only
                 const allowedImageTypes = ['image/png', 'image/gif', 'image/jpg', 'image/jpeg'];
                 if (!allowedImageTypes.includes(file.type)){
                     // exit abruptly. This causes this component to remain in dragAndDrop state
@@ -414,61 +422,47 @@ class StripCard extends PureComponent {
                     return false;
                 }
 
-                // Frameform does not actually hold any useful information.
-                // Just extract csrfToken from it
-                const frameFormData = h.serializeForm(this.$frameForm);
-                const csrfToken = frameFormData ? (frameFormData.hasOwnProperty("csrfmiddlewaretoken") ? frameFormData.csrfmiddlewaretoken : null) : null;
+                const csrfToken = axh.getCSRFToken();
 
-                // CHECKPOINT 2: valid CSRF token
+                /////// CHECKPOINT 2: valid CSRF token
                 if (!csrfToken){
                     // exit abruptly. This causes this component to remain in dragAndDrop state.
                     this.setState({cardCover_messageType: "invalidForm"});
                     return false;
                 }
 
-                // Build formData
-                //let formData = new FormData(); //decided not to use this until I actually understand
-                frameFormData.strip = this.props.stripObj.id;
-                frameFormData.frame_image = file;
-                
-                console.log("Formdata done: " + JSON.stringify(frameFormData));
-                
+                /////// Build formData and ship it off              
                 let fd = new FormData();
                 fd.append("strip", this.props.stripObj.id);
                 fd.append("frame_image", file)
-    
-                // Ship it off
-                axios({
-                    method: 'post',
-                    url: `/api/strip/${this.props.stripObj.id}/frame/create/`,
-                    data: fd,
-                    headers: {
-                                "X-CSRFToken": frameFormData.csrfmiddlewaretoken,
-                                //"Content-Type": 'multipart/form-data' // don't need it
-                             }
-                })
-                .then(response => {
-                    console.log("FrameCreate successful: " + JSON.stringify(response.data));
 
-                    // stop loading state
-                    // TODO: In the future, it may not be just one request
-                    this.setState({loadingFrames: false}); 
+                console.warn("FormData inspect: " + fd);
+                console.warn(this.props.stripObj.id);
 
-                    //RE-fetch. God, how do I do that.
-                    // This is a function in SceneCardList 
-                    this.props.handle_fetchScene();
+                console.warn(csrfToken);
+                
+                axh.createFrame(this.props.stripObj.id, fd, csrfToken).then(res=>{
+                    if (res && res.data){
+                        console.log("FrameCreate response: " + JSON.stringify(res.data));
+                        // stop loading state and Re-fetch scene
+                        // TODO: In the future, it may not be just one request
+                        this.setState({loadingFrames: false}); 
+                        this.props.handle_fetchScene();
 
-                })
-                .catch(error => {
+                    } else {
+                        console.error("Frame Create Failed");
+                    }
+                    
+                }).catch(error=>{
                     console.log(error);
                     // Well that didn't work!
+                    console.log("Something went wrong processing the response");
                     this.setState({cardCover_messageType: "frameCreateError"});
-
                 });
 
+        
             }
 
-        
         } else {
             // Use DataTransfer interface to access the file(s)
             for (var i = 0; i < ev.dataTransfer.files.length; i++) {
@@ -486,13 +480,12 @@ class StripCard extends PureComponent {
         console.warn("Request send success. Escape dragAndDrop state.");
         
         // Close
+
+        // [Outdated Note. setSpotlightAll is removed] 
         // DragAndDrop is a bit unique in a sense that it can be initated by SceneEditor, the parent.
         // But it can still be triggered by individual StripCard.
-        
-        //this.endModalState("dragAndDropOn", true); // This doesn't turn off setSpotlightAll        
+              
         this.setSpotlight(false); // This doesn't turn off setSpotlightAll
-        // Right now, this just turns off LightBox visual and turn off selfSpotlight.
-        // But setSpotlightAll takes priority. So the highlight remains...
         lb.pub_LightBox_off();
 
     }
