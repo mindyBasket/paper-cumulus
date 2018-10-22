@@ -20,12 +20,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '$k3(_qgf48hzeddm(fw-8^aj1pk%u0l%w8sa2&kzpyr$ufjj8@'
+# SECRET_KEY = '$k3(_qgf48hzeddm(fw-8^aj1pk%u0l%w8sa2&kzpyr$ufjj8@'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
 
-ALLOWED_HOSTS = ["proj-cumulus-blacksandbox.c9users.io"]
+ALLOWED_HOSTS = ["localhost", "agile-cliffs-66542.herokuapp.com"]
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
@@ -39,16 +39,20 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
+    'easy_thumbnails',
+    'rest_framework',
+    'widget_tweaks',
+    
     'flipbooks',
+    'frontend',   
 ]
 
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -58,7 +62,9 @@ ROOT_URLCONF = 'proj_cumulus.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+                    os.path.join(BASE_DIR, 'proj_cumulus/templates'),
+                ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -71,18 +77,25 @@ TEMPLATES = [
     },
 ]
 
+THUMBNAIL_ALIASES = {
+    '': {
+        'cell': {'size': (100, 0), 'crop': True},
+        'thumb': {'size': (300, 0), 'crop': True}
+    },
+}
+
 WSGI_APPLICATION = 'proj_cumulus.wsgi.application'
 
 
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
 
 
 # Password validation
@@ -118,7 +131,16 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.9/howto/static-files/
+# Static stuff. See local.py for dev setting
 
-STATIC_URL = '/static/'
+# STATIC_URL = '/static/'
+
+# STATICFILES_DIRS = [ 
+#     os.path.join(BASE_DIR, "static-storage"),
+#     #'/var/www/static/'
+# ]
+
+# STATIC_ROOT = os.path.join(BASE_DIR, "static-serve")
+
+# MEDIA_URL = "/media/"
+# MEDIA_ROOT = os.path.join(BASE_DIR, "media")
