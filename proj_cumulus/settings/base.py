@@ -11,9 +11,40 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
+from pathlib import Path #new in Python 3.4+
+import json
+from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+
+# Read from env file
+ENV_FILE_PATH = os.path.join(BASE_DIR, "env.json")
+
+configs = None
+if os.path.isfile(ENV_FILE_PATH):
+    with open(ENV_FILE_PATH) as f:
+        configs = json.loads(f.read())
+
+    if not configs:
+        raise ImproperlyConfigured("ImproperlyConfigured: Env.json is empty.")
+
+    try:
+        # grab environment variables
+        SECRET_KEY = configs["SECRET_KEY"]
+    except KeyError:
+        raise ImproperlyConfigured("ImproperlyConfigured: Cannot set SECRET_KEY")
+
+else:
+    # Some environment, it will not have env file.
+    try:
+        SECRET_KEY = os.environ['SECRET_KEY']
+    except KeyError:
+        raise ImproperlyConfigured("ImproperlyConfigured: Cannot set SECRET_KEY")
+
+
+
 
 
 # Quick-start development settings - unsuitable for production
