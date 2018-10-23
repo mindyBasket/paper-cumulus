@@ -33,7 +33,7 @@ class ThumbnailField(serializers.Field):
     # If you need to customize how the field value is accessed and set you need to override 
     # using get_attribute()
     def get_attribute(self, instance):
-        print("============ get_attribute =============")
+        # print("============ get_attribute =============")
         # We pass the object instance onto `to_representation`,
         # not just the field attribute.
         return instance
@@ -44,12 +44,14 @@ class ThumbnailField(serializers.Field):
         """
         Serialize Frame's thumbnail.
         """
-        print("============ thumbnail repr =============")
+        # print("============ thumbnail repr =============")
         thumbnailer = easy_th_files.get_thumbnailer(value.frame_image)
         aliases = settings.THUMBNAIL_ALIASES['']
         thumb_dict = {}
 
         for alias, val in aliases.items():
+            if 'ALIAS' in val:
+                del val['ALIAS']
             # Problem, the 'size' tuple is converted into an array when passed through DRF.
             if 'size' in val:
                 val['size'] = tuple(val['size']) # it's pointing, so no need to replace/append
@@ -57,6 +59,9 @@ class ThumbnailField(serializers.Field):
             thumb = thumbnailer.get_existing_thumbnail(val)
             if thumb != None:
                 thumb_dict[alias] = thumb.url
+            else:
+                print("'{0}'({1}) image not found.".format(alias, val))
+                print("-- Searched for: {}".format(thumbnailer.url))
 
         if not thumb_dict:
             # if no thumb is found, it may be using old options for each alias

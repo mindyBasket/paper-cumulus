@@ -771,6 +771,7 @@ class SceneCardList extends Component {
 
     handle_fetchScene(){
         axh.fetchScene(this.props.sceneId).then(res =>{
+            console.log("[SetState Scene Data]")
             this.setState({data: res.data});
             this.firstLoad = false;
         });

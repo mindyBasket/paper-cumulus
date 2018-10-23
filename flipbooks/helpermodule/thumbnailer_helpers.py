@@ -1,6 +1,8 @@
 import os, re
 from pathlib import Path #new in Python 3.4+
 from django.conf import settings
+from django.core.files.storage import default_storage as storage
+
 
 ''' Takes path to thumbnail image and its dimension to 
     figure out what easy-thumbnail alias it is under.
@@ -42,6 +44,77 @@ def get_alias_dict(thumbnail_path, thumbnail_dimension):
             return False
         else:
             return {alias_match: thumbnail_path}
+
+
+
+
+
+
+
+
+def delete_frame_images_s3(frame):
+    # >>> default_storage.exists('storage_test')
+    # False
+    # >>> file = default_storage.open('storage_test', 'w')
+    # >>> file.write('storage contents')
+    # >>> file.close()
+
+    # >>> default_storage.exists('storage_test')
+    # True
+    # >>> file = default_storage.open('storage_test', 'r')
+    # >>> file.read()
+    # 'storage contents'
+    # >>> file.close()
+
+    # >>> default_storage.delete('storage_test')
+    # >>> default_storage.exists('storage_test')
+    # False
+
+    # os.path.isfile(storage.open(instance.content.path)):
+
+
+
+
+    # image_path = frame.frame_image.path # aws not happy with accessing path..?
+    image_path = frame.frame_image.url
+
+    # New in python 3.4+: 'Path'
+    # A subclass of PurePath, which represents concrete paths of the SYSTEM's path flavour
+    im_path = Path(image_path)
+    print(im_path.parts)
+
+    image_name = im_path.stem
+    folder_name = im_path.parts[-2]
+
+    print("[PATH] Removing folder: {} ==? {}".format(image_name, folder_name))
+    
+    if str(folder_name) == str(image_name):
+        try:
+            print("[S3] Image name and folder name matches. Getting folder path...")
+            print(storage.connection)
+            #remove contents of folder 
+            # print(im_path.relative_to("/"))
+            folder_path = Path('').joinpath(*im_path.parts[2:])
+            print(folder_path)
+            folder_path = folder_path.parent
+            print("Folder_path extracted: {}".format(folder_path))
+
+            frame_folder = storage.open(str(folder_path), 'w')
+            print("Folder opened! About to delete all children...>:D")
+            print(frame_folder)
+
+            if os.path.isfile(im_path):
+                print("[S3] !! folder exists in S3 storage")
+                image_path = frame.frame_image.path
+            else:
+                print("[ERROR] cannot find that path on S3")
+                # cause error
+                image_path = frame.frame_image.path
+        except:
+            print(sys.exc_info()[0])
+            raise
+
+
             
 ''' Assuming the image_path is valid and all the related images
     and thumbnails are stored in a folder represending that 
@@ -49,57 +122,64 @@ def get_alias_dict(thumbnail_path, thumbnail_dimension):
 def delete_frame_images(frame):
     
     if frame and frame.frame_image: 
-        image_path = frame.frame_image.path
+        print("========= deleting frame images ==========")
+        if settings.IS_PRODUCTION:
+            print("===== delete from s3 ======")
+            delete_frame_images_s3(frame)
 
-        # New in python 3.4+: 'Path'
-        # A subclass of PurePath, which represents concrete paths of the SYSTEM's path flavour
-        im_path = Path(image_path)
-        print(im_path.parts)
-
-        # print(im_path.name)
-        # print(im_path.suffix)
-        image_name = im_path.stem
-        folder_name = im_path.parts[-2]
-
-        print("[PATH] Removing folder: {} ==? {}".format(image_name, folder_name))
-
-        # image_name = image_path.split("/")[-1].split(".")[0]
-        # print("Image_path: {}".format(image_path.split("/")))
-        # folder_name = image_path.split("/")[-2]
-        # print("Removing folder: {} ==? {}".format(image_name, folder_name))
-        
-        if str(folder_name) == str(image_name):
-            print("Image name and folder name matches. Getting folder path...")
-            #remove contents of folder 
-            folder_path = im_path.parent
-            print("Folder_path extracted: {}".format(folder_path))
-            if os.path.exists(folder_path):
-                # list all items 
-                # from os.path import isfile, join
-                # onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
-                counter = 0
-                for f in os.listdir(folder_path):
-                    f_path = os.path.join(folder_path, f)
-                    if os.path.isfile(f_path):
-                        counter = counter+1
-                        os.remove(f_path)
-                
-                # should be empty now
-                print("{} Images in {} removed.".format(counter, folder_name))
-                os.rmdir(folder_path) 
-                ## TODO: does this a little naively. Need to add an exception
-            else:
-                print("[ERROR] Cannot find dir of that folder_path ): : {}".format(folder_path))
-    
         else: 
-            print("Image does not match with folder. Older system?")
-            # assume it is in an old upload path; no subfolder, just dumped
-            # in a large "reservoir". Do your best to remove them.
+            # image_path = frame.frame_image.path # aws not happy with accessing path..?
+            image_path = frame.frame_image.url
+
+            # New in python 3.4+: 'Path'
+            # A subclass of PurePath, which represents concrete paths of the SYSTEM's path flavour
+            im_path = Path(image_path)
+            print(im_path.parts)
+
+            # print(im_path.name)
+            # print(im_path.suffix)
+            image_name = im_path.stem
+            folder_name = im_path.parts[-2]
+
+            print("[PATH] Removing folder: {} ==? {}".format(image_name, folder_name))
+
+            # image_name = image_path.split("/")[-1].split(".")[0]
+            # print("Image_path: {}".format(image_path.split("/")))
+            # folder_name = image_path.split("/")[-2]
+            # print("Removing folder: {} ==? {}".format(image_name, folder_name))
             
-            frame.frame_image.delete_thumbnails() # not 100% successful
-            image_path = frame.frame_image.path
-            if image_path and os.path.isfile(image_path):
-                os.remove(image_path)
+            if str(folder_name) == str(image_name):
+                print("Image name and folder name matches. Getting folder path...")
+                #remove contents of folder 
+                folder_path = im_path.parent
+                print("Folder_path extracted: {}".format(folder_path))
+                if os.path.exists(folder_path):
+                    # list all items 
+                    # from os.path import isfile, join
+                    # onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
+                    counter = 0
+                    for f in os.listdir(folder_path):
+                        f_path = os.path.join(folder_path, f)
+                        if os.path.isfile(f_path):
+                            counter = counter+1
+                            os.remove(f_path)
+                    
+                    # should be empty now
+                    print("{} Images in {} removed.".format(counter, folder_name))
+                    os.rmdir(folder_path) 
+                    ## TODO: does this a little naively. Need to add an exception
+                else:
+                    print("[ERROR] Cannot find dir of that folder_path ): : {}".format(folder_path))
+        
+            else: 
+                print("Image does not match with folder. Older system?")
+                # assume it is in an old upload path; no subfolder, just dumped
+                # in a large "reservoir". Do your best to remove them.
+                
+                frame.frame_image.delete_thumbnails() # not 100% successful
+                image_path = frame.frame_image.path
+                if image_path and os.path.isfile(image_path):
+                    os.remove(image_path)
                 
     else:
         # frame object or image not valid
