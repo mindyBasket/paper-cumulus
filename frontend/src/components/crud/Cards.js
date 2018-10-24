@@ -49,7 +49,6 @@ class MenuButton extends Component {
 
     render (){
         const hasFrames = this.props.hasFrames;
-        console.log("[MenuButton] " + hasFrames);
         return (
             <a className={this.props.iconClass + (hasFrames == null ? "" : (!hasFrames ? " disabled" : "")  )} 
                onClick={hasFrames != null && !hasFrames? ()=>{} : this.props.action}></a>
@@ -155,6 +154,10 @@ function initializeSortable($container, name, callback){
             //appendTo: $container.getAttribute("class"),
             constrainDimensions: true,
         },
+        scrollable: {
+            speed: 6,
+            // sensitivity: 20
+        }
     });
 
     frameSortable.on('sortable:start', () => {

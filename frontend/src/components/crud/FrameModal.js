@@ -397,7 +397,7 @@ class FrameModal extends Component{
                                        fieldLabel="ignored" fieldValue={frame.ignored}
                                        action={this.updateFrame}/>
 
-                        <button onClick={this.thumbnailTest}>Do that thumbnail thing</button>
+                        {/*<button onClick={this.thumbnailTest}>Do that thumbnail thing</button>*/}
                         
                     </div>
 

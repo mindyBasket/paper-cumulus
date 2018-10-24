@@ -50,8 +50,8 @@ class ThumbnailField(serializers.Field):
         thumb_dict = {}
 
         for alias, val in aliases.items():
-            if 'ALIAS' in val:
-                del val['ALIAS']
+            # if 'ALIAS' in val:
+            #     del val['ALIAS']
             # Problem, the 'size' tuple is converted into an array when passed through DRF.
             if 'size' in val:
                 val['size'] = tuple(val['size']) # it's pointing, so no need to replace/append
@@ -59,12 +59,10 @@ class ThumbnailField(serializers.Field):
             thumb = thumbnailer.get_existing_thumbnail(val)
             if thumb != None:
                 thumb_dict[alias] = thumb.url
-            else:
-                print("'{0}'({1}) image not found.".format(alias, val))
-                print("-- Searched for: {}".format(thumbnailer.url))
 
         if not thumb_dict:
             # if no thumb is found, it may be using old options for each alias
+            print("Using old alias look up for: {}".format(thumbnailer))
             aliases_old = {
                 'cell': {'size': (100, 100), 'autocrop': True},
                 'thumb': {'size': (300, 300), 'autocrop': True}
