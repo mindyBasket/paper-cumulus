@@ -48,8 +48,11 @@ class MenuButton extends Component {
     }
 
     render (){
+        const hasFrames = this.props.hasFrames;
+        console.log("[MenuButton] " + hasFrames);
         return (
-            <a className={this.props.iconClass} onClick={this.props.action}></a>
+            <a className={this.props.iconClass + (hasFrames == null ? "" : (!hasFrames ? " disabled" : "")  )} 
+               onClick={hasFrames != null && !hasFrames? ()=>{} : this.props.action}></a>
         )
     }
 }
@@ -640,8 +643,11 @@ class StripCard extends PureComponent {
         const strip = this.props.stripObj;
         const index = this.props.index;
         const reorderedFrames = this.reorderFrames(strip);
-        
+    
+        const noFrames = (strip.frames == null || strip.frames.length === 0 || Object.keys(strip.frames).length === 0);
+
         return (
+
             <li className={"strip_card " +
                            (this.props.spotlightedAll || this.state.selfSpotlighted ? "spotlighted" : "")} 
                 onDragOver={(e)=>(this.handle_dragMessageToggle(e, true))}
@@ -657,8 +663,8 @@ class StripCard extends PureComponent {
                     </div>
                     <div className="tools">
                         <MenuButton iconClass="menu_btn fas fa-play-circle" action={this.openPreview}/>
-                        <a className="menu_btn fas fa-file-upload"></a>
-                        <a className="menu_btn fas fa-pen"></a>
+                        <MenuButton iconClass="menu_btn fas fa-file-upload" action={()=>{console.log("upload")}}/>
+                        <MenuButton iconClass="menu_btn fas fa-pen" action={()=>{console.log("batch edit")}} hasFrames={!noFrames}/>
                         <MenuButton iconClass="menu_btn fas fa-trash" action={this.handle_deleteSceneConfirm}/>
                         <MenuButton iconClass="menu_btn fas fa-ellipsis-h" action={this.openMenu}/>
                     </div>
@@ -676,7 +682,7 @@ class StripCard extends PureComponent {
                                       stripObj={strip}
                                       playPreviewNow={this.state.playPreviewNow}/>
 
-                    {strip.frames == null || strip.frames.length === 0 || Object.keys(strip.frames).length === 0 ? 
+                    {noFrames ?
                         (
                             <div className="strip_flex_container" stripid={strip.id}>
                                 <div className="tile empty-strip ui-state-disabled">

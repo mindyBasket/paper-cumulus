@@ -119,14 +119,15 @@ class FramePreviewCard extends Component{
     constructor(props){
         super(props);
 
+        this.errorMessage = "Strip could not initialized.";
         this.state={
             isError: false
         }
     }
 
-    // componentDidUpdate(prevProps, prevState, snapshot){
-
-    // }
+    componentDidUpdate(prevProps, prevState, snapshot){
+        console.log("Opening preview");
+    }
 
 
 
@@ -140,44 +141,45 @@ class FramePreviewCard extends Component{
         
         // Calc width and height of frame window based on first frame
         const defaultWidth = 450; //px
-        if (!strip.frames || strip.frames.length == 0){return false;}
+        let height = 100; //px default height
 
-        // this comes out EMPTY because the dimension is not initialized. 
-        // TODO: can it request on demand?
-        const di_str = this.props.stripObj.frames[0].dimension;
-        const di = di_str.split("x");
-        let isError = false;
-        let h;
+        if (!strip.frames || strip.frames.length <= 0){
+            this.errorMessage = "No frames to play in this strip. Add some!";
+            this.state.isError = true; //NO UPDATE
+        } else {
+            // this comes out EMPTY because the dimension is not initialized. 
+            // TODO: can it request on demand?
+            const di_str = this.props.stripObj.frames[0].dimension;
+            const di = di_str.split("x");
+            // let isError = false;
 
-        if(di_str != '' && di.length >= 2){
-            try {
-                h = Math.round( (defaultWidth*di[1])/di[0] );
-                // Note: subtracting 1 for a cheap fix for overshoot issue
-            } catch(err){
-                console.error("Height could not be calculated: " + err);
-                isError = true;
-                //return false;
-            }
-        } else { isError = true; } 
-
-        if (isError){
-            h = 100; 
+            if(di_str != '' && di.length >= 2){
+                try {
+                    height = Math.round( (defaultWidth*di[1])/di[0] );
+                    // Note: subtracting 1 for a cheap fix for overshoot issue
+                } catch(err){
+                    console.error("Height could not be calculated: " + err);
+                    this.state.isError = true; //NO UPDATE
+                    this.errorMessage = "Invalid dimension. Check width and height of the first frame.";
+                }
+            } else { this.state.isError = true; }     
         }
+        
 
-        let frame_window_di = [`${defaultWidth}px`, `${h}px`]; 
-
+        let frame_window_di = [`${defaultWidth}px`, `${height}px`]; 
 
         return (
             <div className={"strip_preview_container" + (this.props.on ? " active " : "") + " flipbook_player"}
                  style={this.props.on ? {height: frame_window_di[1]} : {}}>
 
-                {isError ? (
+                {this.state.isError ? (
                     <div className="msg">
                         <p>
                             <span className="bigtext-1 fas fa-exclamation-circle"/>
                         </p>
+
                         <p>
-                            Invalid dimension. Check width and height of the first frame. 
+                            {this.errorMessage}
                         </p>
                     </div>
                 ) : (
