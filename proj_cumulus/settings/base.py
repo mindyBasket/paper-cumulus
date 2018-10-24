@@ -33,15 +33,23 @@ if os.path.isfile(ENV_FILE_PATH):
     try:
         # grab environment variables
         SECRET_KEY = configs["SECRET_KEY"]
-    except KeyError:
-        raise ImproperlyConfigured("ImproperlyConfigured: Cannot set SECRET_KEY")
+        AWS_ACCESS_KEY_ID = configs["AWS_ACCESS_KEY_ID"]
+        AWS_SECRET_ACCESS_KEY = configs["AWS_SECRET_ACCESS_KEY"]
+
+    except KeyError as err:
+        print(repr(err))
+        raise ImproperlyConfigured("ImproperlyConfigured env file.")
+
 
 else:
-    # Some environment, it will not have env file.
+    # In some environment, sensitive information will be in environment var directly.
     try:
         SECRET_KEY = os.environ['SECRET_KEY']
-    except KeyError:
-        raise ImproperlyConfigured("ImproperlyConfigured: Cannot set SECRET_KEY")
+        AWS_ACCESS_KEY_ID = os.environ["AWS_ACCESS_KEY_ID"]
+        AWS_SECRET_ACCESS_KEY = os.environ["AWS_SECRET_ACCESS_KEY"]
+    except KeyError as err:
+        print(repr(err))
+        raise ImproperlyConfigured("ImproperlyConfigured environment variables.")
 
 
 

@@ -1,15 +1,7 @@
 from .base import *
 
 DEBUG = False
-IS_PRODUCTION = True
-'''
-Production Test Setting:
-Static and Media files are served from S3, but database is 
-still using local sqlite3 because PostGres is yet to setup.
-
-'''
-
-
+USE_S3 = True
 # Additional apps for local dev
 # INSTALLED_APPS += []
 #         'debug_toolbar',
@@ -34,8 +26,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static-storage"),
 ]
 
-AWS_ACCESS_KEY_ID = 'AKIAI5KMEL743A54GC2Q'
-AWS_SECRET_ACCESS_KEY = '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'
+# ACCESS_KEY_ID = ''
+# SECRET_ACCESS_KEY = ''
 AWS_STORAGE_BUCKET_NAME = 'paper-cumulus-s3'
 AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 AWS_S3_OBJECT_PARAMETERS = {
