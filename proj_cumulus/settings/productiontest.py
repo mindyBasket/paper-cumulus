@@ -1,7 +1,7 @@
 from .base import *
 
 DEBUG = False
-
+IS_PRODUCTION = True
 '''
 Production Test Setting:
 Static and Media files are served from S3, but database is 

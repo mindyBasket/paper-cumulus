@@ -1,7 +1,7 @@
 from .base import *
 
 DEBUG = False
-
+IS_PRODUCTION = True
 # Additional apps for local dev
 # INSTALLED_APPS += []
 #         'debug_toolbar',
