@@ -1,5 +1,5 @@
 import os, re
-from pathlib import Path #new in Python 3.4+
+from pathlib import Path, PurePath #new in Python 3.4+
 from django.conf import settings
 from django.core.files.storage import default_storage as storage
 
@@ -53,27 +53,6 @@ def get_alias_dict(thumbnail_path, thumbnail_dimension):
 
 
 def delete_frame_images_s3(frame):
-    # >>> default_storage.exists('storage_test')
-    # False
-    # >>> file = default_storage.open('storage_test', 'w')
-    # >>> file.write('storage contents')
-    # >>> file.close()
-
-    # >>> default_storage.exists('storage_test')
-    # True
-    # >>> file = default_storage.open('storage_test', 'r')
-    # >>> file.read()
-    # 'storage contents'
-    # >>> file.close()
-
-    # >>> default_storage.delete('storage_test')
-    # >>> default_storage.exists('storage_test')
-    # False
-
-    # os.path.isfile(storage.open(instance.content.path)):
-
-
-
 
     # image_path = frame.frame_image.path # aws not happy with accessing path..?
     image_path = frame.frame_image.url
@@ -81,38 +60,42 @@ def delete_frame_images_s3(frame):
     # New in python 3.4+: 'Path'
     # A subclass of PurePath, which represents concrete paths of the SYSTEM's path flavour
     im_path = Path(image_path)
-    print(im_path.parts)
+    print("Image_path: {}".format(im_path))
 
     image_name = im_path.stem
     folder_name = im_path.parts[-2]
 
-    print("[PATH] Removing folder: {} ==? {}".format(image_name, folder_name))
-    
+    print("[S3] Image in right folder?: {} ==? {}".format(image_name, folder_name))
+
     if str(folder_name) == str(image_name):
-        try:
-            print("[S3] Image name and folder name matches. Getting folder path...")
-            print(storage.connection)
-            #remove contents of folder 
-            # print(im_path.relative_to("/"))
-            folder_path = Path('').joinpath(*im_path.parts[2:])
-            print(folder_path)
-            folder_path = folder_path.parent
-            print("Folder_path extracted: {}".format(folder_path))
+        print("[S3] Image name and folder name matches. Getting file list...")
+        # you are already in 'media', so exclude it
+        target_dir = Path("").joinpath(*im_path.parts[3:])
+        target_dir = target_dir.parent
+        print("Folder_path extracted: {}".format(target_dir))
 
-            frame_folder = storage.open(str(folder_path), 'w')
-            print("Folder opened! About to delete all children...>:D")
-            print(frame_folder)
+        target_file_li = [] # target_dir is nested list
+        for dir_li in storage.listdir(str(target_dir)):
+            if len(dir_li) > 0:
+                target_file_li = dir_li
+                break
 
-            if os.path.isfile(im_path):
-                print("[S3] !! folder exists in S3 storage")
-                image_path = frame.frame_image.path
-            else:
-                print("[ERROR] cannot find that path on S3")
-                # cause error
-                image_path = frame.frame_image.path
-        except:
-            print(sys.exc_info()[0])
-            raise
+    
+        for f in target_file_li:
+            f_path = target_dir.joinpath(f)
+            print("[S3 file] {}".format(f_path))
+            print("[S3 confirm exist] {}".format(storage.exists(str(f_path)) ))
+            storage.delete(str(f_path))
+            print("[S3 deleted]")
+
+        # WEIRD: the folder deletes itself...
+
+        # THESE DO NOT WORK. It only checks for files, not dirs
+        # print(storage.exists(str(target_dir) ))
+        # print(storage.exists('frame_images'))
+
+
+
 
 
             

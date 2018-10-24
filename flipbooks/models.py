@@ -252,12 +252,14 @@ class Strip(models.Model):
 def frame_upload_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/frame_images/s{id}/f{id}/f{id}__{hexcode}.{extension}
     
-    max_frame_id = Frame.objects.all().order_by("-id")[0].id
-    frame_id = (int(max_frame_id)+1) if instance.id is None else instance.id
+    #max_frame_id = Frame.objects.all().order_by("-id")[0].id
+    #frame_id = (int(max_frame_id)+1) if instance.id is None else instance.id
+    frame_nth = len(instance.strip.frame_set.all())
     hexcode = '%010x' % random.randrange(16**9, 16**10)
-    return 'frame_images/s{0}/f{1}__{2}/f{1}__{2}.{3}'.format(
+    return 'frame_images/s{0}/st{1}-{2}__{3}/st{1}-{2}__{3}.{4}'.format(
         instance.strip.scene.id, 
-        frame_id,
+        instance.strip.id,
+        frame_nth,
         hexcode,
         filename.split(".")[-1]
         )
