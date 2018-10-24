@@ -2,6 +2,14 @@ from .base import *
 
 DEBUG = False
 
+'''
+Production Test Setting:
+Static and Media files are served from S3, but database is 
+still using local sqlite3 because PostGres is yet to setup.
+
+'''
+
+
 # Additional apps for local dev
 # INSTALLED_APPS += []
 #         'debug_toolbar',
