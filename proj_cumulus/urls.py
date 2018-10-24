@@ -20,15 +20,17 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic.base import RedirectView
 
-from .views import home
+from . import views
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     
     #standalone homepage
-    re_path(r'^$', home, name='home'),
-    
+    # re_path(r'^$', views.home, name='home'),
+    # Using demo page for now!
+    re_path(r'^$', views.home_demo, name='home'),
+
     # This doesn't work!
     # url(r'^.*$', RedirectView.as_view(url='flipbooks/chapter/0/', permanent=False), name='index'),
     

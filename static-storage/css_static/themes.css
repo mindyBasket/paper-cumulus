@@ -3,6 +3,11 @@ body.dark{
     color: #777777;
 }
 
+body.dark.glow{
+    background-image: url('img/bg_dark_glow.png');
+    background-size: cover;
+}
+
 body.dark .footer span{
     background-color: #141414;
     color: #808080;

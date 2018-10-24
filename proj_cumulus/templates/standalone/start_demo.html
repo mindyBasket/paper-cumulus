@@ -1,0 +1,35 @@
+{% extends "layout_letterboxed.html" %}
+
+{% block title %} {{block.super}} {% endblock title %}
+
+{% block body_class %}dark glow{% endblock body_class %}
+
+{% block top_content %}
+    <div class="headband">
+        <span class="bigtext-3">Paper Cumulus</span>
+        <span>|</span>
+        Home
+    </div>
+
+    <div class="headband">
+      
+    </div>
+    
+{% endblock %}
+
+{% block letterbox %}
+    {{welcome_msg}}
+{% endblock letterbox %}
+
+
+
+{% block extra_js %}
+    {% load static %}
+    <!-- <script src="{% static 'js/restful_api.js' %}"></script>
+    <script src="{% static 'js/ajax_ImageHandler.js' %}"></script>
+    <script src="{% static 'js/flipHandler.js' %}"></script>
+    <script src="{% static 'js/scenePlayBinds.js' %}"></script> -->
+
+    <script src="{% static 'frontend/main.js' %}"></script>
+
+{% endblock extra_js %}
