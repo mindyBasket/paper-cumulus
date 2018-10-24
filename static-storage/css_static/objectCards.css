@@ -144,6 +144,10 @@ ul.list_strips li.spotlighted{
     background-color: white;
 }
 
+.strip_flex_container:focus {
+    outline: none;
+}
+
 
 /*
 ███████╗██████╗  █████╗ ███╗   ███╗███████╗████████╗██╗  ██╗██╗   ██╗███╗   ███╗██████╗ 
@@ -312,21 +316,25 @@ ul.list_strips li.spotlighted{
 
 }
 
-.strip_card .strip_flex_toolbar .tools a{
+.strip_flex_toolbar .menu_btn{ 
     /* icon size */
     font-size: 1.6em;
     margin: 0 4px;
+    color: #859297; cursor:pointer;
 }
+.strip_flex_toolbar .menu_btn:hover{ color: #545b5d; text-decoration: none;}
+
+
+.menu_btn.disabled{ opacity: 0.5; }
+.menu_btn.disabled:hover{ color: #859297; cursor:default; }
+
 
 .strip_card:hover .strip_flex_toolbar .tools{
     opacity:1;
 }
 
-.strip_card .strip_flex_toolbar .tools .glyphicon{
-    font-size:1.5em;
-}
-.strip_flex_toolbar a{ color: #859297; cursor:pointer;}
-.strip_flex_toolbar a:hover{ color: #545b5d; text-decoration: none;}
+
+
 
 
 

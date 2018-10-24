@@ -1,6 +1,5 @@
-.tools .menu_btn{
-	position: relative; /*allows popup*/
-}
+
+
 
 .popup_menu{
 	pointer-events: none;
