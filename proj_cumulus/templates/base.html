@@ -27,20 +27,24 @@ dg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">-->
 
 
     <!-- custom css -->
-    <link href="{% static 'css_static/mainLayout.css' %}" rel="stylesheet">
+    <!-- <link href="{% static 'css_static/mainLayout.css' %}" rel="stylesheet">
     <link href="{% static 'css_static/ui.css' %}" rel="stylesheet">
+    <link href="{% static 'css_static/forms.css' %}" rel="stylesheet">
 
     <link href="{% static 'css_static/objectCards.css' %}" rel="stylesheet">
-    <link href="{% static 'css_static/forms.css' %}" rel="stylesheet">
+    <link href="{% static 'css_static/player.css' %}" rel="stylesheet">
     <link href="{% static 'css_static/sortable.css' %}" rel="stylesheet">
     <link href="{% static 'css_static/components.css' %}" rel="stylesheet">
-    <link href="{% static 'css_static/menus.css' %}" rel="stylesheet">
-    <link href="{% static 'css_static/themes.css' %}" rel="stylesheet">
+    <link href="{% static 'css_static/menus.css' %}" rel="stylesheet"> 
+
+    <link href="{% static 'css_static/themes.css' %}" rel="stylesheet">-->
+
+    <link href="{% static 'css_static/output.css' %}" rel="stylesheet">
   </head>
 
 <body class="{% block body_class %}{% endblock body_class %}">
     <!-- include 'base_navbar.html' -->
-    <div class="content_wrapper {% block wrapper_class %}{% endblock %}">
+    <div class="flexy_content_wrapper {% block wrapper_class %}{% endblock %}">
 
         {% block layout %}
         {% endblock %}
@@ -65,7 +69,7 @@ dg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">-->
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="{% static 'js_external/imagesloaded.pkgd.min.js' %}"></script>
+    <!-- <script src="{% static 'js_external/imagesloaded.pkgd.min.js' %}"></script> -->
     <script src="{% static 'js_external/anime.min.js' %}"></script>
 
     <!-- scripts written for this project -->

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block layout %}
+    
+    <div class="headband_wrapper {% block headband_class %}{% endblock headband_class %}">
+        {% block top_content %}
+        {% endblock %}
+    </div>
+    
+    <div class='contentbox centering'>
+        {% block contentbox %}
+        {% endblock %}
+    </div>
+    
+{% endblock %}

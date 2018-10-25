@@ -4,10 +4,15 @@ import dj_database_url # parse PostGres
 
 DEBUG = False
 USE_S3 = True
-# Additional apps for local dev
-# INSTALLED_APPS += []
-#         'debug_toolbar',
-# ]
+
+if CONFIGS:
+    # basic info is extracted in base setting. This is for AWS.
+    try:
+        AWS_ACCESS_KEY_ID = CONFIGS["AWS_ACCESS_KEY_ID"]
+        AWS_SECRET_ACCESS_KEY = configs["AWS_SECRET_ACCESS_KEY"]
+    except KeyError as err:
+        print(repr(err))
+        raise ImproperlyConfigured("Env file missing AWS access keys")
 
 # Connect to Database
 DATABASE_URL = os.environ['DATABASE_URL']

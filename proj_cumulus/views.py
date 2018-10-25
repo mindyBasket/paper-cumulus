@@ -6,5 +6,5 @@ def home(request):
     return render(request, "standalone/home.html", context) 
 
 def home_demo(request):
-    context = {'welcome_msg': "This message is by context."}
+    context = {'welcome_msg': "Start Demo?"}
     return render(request, "standalone/start_demo.html", context) 

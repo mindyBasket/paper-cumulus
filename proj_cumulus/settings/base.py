@@ -22,20 +22,21 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 # Read from env file
 ENV_FILE_PATH = os.path.join(BASE_DIR, "env.json")
 
-configs = None
+CONFIGS = None
 if os.path.isfile(ENV_FILE_PATH):
     with open(ENV_FILE_PATH) as f:
-        configs = json.loads(f.read())
+        CONFIGS = json.loads(f.read())
+        f.close()
 
-    if not configs:
+    if not CONFIGS:
         raise ImproperlyConfigured("ImproperlyConfigured: Env.json is empty.")
 
     try:
         # grab environment variables
-        SECRET_KEY = configs["SECRET_KEY"]
-        AWS_ACCESS_KEY_ID = configs["AWS_ACCESS_KEY_ID"]
-        AWS_SECRET_ACCESS_KEY = configs["AWS_SECRET_ACCESS_KEY"]
-
+        SECRET_KEY = CONFIGS["SECRET_KEY"]
+        # Below are extracted in production settings
+        # AWS_ACCESS_KEY_ID = CONFIGS["AWS_ACCESS_KEY_ID"]
+        # AWS_SECRET_ACCESS_KEY = CONFIGS["AWS_SECRET_ACCESS_KEY"]
     except KeyError as err:
         print(repr(err))
         raise ImproperlyConfigured("ImproperlyConfigured env file.")
