@@ -4,6 +4,8 @@ from django.conf import settings
 
 
 from ..models import (
+    Book,
+    Chapter,
     Scene,
     Strip,
     Frame
@@ -112,7 +114,6 @@ class FrameModelSerializer(serializers.ModelSerializer):
 
 
 
-
 # ..................................................  
 # _______ _______  ______ _____  _____ 
 # |______    |    |_____/   |   |_____]
@@ -136,6 +137,17 @@ class StripModelSerializer(serializers.ModelSerializer):
             # 'frame_set' # only returns IDs
             'frames'
             ]
+
+
+
+
+
+# ..................................................  
+# _______ _______ _______ __   _ _______
+# |______ |       |______ | \  | |______
+# ______| |_____  |______ |  \_| |______
+# ..................................................  
+
             
 class SceneModelSerializer(serializers.ModelSerializer):
     
@@ -154,3 +166,43 @@ class SceneModelSerializer(serializers.ModelSerializer):
         ]
         
         
+
+
+# ..................................................  
+# _______ _     _ _______  _____  _______ _______  ______
+# |       |_____| |_____| |_____]    |    |______ |_____/
+# |_____  |     | |     | |          |    |______ |    \_
+# ..................................................                                                          
+
+class ChapterModelSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Chapter
+        fields = [
+            'id',
+            'number',
+            'title',
+
+        ]
+
+
+
+# ..................................................  
+# _______ _     _ _______  _____  _______ _______  ______
+# |       |_____| |_____| |_____]    |    |______ |_____/
+# |_____  |     | |     | |          |    |______ |    \_
+# ..................................................                                                          
+
+class BookModelSerializer(serializers.ModelSerializer):
+    
+    chapters = ChapterModelSerializer(many=True, read_only=True, source='chapter_set')
+
+    class Meta:
+        model = Book
+        fields = [
+            'id',
+            'title',
+            'slug',
+            'chapters'
+
+        ]

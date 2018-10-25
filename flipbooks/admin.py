@@ -11,6 +11,10 @@ from . import models
 
 # note: I think FrameModelAdmin don't actually have to be here
 #       You can have this in models.py and import it.
+class BookModelAdmin(admin.ModelAdmin):
+
+    list_display = ("id", 'title', "slug")
+
 
 class SceneModelAdmin(admin.ModelAdmin):
 
@@ -39,7 +43,7 @@ class FrameModelAdmin(admin.ModelAdmin):
 
 
 # Register your models here.
-admin.site.register(models.Book)
+admin.site.register(models.Book, BookModelAdmin)
 admin.site.register(models.Chapter)
 admin.site.register(models.Scene, SceneModelAdmin)
 admin.site.register(models.Strip, StripModelAdmin)

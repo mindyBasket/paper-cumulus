@@ -3,12 +3,16 @@ from rest_framework import generics
 from rest_framework.parsers import FormParser,MultiPartParser,FileUploadParser
 
 from .serializers import (
+    BookModelSerializer,
+    ChapterModelSerializer,
     SceneModelSerializer,
     StripModelSerializer,
     FrameModelSerializer,
 )
 
 from ..models import (
+    Book,
+    Chapter,
     Scene,
     Strip,
     Frame
@@ -30,6 +34,19 @@ class FlipbookAPIListView(generics.ListAPIView):
     def get_queryset(self):
         return Scene.objects.all()
 
+
+
+
+class FlipbookAPIDetailView(generics.RetrieveAPIView):
+    
+    queryset = Book.objects.all()
+    serializer_class = BookModelSerializer
+    
+    def get_queryset(self):
+        return Book.objects.all()
+    
+
+    
 
 
 # http://patorjk.com/software/taag/#p=display&f=Cyberlarge&t=Scene

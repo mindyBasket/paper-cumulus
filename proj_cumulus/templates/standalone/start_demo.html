@@ -15,6 +15,12 @@
             The demo chapter you made will be available for 3 days. 
         </p>
         <button id="make_demo">Make a demo chapter</button>
+        <p>
+            <!-- chapter create form -->
+            {% include "flipbooks/includes/form_dynamic.html" with form=demo_chapter_create_form action_url=strip_create_url form_id="demo_chapter_create_form" btn_title='Start' %}
+
+        <p>
+
 
 
     </div>

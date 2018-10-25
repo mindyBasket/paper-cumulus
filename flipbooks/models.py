@@ -4,6 +4,7 @@ import os, random
 
 from django.conf import settings
 from django.contrib import messages
+from django.utils import text 
 
 import easy_thumbnails.files as easy_th_files
 from easy_thumbnails.fields import ThumbnailerImageField
@@ -49,7 +50,8 @@ import django.dispatch
 
 class Book(models.Model):
     
-    title = models.CharField(max_length=50, blank=True, default="Untitled Book")
+    title = models.CharField(max_length=50, blank=False, default="Untitled Book")
+    slug = models.SlugField(blank=True, default='')
     
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
@@ -57,7 +59,18 @@ class Book(models.Model):
     def __str__(self):
         # https://docs.python.org/2/library/stdtypes.html#str.format
         return "Book: {}".format(self.title)
+
+    def save(self, *args, **kwargs):
+        # check if this is a new book
+        # is_new = True if self._state.adding else False
+        if self._state.adding:
+            self.slug = text.slugify("{0} {1}".format(self.pk,self.title))
+
+        super(Book, self).save(*args, **kwargs)
     
+
+
+
     
 class Chapter(models.Model):
     

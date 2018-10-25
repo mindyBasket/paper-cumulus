@@ -8,6 +8,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from . import views
+from . import views_demo
 from . import views_jsonpr
 
 urlpatterns = [
@@ -16,13 +17,11 @@ urlpatterns = [
     # Flipbooks homepage
     # I don't have anything planned for flipbooks app's homepage. So it is set to
     # project homepage for now
-    # url(r'^$', home, name='home'),
+    re_path(r'^$', views_demo.home_demo, name='home-demo'),
 
 
 
     
-    
-
     # Book Urls
     path('books/', views.BookListView.as_view(), name='book-list'),
     

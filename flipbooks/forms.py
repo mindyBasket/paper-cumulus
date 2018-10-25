@@ -12,6 +12,59 @@ from .models import (
 
 
 
+
+
+# http://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=Chapter%0AForm
+
+#  ██████╗██╗  ██╗ █████╗ ██████╗ ████████╗███████╗██████╗ 
+# ██╔════╝██║  ██║██╔══██╗██╔══██╗╚══██╔══╝██╔════╝██╔══██╗
+# ██║     ███████║███████║██████╔╝   ██║   █████╗  ██████╔╝
+# ██║     ██╔══██║██╔══██║██╔═══╝    ██║   ██╔══╝  ██╔══██╗
+# ╚██████╗██║  ██║██║  ██║██║        ██║   ███████╗██║  ██║
+#  ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝        ╚═╝   ╚══════╝╚═╝  ╚═╝
+                                                         
+# ███████╗ ██████╗ ██████╗ ███╗   ███╗                     
+# ██╔════╝██╔═══██╗██╔══██╗████╗ ████║                     
+# █████╗  ██║   ██║██████╔╝██╔████╔██║                     
+# ██╔══╝  ██║   ██║██╔══██╗██║╚██╔╝██║                     
+# ██║     ╚██████╔╝██║  ██║██║ ╚═╝ ██║                     
+# ╚═╝      ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝                     
+                                                       
+class ChapterCreateForm(forms.ModelForm):
+    # copied from STRIP
+    
+    def __init__(self, *args, **kwargs):
+        super(ChapterCreateForm, self).__init__(*args, **kwargs)
+        
+        # Custom arg MAY be passed from whatever view class this is form is used. 
+
+        # will not be passing none-kwarded args for this form
+        # arg_dict = {}
+        # for arg in args:
+        #     if arg:
+        #         arg_dict = arg
+        #         break
+
+        print("Kwargs?: {}".format(kwargs))
+        if 'initial' in kwargs and 'book' in kwargs['initial']:
+            #reduce possible choice to just that one book
+            self.fields['book'].queryset = Book.objects.filter(pk=kwargs['initial']['book'])
+            self.fields['book'].widget.attrs['disabled'] = True # You are STUCK WITH IT
+        else:
+            print("Book_pk NOT passed to form. args = {}".format(arg_dict))
+            self.fields['book'].queryset = Book.objects.all()
+
+    class Meta:
+        model = Chapter
+        fields = ['book', 'title'] 
+    
+    
+
+
+
+
+
+
 # ███████╗ ██████╗███████╗███╗   ██╗███████╗
 # ██╔════╝██╔════╝██╔════╝████╗  ██║██╔════╝
 # ███████╗██║     █████╗  ██╔██╗ ██║█████╗  
@@ -31,15 +84,14 @@ class SceneCreateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(SceneCreateForm, self).__init__(*args, **kwargs)
         
-        # Custom arg being passed from ChapterDetailView().
+        # Custom arg being passed from ChapterDetailView_REACT().
         
         arg_dict = {}
         for arg in args:
             if arg:
                 arg_dict = arg
                 
-        # Limit possible strip choice by the scene it belongs to.
-        pprint.pprint(args)
+        # Limit possible Scene choice by the scene it belongs to.
         if 'chapter_number' in arg_dict:
             self.fields['chapter'].queryset = Chapter.objects.filter(number=arg_dict['chapter_number'])
         else:
