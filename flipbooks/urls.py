@@ -28,6 +28,7 @@ urlpatterns = [
     # Chapter Urls
     re_path(r'^(?P<book_pk>\d+)/legacy/(?P<chapter_number>\d+)/$', views.ChapterDetailView.as_view(), name='chapter-detail-legacy'),
     re_path(r'^(?P<book_pk>\d+)/(?P<chapter_number>\d+)/$', views.ChapterDetailView_REACT.as_view(), name='chapter-detail'),
+    path('demo_chapter/create/', views_demo.copy_demo_chapter, name="copy-chapter-create"),
 
     # Scene Urls
     # url(r'^scenes/$', views.SceneListView.as_view(), name="scene-list"),
@@ -46,6 +47,8 @@ urlpatterns = [
     re_path(r'^strip/(?P<strip_pk>\d+)/frame/create/$', views.FrameCreateView.as_view(), name='frame-create'),
     re_path(r'^frame/(?P<pk>\d+)/update/$', views.FrameUpdateView.as_view(), name='frame-update'),
     re_path(r'^frame/(?P<pk>\d+)/delete/$', views.frame_delete, name='frame-delete'), #function view
+
+
 
     #ajax calls
     re_path(r'^ajax/spawn/create_scene/(?P<scene_pk>\d+)/$', views.spawn_create_scene, name='spawn__create_scene'), 

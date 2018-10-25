@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.urls import reverse_lazy
 
 from django.views import generic
@@ -42,6 +42,22 @@ def home_demo(request):
 
     context['demo_chapter_create_form'] = demo_chapter_create_form
     return render(request, "standalone/start_demo.html", context) 
+
+
+
+
+def copy_demo_chapter(request, *args, **kwargs):
+    
+    resp = {}
+    resp['request'] = request.method
+    resp['Hello'] = 'World!'
+    return JsonResponse(resp)
+
+
+
+
+
+
 
 
 
