@@ -12,11 +12,17 @@
         <p>
             You can demo this app's current state. 
             <br>
-            Demo chapter will expire in 3 days from the day you start. 
+            The demo chapter you made will be available for 3 days. 
         </p>
-        <button>Make demo chapter</button>
+        <button id="make_demo">Make a demo chapter</button>
 
 
     </div>
 
 {% endblock contentbox %}
+
+
+{% block extra_js %}
+    {% load static %}
+    <script src="{% static 'frontend/startDemo.js' %}"></script>
+{% endblock %}
