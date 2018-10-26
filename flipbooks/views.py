@@ -146,10 +146,14 @@ class ChapterDetailView_REACT(generic.TemplateView):
         #       path('<slug:book_slug>/chapter-<chapter_hex>/'
 
         # Get book from URL
-        book = Book.objects.get(pk=kwargs['book_pk'])
+        if 'id64' in kwargs:
+            # retrieve chapter by base64 identifier
+            chapter = Chapter.objects.filter(id64=kwargs['id64'])[0]
+        else:
+            book = Book.objects.get(pk=kwargs['book_pk'])
+            chapter = book.chapter_set.filter(number=kwargs['chapter_number'])[0]
 
-        # make context for the Chapter and its Scenes        
-        chapter = book.chapter_set.filter(number=kwargs['chapter_number'])[0]
+        # make context for the Chapter and its Scenes
         context['object_chapter'] = chapter
         context['object_scene_list'] = context['object_chapter'].scene_set.order_by('order')
 

@@ -29,7 +29,7 @@ urlpatterns = [
     # Chapter Urls
     re_path(r'^(?P<book_pk>\d+)/legacy/(?P<chapter_number>\d+)/$', views.ChapterDetailView.as_view(), name='chapter-detail-legacy'),
     re_path(r'^(?P<book_pk>\d+)/(?P<chapter_number>\d+)/$', views.ChapterDetailView_REACT.as_view(), name='chapter-detail'),
-    path('/chapter/<chapter_hex>/', views.ChapterDetailView_REACT.as_view(), name='chapter-detail'),
+    path('chapter/<id64>/', views.ChapterDetailView_REACT.as_view(), name='chapter-detail'),
     path('demo_chapter/create/', views_demo.copy_demo_chapter, name="copy-chapter-create"),
 
     # Scene Urls
