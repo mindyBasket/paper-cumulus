@@ -12,14 +12,46 @@
     <p>
         <b>Book</b> : {{object.chapter.book.title}}
         </br>
-        <b>Chapter</b>: {{object.chapter.number}}
+        <b>Chapter</b>: {{object.chapter.id64}}
         </br>
         <b>Scene id</b>: {{object.id}}
     </p>
     
     <p>
-        <a href="{% url 'flipbooks:chapter-detail-64' id64=object.chapter.id64 %}">< Chapter detail</a>
+        <a href="{% url 'flipbooks:chapter-detail-64' id64=object.chapter.id64 %}">< Back to Chapter</a>
     </p>
+
+    <ul class="list_scenes_mini">
+        {% for scene in object.chapter.scene_set.all %}
+            <li><a href="{% url 'flipbooks:scene-edit' pk=scene.pk %}">
+                {% with scene.strip_set.all|map_queryset:scene.children_li as mapped_strip_set %}
+                    <div class="preview {% if scene.pk == object.pk %}current{% endif %}" >
+                        {% for strip in mapped_strip_set|slice:":1" %}
+
+               
+                            {% with strip.frame_set.all|first as first_frame %}
+                            
+                                {% if first_frame is None or first_frame.frame_image is None %} 
+                                    <span class="thumb placeholder">
+                                    </span>
+                                {% else %} 
+                                    <span info="{{strip.frame_set.all|length}}">
+                                        <img src="{{ first_frame.frame_image.cell.url }}" height="100%"/>
+                                    </span>
+                                {% endif %} 
+                                
+                            {% endwith %}
+                        
+                        {% empty %}
+                            <span class="thumb placeholder">
+                            </span>
+                        {% endfor %}
+                    </div>
+                {% endwith %}
+
+            </a></li>
+        {% endfor %}
+    </ul>
     
     
 
@@ -39,8 +71,7 @@
     </div>
     -->
 
-    
-    <h3>Editing Scene: {% if object.name %}{{object.name}}{% else %}#{{object.id}}{% endif %}</h3>
+    <h3>Editing: {% if object.name %}{{object.name}}{% else %}#{{object.id}}{% endif %}</h3>
     {% if object.description %}
         <p>description: {{object.description}}</p>
     {% endif %}

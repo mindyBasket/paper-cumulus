@@ -1,3 +1,10 @@
+/* -------------------------------------- */
+/* -------------------------------------- */
+/*               scene list               */
+/* -------------------------------------- */
+/* -------------------------------------- */
+
+
 ul.list_scenes{
     display:flex;
     flex-wrap: wrap;
@@ -91,6 +98,71 @@ ul.list_scenes .scene_container:hover{
 .scene_container .timestamp{
     padding: 3px;
 }
+
+
+
+
+
+
+/* -------------------------------------- */
+/* -------------------------------------- */
+/*            scene list MINI             */
+/* -------------------------------------- */
+/* -------------------------------------- */
+
+
+ul.list_scenes_mini{
+    display:flex;
+    flex-flow: column;
+    justify-content: center;
+    
+    margin: 20px 0 0 0; 
+    padding: 0;
+    list-style: none;
+}
+
+
+ul.list_scenes_mini li{
+    margin: 0 auto;
+
+}
+
+
+ul.list_scenes_mini li .preview{
+    position :relative;
+    display:inline-block;
+    height: 55px;
+    width: 55px;
+    overflow: hidden; 
+
+    border: 3px solid transparent;
+    border-radius: 3px;
+
+}
+
+ul.list_scenes_mini li .preview.current{
+    pointer-events: none;
+    border: 3px solid #d8abab;
+}
+
+
+ul.list_scenes_mini li .preview:hover{
+    border: 3px solid #ff8982;
+}
+
+ul.list_scenes_mini li .preview span{
+    width: 100%;
+}
+
+ul.list_scenes_mini li .preview img{
+
+}
+
+
+
+
+
+
 
 /* -------------------------------------- */
 /* -------------------------------------- */
@@ -283,8 +355,8 @@ ul.list_strips li.spotlighted{
 .thumb.placeholder{
     /* style for .thumb box that has no image */
     width: 150px;
-    height: 100px;
-    border: 4px dashed #a8a8a8;
+    height: 100%;
+    border: 3px dashed #d8cece;
     background-color: #ededed;
 }
 
