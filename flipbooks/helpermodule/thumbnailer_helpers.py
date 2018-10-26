@@ -106,7 +106,7 @@ def delete_frame_images(frame):
     
     if frame and frame.frame_image: 
         print("========= deleting frame images ==========")
-        if settings.USE_S3:
+        if hasattr(settings, 'USE_S3') and settings.USE_S3 == True:
             print("===== delete from s3 ======")
             delete_frame_images_s3(frame)
 

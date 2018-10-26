@@ -19,24 +19,25 @@ const $startDemo = document.querySelector('#make_demo');
 
 if($startDemo){
 	$startDemo.onclick  = (e) =>{
-		console.log("[Create Demo!]");
+		console.log("[Create Demo!...just oooooone second....]");
 
         // grab CSRF token
         const csrfToken = getCSRFToken();
 
         if (csrfToken){
             axios({
-                method: 'get', // should be POST?
-                url: `/flipbooks/demo_chapter/create/`,
+                method: 'post', // should be POST?
+                data: null,
+                url: '/flipbooks/demo_chapter/create/',
+                headers: {"X-CSRFToken": csrfToken}
             })
             .then(res => {
-                console.log("[Copy Demo Chapter]");
-                if (!res || !res.data){
-                	console.error("No valid response ):");
+   
+                if (res.data && res.data.hasOwnProperty('url') && res.data.url ) {
+                    window.location.href = res.data.url;
+                } else {
+                    console.error("Something went wrong while cloning a demo chapter. ): ");
                 }
-
-                // redirect to the newly created chapter
-
             })
             .catch(error => {
                 console.log(error);

@@ -180,8 +180,10 @@ class ChapterModelSerializer(serializers.ModelSerializer):
         model = Chapter
         fields = [
             'id',
+            'id64',
             'number',
             'title',
+            'scene_set'
 
         ]
 

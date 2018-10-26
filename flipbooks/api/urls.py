@@ -15,10 +15,11 @@ urlpatterns = [
     #url(r'^api/book/(?P<pk>\d+)/', include('flipbooks.api.urls', namespace='api-get-book'))
     path('book/all/', views.FlipbookAPIListView.as_view(), name="list-book"),
     path('book/<int:pk>/', views.FlipbookAPIDetailView.as_view(), name="detail-book"),
-    path('chapter/<int:pk>/scene/all/', views.SceneAPIListView.as_view(), name="list-scene"),
+    
 
     # Chapter
-
+    path('chapter/<int:pk>/', views.ChapterAPIDetailView.as_view(), name="detail-chapter"),
+    path('chapter/<int:pk>/scene/all/', views.SceneAPIListView.as_view(), name="list-scene"), # same as above??
 
     # Scene 
     path('chapter/<int:pk>/scene/create/', views.SceneCreateAPIView.as_view(), name="create-scene-under-chapter"),

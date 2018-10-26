@@ -49,13 +49,43 @@ def home_demo(request):
 def copy_demo_chapter(request, *args, **kwargs):
     
     resp = {}
-
+    resp['success'] = True
     if request.method == "POST":
-        # make new demo chapter by copying the model
-        resp['Hello'] = 'World!'
-        # search for demo model
+        # get demo model
+        ch_original = Chapter.objects.get(pk=2)
+        new_demo_chapter = Chapter.objects.get(pk=2)
 
-        # copy the instance
+        new_demo_chapter.pk = None
+        new_demo_chapter.title = "New Demo Chapter"
+        new_demo_chapter.id64=''
+        new_demo_chapter.save()
+
+        new_pk = new_demo_chapter.pk
+        print("====== new Pk for cloned demo: {}".format(new_pk))
+
+        # copy children
+        
+        for sc in ch_original.scene_set.all():
+            sc_original = Scene.objects.get(pk=sc.pk) # for retireving children
+            sc.pk = None # will have no children
+            sc.name = "Demo " + sc_original.name
+            sc.chapter = new_demo_chapter
+            sc.save()
+            print("[SCENE] - new pk = {}".format(sc.pk))
+            for st in sc_original.strip_set.all():
+                st_original = Strip.objects.get(pk=st.pk) # for retireving children
+                st.pk = None # will have no children
+                st.scene = sc
+                st.save()
+                print("[STRIP] --- new pk = {}".format(st.pk))
+                for fr in st_original.frame_set.all():
+                    fr.pk = None
+                    fr.strip = st
+                    fr.save()
+                    print("[FRAME] ------ new pk = {}".format(fr.pk))
+
+
+        resp['url'] = "/flipbooks/chapter/%s/" % new_demo_chapter.id64
 
         return JsonResponse(resp)
 

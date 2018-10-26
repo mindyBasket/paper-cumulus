@@ -48,6 +48,16 @@ class FlipbookAPIDetailView(generics.RetrieveAPIView):
 
     
 
+class ChapterAPIDetailView(generics.RetrieveAPIView):
+    
+    queryset = Chapter.objects.all()
+    serializer_class = ChapterModelSerializer
+    
+    def get_queryset(self):
+        return Chapter.objects.all()
+
+
+
 
 # http://patorjk.com/software/taag/#p=display&f=Cyberlarge&t=Scene
 # _______ _______ _______ __   _ _______
