@@ -29,9 +29,14 @@ if($startDemo){
                 method: 'get', // should be POST?
                 url: `/flipbooks/demo_chapter/create/`,
             })
-            .then(response => {
+            .then(res => {
                 console.log("[Copy Demo Chapter]");
-                console.log(response.data);
+                if (!res || !res.data){
+                	console.error("No valid response ):");
+                }
+
+                // redirect to the newly created chapter
+
             })
             .catch(error => {
                 console.log(error);

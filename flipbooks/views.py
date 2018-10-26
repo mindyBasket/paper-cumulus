@@ -141,6 +141,10 @@ class ChapterDetailView_REACT(generic.TemplateView):
 
         context = super(ChapterDetailView_REACT, self).get_context_data(*args, **kwargs)
         
+        # Note: this function is used for two different URL pattern 
+        #       re_path(r'^(?P<book_pk>\d+)/(?P<chapter_number>\d+)/$'
+        #       path('<slug:book_slug>/chapter-<chapter_hex>/'
+
         # Get book from URL
         book = Book.objects.get(pk=kwargs['book_pk'])
 

@@ -48,6 +48,9 @@ import django.dispatch
 # -------------------------------------------------
 # -------------------------------------------------
 
+
+
+
 class Book(models.Model):
     
     title = models.CharField(max_length=50, blank=False, default="Untitled Book")
@@ -65,17 +68,32 @@ class Book(models.Model):
         # is_new = True if self._state.adding else False
         if self._state.adding:
             self.slug = text.slugify("{0} {1}".format(self.pk,self.title))
-
+            
         super(Book, self).save(*args, **kwargs)
     
 
 
+
+
+
+
+
+
+
+def get_rand_base64(length):
+    chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+    result_code = ''
+    for i in range(length):
+        result_code+=chars[random.randrange(0, len(chars))]
+
+    return result_code
 
     
 class Chapter(models.Model):
     
     number = models.IntegerField(default="0") 
     title = models.CharField(max_length=50, blank=True, default="Untitled")
+    id64 = models.CharField(max_length=8, blank=True, default='')
     
     # relationship
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
@@ -85,10 +103,16 @@ class Chapter(models.Model):
     
     def __str__(self):
         # https://docs.python.org/2/library/stdtypes.html#str.format
-        return "Chapter {}: {}".format(self.number, self.title)
+        return "{} : {} : {}".format(self.number, self.title, self.id64)
 
 
+    def save(self, *args, **kwargs):
+        # check if this is a new book
+        # is_new = True if self._state.adding else False
+        if self._state.adding or self.id64 == '':
+            self.id64 = get_rand_base64(8)
 
+        super(Chapter, self).save(*args, **kwargs)
 
 
 

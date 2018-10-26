@@ -16,6 +16,12 @@ class BookModelAdmin(admin.ModelAdmin):
     list_display = ("id", 'title', "slug")
 
 
+class ChapterModelAdmin(admin.ModelAdmin):
+
+    list_display = ("id", "__str__")
+
+
+
 class SceneModelAdmin(admin.ModelAdmin):
 
     list_display = ("id", "__str__", "order", "name", "children_li")
@@ -44,7 +50,7 @@ class FrameModelAdmin(admin.ModelAdmin):
 
 # Register your models here.
 admin.site.register(models.Book, BookModelAdmin)
-admin.site.register(models.Chapter)
+admin.site.register(models.Chapter, ChapterModelAdmin)
 admin.site.register(models.Scene, SceneModelAdmin)
 admin.site.register(models.Strip, StripModelAdmin)
 admin.site.register(models.Frame, FrameModelAdmin)

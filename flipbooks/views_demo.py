@@ -27,7 +27,7 @@ from .helpermodule import helpers
 def home_demo(request):
     context = {'welcome_msg': "Start Demo?"}
 
-    demo_book = Book.objects.filter(slug="2-demo-book-model")[0]
+    demo_book = Book.objects.filter(slug="2-demo-book")[0]
     if not demo_book:
         raise Exception("Cannot find the demo book")
 
@@ -49,9 +49,18 @@ def home_demo(request):
 def copy_demo_chapter(request, *args, **kwargs):
     
     resp = {}
-    resp['request'] = request.method
-    resp['Hello'] = 'World!'
-    return JsonResponse(resp)
+
+    if request.method == "POST":
+        # make new demo chapter by copying the model
+        resp['Hello'] = 'World!'
+        # search for demo model
+
+        # copy the instance
+
+        return JsonResponse(resp)
+
+    else:
+        return JsonResponse(None)
 
 
 
