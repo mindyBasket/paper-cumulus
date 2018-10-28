@@ -28,29 +28,22 @@ from django.dispatch import receiver
 import django.dispatch
 
 
+
+
+
+
+
+
+# http://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=Book
+
+# ██████╗  ██████╗  ██████╗ ██╗  ██╗
+# ██╔══██╗██╔═══██╗██╔═══██╗██║ ██╔╝
+# ██████╔╝██║   ██║██║   ██║█████╔╝ 
+# ██╔══██╗██║   ██║██║   ██║██╔═██╗ 
+# ██████╔╝╚██████╔╝╚██████╔╝██║  ██╗
+# ╚═════╝  ╚═════╝  ╚═════╝ ╚═╝  ╚═╝
+                                  
     
-
-
-
-
-# http://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=Strip 
-
-#  ██████╗██╗  ██╗ █████╗ ██████╗ ████████╗███████╗██████╗ 
-# ██╔════╝██║  ██║██╔══██╗██╔══██╗╚══██╔══╝██╔════╝██╔══██╗
-# ██║     ███████║███████║██████╔╝   ██║   █████╗  ██████╔╝
-# ██║     ██╔══██║██╔══██║██╔═══╝    ██║   ██╔══╝  ██╔══██╗
-# ╚██████╗██║  ██║██║  ██║██║        ██║   ███████╗██║  ██║
-#  ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝        ╚═╝   ╚══════╝╚═╝  ╚═╝
-                                                         
-# -------------------------------------------------
-# -------------------------------------------------
-#               Chapter and Book
-# -------------------------------------------------
-# -------------------------------------------------
-
-
-
-
 class Book(models.Model):
     
     title = models.CharField(max_length=50, blank=False, default="Untitled Book")
@@ -70,7 +63,6 @@ class Book(models.Model):
             self.slug = text.slugify("{0} {1}".format(self.pk,self.title))
             
         super(Book, self).save(*args, **kwargs)
-    
 
 
 
@@ -79,6 +71,15 @@ class Book(models.Model):
 
 
 
+
+
+#  ██████╗██╗  ██╗ █████╗ ██████╗ ████████╗███████╗██████╗ 
+# ██╔════╝██║  ██║██╔══██╗██╔══██╗╚══██╔══╝██╔════╝██╔══██╗
+# ██║     ███████║███████║██████╔╝   ██║   █████╗  ██████╔╝
+# ██║     ██╔══██║██╔══██║██╔═══╝    ██║   ██╔══╝  ██╔══██╗
+# ╚██████╗██║  ██║██║  ██║██║        ██║   ███████╗██║  ██║
+#  ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝        ╚═╝   ╚══════╝╚═╝  ╚═╝
+                                                         
 
 def get_rand_base64(length):
     chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
@@ -94,6 +95,8 @@ class Chapter(models.Model):
     number = models.IntegerField(default="0") 
     title = models.CharField(max_length=50, blank=True, default="Untitled")
     id64 = models.CharField(max_length=8, blank=True, default='')
+    children_li = models.TextField(max_length=600, blank=True, default="")
+
     
     # relationship
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
@@ -112,6 +115,9 @@ class Chapter(models.Model):
         if self._state.adding or self.id64 == '':
             self.id64 = get_rand_base64(8)
 
+        # validate children_li
+        self.children_li = helpers.refresh_or_cleanup_children_li(self)
+        
         super(Chapter, self).save(*args, **kwargs)
 
 
@@ -137,7 +143,7 @@ class Chapter(models.Model):
 class Scene(models.Model):
     
     order = models.IntegerField(default="0") 
-    children_li = models.TextField(max_length=200, blank=True, default="")
+    children_li = models.TextField(max_length=600, blank=True, default="")
     
     name = models.CharField(max_length=50, blank=True, default="")
     description = models.TextField(max_length=100, blank=True, default="")

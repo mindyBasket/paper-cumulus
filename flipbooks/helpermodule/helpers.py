@@ -45,6 +45,8 @@ def shout():
 
 
 from ..models import (
+    Book,
+    Chapter,
     Scene,
     Strip,
     Frame
@@ -59,7 +61,7 @@ from ..models import (
 
 
 
-''' Checks if children_li is valid '''
+''' Checks if children_li is valid. Currently used for custom tags.'''
 # Accepts children_li in form of stringy list or a list
 def is_valid_children_li(cli):
     
@@ -86,10 +88,13 @@ the order the children appears in db'''
 def refresh_children_li(obj):
     
     children_li = None
-    if isinstance(obj, Strip):
-        children_li = obj.frame_set.all()
+    if isinstance(obj, Chapter):
+        children_li = obj.scene_set.all()
     elif isinstance(obj, Scene):
         children_li = obj.strip_set.all()
+    elif isinstance(obj, Strip):
+        children_li = obj.frame_set.all()
+    
     else:
         print("Not a valid object to extract children_li")
         return False
@@ -107,8 +112,11 @@ def cleanup_children_li(obj):
 
     children_ref = None
     child_inst_name = None
-    # how to check instance
-    if(isinstance(obj, Scene)):
+
+    if(isinstance(obj, Chapter)):
+        children_ref = [str(scene.id) for scene in Scene.objects.filter(chapter=obj)]
+        child_inst_name = "Scene"
+    elif(isinstance(obj, Scene)):
         children_ref = [str(strip.id) for strip in Strip.objects.filter(scene=obj)]
         child_inst_name = "Strip"
     elif(isinstance(obj, Strip)):
@@ -116,7 +124,7 @@ def cleanup_children_li(obj):
         child_inst_name = "Frame"
     else:
         print("This instance does not have children_li")
-        return False
+        return ''
 
     cleaned_children_li = []
     
@@ -142,6 +150,55 @@ def cleanup_children_li(obj):
 
 
     return ','.join(str(child_id) for child_id in cleaned_children_li)
+
+
+
+
+
+
+
+''' basically puts cleanup_children_li() and refresh_children_li() together  '''
+
+def refresh_or_cleanup_children_li(obj):
+
+    if(isinstance(obj, Chapter)):
+        children_ref = [str(scene.id) for scene in Scene.objects.filter(chapter=obj)]
+        child_inst_name = "Scene"
+    elif(isinstance(obj, Scene)):
+        children_ref = [str(strip.id) for strip in Strip.objects.filter(scene=obj)]
+        child_inst_name = "Strip"
+    elif(isinstance(obj, Strip)):
+        children_ref = [str(frame.id) for frame in Frame.objects.filter(strip=obj)]
+        child_inst_name = "Frame"
+    else:
+        print("This instance does not have children_li")
+        return ''
+
+
+    
+    if obj.children_li == '' or obj.children_li == "False" or "".join(obj.children_li.split(","))== '':
+        # Case 1: Check if valid children_li exists:
+        print("[refresh_or_cleanup_children_li()]. Refreshing children_li.")
+        new_children_li = refresh_children_li(obj)
+
+        if new_children_li:
+            return new_children_li
+        else:
+            return obj.children_li
+
+    else:
+        # Case 2: clean up preexisting children_li
+        # Remember to query it RIGHT
+        cleaned_children_li = cleanup_children_li(obj)
+
+        if cleaned_children_li:
+            return cleaned_children_li
+        else:
+            return obj.children_li
+
+
+
+
 
 
 

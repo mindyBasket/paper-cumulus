@@ -18,7 +18,7 @@ class BookModelAdmin(admin.ModelAdmin):
 
 class ChapterModelAdmin(admin.ModelAdmin):
 
-    list_display = ("id", "__str__")
+    list_display = ("id", "__str__", "children_li")
 
 
 

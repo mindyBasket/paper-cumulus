@@ -66,17 +66,25 @@ class ChapterDetailView(generic.TemplateView):
     
     def get_context_data(self, *args, **kwargs):
 
+
+        # TODO: YOU ARE LOOKING AT OLD VIEW OBJECT.
+        #       THIS PROJECT WENT THROUGH A CHANGE WHERE REACT IS USED FOR FRONTEND
+        #       THIS OBJECT IS CURRENTLY NOT USED
+
+
         context = super(ChapterDetailView, self).get_context_data(*args, **kwargs)
         
         # Get book from URL
         book = Book.objects.get(pk=kwargs['book_pk'])
     
         # make context for the Chapter and its Scenes        
+        # TODO: Chapter object also opted into using its own children_li. So 
+        #       object_scene_list is useless.
         context['object'] = book.chapter_set.filter(number=kwargs['chapter_number'])[0]
         context['object_scene_list'] = context['object'].scene_set.order_by('order')
-    
-        print("*--------------Get scene set {}".format(context['object'].scene_set.all()))
         
+        # TODO: this looks like old code...confirm if this is used anywhere, ifnot
+        #       remove!
         valid_children_li = []
         for obj in context['object_scene_list']:
             if obj.children_li == "":
@@ -104,6 +112,7 @@ class ChapterDetailView2(generic.TemplateView):
     queryset = Chapter.objects.all()
     template_name = "frontend/chapter_detail.html" # use frontend
     
+
     def get_context_data(self, *args, **kwargs):
 
         context = super(ChapterDetailView2, self).get_context_data(*args, **kwargs)
@@ -155,7 +164,8 @@ class ChapterDetailView_REACT(generic.TemplateView):
 
         # make context for the Chapter and its Scenes
         context['object_chapter'] = chapter
-        context['object_scene_list'] = context['object_chapter'].scene_set.order_by('order')
+
+        # context['object_scene_list'] = context['object_chapter'].scene_set.order_by('order')
 
         # prepare invisible form. Make sure you put it into context!
         scene_create_form = forms.SceneCreateForm(initial={"chapter_number": chapter.number})

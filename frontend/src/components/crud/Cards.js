@@ -155,8 +155,8 @@ function initializeSortable($container, name, callback){
             constrainDimensions: true,
         },
         scrollable: {
-            speed: 6,
-            // sensitivity: 20
+            speed: 1,
+            sensitivity: 0
         }
     });
 

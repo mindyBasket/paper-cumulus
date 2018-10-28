@@ -27,8 +27,9 @@
 
     <h3>Scenes</h3>
     <ul class="list_scenes">
-        {% for scene in object_scene_list %}
 
+        {% with object_chapter.scene_set.all|map_queryset:object_chapter.children_li as mapped_scene_set %}
+        {% for scene in mapped_scene_set %}
             <li>
                 <a class="scene_container" href="{% url 'flipbooks:scene-play' pk=scene.pk %}">
                     <span class="flex_item preview_container">
@@ -69,10 +70,11 @@
                 </a>
             </li>
         {% empty %}
-            <p>No strips could be found</p>
+            <p>No strips under this chapter. Add some!</p>
         
         {% endfor %}
-        
+        {% endwith %}
+
     </ul>
 
 
