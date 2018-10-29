@@ -2,6 +2,7 @@ import os, re
 from pathlib import Path, PurePath #new in Python 3.4+
 from django.conf import settings
 from django.core.files.storage import default_storage as storage
+import easy_thumbnails.files as easy_th_files
 
 
 ''' Takes path to thumbnail image and its dimension to 
@@ -48,9 +49,14 @@ def get_alias_dict(thumbnail_path, thumbnail_dimension):
 
 
 
-def copy_frame_images(frame):
-    pass
-
+def regenerate_frame_images(frame):
+    # do I really have to do this one by one
+    thumbnailer = easy_th_files.get_thumbnailer(frame.frame_image)
+    
+    alias_dict = settings.THUMBNAIL_ALIASES['']
+    for alias in alias_dict:
+        print("Regenerate frame image using this options: {}".format(alias_dict[alias]))
+        thumbnailer.get_thumbnail(alias_dict[alias])
 
 
 

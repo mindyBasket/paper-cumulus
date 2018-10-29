@@ -371,10 +371,14 @@ class Frame(models.Model):
         
         # Monitor image dimension
         if self.frame_image:
-            thumbnail_dimension = self.frame_image._get_image_dimensions() #returns tuple
-            # print(dir(thumbnail_obj)) 
-            dimension_li =  [str(val) for val in thumbnail_dimension]
-            self.dimension = "x".join(dimension_li)
+            try:
+                thumbnail_dimension = self.frame_image._get_image_dimensions() #returns tuple
+                # print(dir(thumbnail_obj)) 
+                dimension_li =  [str(val) for val in thumbnail_dimension]
+                self.dimension = "x".join(dimension_li)
+            except FileNotFoundError:
+                print("Cannot find thumbnail image file at {}!".format(self.frame_image.url))
+                self.dimension = '' 
 
 
         # 1. Save instance
