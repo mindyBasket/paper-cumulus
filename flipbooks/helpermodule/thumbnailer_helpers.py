@@ -48,6 +48,8 @@ def get_alias_dict(thumbnail_path, thumbnail_dimension):
 
 
 
+def copy_frame_images(frame):
+    pass
 
 
 
@@ -93,7 +95,8 @@ def delete_frame_images_s3(frame):
         # THESE DO NOT WORK. It only checks for files, not dirs
         # print(storage.exists(str(target_dir) ))
         # print(storage.exists('frame_images'))
-
+    else:
+        print("[S3][ERROR] Image not in a valid frame image folder")
 
 
 
@@ -133,9 +136,37 @@ def delete_frame_images(frame):
             
             if str(folder_name) == str(image_name):
                 print("Image name and folder name matches. Getting folder path...")
+
+                # need to remove everyhing before media, basically removing 
+                # any leading slash.
+                # WARNING: but I don't remember this happening on windows machine...?
+                start_i = 0
+                media_dir = settings.MEDIA_URL if hasattr(settings, 'MEDIA_URL') else False
+                if not media_dir:
+                    raise Exception('[ERROR] MEDIA_URL not set in settings')
+                    return False
+
+                # remove slashes
+                media_dir = media_dir.strip("/")
+                for pathpart in im_path.parts:
+                    if pathpart != media_dir:
+                        start_i += 1
+                    else:
+                        break
+
+                # join the path starting from where the MEDIA_URL is
+                target_dir = Path("").joinpath(*im_path.parts[start_i:])
+                target_dir = target_dir.parent
                 #remove contents of folder 
-                folder_path = im_path.parent
+                folder_path = target_dir
                 print("Folder_path extracted: {}".format(folder_path))
+
+                # for p in os.listdir("."):
+                #     print(p)
+                print("------why can't it find paths?!?!-------")
+                print(os.path.exists("media"))
+
+
                 if os.path.exists(folder_path):
                     # list all items 
                     # from os.path import isfile, join

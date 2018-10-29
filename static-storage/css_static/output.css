@@ -833,13 +833,13 @@ a:hover {
 /*
 .thumb .popup_menu .tickmark{
     position:absolute;
-    
+
     bottom: -14px; left: 50%;
     width: 0; 
     height: 0; 
     border-left: 15px solid transparent;
     border-right: 15px solid transparent;
-  
+
     border-top: 15px solid #5C5C5C;
 }*/
 /* -------------------------------------- */
@@ -1337,17 +1337,17 @@ input.untouchable {
 /*.cover.drag_and_drop,
 .cover.file_upload,
 .cover.preview{
-  
+
   transition-property: opacity;
   transition-duration: 0.15s;
   transition-timing-function: ease-in;
-  
+
   low-tech solution to prevent flickering when drag related event fires
      over children object. The ease-in makes the flickering much milder
 
     NOTE: probably don't need this anymore now that I have a better
           way of detecting and changing state of covers
-  
+
 }*/
 .cover.file_upload {
   /* This needs to apply dynamically unfortunately */

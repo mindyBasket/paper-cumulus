@@ -915,7 +915,7 @@ class SceneCardList extends Component {
 
     reorderedStrips(scene){
 
-        if (scene && scene.hasOwnProperty('strips')){
+        if (scene && scene.hasOwnProperty('strips') && scene.strips.length > 0){
 
             const stripIdList = scene.children_li.split(",");
             if (stripIdList==null || stripIdList==='') {
@@ -945,6 +945,7 @@ class SceneCardList extends Component {
         } else {
             return [];
         }
+
         
     }
 
@@ -952,6 +953,7 @@ class SceneCardList extends Component {
     render (){
         
         const reorderedStrips = this.reorderedStrips(this.state.data);
+        console.log("ReorderedStrips: " + JSON.stringify(reorderedStrips));
 
 
         return (
@@ -965,17 +967,21 @@ class SceneCardList extends Component {
                 </ul>
             ) : (
                 <ul className="list_strips" ref={this.r_cardContainer}>
-                    {reorderedStrips.map( (strip,index) => (
-                         <StripCard stripObj={strip} 
-                                    delay={this.firstLoad ? -1 : 1} 
-                                    index={index+1}
-                                    spotlightedAll = {this.props.spotlightedAll}
+                    {reorderedStrips.map( (strip,index) => {
+                        if (strip) {
+                            return (<StripCard stripObj={strip} 
+                                               delay={this.firstLoad ? -1 : 1} 
+                                               index={index+1}
+                                               spotlightedAll = {this.props.spotlightedAll}
 
-                                    handle_fetchScene = {this.handle_fetchScene}
-                                    setState_LightBox = {this.props.setState_LightBox}
+                                                handle_fetchScene = {this.handle_fetchScene}
+                                                setState_LightBox = {this.props.setState_LightBox}
 
-                                    key={"strip"+strip.id}/>
-                    )) } 
+                                                key={"strip"+strip.id}/>
+                                    )
+                         
+                        }
+                    }) } 
                 </ul>
                 
             )} 
