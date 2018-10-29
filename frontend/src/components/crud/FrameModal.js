@@ -21,7 +21,8 @@ function setst_FrameModal(newState){
     this.setState(newState);
 }
 
-function pub_FrameModal_openModal(frameObj, on){
+function pub_FrameModal_openModal(e, frameObj, on){
+    if (e){ e.stopPropagation(); }
     // Can be used to close modal by passing frameObj = false
     if (!frameObj || Object.keys(frameObj).length === 0){
         on = false;
@@ -207,7 +208,7 @@ class FrameModal extends Component{
         if        (prevState.on == false && this.state.on == true){
             // turn on Lightbox, and bind closeModal when clicking
             lb.pub_LightBox_on();
-            lb.pub_LightBox_addToOnClick(()=>{pub_FrameModal_openModal(false)}); 
+            lb.pub_LightBox_addToOnClick(()=>{pub_FrameModal_openModal(null, false)}); 
         } else if (prevState.on == true && this.state.on == false){
             //lb.pub_LightBox_off();
             this.endModalState("All"); // close anything else 

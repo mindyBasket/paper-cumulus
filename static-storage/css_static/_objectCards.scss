@@ -192,8 +192,36 @@ ul.list_strips li.strip_card{
 
 ul.list_strips li.spotlighted{
     /* raises z-index above the lightbox cover */
-    z-index: 1000;
+    z-index: 1000; 
 }
+
+
+.strip_card.draggable-mirror .strip_flex_toolbar,
+.strip_card.draggable-mirror .strip_content
+{
+    /* transform on this doesn't work on .draggable-mirror directly
+       because transform property already taken by draggable js*/
+    transform: rotate(3deg); 
+}
+
+.strip_card.draggable-source--is-dragging .strip_flex_toolbar,
+.strip_card.draggable-source--is-dragging .strip_content
+{
+    opacity: 0;
+    
+}
+
+.strip_card.draggable-source--is-dragging{
+    opacity: 0.3;
+    background-color: black;
+}
+
+.strip_card.draggable--over{
+
+}
+
+
+
 
 .strip_content{
     /*I added this container to wrap .strip_flex_container 
@@ -271,7 +299,7 @@ ul.list_strips li.spotlighted{
 
 
 .thumb.draggable-mirror .frame_image{
-    /* transform on this doesn't work on .draggable-mirro directly
+    /* transform on this doesn't work on .draggable-mirror directly
        because transform property already taken by draggable js*/
     transform: rotate(7deg); 
 }

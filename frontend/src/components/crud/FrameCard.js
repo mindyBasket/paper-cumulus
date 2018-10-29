@@ -245,24 +245,25 @@ class FrameCard extends Component{
         const delay = this.props.delay;
         const $node = this.$node.current
 
-        var mountAnim = anime.timeline();
-            mountAnim
-                .add({
-                    targets: $node,
-                    scale: 0,
-                    duration: 0
-                }) 
-                .add({
-                    targets: $node,
-                    scale: 0.5,
-                    delay: delay*80,
-                    duration: 0
-                }) 
-                .add({
-                    targets: $node,
-                    scale: 1,
-                    elasticity: 300
-                });   
+        // Removing animation for now. 
+        // var mountAnim = anime.timeline();
+        //     mountAnim
+        //         .add({
+        //             targets: $node,
+        //             scale: 0,
+        //             duration: 0
+        //         }) 
+        //         .add({
+        //             targets: $node,
+        //             scale: 0.5,
+        //             delay: delay*80,
+        //             duration: 0
+        //         }) 
+        //         .add({
+        //             targets: $node,
+        //             scale: 1,
+        //             elasticity: 300
+        //         });   
 
         this.setState({loading: false});
         
@@ -414,7 +415,7 @@ class FrameCard extends Component{
                                 (!this.state.visible ? " ignore" : "" ) + 
                                 (this.state.dying ?    " dying" : "")} 
                      frameid={frame.id}
-                     onClick={()=>{pub_FrameModal_openModal(frame);}}
+                     onClick={(e)=>{pub_FrameModal_openModal(e, frame);}}
                      ref={this.$node}>
       
                     {/* this is what determines the dimension */}

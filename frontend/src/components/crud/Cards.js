@@ -155,7 +155,7 @@ function initializeSortable($container, name, callback){
             constrainDimensions: true,
         },
         scrollable: {
-            speed: 1,
+            speed: 0,
             sensitivity: 0
         }
     });
@@ -183,6 +183,59 @@ function initializeSortable($container, name, callback){
 
     });
 }
+
+
+function initializeSortable_Scene($container, name, callback){
+    if ($container == null) {return false;}
+
+    console.log("initialize sortable for StripCards");
+
+    const targetName = '.strip_card';
+    const StripSortable = new Sortable($container, {
+        draggable: targetName,
+        delay: 500,
+        mirror: {
+            appendTo: document.querySelector('body'),
+            //appendTo: $container.getAttribute("class"),
+            constrainDimensions: true,
+        },
+        scrollable: {
+            speed:0,
+            sensitivity: 0
+        }
+    });
+
+    // because this takes much longer delay, add animated indicator
+    $container.querySelectorAll(targetName).forEach((stripCard)=>{
+
+    });
+
+    StripSortable.on('sortable:start', () => {
+        //tilt the chosen
+        // const pickedUp = document.querySelector(targetName+'.draggable-mirror');
+    });
+    StripSortable.on('sortable:stop', () => {
+        //get new order
+        let thOrder = [];
+        $container.querySelectorAll(targetName).forEach(th=>{
+            let thclass = th.getAttribute("class");
+            let id = th.getAttribute("stripid");
+
+            if (!thclass.includes("draggable")){
+                thOrder.push(id);
+            } else if (thclass.includes("draggable-source")){
+                thOrder.push(id);
+            }
+        });
+
+        console.log(thOrder.join(","));
+        callback(thOrder);
+
+    });
+}
+
+
+
 
 
 
@@ -653,10 +706,12 @@ class StripCard extends PureComponent {
 
             <li className={"strip_card " +
                            (this.props.spotlightedAll || this.state.selfSpotlighted ? "spotlighted" : "")} 
+                stripid={strip.id}
                 onDragOver={(e)=>(this.handle_dragMessageToggle(e, true))}
                 onDragLeave={(e)=>(this.handle_dragMessageToggle(e, false))}
                 onDrop={this.handle_dragAndDrop}
-                ref={this.$node}>
+
+                ref={this.$node}> 
                 {/* Keep strip_card position:relative to allow being "highlightable"
                     as well as allowing popups and callouts to appear around it */}
    
@@ -747,7 +802,7 @@ class SceneCardList extends Component {
 
     constructor(props){
         super(props);
-
+        this.r_cardContainer = React.createRef();
         this.stripCount = Number(document.querySelector('#ref-content').getAttribute("stripSetCount"));
 
         this.state = {
@@ -755,8 +810,11 @@ class SceneCardList extends Component {
         }
 
         this.firstLoad = true;
+        this.sortablified = false;
 
         this.handle_fetchScene = this.handle_fetchScene.bind(this);
+        this.handle_stripSort = this.handle_stripSort.bind(this);
+
         pub_handle_fetchScene = pub_handle_fetchScene.bind(this);
         // incoming
         //this.props.toSceneCardList
@@ -776,6 +834,24 @@ class SceneCardList extends Component {
             this.setState({data: newData});
         }
 
+        if (this.r_cardContainer.current && !this.sortablified){
+            // WEIRD: here, this.firstLoad is actually 'true'. 
+            //        which is counter intuitive because this.firstLoad is set to false
+            //        immediately after data is set to the state. (see handle_fetchScene())
+            console.log("StripCard count: " + this.r_cardContainer.current.querySelectorAll('.strip_card').length);
+            console.log(this.firstLoad);
+
+            // Sortable magic
+            initializeSortable_Scene(this.r_cardContainer.current, 
+                                     null,
+                                     this.handle_stripSort);
+            this.sortablified = true;
+        }
+
+        
+        
+
+
     }
 
     handle_fetchScene(){
@@ -785,6 +861,31 @@ class SceneCardList extends Component {
             this.firstLoad = false;
         });
     }
+
+
+    handle_stripSort(idArr){
+        // TODO: this function is very similar to handle_frameSort. BAD!
+        console.log("Gather strip Ids.");
+        // const strip = this.props.stripObj;
+        // const sortableData = {frame_ids: idArr.join(",")}
+        // console.log("ready to send: " +JSON.stringify(sortableData));
+
+        // axios({
+        //     method: "get",
+        //     params: sortableData,
+        //     url: `/flipbooks/ajax/strips/${strip.id}/sort-children/`
+ 
+        // })
+        // .then(response =>{ 
+        //     console.log("sucessfully came back: " + response.data["frame_ids"]);
+        // })
+        // .catch(err => {
+        //     console.error(JSON.stringify(err));
+        //     console.error(err.data);
+        //     console.log(data.status);
+        // })
+    }
+
 
     // takes only one key from newData. Rest will be ignored for now.
     appendData(data, newData){
@@ -805,9 +906,48 @@ class SceneCardList extends Component {
         return data; 
     }
 
+    // returns list of frame objects in order referencing children_li
+
+    reorderedStrips(scene){
+
+        if (scene && scene.hasOwnProperty('strips')){
+
+            const stripIdList = scene.children_li.split(",");
+            if (stripIdList==null || stripIdList==='') {
+                // children_li could be empty even if it has valid children
+                return scene.strips
+            }
+
+            let stripOrderedArr = Array.apply(null, Array(stripIdList.length));
+            let stripLeftOver = [];
+
+            scene.strips.forEach((st)=>{
+                const insertAt = stripIdList.indexOf(String(st.id));
+                if (insertAt>=0 && insertAt<stripOrderedArr.length){
+                    stripOrderedArr[insertAt] = st; 
+                } else if (insertAt==-1){
+                    // children not ref'd in children_li is just placed at the end
+                    stripLeftOver.push(st);
+                }
+                
+            });
+
+            if (stripLeftOver.length>0){
+                stripOrderedArr.push(...stripLeftOver);
+            }
+
+            return stripOrderedArr;
+        } else {
+            return [];
+        }
+        
+    }
 
 
     render (){
+        
+        const reorderedStrips = this.reorderedStrips(this.state.data);
+
 
         return (
             <div>
@@ -819,8 +959,8 @@ class SceneCardList extends Component {
                     })}
                 </ul>
             ) : (
-                <ul className="list_strips">
-                    {this.state.data['strips'].map( (strip,index) => (
+                <ul className="list_strips" ref={this.r_cardContainer}>
+                    {reorderedStrips.map( (strip,index) => (
                          <StripCard stripObj={strip} 
                                     delay={this.firstLoad ? -1 : 1} 
                                     index={index+1}

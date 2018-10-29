@@ -1,6 +1,7 @@
 {% extends "layout_columned.html" %}
 {% load thumbnail %}
 {% load flipbooks_custom_tags %}
+{% load static %}
 
 {% block title %} {{block.super}} | Scene Detail{% endblock title %}
 
@@ -94,7 +95,8 @@
     <!-- frame_create_form -->
     {% include "flipbooks/partials/frame_create_partial.html" with form=frame_create_form action_url=frame_create_url form_id="frame_create_form" %}
 
-
+    
+    
     
 {% endblock %}
 
@@ -103,4 +105,5 @@
     {% load static %}
     <!-- React -->
     <script src="{% static 'frontend/main.js' %}"></script>
+
 {% endblock extra_js %}
