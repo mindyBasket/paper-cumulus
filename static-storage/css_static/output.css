@@ -601,7 +601,7 @@ a:hover {
 }
 
 .splash {
-  height: 250px;
+  height: 180px;
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -612,7 +612,7 @@ a:hover {
 }
 
 .splash_float {
-  height: 250px;
+  height: 180px;
   /* must match with .splash */
   position: absolute;
   display: flex;
@@ -961,7 +961,7 @@ ul.list_scenes_mini li .preview {
 
 ul.list_scenes_mini li .preview.current {
   pointer-events: none;
-  border: 3px solid #d8abab;
+  border: 8px solid #7e7979;
 }
 
 ul.list_scenes_mini li .preview:hover {

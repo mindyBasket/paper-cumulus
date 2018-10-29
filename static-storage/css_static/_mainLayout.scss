@@ -113,7 +113,7 @@ a:hover{
 }
 
 .splash{
-    height: 250px;
+    height: 180px;
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
@@ -125,7 +125,7 @@ a:hover{
 }
 
 .splash_float{ 
-    height: 250px; /* must match with .splash */
+    height: 180px; /* must match with .splash */
     position:absolute;
     display: flex;
     flex-flow: column;
