@@ -193,7 +193,7 @@ function initializeSortable_Scene($container, name, callback){
     const targetName = '.strip_card';
     const StripSortable = new Sortable($container, {
         draggable: targetName,
-        delay: 500,
+        delay: 300,
         mirror: {
             appendTo: document.querySelector('body'),
             //appendTo: $container.getAttribute("class"),
@@ -206,13 +206,17 @@ function initializeSortable_Scene($container, name, callback){
     });
 
     // because this takes much longer delay, add animated indicator
-    $container.querySelectorAll(targetName).forEach((stripCard)=>{
+    // $container.querySelectorAll(targetName).forEach((stripCard)=>{
 
-    });
+    // });
 
-    StripSortable.on('sortable:start', () => {
+    StripSortable.on('sortable:start', (e) => {
         //tilt the chosen
         // const pickedUp = document.querySelector(targetName+'.draggable-mirror');
+        const childBeingDragged = e.startContainer.querySelector(".draggable-source--is-dragging");
+        if (childBeingDragged){
+            e.cancel();
+        }
     });
     StripSortable.on('sortable:stop', () => {
         //get new order
@@ -864,26 +868,27 @@ class SceneCardList extends Component {
 
 
     handle_stripSort(idArr){
-        // TODO: this function is very similar to handle_frameSort. BAD!
-        console.log("Gather strip Ids.");
-        // const strip = this.props.stripObj;
-        // const sortableData = {frame_ids: idArr.join(",")}
-        // console.log("ready to send: " +JSON.stringify(sortableData));
 
-        // axios({
-        //     method: "get",
-        //     params: sortableData,
-        //     url: `/flipbooks/ajax/strips/${strip.id}/sort-children/`
+        // TODO: this function is very similar to handle_frameSort. BAD!
+
+        const scene = this.props.stripObj;
+        const sortableData = {strip_ids: idArr.join(",")}
+        console.log("ready to send: " +JSON.stringify(sortableData));
+
+        axios({
+            method: "get",
+            params: sortableData,
+            url: `/flipbooks/ajax/strips/${strip.id}/sort-children/`
  
-        // })
-        // .then(response =>{ 
-        //     console.log("sucessfully came back: " + response.data["frame_ids"]);
-        // })
-        // .catch(err => {
-        //     console.error(JSON.stringify(err));
-        //     console.error(err.data);
-        //     console.log(data.status);
-        // })
+        })
+        .then(response =>{ 
+            console.log("sucessfully came back: " + response.data["frame_ids"]);
+        })
+        .catch(err => {
+            console.error(JSON.stringify(err));
+            console.error(err.data);
+            console.log(data.status);
+        })
     }
 
 
