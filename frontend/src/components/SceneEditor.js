@@ -57,11 +57,17 @@ class SceneEditor extends Component{
 		document.querySelector('body').ondragover = e=> {
 			e.preventDefault();
 			// Note: it seems I need ondragover in order to preventDefault on ondrop.
+			// const $body = document.querySelector('body');
+			// if (!$body.className.includes("dark_justcolor")){
+			// 	document.querySelector('body').className += " " + "dark_justcolor";
+			// }
+			
 		}
 			
 		document.querySelector('body').ondrop = e => {
 			e.preventDefault();
 			console.log("DragAndDrop Misfire: do nothing");
+
 		}
 
 		// Attempt at solving issue where sibling-comp's function is set

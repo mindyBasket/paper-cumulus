@@ -5,6 +5,39 @@
 {% block title %} {{block.super}} | Scenes{% endblock title %}
 
 
+
+{% block headband_class %}dark{% endblock headband_class %}
+
+{% block top_content %}
+
+    {% with object_chapter.scene_set.all|first as first_scene %}
+    {% with first_scene.strip_set.all|first as first_strip %}
+    {% with first_strip.frame_set.all|first as first_frame %}
+
+
+    <div class="splash" style="background-image:url({{ first_frame.frame_image.thumb.url }})">
+        
+        
+    </div>
+    <div class="splash_float">
+        <a class="bigtext-1"
+           href="{% url 'flipbooks:scene-play' pk=first_scene.pk %}">
+            <span class="far fa-play-circle">
+            </span > View from the start
+        </a>
+
+        
+
+    </div>
+
+    {% endwith %}
+    {% endwith %}
+    {% endwith %}
+
+    
+{% endblock %}
+
+
 {% block left_column %}
 
     <h3>{{object_chapter.title}}</h3>
@@ -25,7 +58,7 @@
 
 {% block right_column %}
 
-    <h3>Scenes</h3>
+    <h3>Select Scene</h3>
     <ul class="list_scenes">
 
         {% with object_chapter.scene_set.all|map_queryset:object_chapter.children_li as mapped_scene_set %}

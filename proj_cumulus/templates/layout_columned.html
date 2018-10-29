@@ -3,6 +3,12 @@
 {% block wrapper_class %}columned{% endblock %}
 
 {% block layout %}
+    <div class="headband_wrapper {% block headband_class %}{% endblock headband_class %}">
+        {% block top_content %}
+        {% endblock %}
+    </div>
+
+    
     <div class="container">
     <div class="row">
         

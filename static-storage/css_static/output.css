@@ -509,6 +509,9 @@ body {
   /*font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;*/
   font-family: "Quicksand", sans-serif;
   color: #808080;
+  /* used when just the background needs to be darkened */
+  transition-property: background-color;
+  transition-duration: 0.5s;
 }
 
 a {
@@ -580,17 +583,53 @@ a:hover {
   /* I was going to call this 'header' but that name is used in other places */
   display: flex;
   justify-content: space-between;
-  height: 60px;
-  margin: 0px 60px;
+  min-height: 60px;
+  padding: 0px 60px;
 }
 
 .headband_wrapper.disabled {
   display: none;
 }
 
+.headband_wrapper.dark {
+  background-color: #2f2f2f;
+}
+
 .headband {
   align-self: center;
   padding: 0 20px;
+}
+
+.splash {
+  height: 250px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  flex-grow: 1;
+  overflow: hidden;
+  filter: blur(10px);
+  opacity: 0.5;
+}
+
+.splash_float {
+  height: 250px;
+  /* must match with .splash */
+  position: absolute;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  width: 100%;
+  text-align: center;
+  color: white;
+}
+
+.splash_float a {
+  color: white;
+  opacity: 0.8;
+}
+
+.splash_float a:hover {
+  opacity: 1;
 }
 
 .letterbox {
@@ -1518,6 +1557,10 @@ input.untouchable {
 body.dark {
   background-color: #1d1e1f;
   color: #777777;
+}
+
+body.dark_justcolor {
+  background-color: #a6a4a3;
 }
 
 body.dark.glow {
