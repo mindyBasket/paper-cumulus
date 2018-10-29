@@ -579,7 +579,21 @@ def sort_children(request, *args, **kwargs):
     return JsonResponse({'frame_ids': request.GET.get('frame_ids', None)})
 
 
+def scene_sort_children(request, *args, **kwargs):
 
+    strip_ids = request.GET.get('strip_ids', None)
+    
+    if strip_ids and isinstance(strip_ids, str):
+        strip_ids.replace("[","") # just in case
+        strip_ids.replace("]","")
+        
+    # Can you retrieve Scene object
+    scene = Scene.objects.get(id=kwargs['pk']) 
+    scene.children_li = strip_ids #Basically a 'refresh' of children_li
+    scene.save()
+
+    # Response
+    return JsonResponse({'strip_ids': scene.children_li})
 
 
 

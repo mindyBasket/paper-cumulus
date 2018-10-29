@@ -871,18 +871,18 @@ class SceneCardList extends Component {
 
         // TODO: this function is very similar to handle_frameSort. BAD!
 
-        const scene = this.props.stripObj;
+        const sceneId = this.props.sceneId;
         const sortableData = {strip_ids: idArr.join(",")}
         console.log("ready to send: " +JSON.stringify(sortableData));
 
         axios({
             method: "get",
             params: sortableData,
-            url: `/flipbooks/ajax/strips/${strip.id}/sort-children/`
+            url: `/flipbooks/ajax/scene/${sceneId}/sort-children/`
  
         })
         .then(response =>{ 
-            console.log("sucessfully came back: " + response.data["frame_ids"]);
+            console.log("sucessfully came back: " + response.data["strip_ids"]);
         })
         .catch(err => {
             console.error(JSON.stringify(err));
