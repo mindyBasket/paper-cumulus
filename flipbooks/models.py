@@ -284,19 +284,10 @@ class Strip(models.Model):
 # ██║     ██║  ██║██║  ██║██║ ╚═╝ ██║███████╗
 # ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝
 
-# -------------------------------------------------
-# -------------------------------------------------
-#                     Frame
-# -------------------------------------------------
-# -------------------------------------------------
 
-# Issue: slightly unreliable since this function tries to "guess"
-#        instance's id before it is newly created in db
 def frame_upload_path(instance, filename):
-    # file will be uploaded to MEDIA_ROOT/frame_images/s{id}/f{id}/f{id}__{hexcode}.{extension}
+    # file will be uploaded to MEDIA_ROOT/frame_images/{file identifier}/{file identifier}.{ext}
     
-    #max_frame_id = Frame.objects.all().order_by("-id")[0].id
-    #frame_id = (int(max_frame_id)+1) if instance.id is None else instance.id
     frame_nth = len(instance.strip.frame_set.all())
     hexcode = '%010x' % random.randrange(16**9, 16**10)
     return 'frame_images/s{0}/st{1}-{2}__{3}/st{1}-{2}__{3}.{4}'.format(
@@ -306,7 +297,9 @@ def frame_upload_path(instance, filename):
         hexcode,
         filename.split(".")[-1]
         )
- 
+
+# TODO: this function is referenced in migration file and cases error if removed.
+#       But this isn't used anywhere!
 def frame_upload_path2(instance, filename):
     # file will be uploaded to MEDIA_ROOT/frame_images/s{id}/f{id}.{extension}
     return 'frame_images/s{0}/f{1}.{2}'.format(
@@ -315,7 +308,7 @@ def frame_upload_path2(instance, filename):
         filename.split(".")[-1]
         )
         
-#Frame: holds individual frames
+
 class Frame(models.Model):
     
     order = models.IntegerField(default="-1") 
