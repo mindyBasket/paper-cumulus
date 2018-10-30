@@ -190,6 +190,12 @@ ul.list_strips li.strip_card{
     
 }
 
+.strip_card:focus {
+    outline: none;
+}
+
+
+
 ul.list_strips li.spotlighted{
     /* raises z-index above the lightbox cover */
     z-index: 1000; 

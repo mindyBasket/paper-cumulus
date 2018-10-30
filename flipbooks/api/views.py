@@ -1,6 +1,6 @@
 import os, shutil
 from rest_framework import generics
-from rest_framework.parsers import FormParser,JSONParser,MultiPartParser,FileUploadParser
+from rest_framework.parsers import FormParser,MultiPartParser,FileUploadParser
 
 
 from .serializers import (
