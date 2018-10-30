@@ -177,6 +177,25 @@ class XhrHandler {
 
 	}
 
+	// Attempt at generic
+	getPromise(method, data, endpoint, csrfToken){
+
+		// TODO: investigate why using this.getCSRFToken gets 403 error
+		// if (csrfToken === undefined) {const csrfToken = this.getCSRFToken();}
+
+		return (
+			axios({
+	            method: method,
+	            url: endpoint,
+	            data: data,
+	            headers: {"X-CSRFToken": csrfToken}
+	        })
+	    )
+
+	}
+
+
+
 
 
 }

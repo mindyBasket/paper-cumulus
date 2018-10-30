@@ -1,6 +1,7 @@
 import os, shutil
 from rest_framework import generics
-from rest_framework.parsers import FormParser,MultiPartParser,FileUploadParser
+from rest_framework.parsers import FormParser,JSONParser,MultiPartParser,FileUploadParser
+
 
 from .serializers import (
     BookModelSerializer,
@@ -25,6 +26,35 @@ from ..models import (
 #custom helper functions 
 #from .helpermodule import helpers
 # ---------------------------------------------
+
+
+
+
+
+
+# http://patorjk.com/software/taag/#p=display&f=Cyberlarge&t=Mixins
+# _______ _____ _     _ _____ __   _ _______
+# |  |  |   |    \___/    |   | \  | |______
+# |  |  | __|__ _/   \_ __|__ |  \_| ______|
+                                           
+class createManyMixin:
+    # this is a method is GenericViewAPI
+    def get_serializer(self, *args, **kwargs):
+        print("[get_serializer OVERRIDE]")
+        print(kwargs)
+        print(kwargs.get('data', {}).get("frame_image"))
+        if isinstance(kwargs.get('data', {}).get("frame_image"), list):
+            # pass many=True is all it takes to do bulk create
+            print("[CREATE MANY MIXIN] bulk create triggered!")
+            #print("Creating {} objects".format(kwargs.get()))
+            print(kwargs)
+            kwargs['many'] = True
+
+        return super().get_serializer(*args, **kwargs)
+
+
+        
+
 
 
 class FlipbookAPIListView(generics.ListAPIView):
@@ -64,8 +94,6 @@ class ChapterAPIDetailView(generics.RetrieveAPIView):
 # |______ |       |______ | \  | |______
 # ______| |_____  |______ |  \_| |______
                                        
-
-
 
 class SceneAPIListView(generics.ListAPIView):
     # Similar to above, but only lists scene under a book
@@ -120,13 +148,15 @@ class StripDeleteAPIview(generics.DestroyAPIView):
 
 
 
+
+
  # _______  ______ _______ _______ _______
  # |______ |_____/ |_____| |  |  | |______
  # |       |    \_ |     | |  |  | |______
                                         
 
-
 class FrameCreateAPIView(generics.CreateAPIView):
+
     serializer_class = FrameModelSerializer
     parser_classes = (MultiPartParser,FormParser,FileUploadParser,)
     

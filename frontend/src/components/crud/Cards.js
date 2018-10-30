@@ -472,7 +472,7 @@ class StripCard extends PureComponent {
             // Use DataTransferItemList interface to access the file.
 
             // Because the backend cannot hande multiple files yet, use just the FIRST file.
-            if (e.dataTransfer.items[0].kind === 'file') { // check if file 
+            if (e.dataTransfer.items.length == 1 && e.dataTransfer.items[0].kind === 'file') { // check if file 
 
                 var file = e.dataTransfer.items[0].getAsFile();
                 console.log('>> file[' + 0 + '].name = ' + file.name + " : type = " + file.type);
@@ -524,6 +524,61 @@ class StripCard extends PureComponent {
                 });
 
         
+            } 
+            else if (e.dataTransfer.items.length > 1) {
+                console.log("initiate bulk create!");
+
+                let fd_arr = []
+                for(let i=0;i<e.dataTransfer.items.length;i++){
+                    let fd = new FormData();
+                        fd.append("strip", this.props.stripObj.id);
+
+                    var file = e.dataTransfer.items[i].getAsFile();
+                    console.log('>> file[' + i + '].name = ' + file.name + " : type = " + file.type);
+                    fd.append("frame_image", file);
+                    
+                    fd_arr.push(fd);
+                }
+                
+                const csrfToken = axh.getCSRFToken();
+                // let reqs = []
+
+                // fd_arr.forEach((fd)=>{
+                //     reqs.push();
+                // });
+                // console.log("Total of " + reqs.length + " requests about to be sent...");
+                const reqconf = [this.props.stripObj.id, csrfToken];
+
+                var recur = fd_arr => {
+                    //omfg
+                    console.log("CURR FD_ARR: " + fd_arr.length);
+                    if (fd_arr.length == 1){
+                        return axh.createFrame(reqconf[0], fd_arr[0], reqconf[1])
+                    }
+
+                    let curr_fd = fd_arr.pop();
+
+                    return recur(fd_arr)
+                    .then(()=>{
+                        this.props.handle_fetchScene();
+                        return axh.createFrame(reqconf[0], curr_fd, reqconf[1]);
+                    })
+                    
+                }
+
+                // starter
+                recur(fd_arr)
+                .then((res)=>{
+                    // ALL DONE
+                    this.setState({loadingFrames: false}); 
+                })
+                .catch(error=>{
+                    console.log(error);
+                    // Well that didn't work!
+                    // console.log("Something went wrong processing the response");
+                    // this.setState({cardCover_messageType: "frameCreateError"});
+                });
+
             }
 
         } else {
@@ -953,8 +1008,6 @@ class SceneCardList extends Component {
     render (){
         
         const reorderedStrips = this.reorderedStrips(this.state.data);
-        console.log("ReorderedStrips: " + JSON.stringify(reorderedStrips));
-
 
         return (
             <div>
