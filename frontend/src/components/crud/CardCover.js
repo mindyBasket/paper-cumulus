@@ -5,6 +5,88 @@ import ReactDOM from "react-dom";
 import Helper from "./../Helper"
 const h = new Helper();
 
+
+
+
+
+class FileInput extends Component {
+     constructor(props){
+        super(props);
+        this.r_input = React.createRef();
+
+        this.click_fileInput = this.click_fileInput.bind(this);
+        this.handle_submitImage = this.handle_submitImage.bind(this);
+    }
+
+    click_fileInput(){
+        this.r_input.current.click();
+    }
+
+    handle_submitImage(){
+
+        // set FrameModal's loading state
+        // make self disappear
+        this.props.setState_FrameModal({imageLoading: true});
+        
+        // prep data
+        const $fileInput = this.r_input.current;
+        // note: this.r_input.current.value returns just string input. not the file. 
+
+        const file = $fileInput.files[0]; // taking only one image at this time.
+
+        console.log('>> file[' + 0 + '].name = ' + file.name + " : type = " + file.type);
+
+        const allowedImageTypes = ['image/png', 'image/gif', 'image/jpg', 'image/jpeg'];
+        if (!allowedImageTypes.includes(file.type)){
+            // exit abruptly. This causes this component to remain in dragAndDrop state
+            console.error("Wrong file type");
+            return false;
+        }
+
+        let inputData = {}
+            inputData[this.props.fieldLabel] = file;
+
+        // Before shipping it off, reset and clear
+        this.props.off();
+        $fileInput.value = '';
+
+        // use action function passed from FrameModal is updateFrame().
+        // Make sure you pass data. 
+        this.props.action(inputData);
+
+    }
+
+
+
+
+    render(){
+        return (
+            <div>
+                <button className="action"
+                        onClick={this.click_fileInput}>
+                    <span className="bigtext-3 far fa-file"></span>
+                    {this.props.message ? (
+                        <span>{this.props.message}</span>
+                        
+                    ) : (
+                        <span>Choose new file</span>
+                    )}
+                </button>
+                {/* hidden input */}
+                <input type="file" name="name" 
+                       onChange={this.handle_submitImage}
+                       style={{display:"none"}}
+                       ref={this.r_input}/>
+            </div>
+
+        )
+    }
+
+}
+
+
+
+
 function getRandomGreeting(){
 
     const greetings = [
@@ -45,6 +127,25 @@ function getCardCoverMessage(templateName, offFunc, handle_deleteScene){
                         <span className="bigtext 1">Drop images to make frames</span>
                     </p>
                 </div>
+            )
+
+        case "upload":
+            return (
+                <div className="cover_message columns">
+                    <div className="center">
+                        <FileInput message="Choose file"/>
+                    </div>
+                    <p className="center">
+                        <span className="bigtext-2">OR</span>
+                    </p>
+                    <p className="center">
+                        <span className="bigtext-1 fas fa-file-upload"></span>
+                        <br/>
+                        <span className="bigtext-3">drag and drop</span>
+                    </p>
+                    
+                </div>           
+         
             )
 
         case "deleteConfirm":
@@ -122,18 +223,21 @@ class CardCover extends PureComponent {
 
         // Some cover message is supposed to be intangible, but some messages
         // have confirmation button, which requires them to be tangible.
-        this.intangibilityMap = {
-            default: true, //for drag and drop
-            deleteConfirm: false,
-            frameCreateError: false,
-            wrongFileType: false,
-            invalidForm: false,
-        }
+        // this.intangibilityMap = {
+        //     default: true, //for drag and drop
+        //     deleteConfirm: false,
+        //     frameCreateError: false,
+        //     wrongFileType: false,
+        //     invalidForm: false,
+        // }
 
         this.behaviorMap = {
             default:            {intangible: true, spotlight: true},
+
             dragAndDrop:        {intangible: true, spotlight: false},
+            upload:             {intangible: false, spotlight: true},
             deleteConfirm:      {intangible: false, spotlight: true},
+
             frameCreateError:   {intangible: false, spotlight: true},
             wrongFileType:      {intangible: false, spotlight: false},
             invalidForm:        {intangible: false, spotlight: false}
@@ -168,7 +272,6 @@ class CardCover extends PureComponent {
     }
 
     render(){
-        const intanMap = this.intangibilityMap;
         const bmap = this.behaviorMap;
         const msgType = this.props.messageType;
         

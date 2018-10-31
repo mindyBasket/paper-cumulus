@@ -1355,42 +1355,24 @@ input.untouchable {
   justify-content: center;
 }
 
-/*.cover.drag_and_drop,
-.cover.file_upload,
-.cover.preview{
-  
-  transition-property: opacity;
-  transition-duration: 0.15s;
-  transition-timing-function: ease-in;
-  
-  low-tech solution to prevent flickering when drag related event fires
-     over children object. The ease-in makes the flickering much milder
+.cover_message.columns {
+  /* sometimes you want more than one containres */
+  display: flex;
+  flex-flow: row;
+}
 
-    NOTE: probably don't need this anymore now that I have a better
-          way of detecting and changing state of covers
-  
-}*/
-.cover.file_upload {
-  /* This needs to apply dynamically unfortunately */
-  /*pointer-events: auto;*/
-  background-color: rgba(237, 237, 237, 0.9);
-  color: #984242;
+.cover_message.columns .center {
+  align-self: center;
+  margin: 0 5px;
+}
+
+.cover_message.columns .bottom {
+  align-self: flex-end;
+  padding-bottom: 20px;
 }
 
 .is-dragover .cover.drag_and_drop {
   opacity: 1;
-}
-
-/* prevent flickering */
-/* Downside: this makes the drag events a bit unstable. 
-   makes dragleave fire rapidly sometimes */
-/* after some investigation, realized it's the .thumb that is causing issue */
-/*.is-dragover .thumb { pointer-events:none; }*/
-.cover.file_upload span {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 }
 
 /* cover for showing preview animation */

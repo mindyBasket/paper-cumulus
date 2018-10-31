@@ -115,7 +115,7 @@ class StripMenu extends Component {
                        ref={this.r} 
                        readOnly  />
                 <ul onMouseDown={this.refocus}>   
-                    <li onClick={()=>console.log("Upload Image!")}>Upload Frames</li>
+                    <li onClick={()=>{this.blurAndAction(this.props.actionUpload)}}>Upload Frames</li>
                     <li className="disabled">Batch Frame Edit</li>
                     <li className="disabled">Copy</li>
                     <li className="disabled">Properties</li>
@@ -283,6 +283,7 @@ class StripCard extends PureComponent {
 
         this.selfSpotlighted = false; // as opposed to this.props.spotlightedAll
 
+        this.handle_openUploadCover = this.handle_openUploadCover.bind(this);
         this.handle_deleteSceneConfirm = this.handle_deleteSceneConfirm.bind(this);
         this.handle_deleteScene = this.handle_deleteScene.bind(this);
         this.handle_frameSort = this.handle_frameSort.bind(this);
@@ -417,7 +418,13 @@ class StripCard extends PureComponent {
         })
     }
 
-
+    handle_openUploadCover(){
+        //turn on cover
+        this.setState({
+            cardCoverOn: true,
+            cardCover_messageType: "upload" 
+        });
+    }
 
     handle_frameSort(idArr){
 
@@ -791,7 +798,7 @@ class StripCard extends PureComponent {
                     </div>
                     <div className="tools">
                         <MenuButton iconClass="menu_btn fas fa-play-circle" action={this.openPreview} hasFrames={!noFrames}/>
-                        <MenuButton iconClass="menu_btn fas fa-file-upload" action={()=>{console.log("upload")}}/>
+                        <MenuButton iconClass="menu_btn fas fa-file-upload" action={this.handle_openUploadCover}/>
                         <MenuButton iconClass="menu_btn fas fa-pen" action={()=>{console.log("batch edit")}} hasFrames={!noFrames}/>
                         <MenuButton iconClass="menu_btn fas fa-trash" action={this.handle_deleteSceneConfirm}/>
                         <MenuButton iconClass="menu_btn fas fa-ellipsis-h" action={this.openMenu}/>
@@ -845,6 +852,7 @@ class StripCard extends PureComponent {
 
                 <StripMenu on={this.state.menuOn} 
                            off={()=>{this.endModalState("menuOn");}}
+                           actionUpload={this.handle_openUploadCover}
                            actionDelete={this.handle_deleteSceneConfirm}/>
 
             </li>
