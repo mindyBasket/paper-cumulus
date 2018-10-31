@@ -12,15 +12,18 @@
     <div class="content">
         <h2>{{welcome_msg}}</h2>
         <p>
-            You can demo this app's current state. 
-            <br>
-            The demo chapter you made will be available for 3 days. 
+            The demo chapter you generate will be available for 3 days. 
         </p>
         <div style="height:70px;">
-            <button id="make_demo">Make a demo chapter</button>
+            <button id="make_demo">Yes, make a demo chapter</button>
             <div id="loading_msg">
                 <img src="{% static 'css_static/img/loading-io_spinner.gif' %}"/>
                 <span class="bigtext-2">Creating demo...</span>
+                <br/>
+                <span>Thank you for being patient <br/>while the sample images copy over :)</span>
+                <p>
+                    <a href="https://loading.io" target="_blank">Loader image from loading.io</a>
+                </p>
             </div>
         </div>
         
