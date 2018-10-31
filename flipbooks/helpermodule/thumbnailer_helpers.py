@@ -1,8 +1,12 @@
 import os, re
 from pathlib import Path, PurePath #new in Python 3.4+
 from django.conf import settings
+
+from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage as storage
 import easy_thumbnails.files as easy_th_files
+
+from . import helpers
 
 
 ''' Takes path to thumbnail image and its dimension to 
@@ -47,16 +51,94 @@ def get_alias_dict(thumbnail_path, thumbnail_dimension):
             return {alias_match: thumbnail_path}
 
 
+def get_rel_path(path, reldir):
+    ''' 
+    path = string
+    reldir = string, relative dir that the path should start with
+    resulting relative path will START WITH reldir.
+    '''
+
+    # need to remove everyhing before media, basically removing 
+    # any leading slash.
+    # WARNING: but I don't remember this happening on windows machine...?
+    path = Path(path)
+    start_i = 0    
+    for pathpart in path.parts:
+        if pathpart != reldir:
+            start_i += 1
+        else:
+            break
+
+    # join the path starting from where reldir is
+    result_path = Path("").joinpath(*path.parts[start_i:])
+    return result_path
+
+
+
 
 
 def regenerate_frame_images(frame):
-    # do I really have to do this one by one
-    thumbnailer = easy_th_files.get_thumbnailer(frame.frame_image)
-    
-    alias_dict = settings.THUMBNAIL_ALIASES['']
-    for alias in alias_dict:
-        print("Regenerate frame image using this options: {}".format(alias_dict[alias]))
-        thumbnailer.get_thumbnail(alias_dict[alias])
+
+    im_path = Path(frame.frame_image.url)
+    image_name = im_path.stem
+    folder_name = im_path.parts[-2]
+    if str(folder_name) == str(image_name):
+        
+        media_dir = settings.MEDIA_URL if hasattr(settings, 'MEDIA_URL') else False
+        if not media_dir:
+            raise Exception('[ERROR] MEDIA_URL not set in settings')
+            return False
+        media_dir = media_dir.strip("/")
+
+        # make destination for copy image 
+        rel_im_path = get_rel_path(im_path, "frame_images")
+        print("------ rel_im_path: {}".format(rel_im_path))
+
+        # copy
+        try: 
+            if storage.exists(rel_im_path):
+                print("File to copy: {}".format(rel_im_path))
+
+                # https://docs.djangoproject.com/en/2.1/topics/files/
+                # print("Size check: {}".format(storage.size(rel_im_path)))
+                f = storage.open(rel_im_path)
+                cf = ContentFile(f.read())
+
+                # make copy dir
+                file_iden = "{}_copy-{}".format(rel_im_path.stem, helpers.get_rand_base64(6)) 
+                file_iden_name = "{}{}".format(file_iden, rel_im_path.suffix)
+                dest_strip_path = rel_im_path.parent.parent
+                copy_im_name = dest_strip_path.joinpath(file_iden, file_iden_name)
+
+      
+                output_name = storage.save(str(copy_im_name), cf) #output appears to be just string
+                # The code above copies successfully. The problem now is...how to make it point to this?
+
+                # save?
+                frame.frame_image.name = output_name
+                frame.save()
+                print("[FRAME COPIED] to: {}".format(frame.frame_image.url))
+
+        except FileNotFoundError: 
+            print("[FILE NOT FOUND] Cannot find file to copy at: {}".format(frame.frame_image.url))
+
+
+        # regenerate thumbnails
+        thumbnailer = easy_th_files.get_thumbnailer(frame.frame_image)
+        alias_dict = settings.THUMBNAIL_ALIASES['']
+        for alias in alias_dict:
+            thumbnailer.get_thumbnail(alias_dict[alias])
+  
+    else:
+        raise Exception('[ERROR] Image name and the folder does not match')
+
+
+    # # Regenerate frames
+    # alias_dict = settings.THUMBNAIL_ALIASES['']
+    # for alias in alias_dict:
+    #     print("Regenerate frame image using this options: {}".format(alias_dict[alias]))
+    #     thumb = thumbnailer.get_thumbnail(alias_dict[alias])
+    #     print("[FRAME REGEN] : {}".format(thumb.url))
 
 
 
@@ -134,12 +216,7 @@ def delete_frame_images(frame):
             folder_name = im_path.parts[-2]
 
             print("[PATH] Removing folder: {} ==? {}".format(image_name, folder_name))
-
-            # image_name = image_path.split("/")[-1].split(".")[0]
-            # print("Image_path: {}".format(image_path.split("/")))
-            # folder_name = image_path.split("/")[-2]
-            # print("Removing folder: {} ==? {}".format(image_name, folder_name))
-            
+          
             if str(folder_name) == str(image_name):
                 print("Image name and folder name matches. Getting folder path...")
 
@@ -169,9 +246,7 @@ def delete_frame_images(frame):
 
                 # for p in os.listdir("."):
                 #     print(p)
-                print("------why can't it find paths?!?!-------")
-                print(os.path.exists("media"))
-
+                #print("Media folder exists?: {}".format(os.path.exists("media")))
 
                 if os.path.exists(folder_path):
                     # list all items 

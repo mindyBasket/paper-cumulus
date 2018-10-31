@@ -1,3 +1,5 @@
+import random 
+
 # See examples of these functions being used in views.py 
 
 def string2List(stringyList):
@@ -36,6 +38,15 @@ def order_by_id_ref(obj_li, ref_id_li):
             
     return obj_li_ordered
     
+
+def get_rand_base64(length):
+    chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+    result_code = ''
+    for i in range(length):
+        result_code+=chars[random.randrange(0, len(chars))]
+
+    return result_code
+
     
 def shout():
     #for testing if this module is imported successfully
