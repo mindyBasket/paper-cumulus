@@ -14,10 +14,11 @@ form button[type='submit']{
 #scene_create_form,
 #strip_create_form,
 #frame_create_form{
-    display:inline-block;
+    display:none;
     width: 0; height: 0;
     opacity: 0;
     pointer-events: none;
+    overflow:hidden;
 }
 
 /* Frame Edit Form elements */
@@ -48,4 +49,14 @@ form button[type='submit']{
     
     border:1px solid #292929;
     outline-offset: 5px;
+}
+
+
+
+#loading_msg{
+    display:none;
+    text-shadow: #ffbf91 0px 0 15px;
+}
+#loading_msg.active{
+    display:inline-block;
 }

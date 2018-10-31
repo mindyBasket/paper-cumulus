@@ -463,11 +463,12 @@ form button[type=submit] {
 #scene_create_form,
 #strip_create_form,
 #frame_create_form {
-  display: inline-block;
+  display: none;
   width: 0;
   height: 0;
   opacity: 0;
   pointer-events: none;
+  overflow: hidden;
 }
 
 /* Frame Edit Form elements */
@@ -495,6 +496,15 @@ form button[type=submit] {
   max-height: 100%;
   border: 1px solid #292929;
   outline-offset: 5px;
+}
+
+#loading_msg {
+  display: none;
+  text-shadow: #ffbf91 0px 0 15px;
+}
+
+#loading_msg.active {
+  display: inline-block;
 }
 
 html, body {
@@ -833,13 +843,13 @@ a:hover {
 /*
 .thumb .popup_menu .tickmark{
     position:absolute;
-
+    
     bottom: -14px; left: 50%;
     width: 0; 
     height: 0; 
     border-left: 15px solid transparent;
     border-right: 15px solid transparent;
-
+  
     border-top: 15px solid #5C5C5C;
 }*/
 /* -------------------------------------- */
@@ -1341,17 +1351,17 @@ input.untouchable {
 /*.cover.drag_and_drop,
 .cover.file_upload,
 .cover.preview{
-
+  
   transition-property: opacity;
   transition-duration: 0.15s;
   transition-timing-function: ease-in;
-
+  
   low-tech solution to prevent flickering when drag related event fires
      over children object. The ease-in makes the flickering much milder
 
     NOTE: probably don't need this anymore now that I have a better
           way of detecting and changing state of covers
-
+  
 }*/
 .cover.file_upload {
   /* This needs to apply dynamically unfortunately */

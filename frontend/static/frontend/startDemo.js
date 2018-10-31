@@ -18,8 +18,7 @@ const $startDemo = document.querySelector('#make_demo');
 
 
 if($startDemo){
-	$startDemo.onclick  = (e) =>{
-		console.log("[Create Demo!...just oooooone second....]");
+	$startDemo.onclick = (e) =>{
 
         // grab CSRF token
         const csrfToken = getCSRFToken();
@@ -43,6 +42,11 @@ if($startDemo){
                 console.log(error);
             });
         }
+
+        // display loader
+        $startDemo.setAttribute("style", "display:none;");
+        document.querySelector("#loading_msg").className="active";
+
 
 		
 
