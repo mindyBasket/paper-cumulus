@@ -462,11 +462,20 @@ class StripCard extends PureComponent {
     }
 
 
+    removeDragData(e) {
+        console.log('[Drag data clean up]');
+        if (e.dataTransfer.items) {
+            // Use DataTransferItemList interface to remove the drag data
+            e.dataTransfer.items.clear();
+        } else {
+            // Use DataTransfer interface to remove the drag data
+            e.dataTransfer.clearData();
+        }
+    }
 
     handle_dragAndDrop(e){
         // parse data?
         e.preventDefault();
-        console.log("DROPPED TO STRIP");
 
         if (e.dataTransfer.items) {
             // Use DataTransferItemList interface to access the file.
@@ -526,7 +535,6 @@ class StripCard extends PureComponent {
         
             } 
             else if (e.dataTransfer.items.length > 1) {
-                console.log("initiate bulk create!");
 
                 let fd_arr = []
                 for(let i=0;i<e.dataTransfer.items.length;i++){
@@ -535,29 +543,31 @@ class StripCard extends PureComponent {
 
                     var file = e.dataTransfer.items[i].getAsFile();
                     console.log('>> file[' + i + '].name = ' + file.name + " : type = " + file.type);
-                    fd.append("frame_image", file);
-                    
-                    fd_arr.push(fd);
+
+                    // Add only if it is a valid image file
+                    const allowedImageTypes = ['image/png', 'image/gif', 'image/jpg', 'image/jpeg'];
+                    if (allowedImageTypes.includes(file.type)){
+                        fd.append("frame_image", file);
+                        fd_arr.push(fd);
+                    }
                 }
                 
                 const csrfToken = axh.getCSRFToken();
-                // let reqs = []
-
-                // fd_arr.forEach((fd)=>{
-                //     reqs.push();
-                // });
-                // console.log("Total of " + reqs.length + " requests about to be sent...");
+                if (!csrfToken){
+                    // exit abruptly. This causes this component to remain in dragAndDrop state.
+                    this.setState({cardCover_messageType: "invalidForm"});
+                    return false;
+                }
+               
+                // recursively chain the requests
                 const reqconf = [this.props.stripObj.id, csrfToken];
 
                 var recur = fd_arr => {
-                    //omfg
-                    console.log("CURR FD_ARR: " + fd_arr.length);
-                    if (fd_arr.length == 1){
+                    if (fd_arr.length == 1){ // tail
                         return axh.createFrame(reqconf[0], fd_arr[0], reqconf[1])
                     }
 
                     let curr_fd = fd_arr.pop();
-
                     return recur(fd_arr)
                     .then(()=>{
                         this.props.handle_fetchScene();
@@ -566,10 +576,11 @@ class StripCard extends PureComponent {
                     
                 }
 
-                // starter
+                // recursion starter
                 recur(fd_arr)
                 .then((res)=>{
                     // ALL DONE
+                    this.props.handle_fetchScene(); // fetch one more time just in case
                     this.setState({loadingFrames: false}); 
                 })
                 .catch(error=>{
@@ -588,11 +599,11 @@ class StripCard extends PureComponent {
             }
         } 
 
-        // TODO: Pass event to removeDragData for cleanup
-        // removeDragData(e)
+        // Pass event to removeDragData for cleanup
+        removeDragData(e)
 
         // If you reached this point, then you avoided all errors from user side.
-        this.setState({loadingFrames: true});
+        this.setState({loadingFrames: false});
         // crap...I thought any kind of setState is async? if I don't put this
         // here, anything that happens afterward may or may not happen
         console.warn("Request send success. Escape dragAndDrop state.");
