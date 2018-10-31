@@ -73,7 +73,8 @@
                                     {% with strip.frame_set.all|first as first_frame %}
                                     
                                         {% if first_frame is None or first_frame.frame_image is None %} 
-                                            <span class="thumb placeholder">
+                                            <span class="thumb blurred">
+                                                Empty scene
                                             </span>
                                         {% else %} 
                                             <span>

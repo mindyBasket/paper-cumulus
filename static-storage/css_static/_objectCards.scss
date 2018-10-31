@@ -85,6 +85,8 @@ ul.list_scenes .scene_container:hover{
    
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
+
+    text-align: center;
 }
 
 
@@ -300,6 +302,16 @@ ul.list_strips li.spotlighted{
 
     min-width:110px;
 }
+
+.thumb.blurred{
+    /* special case for now. 
+       Used to indicate empty scene in chapter detail. */
+    filter:blur(0.6px);
+
+
+}
+
+
 
 /* sortable style*/
 
