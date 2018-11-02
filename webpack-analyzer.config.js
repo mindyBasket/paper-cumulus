@@ -1,11 +1,7 @@
 var path = require('path');
-var webpack = require('webpack');
 var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
-
-  devtool: "cheap-module-source-map",
-
   module: {
     rules: [
       {
@@ -20,11 +16,7 @@ module.exports = {
   optimization: {
     minimize: true
   },
-  plugins: [
-    new webpack.DefinePlugin({
-             'process.env.NODE_ENV': '"production"'
-    }),
-  ],
+  plugins: [new BundleAnalyzerPlugin()],
   entry: 
   {
       main: "./frontend/src/index.js"
