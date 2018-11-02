@@ -59,6 +59,91 @@ class ToolButton extends Component{
 }
 
 
+
+
+class FileInputButton extends Component {
+     constructor(props){
+        super(props);
+        this.r_input = React.createRef();
+
+        this.click_fileInput = this.click_fileInput.bind(this);
+        this.handle_submitImage = this.handle_submitImage.bind(this);
+    }
+
+    click_fileInput(){
+        // this.props.onClickAction may be passed. This function should
+        // be called onClick
+        if (this.props.onClickAction){
+            this.props.onClickAction();
+        }
+
+        this.r_input.current.click();
+    }
+
+    handle_submitImage(){
+
+        // set FrameModal's loading state
+        // make self disappear
+        // this.props.setState_FrameModal({imageLoading: true});
+        
+        // prep data
+        const $fileInput = this.r_input.current;
+        // note: this.r_input.current.value returns just string input. not the file. 
+
+        const file = $fileInput.files[0]; // taking only one image at this time.
+        console.log('>> file[' + 0 + '].name = ' + file.name + " : type = " + file.type);
+        const allowedImageTypes = ['image/png', 'image/gif', 'image/jpg', 'image/jpeg'];
+        if (!allowedImageTypes.includes(file.type)){
+            console.error("Wrong file type");
+            return false;
+        }
+
+        let inputData = {}
+            inputData[this.props.fieldLabel] = file;
+
+        // Before shipping it off, reset and clear
+        if (this.props.off){ this.props.off(); }
+        $fileInput.value = '';
+
+        // use action function passed from FrameModal is updateFrame().
+        // Make sure you pass data. 
+        // TODO: make sure thsi works for either createFrame() or updateFrame()
+        this.props.action(inputData);
+
+    }
+
+
+
+
+    render(){
+        return (
+            <div>
+                <button className="action"
+                        onClick={this.click_fileInput}>
+                    <span className="bigtext-3 far fa-file"></span>
+                    {this.props.message ? (
+                        <span>{this.props.message}</span>
+                        
+                    ) : (
+                        <span>Choose new file</span>
+                    )}
+                </button>
+                {/* hidden input */}
+                <input type="file" name="name" 
+                       onChange={this.handle_submitImage}
+                       style={{display:"none"}}
+                       ref={this.r_input}/>
+            </div>
+
+        )
+    }
+
+}
+
+
+
+
 export {
-    ToolButton
+    ToolButton,
+    FileInputButton
 };

@@ -115,7 +115,7 @@ class StripMenu extends Component {
                        ref={this.r} 
                        readOnly  />
                 <ul onMouseDown={this.refocus}>   
-                    <li onClick={()=>{this.blurAndAction(this.props.actionUpload)}}>Upload Frames</li>
+                    <li onClick={()=>{this.blurAndAction(this.props.actionOpenUpload)}}>Upload Frames</li>
                     <li className="disabled">Batch Frame Edit</li>
                     <li className="disabled">Copy</li>
                     <li className="disabled">Properties</li>
@@ -283,8 +283,11 @@ class StripCard extends PureComponent {
 
         this.selfSpotlighted = false; // as opposed to this.props.spotlightedAll
 
+        
+
         this.handle_openUploadCover = this.handle_openUploadCover.bind(this);
         this.handle_deleteSceneConfirm = this.handle_deleteSceneConfirm.bind(this);
+        this.handle_createFrame = this.handle_createFrame.bind(this);
         this.handle_deleteScene = this.handle_deleteScene.bind(this);
         this.handle_frameSort = this.handle_frameSort.bind(this);
         this.handle_dragMessageToggle = this.handle_dragMessageToggle.bind(this);
@@ -373,6 +376,33 @@ class StripCard extends PureComponent {
 
 
     
+    handle_createFrame(inputData){
+        this.setState({loadingFrames: true}); 
+
+        const csrfToken = axh.getCSRFToken();
+        if (!csrfToken){ return false;}
+
+        let fd = h.makeFormData(inputData); 
+            fd.set("strip", this.props.stripObj.id);
+
+        // quick validation
+        if (!fd.has("frame_image")){return false;}
+
+        axh.createFrame(this.props.stripObj.id, fd, csrfToken).then(res=>{
+            if (res && res.data){
+                this.setState({loadingFrames: false}); 
+                this.props.handle_fetchScene();
+            } else {
+                console.error("Frame Create Failed");
+            }
+            
+        }).catch(error=>{
+            console.log(error);
+            // Well that didn't work!
+            console.log("Something went wrong processing the response");
+            this.setState({cardCover_messageType: "frameCreateError"});
+        });
+    }
 
     
     // ---------------------------------------------------------------------------
@@ -848,11 +878,12 @@ class StripCard extends PureComponent {
                            messageType={this.state.cardCover_messageType}
                            setParentSpotlight={this.setSpotlight}
                            handle_deleteScene={this.handle_deleteScene}
+                           handle_createFrame={this.handle_createFrame}
                            name="dragAndDrop"/>
 
                 <StripMenu on={this.state.menuOn} 
                            off={()=>{this.endModalState("menuOn");}}
-                           actionUpload={this.handle_openUploadCover}
+                           actionOpenUpload={this.handle_openUploadCover}
                            actionDelete={this.handle_deleteSceneConfirm}/>
 
             </li>

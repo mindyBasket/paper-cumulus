@@ -1,6 +1,9 @@
 import React, { Component, PureComponent } from "react";
 import ReactDOM from "react-dom";
 
+import { FileInputButton } from "./../UI";
+
+
 // Custom helpers
 import Helper from "./../Helper"
 const h = new Helper();
@@ -9,80 +12,6 @@ const h = new Helper();
 
 
 
-class FileInput extends Component {
-     constructor(props){
-        super(props);
-        this.r_input = React.createRef();
-
-        this.click_fileInput = this.click_fileInput.bind(this);
-        this.handle_submitImage = this.handle_submitImage.bind(this);
-    }
-
-    click_fileInput(){
-        this.r_input.current.click();
-    }
-
-    handle_submitImage(){
-
-        // set FrameModal's loading state
-        // make self disappear
-        this.props.setState_FrameModal({imageLoading: true});
-        
-        // prep data
-        const $fileInput = this.r_input.current;
-        // note: this.r_input.current.value returns just string input. not the file. 
-
-        const file = $fileInput.files[0]; // taking only one image at this time.
-
-        console.log('>> file[' + 0 + '].name = ' + file.name + " : type = " + file.type);
-
-        const allowedImageTypes = ['image/png', 'image/gif', 'image/jpg', 'image/jpeg'];
-        if (!allowedImageTypes.includes(file.type)){
-            // exit abruptly. This causes this component to remain in dragAndDrop state
-            console.error("Wrong file type");
-            return false;
-        }
-
-        let inputData = {}
-            inputData[this.props.fieldLabel] = file;
-
-        // Before shipping it off, reset and clear
-        this.props.off();
-        $fileInput.value = '';
-
-        // use action function passed from FrameModal is updateFrame().
-        // Make sure you pass data. 
-        this.props.action(inputData);
-
-    }
-
-
-
-
-    render(){
-        return (
-            <div>
-                <button className="action"
-                        onClick={this.click_fileInput}>
-                    <span className="bigtext-3 far fa-file"></span>
-                    {this.props.message ? (
-                        <span>{this.props.message}</span>
-                        
-                    ) : (
-                        <span>Choose new file</span>
-                    )}
-                </button>
-                {/* hidden input */}
-                <input type="file" name="name" 
-                       onChange={this.handle_submitImage}
-                       style={{display:"none"}}
-                       ref={this.r_input}/>
-            </div>
-
-        )
-    }
-
-}
 
 
 
@@ -101,7 +30,7 @@ function getRandomGreeting(){
     return greetings[ Math.round(Math.random()*(greetings.length-1)) ];
 }
 
-function getCardCoverMessage(templateName, offFunc, handle_deleteScene){
+function getCardCoverMessage(templateName, offFunc, handlerMap){
 
     // WARNING: This function is used by all of CardCovers. Do not bind(this) to it.
     //          It will only work for the first binder. 
@@ -130,10 +59,17 @@ function getCardCoverMessage(templateName, offFunc, handle_deleteScene){
             )
 
         case "upload":
+            let handle_createFrame = () => {}
+            if (handlerMap && handlerMap.hasOwnProperty('createFrame')){
+                handle_createFrame = handlerMap.createFrame;
+            }
             return (
                 <div className="cover_message columns">
                     <div className="center">
-                        <FileInput message="Choose file"/>
+                        <FileInputButton message="Choose file"
+                                         fieldLabel="frame_image"
+                                         action={handle_createFrame}
+                                         onClickAction={offFunc}/>
                     </div>
                     <p className="center">
                         <span className="bigtext-2">OR</span>
@@ -149,6 +85,10 @@ function getCardCoverMessage(templateName, offFunc, handle_deleteScene){
             )
 
         case "deleteConfirm":
+            let handle_deleteScene = () => {}
+            if (handlerMap && handlerMap.hasOwnProperty('deleteScene')){
+                handle_deleteScene = handlerMap.deleteScene;
+            }
             return (
                 <div className="cover_message">
                     <p>
@@ -156,7 +96,11 @@ function getCardCoverMessage(templateName, offFunc, handle_deleteScene){
                     </p>
                     <p>
                         <span>
-                            <button onClick={()=>{offFunc(); handle_deleteScene();}} className='warning'>DELETE</button>
+                            <button onClick={()=>{
+                                        offFunc(); 
+                                        handle_deleteScene();
+                                    }} 
+                                    className='warning'>DELETE</button>
                             <button onClick={offFunc}>Cancel</button>
                         </span>
                     </p>
@@ -274,7 +218,11 @@ class CardCover extends PureComponent {
     render(){
         const bmap = this.behaviorMap;
         const msgType = this.props.messageType;
-        
+        const handlerMap = {
+            "createFrame": this.props.handle_createFrame, 
+            "deleteScene": this.props.handle_deleteScene
+        } 
+
         let intangible = bmap.hasOwnProperty(msgType) ? bmap[msgType].intangible : bmap.default.intangible;
         return (
             <div className={"cover light drag_and_drop" + 
@@ -282,7 +230,7 @@ class CardCover extends PureComponent {
                             (intangible ? " intangible" : "")}
                  onDrop={(e)=>{e.preventDefault()}}>
       
-                    {getCardCoverMessage(msgType, this.props.off, this.props.handle_deleteScene )}
+                    {getCardCoverMessage(msgType, this.props.off, handlerMap )}
             </div>
         )
     }
