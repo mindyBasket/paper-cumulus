@@ -20,6 +20,45 @@ function getCSRFToken(){
     return $form.querySelector("input[name='csrfmiddlewaretoken']").value;
 }
 
+function timeSince(date) {
+
+  const seconds = Math.floor((new Date() - date) / 1000.00);
+  // console.log("starting with: " + seconds);
+
+  let timeUnit = Math.floor(seconds / 31536000.00);
+  if (timeUnit >= 1) {
+    return timeUnit + " years";
+  }
+
+  timeUnit = Math.floor(seconds / 2592000.00);
+  if (timeUnit >= 1) {
+    return timeUnit + " months";
+  }
+
+  timeUnit = Math.floor(seconds / 86400.00);
+  if (timeUnit >= 1) {
+    const days = timeUnit;
+    const remainder = seconds - 86400*timeUnit;
+    let hours = Math.floor( remainder / 3600.00);
+    return days + " days and " + hours + " hours"; 
+  }
+
+  timeUnit = Math.floor(seconds / 3600.00);
+  if (timeUnit >= 1) {
+    return timeUnit + " hours";
+  }
+
+  timeUnit = Math.floor(seconds / 60); 
+  if (timeUnit >= 1) {
+    return timeUnit + " minutes";
+  }
+
+  return Math.floor(seconds) + " seconds";
+}
+// var aDay = 24*60*60*1000
+//console.log(timeSince(new Date(Date.now()-aDay)));
+//console.log(timeSince(new Date(Date.now()-aDay*2)));
+
 
 function showMessage(domId){
     document.querySelectorAll(".hideable_content").forEach((msgBox)=>{
@@ -42,7 +81,9 @@ function displayErrorMessage(msg){
     }
 }
 
-
+function timeOver(){
+    return true;
+}
 
 
 
@@ -64,19 +105,48 @@ if (window.localStorage){
     const demoChapterId = stor.getItem("demoChapterId");
     if (demoChapterId){
         // Demo Chapter Exists
-        showMessage("#msg_returning");
-
-        const $returnToDemo = document.querySelector("#return_to_demo");
-        if($returnToDemo){
-            $returnToDemo.onclick=(e)=>{
-                const demoChapterId = stor.getItem("demoChapterId");
-                if (demoChapterId){
-                    // make url
-                    const demoChapterUrl =  `/flipbooks/chapter/${demoChapterId}/`;
-                    window.location.href = demoChapterUrl;
+        // put id and date
+        const $msgReturningContainer = document.querySelector("#msg_returning");
+        if($msgReturningContainer){
+            // new Date(year, month, day, hours, minutes, seconds, milliseconds)
+            // Note: month counts from 0 to 11!
+            const testDate = new Date(2018, 10, 1, 5, 30, 0, 0);
+            const pythonTimestamp = stor.getItem("demoTimestamp");
+            const dateago = timeSince(pythonTimestamp*1000);
+            console.log(dateago + " ago");
+            
+            const $msg = $msgReturningContainer.querySelector("#msg");
+            const msgText = $msg.textContent;
+            const msgVars = [dateago, demoChapterId];
+            
+            let counter = 0;
+            let outputText = null;
+            msgText.split("$$").forEach((txt)=>{
+                if (!outputText){
+                    outputText = txt;
+                } else {
+                    outputText += msgVars[counter] + txt;
+                    counter++;
                 }
+            }); 
+            $msg.textContent = outputText;
 
+            showMessage("#msg_returning");
+        
+            const $returnToDemo = document.querySelector("#return_to_demo");
+            if($returnToDemo){
+                $returnToDemo.onclick=(e)=>{
+                    const demoChapterId = stor.getItem("demoChapterId");
+                    if (demoChapterId){
+                        // make url
+                        const demoChapterUrl =  `/flipbooks/chapter/${demoChapterId}/`;
+                        window.location.href = demoChapterUrl;
+                    }
+
+                }
             }
+        } else {
+            displayErrorMessage("Something went wrong while rendering the page. Try refresh.")
         }
 
 
@@ -106,6 +176,7 @@ if (window.localStorage){
                             if (demoChapterId && demoChapterId.length == 8){
                                 // store chapter info before locating you there
                                 stor.setItem("demoChapterId", demoChapterId);
+                                stor.setItem("demoTimestamp", res.data.timestamp);
                                 window.location.href = res.data.url;
                             } else {
                                 displayErrorMessage("Cloned demo chapter was a mutant!");
@@ -116,10 +187,16 @@ if (window.localStorage){
                         }
                     })
                     .catch(error => {
-                        console.log(error.response.data);
-                        console.log(error.response.status);
-                        console.log(error.response.headers);
-                        displayErrorMessage("Something went wrong communicating with the server!");
+                        if(error.response){
+                            console.log(error.response.data);
+                            console.log(error.response.status);
+                            console.log(error.response.headers);
+                            displayErrorMessage("Something went wrong on server side!")
+                        } else {
+                            displayErrorMessage("Response from the server was a mutant!");
+                        }
+                        
+                        
                     });
                 }
 
@@ -136,4 +213,10 @@ if (window.localStorage){
 
 } else {
     console.warn("NO LOCAL STORAGE");
+}
+
+
+// for debug
+document.querySelector("#testreset").onclick=(e)=>{
+    window.localStorage.clear();
 }

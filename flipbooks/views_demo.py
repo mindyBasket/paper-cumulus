@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+import datetime, time
 
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, JsonResponse
@@ -87,6 +88,7 @@ def copy_demo_chapter(request, *args, **kwargs):
 
         resp['url'] = "/flipbooks/chapter/%s/" % new_demo_chapter.id64
         resp['demoChapterId'] = new_demo_chapter.id64;
+        resp['timestamp'] =  time.time();
 
         return JsonResponse(resp)
 
