@@ -1,3 +1,4 @@
+const EXPIRE_TIME = 3 // days
 
 // ██╗  ██╗███████╗██╗     ██████╗ ███████╗██████╗ ███████╗
 // ██║  ██║██╔════╝██║     ██╔══██╗██╔════╝██╔══██╗██╔════╝
@@ -55,9 +56,21 @@ function timeSince(date) {
 
   return Math.floor(seconds) + " seconds";
 }
-// var aDay = 24*60*60*1000
-//console.log(timeSince(new Date(Date.now()-aDay)));
-//console.log(timeSince(new Date(Date.now()-aDay*2)));
+
+
+function isExpired(date){
+    const seconds = Math.floor((new Date() - date) / 1000.00);
+    const days = Math.floor(seconds / 86400.00);
+
+    if (days >= EXPIRE_TIME){
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+
 
 
 function showMessage(domId){
@@ -81,9 +94,7 @@ function displayErrorMessage(msg){
     }
 }
 
-function timeOver(){
-    return true;
-}
+
 
 
 
@@ -97,27 +108,31 @@ function timeOver(){
 
 // Check localstorage
 if (window.localStorage){
-    console.warn("Local storage exists");
 
     // check if there has been a demo object
     stor = window.localStorage;
 
     const demoChapterId = stor.getItem("demoChapterId");
-    if (demoChapterId){
+    // Note: month counts from 0 to 11!
+    const pythonTimestamp = stor.getItem("demoTimestamp");
+    const testDate = new Date(2018, 9, 29, 5, 30, 0, 0);
+    var demoIsExpired = null;
+    var timeago = null;
+    if (pythonTimestamp != null){
+        demoIsExpired = isExpired(pythonTimestamp*1000);
+        timeago = timeSince(pythonTimestamp*1000);
+    }
+
+
+    if (demoChapterId && demoIsExpired == false){
         // Demo Chapter Exists
         // put id and date
         const $msgReturningContainer = document.querySelector("#msg_returning");
         if($msgReturningContainer){
-            // new Date(year, month, day, hours, minutes, seconds, milliseconds)
-            // Note: month counts from 0 to 11!
-            const testDate = new Date(2018, 10, 1, 5, 30, 0, 0);
-            const pythonTimestamp = stor.getItem("demoTimestamp");
-            const dateago = timeSince(pythonTimestamp*1000);
-            console.log(dateago + " ago");
-            
+
             const $msg = $msgReturningContainer.querySelector("#msg");
             const msgText = $msg.textContent;
-            const msgVars = [dateago, demoChapterId];
+            const msgVars = [timeago, demoChapterId];
             
             let counter = 0;
             let outputText = null;
@@ -153,6 +168,14 @@ if (window.localStorage){
     } else {
         // No demo chapter exists, let user create new one
         showMessage("#msg_new");
+
+        const $msgNewContainer = document.querySelector("#msg_new");
+        const $msg = $msgNewContainer.querySelector("#msg");
+        
+        if (demoIsExpired){
+            $msg.textContent = `A demo you made ${timeago} ago expired. \nMake a new one that will be available for 3 days?`
+            window.localStorage.clear();
+        }
 
         // Bind startDemo button 
         const $startDemo = document.querySelector('#make_demo');
