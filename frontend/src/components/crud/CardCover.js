@@ -11,10 +11,7 @@ const h = new Helper();
 
 
 
-
-
-
-
+ 
 
 function getRandomGreeting(){
 

@@ -8,14 +8,18 @@
 {% block headband_class %}disabled{% endblock headband_class %}
 
 
+
 {% block contentbox %}
-    <div class="content">
+
+
+    <div class="hideable_content" id="msg_new">
         <h2>{{welcome_msg}}</h2>
         <p>
             The demo chapter you generate will be available for 3 days. 
         </p>
         <div style="height:70px;">
             <button id="make_demo">Yes, make a demo chapter</button>
+
             <div id="loading_msg">
                 <img src="{% static 'css_static/img/loading-io_spinner.gif' %}"/>
                 <span class="bigtext-2">Creating demo...</span>
@@ -25,18 +29,38 @@
                     <a href="https://loading.io" target="_blank">Loader image from loading.io</a>
                 </p>
             </div>
+
         </div>
-        
+
         <div>
             <!-- chapter create form -->
             {% include "flipbooks/includes/form_dynamic.html" with form=demo_chapter_create_form action_url=strip_create_url form_id="demo_chapter_create_form" btn_title='Start' %}
             
         </div>
-
-
-
-
     </div>
+
+
+    <div class="hideable_content" id="msg_returning">
+        <h2>Welcome back!</h2>
+        <p>
+            You started a demo blahblahb hours ago!
+        </p>
+        <div style="height:70px;">
+            <button id="return_to_demo">Take me there!</button>
+        </div>
+    </div>
+
+
+    <div class="hideable_content" id="msg_error">
+        <h2 class="color red">Oh no! <span class="far fa-sad-tear"/></h2>
+        <p id="msg">
+            <!-- msg -->
+        </p>
+        <p>
+            Sorry about this. Please try again later.
+        </p>
+    </div>
+
 
 {% endblock contentbox %}
 

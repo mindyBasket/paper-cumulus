@@ -86,6 +86,7 @@ def copy_demo_chapter(request, *args, **kwargs):
 
 
         resp['url'] = "/flipbooks/chapter/%s/" % new_demo_chapter.id64
+        resp['demoChapterId'] = new_demo_chapter.id64;
 
         return JsonResponse(resp)
 
