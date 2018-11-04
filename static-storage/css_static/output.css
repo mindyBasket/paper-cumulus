@@ -516,6 +516,8 @@ html, body {
 body {
   background-color: #efecea;
   height: 100%;
+  padding-bottom: 60px;
+  /*for footer*/
   /*font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;*/
   font-family: "Quicksand", sans-serif;
   color: #808080;
@@ -586,6 +588,7 @@ a:hover {
   /* ALSO stretched to fill rest of screen*/
   flex-grow: 1;
   flex-basis: auto;
+  padding-bottom: 50px;
   border-left: 1px solid #cfcfcf;
 }
 
@@ -603,6 +606,11 @@ a:hover {
 
 .headband_wrapper.dark {
   background-color: #2f2f2f;
+}
+
+.headband_wrapper.with_splash {
+  /* special case where headband has splash image in it*/
+  padding: 0px;
 }
 
 .headband {
@@ -652,8 +660,8 @@ a:hover {
   display: flex;
   flex-grow: 1;
   /*will fill the rest of the page */
-  margin-top: -60px;
-  /*footer is not part of the flexbox*/
+  /*margin-top: -60px; /*footer is not part of the flexbox*/
+  /* using padding-bottom on body instead*/
 }
 
 .footer span {
@@ -664,7 +672,7 @@ a:hover {
   width: 100%;
   background-color: #c7c2c2;
   padding: 20px;
-  color: #946363;
+  color: #5d4f4f;
 }
 
 /* -------------------------------------- */
@@ -833,8 +841,8 @@ a:hover {
 /* -------------------------------------- */
 /* -------------------------------------- */
 .thumb .popup_menu {
-  top: 5px;
-  right: -7px;
+  top: 35px;
+  right: 75px;
   transform-origin: top right;
   transform: translate(100%, 0%);
 }

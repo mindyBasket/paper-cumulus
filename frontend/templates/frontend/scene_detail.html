@@ -60,13 +60,10 @@
         {% endfor %}
     </ul>
     
-    
-
-
-
-
 {% endblock %}
     
+
+
 {% block right_column %}
 
     <!--
@@ -85,7 +82,8 @@
 
     <div id="ref-content" 
          sceneId="{{scene.id}}"
-         stripSetCount="{{scene.strip_set.all|length}}"/>
+         stripSetCount="{{scene.strip_set.all|length}}">
+    </div>
 
     <div id="scene_editor_wrapper">
         <!-- ////////// -->
@@ -101,10 +99,8 @@
     <!-- frame_create_form -->
     {% include "flipbooks/partials/frame_create_partial.html" with form=frame_create_form action_url=frame_create_url form_id="frame_create_form" %}
 
-    
-    
-    
 {% endblock %}
+
 
     
 {% block extra_js %}

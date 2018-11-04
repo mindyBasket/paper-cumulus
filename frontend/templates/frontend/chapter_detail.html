@@ -6,7 +6,7 @@
 
 
 
-{% block headband_class %}dark{% endblock headband_class %}
+{% block headband_class %}dark with_splash{% endblock headband_class %}
 
 {% block top_content %}
 
@@ -55,6 +55,8 @@
     </div>
 
 {% endblock %}
+
+
 
 {% block right_column %}
 
@@ -114,9 +116,7 @@
 
     <!-- scene_create_form -->
     {% include "flipbooks/includes/form_dynamic.html" with form=scene_create_form form_id="scene_create_form" btn_title='Add Scene' %}
-
-
-    
+  
 {% endblock %}
 
 {% block message_layout %}
