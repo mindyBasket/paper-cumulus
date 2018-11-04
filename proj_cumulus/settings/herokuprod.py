@@ -5,14 +5,17 @@ import dj_database_url # parse PostGres
 DEBUG = False
 USE_S3 = True
 
-if CONFIGS:
-    # basic info is extracted in base setting. This is for AWS.
-    try:
-        AWS_ACCESS_KEY_ID = CONFIGS["AWS_ACCESS_KEY_ID"]
-        AWS_SECRET_ACCESS_KEY = CONFIGS["AWS_SECRET_ACCESS_KEY"]
-    except KeyError as err:
-        print(repr(err))
-        raise ImproperlyConfigured("Env file missing AWS access keys")
+# Ignore CONFIGS, which is based on local file
+print("[HEROKU PRODUCTION] Will ignore CONFIG file")
+
+# if CONFIGS:
+#     # basic info is extracted in base setting. This is for AWS.
+#     try:
+#         AWS_ACCESS_KEY_ID = CONFIGS["AWS_ACCESS_KEY_ID"]
+#         AWS_SECRET_ACCESS_KEY = CONFIGS["AWS_SECRET_ACCESS_KEY"]
+#     except KeyError as err:
+#         print(repr(err))
+#         raise ImproperlyConfigured("Env file missing AWS access keys")
 
 # Connect to Database
 DATABASE_URL = os.environ['DATABASE_URL']

@@ -24,6 +24,7 @@ ENV_FILE_PATH = os.path.join(BASE_DIR, "env.json")
 
 CONFIGS = None
 if os.path.isfile(ENV_FILE_PATH):
+    print("[CONFIGS] Env file found. WIll use this to config environment.")
     with open(ENV_FILE_PATH) as f:
         CONFIGS = json.loads(f.read())
         f.close()
