@@ -240,6 +240,10 @@ if (window.localStorage){
 
 
 // for debug
-document.querySelector("#testreset").onclick=(e)=>{
-    window.localStorage.clear();
+const $testReset = document.querySelector("#testreset");
+if ($testReset){
+    $testReset.onclick=(e)=>{
+        window.localStorage.clear();
+    }
 }
+

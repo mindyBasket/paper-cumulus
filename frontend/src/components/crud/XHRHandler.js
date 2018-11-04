@@ -37,6 +37,10 @@ class XhrHandler {
         return csrfToken;
     }
 	
+    createScene(chapterId, formData, csrfToken){
+		return this.makeXHR('post', formData, `/api/chapter/${chapterId}/scene/create/`, csrfToken);
+	}
+
 
 	fetchScene(sceneId){
 		return (
@@ -81,10 +85,6 @@ class XhrHandler {
 	        	console.log(error);
 	        })
 	    )
-	}
-
-	createScene(chapterId, formData, csrfToken){
-		return this.makeXHR('post', formData, `/api/chapter/${chapterId}/scene/create/`, csrfToken);
 	}
 
 
@@ -177,7 +177,7 @@ class XhrHandler {
 
 	}
 
-	// Attempt at generic
+	// For recursion!
 	getPromise(method, data, endpoint, csrfToken){
 
 		// TODO: investigate why using this.getCSRFToken gets 403 error
@@ -193,10 +193,6 @@ class XhrHandler {
 	    )
 
 	}
-
-
-
-
 
 }
 

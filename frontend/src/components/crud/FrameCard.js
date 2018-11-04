@@ -284,7 +284,7 @@ class FrameCard extends Component{
         const csrfToken = axh.getCSRFToken();
         console.log("CSRF token grabbed for FrameDelete: " + csrfToken);
         axh.destoryFrame(frame.id, csrfToken).then(res=>{
-            // Destroy successful. Re-fetch.
+            // Destroy successful. FETCH SCENE
             pub_handle_fetchScene();
         })
     }
@@ -341,9 +341,8 @@ class FrameCard extends Component{
 
         // patch update to frame
         axh.editFrame(frame.id, formData, csrfToken).then(res => {
-            console.log("Frame Toggled!")
-            // A little unsafe, but not refreshing the frame list for now.
-            console.log(res.data);
+            // FETCH SCENE (will refresh the FramePreview)
+            pub_handle_fetchScene();
         });
 
     }

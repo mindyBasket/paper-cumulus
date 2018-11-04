@@ -265,6 +265,7 @@ class StripCard extends PureComponent {
         // this.props.stripObj
         // this.props.index
         // this.setSceneDataState
+        // this.props.handle_fetchScene
 
         this.state={
             loadingFrames: false,
@@ -444,8 +445,9 @@ class StripCard extends PureComponent {
         axh.destroyStrip(strip.id, csrfToken).then(res=>{
             // Destroy successful. Re-fetch.
             console.log("[Strip destory] response came back");
+            // FETCH SCENE
             pub_handle_fetchScene();
-        })
+        });
     }
 
     handle_openUploadCover(){
@@ -468,8 +470,13 @@ class StripCard extends PureComponent {
             url: `/flipbooks/ajax/strips/${strip.id}/sort-children/`
  
         })
-        .then(response =>{ 
-            console.log("sucessfully came back: " + response.data["frame_ids"]);
+        .then(res =>{ 
+            if (res && res.data){
+                console.log("sucessfully came back: " + res.data["frame_ids"]);
+                // FETCH SCENE
+                pub_handle_fetchScene();
+            }
+            
         })
         .catch(err => {
             console.error(JSON.stringify(err));
