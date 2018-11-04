@@ -1630,10 +1630,16 @@ button.action:hover {
 }
 
 button.disabled {
+  pointer-events: none;
   margin-top: 9px;
   border: 0px solid;
   background-color: #b9b9b9;
   color: #dedede;
+}
+
+input[type=text] {
+  padding: 5px 3px;
+  border-radius: 5px;
 }
 
 /* note: '.menu_btn' is in menu.css */

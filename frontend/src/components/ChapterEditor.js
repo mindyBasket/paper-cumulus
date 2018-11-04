@@ -44,9 +44,11 @@ class SceneCreateModal extends PureComponent{
         	textFields.forEach((t)=>{
         		t.value = "";
         	});
+
             lb.pub_LightBox_on();
 
         } else if (prevProps.on == true && this.props.on == false){
+        	this.setState({valid: false});
             lb.pub_LightBox_off();
         }
 
@@ -161,7 +163,12 @@ class ChapterEditor extends Component{
 
 	handle_openSceneCreateModal(){
 		console.log("Create scene under chapter " + this.chapterId);
-		lb.pub_LightBox_addToOnClick( ()=>{this.setState({sceneCreateOn: false}) });
+		lb.pub_LightBox_addToOnClick( ()=>{
+			this.setState({
+				sceneCreateOn: false,
+
+			}) 
+		});
 		
 		this.setState({sceneCreateOn: true});
 		
