@@ -85,6 +85,10 @@
                                         {% endif %} 
                                         
                                     {% endwith %}
+                                {% empty %}
+                                    <span class="thumb blurred">
+                                        Empty scene
+                                    </span>
                                 {% endfor %}
                             </div>
                         {% endwith %}
