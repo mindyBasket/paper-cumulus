@@ -58,11 +58,14 @@ class Book(models.Model):
 
     def save(self, *args, **kwargs):
         # check if this is a new book
-        # is_new = True if self._state.adding else False
-        if self._state.adding or self.slug == '':
-            self.slug = text.slugify("{0} {1}".format(self.pk,self.title))
-            
+        is_new = True if self._state.adding else False
         super(Book, self).save(*args, **kwargs)
+
+        if is_new or self.slug == '':
+            self.slug = text.slugify("{0} {1}".format(self.pk,self.title))
+            super(Book, self).save(*args, **kwargs)
+            
+        
 
 
 
