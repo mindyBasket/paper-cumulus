@@ -15,9 +15,7 @@
     {% with object_chapter.scene_set.all|first as first_scene %}
         {% with first_scene.strip_set.all|first as first_strip %}
             {% with first_strip.frame_set.all|first as first_frame %}
-
                 <div class="splash" style="background-image:url({{ first_frame.frame_image.thumb.url }})">
-                    
                     
                 </div>
                 <div class="splash_float">
@@ -26,9 +24,6 @@
                         <span class="far fa-play-circle">
                         </span> View from the start
                     </a>
-
-                    
-
                 </div>
 
             {% endwith %}

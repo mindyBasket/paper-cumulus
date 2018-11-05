@@ -52,11 +52,8 @@ class SceneCreateModal extends PureComponent{
             lb.pub_LightBox_off();
         }
 
-
-        
-
-
 	}
+
 
 	handle_nameChange(){
 		const nameField = this.r_form.current.querySelector("#scene_name");
@@ -68,6 +65,7 @@ class SceneCreateModal extends PureComponent{
 		}
 	}
 	
+
 	handle_createScene(){
 		const chapter = this.props.chapterObj;
 		const formData = h.makeFormData(h.serializeForm(this.r_form.current));
@@ -112,7 +110,7 @@ class SceneCreateModal extends PureComponent{
 				</div>
 
 				<div className="scene_form_content" ref={this.r_form}>
-				 	<span>Name: <input id="scene_name" name="title" type="text" onChange={this.handle_nameChange}/></span>
+				 	<span>Name: <input id="scene_name" name="name" type="text" onChange={this.handle_nameChange}/></span>
 
 				 	<span className="align_right">
 				 		<button className={this.state.valid ? "" : "disabled"}
@@ -162,17 +160,14 @@ class ChapterEditor extends Component{
 	}
 
 	handle_openSceneCreateModal(){
-		console.log("Create scene under chapter " + this.chapterId);
+		console.log("Create scene under chapter " + this.chapter.id);
 		lb.pub_LightBox_addToOnClick( ()=>{
 			this.setState({
 				sceneCreateOn: false,
-
 			}) 
 		});
 		
 		this.setState({sceneCreateOn: true});
-		
-
 	}
 
 	render(){
