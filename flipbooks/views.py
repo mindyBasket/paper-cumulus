@@ -165,6 +165,21 @@ class ChapterDetailView_REACT(generic.TemplateView):
         # make context for the Chapter and its Scenes
         context['object_chapter'] = chapter
 
+        # it may be an empty chapter
+        is_empty_chapter = True
+
+        query_scenes = chapter.scene_set.all()
+        if query_scenes and len(query_scenes) > 0:
+            first_scene = query_scenes[0]
+            query_strips = first_scene.strip_set.all()
+            if query_strips and len(query_strips) > 0:
+                first_strip = query_strips[0]
+                query_frames = first_strip.frame_set.all()
+                if query_frames and len(query_frames) > 0:
+                    is_empty_chapter = False
+
+        context['is_empty_chapter'] = is_empty_chapter
+
         # context['object_scene_list'] = context['object_chapter'].scene_set.order_by('order')
 
         # prepare invisible form. Make sure you put it into context!

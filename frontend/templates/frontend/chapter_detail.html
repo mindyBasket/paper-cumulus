@@ -10,13 +10,10 @@
 
 {% block top_content %}
     
-    {% if object_chapter.scene_set.all|length > 0 %}
+    {% if not is_empty_chapter %} 
+
     {% with object_chapter.scene_set.all|first as first_scene %}
-
-        {% if first_scene.strip_set.all|length > 0 %}
         {% with first_scene.strip_set.all|first as first_strip %}
-
-            {% if first_strip.frame_set.all|length > 0 %}
             {% with first_strip.frame_set.all|first as first_frame %}
 
                 <div class="splash" style="background-image:url({{ first_frame.frame_image.thumb.url }})">
@@ -35,25 +32,20 @@
                 </div>
 
             {% endwith %}
-            {% endif %}
-
         {% endwith %}
-        {% endif %}
-
     {% endwith %}
+
     {% else %}
-        <div class="splash">
-                                
-        </div>
+        <div class="splash"></div>
+
         <div class="splash_float blurred dimmed">
             <span class="bigtext-3">No preview to show</span>
         </div>
-
-
     {% endif %}
 
-    
 {% endblock %}
+
+
 
 
 {% block left_column %}
