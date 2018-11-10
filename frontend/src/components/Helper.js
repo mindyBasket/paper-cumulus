@@ -30,6 +30,30 @@ class Helper {
 
     }
 	
+    getTotalStripCount(data){
+        // Assumes data is either array of Scene object, or a single Scene object. 
+        // TODO: make this a better search
+
+        if (Array.isArray(data)){
+            // many scenes
+            let count = 0; 
+            for (let i=0;i<data.length;i++){
+                if (data[i].hasOwnProperty('strips')) {
+                    count+=data[i]['strips'].length;
+                }
+            }
+            return count;
+
+        } else {
+            if (data.hasOwnProperty('strips')){
+                return data['strips'].length;
+            } else {
+                return 0;
+            }
+        }
+
+
+    }
 
 	serializeForm($form){
         // Note: this does NOT RETURN FORMDATA. It just returns an object.
@@ -82,14 +106,15 @@ class Helper {
         // TODO: this is EXACT copy of reorderFrames inside Cards.js
         //       PLUS this function remove frames that have 'ignored' == true
 
-
+        console.log("[reorderFrames] strip with frames length: " + strip.frames.length);
         if(!strip.hasOwnProperty("frames") || strip.frames.length == 0){
-            return []
+            console.log("This strip is empty >:C");
+            return [];
         }
         if (!strip.hasOwnProperty('children_li') || !strip.children_li || strip.children_li.trim() == ''){
             // no children_li. Return frame array as is
             console.error("No valid children_li");
-            return strip.frames
+            return strip.frames;
         }
 
         const frameIdList = strip.children_li.split(",");

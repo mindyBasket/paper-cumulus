@@ -14,6 +14,7 @@ class FrameFeeder extends Component {
     };
 
   componentDidMount() {
+
     fetch(this.props.endpoint)
       .then(response => {
         if (response.status !== 200) {
@@ -23,13 +24,13 @@ class FrameFeeder extends Component {
       })
       .then(data => {
         console.log("Data fetched successfully");
-        console.warn(data);
         return this.setState({ data: data, loaded: true });
       }
 
       );
   }
   render() {
+
     const { data, loaded, placeholder } = this.state;
     return loaded ? this.props.render(data) : <p>{placeholder}</p>;
   }

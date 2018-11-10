@@ -59,6 +59,11 @@ var flipbook_publicFunctions = {
 		let height = this.state.windowHeight;
 
 		const frameImages = $strip.querySelectorAll('img');
+		if (!frameImages){
+			console.error("Cannto find <img>s in strip object");
+			return false;
+		}
+
 		let di = null;
 		for(let i=0;i<frameImages.length;i++){
 			di = frameImages[i].getAttribute("dimension");
@@ -114,7 +119,15 @@ class FrameStage extends PureComponent{
 
 	constructor(props){
 		super(props);
-		this.data = this.props.data;
+
+		// props reference
+		// this.props.isStandAlone; // this component can be used by itself without scrubber and timer
+
+		this.data = this.props.data; // passed down from FrameFeeder
+		this.state = {
+			lazyDataCount: 0
+		}
+
 		this.currStrip;
 		this.$node = React.createRef(); 
 
@@ -124,12 +137,9 @@ class FrameStage extends PureComponent{
 		}
 
 		this.setTimeOutArr = []
-		this.state = {
-		}
 
-		// props reference
-		// this.props.isStandAlone; // this component can be used by itself without scrubber and timer
-
+	
+	
 		this.gotoNextAndPlay=this.gotoNextAndPlay.bind(this);
 		this.rewind=this.rewind.bind(this);
 		this.gotoPrev=this.gotoPrev.bind(this);
@@ -137,6 +147,7 @@ class FrameStage extends PureComponent{
 		this.playFrame=this.playFrame.bind(this);
 		this.killSetTimeOut=this.killSetTimeOut.bind(this);
 	}
+
 
 	componentDidMount(){
 
@@ -149,16 +160,15 @@ class FrameStage extends PureComponent{
 
 		// scroll to first element just in case
 		this.currStrip = this.$node.current.querySelector('.strip.start');
-		//this.currStrip.scrollIntoView(true); // This may be unnecessary scrolling
 
-		 if (this.props.isStandAlone){
+		if (this.props.isStandAlone){
 		 	// This component can be used by itself. Currently used in SceneEditor's preview
 		 	this.$node.current.click(); // autoplay
 
-		 } else {
+		} else {
 			// bind keyboard
 			// TODO: this variable appears to be not being used.
-			var playNext = this.playNext;
+			//var playNext = this.playNext;
 
 			document.addEventListener('keydown', (event) => {
 			    if(event.keyCode == 37) {
@@ -177,13 +187,10 @@ class FrameStage extends PureComponent{
 			    }
 			});
 
-			// TODO: this seem like a bad place to initialize the Scrubber.
-			//	 	 this pattern is being used because frames are fetched in this component,
-			//		 instead of the parent component to pass it down
-			_setState_Scrubber({numStrips: this.props.data['strips'].length});
+			// initialize the Scrubber.
+			_setState_Scrubber({numStrips: h.getTotalStripCount(this.props.data)});
 
 			// Tell parent the frame has been loaded
-			// TODO: this is the same problem as above
 			_setState_FlipbookPlayer({frameLoaded: true});
 		}
 	
@@ -208,6 +215,7 @@ class FrameStage extends PureComponent{
 	gotoNextAndPlay(useScrollTop){
 		// Kill any preexisting animation
 		this.killSetTimeOut();
+
 		if (!this.frameState.isStripHead && this.currStrip.nextElementSibling != null ){
 			// Go to next Strip
 			this.currStrip = this.currStrip.nextElementSibling;
@@ -220,8 +228,6 @@ class FrameStage extends PureComponent{
 
 			// Note: it became a positive feature to replay the last existing strip.
 			//		 For now, do not add extra behavior to indicate end of Scene.	 
-
-			
 		}
 
 		// set frame_window to the right aspect ratio matching new strip
@@ -328,6 +334,26 @@ class FrameStage extends PureComponent{
         this.setTimeOutArr = new Array();
 	}
 
+	lazyLoad(){
+		// load only one scene at a time (lazy load?)
+
+	      // there is a rumor React can render...basically arrays. 0: 
+
+	      // select data to load. if there is only one, just put one.
+	      if (this.loadedSceneCount == 0){
+	        const loadableData = data[0]; //a scene object
+	        this.loadedSceneCount++;
+	      } else if (this.loadedSceneCount > 0) {
+	        console.warn("WE NEED MOAR FRAMES");
+	        const loadableData = data.slice(0, this.loadedSceneCount+1);
+	        this.loadedSceneCount++;
+	      }
+
+	    // WHERE TO CONTROL LAZY DATA?
+
+	}
+
+
 	render(){
 
 		// Note: do not do it like this. It causes this.$node to be sometimes null. 
@@ -335,49 +361,64 @@ class FrameStage extends PureComponent{
 		//		 component not render from its parents.
 		//if (this.props.isStandAlone && !this.props.on){ return false;}
 
-		return ((data) => {
-			// TODO: why did you do this? haha
-			data = new Array(data); //unify format
+		const data = Array.isArray(this.props.data) ? this.props.data : new Array(this.props.data); //unify format
+
+		if (!data || !data.length){
+			return (<p ref={this.$node}>No frame registered to this strip</p>)
+		} 
+		else{
+			console.log("Slice lazyData. Scene count = " + data.length);
+			let lazyData = data.slice(0,this.state.lazyDataCount+1);
+			console.log(lazyData.length);
+
 			return (
-				!data || !data.length ? (
-					<p ref={this.$node}>No frame registered to this strip</p>
-				) : (
-					<div className="frame_stage" onClick={this.gotoNextAndPlay} ref={this.$node}>
-				 
-					 	{/* data.strips is an array of JSON objects */}
-						{data[0]['strips'].map((el_strip,index) => (
-							<span className={`strip${index==0 ? " start" : ""}`} 
-								  key={"strip"+el_strip.id}
-								  index={index} 
-								  count={h.getUnignoredFrames(el_strip).length}>
+				<div className="frame_stage" onClick={this.gotoNextAndPlay} ref={this.$node}>
+			 
+				 	{/* data.strips is an array of JSON objects */}
+				 	{lazyData.map((el_scene)=>(
+				 		<span className="scene" key={'scene'+el_scene}>
 
-								{h.reorderFrames(el_strip).map(el_frame => {
-									{/* TODO: edge case there are no frames */}
-									if (el_frame && el_frame.frame_image) {
-										return (
-											<img src={el_frame.frame_image}
-												 className="frame" 
-												 dimension={el_frame.dimension} 
-												 key={el_frame.id}/>
-										)
-									} else {
-										return (
-											<p>CANNOT FIND IMAGE</p>
-										)
-									}
-									
-								})}
-							</span>
-						))} {/* end of data.map() */}
-							
-				
-					</div>
+				 			{el_scene['strips'].map((el_strip,index) => (
+								<span className={`strip${index==0 ? " start" : ""}`} 
+									  key={"strip"+el_strip.id}
+									  index={index} 
+									  count={h.getUnignoredFrames(el_strip).length}>
 
-				)
+									{h.reorderFrames(el_strip).map(el_frame => {
+										{/* TODO: edge case there are no frames */}
+										if (el_frame && el_frame.frame_image) {
+											return (
+												<img src={el_frame.frame_image}
+													 className="frame" 
+													 dimension={el_frame.dimension} 
+													 key={el_frame.id}/>
+											)
+										} else {
+											return (
+												<p>CANNOT FIND IMAGE</p>
+											)
+										}
+										
+									})}
+								</span>
+							))} 
+
+				 		</span>
+				 	))}
+					
+				</div>
+
 			)
-		})(this.props.data); 
+		}
+		
 	}
+
+
+
 }
+
+
+
 
 
 
@@ -393,9 +434,18 @@ class FrameWindow extends Component{
 
 	constructor(props){
 		super(props);
-		this.endpoint = "/api/scene/" + this.props.startSceneId + "/";
+
+		if (chapterId == null){
+			// if chapterId not provided, only retrieve one scene
+			// Note: response will be an object
+			this.endpoint = `/api/scene/${this.props.startSceneId}/`;
+		} else {
+			// Note: response will be an ARRAY of objects
+			this.endpoint = `/api/chapter/${this.props.chapterId}/scene/all/`;
+		}
 
 		// prop ref
+		// this.props.data 
 		// this.props.isStandAlone 
 		// this.props.widthOverride // should be passed down if standAlone
 		// this.props.heightOverride 
@@ -416,6 +466,7 @@ class FrameWindow extends Component{
 	render(){
 		const wOv = this.props.widthOverride;
 		const hOv = this.props.heightOverride;
+
 		return (
 			<div className="frame_window" 
 				 style={{ 
@@ -438,12 +489,12 @@ class FrameWindow extends Component{
 
 				)} 
 
+				{/* If NOT standalone */}
 				{ !this.props.isStandAlone && (
 					<FrameFeeder endpoint = {this.endpoint} 
 								 render={data => <FrameStage data={data} />} />
 				)}
 				
-
 				{!this.props.isStandAlone && 
 					<div className="frame_window_decorations">
 						<div className="player_instruction" 
@@ -464,6 +515,19 @@ class FrameWindow extends Component{
 	}
 
 }
+
+
+
+
+// ███████╗███████╗████████╗ ██████╗██╗  ██╗███████╗██████╗ 
+// ██╔════╝██╔════╝╚══██╔══╝██╔════╝██║  ██║██╔════╝██╔══██╗
+// █████╗  █████╗     ██║   ██║     ███████║█████╗  ██████╔╝
+// ██╔══╝  ██╔══╝     ██║   ██║     ██╔══██║██╔══╝  ██╔══██╗
+// ██║     ███████╗   ██║   ╚██████╗██║  ██║███████╗██║  ██║
+// ╚═╝     ╚══════╝   ╚═╝    ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
+                                                         
+
+
 
 
 
@@ -491,10 +555,8 @@ class Scrubber extends Component{
 		_setState_Scrubber = _setState_Scrubber.bind(this);
 	}
 
-	// componentDidMount(){
-	// }
-
 	render(){
+
 		return(
 			<div className="frame_scrubber">
 				
@@ -621,13 +683,11 @@ class FlipbookPlayer extends Component{
 				
 				{/* Scrubber, to hint which strip you are on */}
 				<Scrubber/>
-
 				{/* Through FrameWindow, you only see one frame at a time */}
-				<FrameWindow startSceneId={this.props.startSceneId}/>
+				<FrameWindow 
+					startSceneId={this.props.startSceneId}
+					chapterId={this.props.chapterId}/>
 
-
-				
-				
 				{/* Loading spinner. Still looking for a better place to put this*/}
 				<Spinner style="light" 
 						 float={true} 
@@ -650,7 +710,8 @@ const wrapper = document.getElementById("letterbox");
 
 const refNode = wrapper ? document.getElementById("ref").querySelector("#ref-content") : null;
 const sceneId = wrapper ? refNode.getAttribute("sceneId") : null;
-wrapper ? ReactDOM.render(<FlipbookPlayer startSceneId={sceneId}/>, wrapper) : null;
+const chapterId = wrapper ? refNode.getAttribute("chapterId") : null;
+wrapper ? ReactDOM.render(<FlipbookPlayer startSceneId={sceneId} chapterId={chapterId}/>, wrapper) : null;
 
 
 

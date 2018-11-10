@@ -18,8 +18,8 @@ urlpatterns = [
     
 
     # Chapter
-    path('chapter/<int:pk>/', views.ChapterAPIDetailView.as_view(), name="detail-chapter"),
-    path('chapter/<int:pk>/scene/all/', views.SceneAPIListView.as_view(), name="list-scene"), # same as above??
+    path('chapter/<int:pk>/', views.ChapterAPIDetailView.as_view(), name="detail-chapter"), # simple list
+    path('chapter/<int:pk>/scene/all/', views.SceneAPIListView.as_view(), name="list-scene"), # full list
 
     # Scene 
     path('chapter/<int:pk>/scene/create/', views.SceneCreateAPIView.as_view(), name="create-scene-under-chapter"),

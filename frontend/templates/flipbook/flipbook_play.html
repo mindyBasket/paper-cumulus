@@ -28,7 +28,9 @@
 
 
 {% block ref %}
-    <div id="ref-content" sceneId="{{scene.id}}">
+    <div id="ref-content" 
+         sceneId="{{scene.id}}"
+         chapterId="{{scene.chapter.id}}">
 {% endblock %}
 
 {% block extra_js %}
