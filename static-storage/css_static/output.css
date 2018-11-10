@@ -1532,7 +1532,7 @@ input.untouchable {
 
 .frame_scrubber .cell_fill {
   display: inline-block;
-  height: 10px;
+  height: 8px;
   margin-bottom: -10px;
   /*height of .cell*/
   width: 0%;
@@ -1541,19 +1541,23 @@ input.untouchable {
   float: left;
 }
 
+.frame_scrubber .cell_fill.loaded {
+  background-color: #3e1822;
+}
+
 .frame_scrubber .cell_container {
   display: flex;
   flex-wrap: nowrap;
   flex-direction: row;
   justify-content: flex-start;
-  background-color: #121212;
+  background-color: #0b0b0b;
   width: 100%;
 }
 
 .frame_scrubber .cell_container .cell {
   flex-grow: 1;
-  height: 10px;
-  border: 2px solid #1d1e1f;
+  height: 8px;
+  border: 1px solid #1d1e1f;
 }
 
 .ui-sortable-placeholder {

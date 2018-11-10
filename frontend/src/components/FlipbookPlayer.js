@@ -188,7 +188,10 @@ class FrameStage extends PureComponent{
 			});
 
 			// initialize the Scrubber.
-			_setState_Scrubber({numStrips: h.getTotalStripCount(this.props.data)});
+			_setState_Scrubber({
+				numStrips: h.getTotalStripCount(this.props.data),
+				numLoadedScene: 1
+			});
 
 			// Tell parent the frame has been loaded
 			_setState_FlipbookPlayer({frameLoaded: true});
@@ -335,19 +338,18 @@ class FrameStage extends PureComponent{
 	}
 
 	lazyLoad(){
-		// load only one scene at a time (lazy load?)
 
-	      // there is a rumor React can render...basically arrays. 0: 
+      // there is a rumor React can render...basically arrays. 0: 
 
-	      // select data to load. if there is only one, just put one.
-	      if (this.loadedSceneCount == 0){
-	        const loadableData = data[0]; //a scene object
-	        this.loadedSceneCount++;
-	      } else if (this.loadedSceneCount > 0) {
-	        console.warn("WE NEED MOAR FRAMES");
-	        const loadableData = data.slice(0, this.loadedSceneCount+1);
-	        this.loadedSceneCount++;
-	      }
+      // select data to load. if there is only one, just put one.
+      if (this.loadedSceneCount == 0){
+        const loadableData = data[0]; //a scene object
+        this.loadedSceneCount++;
+      } else if (this.loadedSceneCount > 0) {
+        console.warn("WE NEED MOAR FRAMES");
+        const loadableData = data.slice(0, this.loadedSceneCount+1);
+        this.loadedSceneCount++;
+      }
 
 	    // WHERE TO CONTROL LAZY DATA?
 
@@ -546,9 +548,12 @@ class Scrubber extends Component{
 		this.state={
 			numFrames: 0,
 			currFrame: -1,
+
 			numStrips: 0,
 			currStrip: -1,
-			
+
+			numLoadedScene: 0,
+
 		}
 
 		//static function
@@ -556,17 +561,31 @@ class Scrubber extends Component{
 	}
 
 	render(){
+		// get number of loaded strip
+		let loadedStripCount = 0;
+		const el_scene = document.querySelectorAll('.scene');
+		for(let i=0; i<this.state.numLoadedScene;i++){
+			loadedStripCount += el_scene[i].querySelectorAll('.strip').length;
+		}
 
 		return(
 			<div className="frame_scrubber">
 				
-
 		    	<div className="scrubber">
+
+		    		<div className="cell_fill loaded"
+			    		 style={{
+			    		 	width: (loadedStripCount)*(100/this.state.numStrips) + "%"
+			    		 }}
+			    	/>
+
 		    		<div className="cell_fill"
 			    		 style={{
 			    		 	width: (this.state.currStrip+1)*(100/this.state.numStrips) + "%"
 			    		 }}
 			    	/>
+
+			    	
 
 			    	{/* Method 2: map it directly */}
 			    	<div className="cell_container">

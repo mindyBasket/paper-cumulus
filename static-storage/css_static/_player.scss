@@ -109,11 +109,15 @@
 
 .frame_scrubber .cell_fill{
     display:inline-block;
-    height: 10px;
+    height: 8px;
     margin-bottom: -10px; /*height of .cell*/
     width: 0%; /*filled up in flip.js */
     background-color: tomato;
     float: left;
+}
+
+.frame_scrubber .cell_fill.loaded{
+    background-color: #3e1822;
 }
 
 .frame_scrubber .cell_container{
@@ -122,14 +126,14 @@
     flex-direction: row;
     justify-content: flex-start;
     
-    background-color: #121212;
+    background-color: #0b0b0b;
     width: 100%;
     
 }
 
 .frame_scrubber .cell_container .cell{
     flex-grow: 1;
-    height: 10px;
+    height: 8px;
  
-    border:2px solid #1d1e1f;
+    border: 1px solid #1d1e1f;
 }
