@@ -4,7 +4,7 @@ var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlug
 
 module.exports = {
 
-  devtool: "cheap-module-source-map",
+  devtool: "source-map", // cheap-module-source-map is TOO CHEAP
 
   module: {
     rules: [
