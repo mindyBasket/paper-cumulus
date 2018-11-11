@@ -5,6 +5,15 @@ import PropTypes from "prop-types";
 
 
 
+// ████████╗ ██████╗  ██████╗ ██╗     ██████╗ ████████╗███╗   ██╗
+// ╚══██╔══╝██╔═══██╗██╔═══██╗██║     ██╔══██╗╚══██╔══╝████╗  ██║
+//    ██║   ██║   ██║██║   ██║██║     ██████╔╝   ██║   ██╔██╗ ██║
+//    ██║   ██║   ██║██║   ██║██║     ██╔══██╗   ██║   ██║╚██╗██║
+//    ██║   ╚██████╔╝╚██████╔╝███████╗██████╔╝   ██║   ██║ ╚████║
+//    ╚═╝    ╚═════╝  ╚═════╝ ╚══════╝╚═════╝    ╚═╝   ╚═╝  ╚═══╝
+                                                              
+
+
 class ToolButton extends Component{
 	// Similar purpose to MenuButton, but these are standalone
 
@@ -18,21 +27,25 @@ class ToolButton extends Component{
     	const pos = positionStr.split(" ");
     	let styleDict = {}
 
-    	switch(pos[0]){
-    		case "top": 
-    			styleDict.top = 0;
-    			break;
-    		case "bottom": 
-    			styleDict.bottom = 0;
+        if (pos[0] == "inline"){
+            styleDict.display = "inline-block";
+        } else {
+            styleDict.position = "absolute";
+            switch(pos[0]){
+                case "top": 
+                    styleDict.top = 0;
+                    break;
+                case "bottom": 
+                    styleDict.bottom = 0;
+            }
 
-    	}
-
-    	switch(pos[1]){
-    		case "left": styleDict.left = 0;
-    			break;
-    		case "right": styleDict.right = 0;
-    	}
-
+            switch(pos[1]){
+                case "left": styleDict.left = 0;
+                    break;
+                case "right": styleDict.right = 0;
+            }
+        }
+    	
     	console.log(JSON.stringify(styleDict));
     	return styleDict;
     }
@@ -60,6 +73,133 @@ class ToolButton extends Component{
 
 
 
+
+
+
+// ████████╗███████╗██╗  ██╗████████╗███████╗██╗███████╗██╗     ██████╗ 
+// ╚══██╔══╝██╔════╝╚██╗██╔╝╚══██╔══╝██╔════╝██║██╔════╝██║     ██╔══██╗
+//    ██║   █████╗   ╚███╔╝    ██║   █████╗  ██║█████╗  ██║     ██║  ██║
+//    ██║   ██╔══╝   ██╔██╗    ██║   ██╔══╝  ██║██╔══╝  ██║     ██║  ██║
+//    ██║   ███████╗██╔╝ ██╗   ██║   ██║     ██║███████╗███████╗██████╔╝
+//    ╚═╝   ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚═╝     ╚═╝╚══════╝╚══════╝╚═════╝ 
+                                                                     
+
+class EditableTextField extends PureComponent{
+
+    constructor(props){
+        super(props);
+
+        this.r_input = React.createRef();
+
+        this.state={
+            loading: false,
+            editing: false
+        }
+
+        this.handle_submit = this.handle_submit.bind(this);
+
+        this.startEditing = this.startEditing.bind(this);
+        this.stopEditing = this.stopEditing.bind(this);
+
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot){
+        // Check if field value changed
+        if (prevProps.fieldValue != this.props.fieldValue){
+            this.setState({editing: false, loading: false});
+        }
+
+        if (this.state.editing == false){
+            console.log("Editing turned OFF for field : " + this.props.fieldLabel + " and fieldValue? : " + this.state.loading);
+        } else if (this.state.editing == true ) {
+            console.log("Editing turned ON for field : " + this.props.fieldLabel);
+        }
+    }
+
+
+    handle_submit(){
+        // no longer editing. Enter waiting state
+        this.setState({editing: false, loading: true});
+
+        // prep data
+        let inputData = {}
+        if (this.props.actionType !="refresh"){
+            inputData[this.props.fieldLabel] = this.r_input.current.value;
+        }
+
+        // FrameModal's updateFrame()
+        this.props.action(inputData);
+
+    }
+
+
+    startEditing(){
+        this.setState({editing: true})
+        console.log("Start Editing");
+    }
+
+    stopEditing(){
+        this.setState({editing: false})
+        console.log("You clicked on the field!");
+    }
+    
+
+    render(){
+
+        return (
+            <div className={"editable_text " + (this.props.readOnly ? "read_only" : "")}>
+
+                {this.props.fieldDisplayLabel && 
+                    <span className="field_label">
+                        {this.props.fieldDisplayLabel}
+                    </span>
+                }
+                
+                <input type="text" 
+                       className={"field_value " + 
+                                 (this.state.loading || this.props.readOnly ? "read_only " : "") + 
+                                 (this.state.editing ? "editing " : "")}
+                       size={this.props.widthSize}
+                       defaultValue={this.props.fieldValue}
+                       ref={this.r_input}
+                       onFocus={this.startEditing}
+                       onBlur={this.stopEditing}
+                />
+
+                {this.props.fieldUnit &&
+                    <span>{this.props.fieldUnit}</span>}
+
+
+                {/* render submit button. It is not visible if it is readOnly */}
+                {!this.props.readOnly && 
+                    (this.state.editing ? 
+                        <ToolButton iconType="submit"
+                                    position="inline"
+                                    action={this.handle_submit}/>
+                        :
+                        <ToolButton iconType={(this.state.loading ? "loading" : "edit")}
+                                    position="inline"/>
+                    )
+                }
+                    
+      
+            </div>   
+        )
+    }
+}
+
+
+
+
+
+
+// ███████╗██╗██╗     ███████╗██████╗ ████████╗███╗   ██╗
+// ██╔════╝██║██║     ██╔════╝██╔══██╗╚══██╔══╝████╗  ██║
+// █████╗  ██║██║     █████╗  ██████╔╝   ██║   ██╔██╗ ██║
+// ██╔══╝  ██║██║     ██╔══╝  ██╔══██╗   ██║   ██║╚██╗██║
+// ██║     ██║███████╗███████╗██████╔╝   ██║   ██║ ╚████║
+// ╚═╝     ╚═╝╚══════╝╚══════╝╚═════╝    ╚═╝   ╚═╝  ╚═══╝
+                                                      
 
 class FileInputButton extends Component {
      constructor(props){
@@ -145,5 +285,6 @@ class FileInputButton extends Component {
 
 export {
     ToolButton,
+    EditableTextField,
     FileInputButton
 };

@@ -51,7 +51,7 @@ button.disabled{
 
 
 input[type="text"]{
-	padding: 5px 3px;
+	padding: 5px 6px;
 	border-radius: 5px;
 }
 
@@ -59,7 +59,7 @@ input[type="text"]{
 /* note: '.menu_btn' is in menu.css */
 
 .tool_btn{
-	position: absolute;
+	/* this component can be inline, or position:absolute;*/
 	font-size: 10pt;
 	color: #ffffff8f;
 	padding: 8px; margin: 5px;
@@ -68,6 +68,11 @@ input[type="text"]{
 	border-radius: 5px;
 	border: 1px solid #ffffff00;
 	cursor: pointer;
+}
+
+.tool_btn.small{
+	font-size: 7pt;
+	padding: 5px; margin: 0px;
 }
 
 
@@ -80,6 +85,41 @@ input[type="text"]{
 	background-color: transparent;
 	color: #bba2da;
 }
+
+
+
+.editable_text{
+	/* TODO: Very similar to 'editable_field' in _compomnents. */
+	/*		 Two should be united into _ui */
+	position:relative;
+	display:inline-block; 
+
+}
+
+.editable_text input{
+	border:2px solid transparent;	
+	padding: 2px 6px;
+}
+
+.editable_text input:hover{
+	background-color: #00000012;
+	cursor:pointer;
+}
+
+.editable_text input:focus{
+	outline: none;
+
+	border-top:2px solid #b6b0b9;
+	border-left:2px solid #b6b0b9;
+	background-color: #e7e4ff;
+
+	cursor: text;
+}
+
+
+
+
+
 
 
 
@@ -98,3 +138,5 @@ input[type="text"]{
 
 	color: transparent;
 }
+
+

@@ -798,7 +798,7 @@ a:hover {
 .popup_menu {
   pointer-events: none;
   position: absolute;
-  top: 55px;
+  top: 50px;
   right: -10px;
   width: 150px;
   z-index: 1000;
@@ -1221,7 +1221,7 @@ ul.list_strips li.spotlighted {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 12px;
+  padding: 6px 12px;
   text-align: right;
   background-color: white;
   border-bottom: 1px solid #ddd;
@@ -1663,13 +1663,13 @@ button.disabled {
 }
 
 input[type=text] {
-  padding: 5px 3px;
+  padding: 5px 6px;
   border-radius: 5px;
 }
 
 /* note: '.menu_btn' is in menu.css */
 .tool_btn {
-  position: absolute;
+  /* this component can be inline, or position:absolute;*/
   font-size: 10pt;
   color: #ffffff8f;
   padding: 8px;
@@ -1680,6 +1680,12 @@ input[type=text] {
   cursor: pointer;
 }
 
+.tool_btn.small {
+  font-size: 7pt;
+  padding: 5px;
+  margin: 0px;
+}
+
 .tool_btn:not(.loading):hover {
   color: white;
   border: 1px solid #ffffff52;
@@ -1688,6 +1694,31 @@ input[type=text] {
 .tool_btn.loading {
   background-color: transparent;
   color: #bba2da;
+}
+
+.editable_text {
+  /* TODO: Very similar to 'editable_field' in _compomnents. */
+  /*		 Two should be united into _ui */
+  position: relative;
+  display: inline-block;
+}
+
+.editable_text input {
+  border: 2px solid transparent;
+  padding: 2px 6px;
+}
+
+.editable_text input:hover {
+  background-color: #00000012;
+  cursor: pointer;
+}
+
+.editable_text input:focus {
+  outline: none;
+  border-top: 2px solid #b6b0b9;
+  border-left: 2px solid #b6b0b9;
+  background-color: #e7e4ff;
+  cursor: text;
 }
 
 /* text decorations */

@@ -10,6 +10,7 @@ import { FrameWindow } from "./../FlipbookPlayer";
 import { CardCover } from "./CardCover"
 
 import { lightBox_publicFunctions as lb } from "./../LightBox";
+import { EditableTextField } from "./../UI";
 import Spinner from "./../Spinner";
 import key from "weak-key";
 
@@ -295,6 +296,7 @@ class StripCard extends PureComponent {
         this.handle_dragAndDrop = this.handle_dragAndDrop.bind(this);
 
         this.openMenu = this.openMenu.bind(this);
+        this.openDurationField = this.openDurationField.bind(this);
         this.openPreview = this.openPreview.bind(this);
 
         this.endModalState = this.endModalState.bind(this); // more generic version of 'removeCardCover'
@@ -680,7 +682,7 @@ class StripCard extends PureComponent {
     // ______| |__|__| __|__    |    |_____  |     | |______ ______|            
                                                                           
     // ---------------------------------------------------------------------------
-                                                              
+                                              
     openMenu(){
         this.setState({menuOn: true});
         // Note: because Strip Menu is nested inside this container
@@ -690,7 +692,10 @@ class StripCard extends PureComponent {
         this.$node.current.setAttribute('style', '');
     }
 
- 
+    openDurationField(){
+        console.log("change duration");
+    }
+
     openPreview(){
 
         // Play if preview already opened
@@ -724,7 +729,6 @@ class StripCard extends PureComponent {
             this.props.setState_LightBox({active: false});
             // might be safer to CLICK on the lightbox actually...but I don't have access to that. 
 
-
             //remove ALL modals or any callouts
             // TODO: isn't this similar to endModalState()?
 
@@ -743,7 +747,6 @@ class StripCard extends PureComponent {
                 return st;
             });
         }
-
 
         // Reset DragAndDrop CardCover's state
         //this.setState({cardCover_messageType: "default"});
@@ -830,13 +833,25 @@ class StripCard extends PureComponent {
                     as well as allowing popups and callouts to appear around it */}
    
                 <div className="strip_flex_toolbar">
-                    <div className="header">
+                    <div className="info">
                         <span className="bigtext-3">{index}</span>
+                        <span className="divider">|</span>
+                        <span>
+                            <span className="far fa-clock"/>
+                            <EditableTextField fieldLabel="frame_duration" 
+                                               fieldValue={strip.frame_duration}
+                                               fieldUnit="ms"
+                                               widthSize="3" 
+                                               style="compact"
+                                               action={()=>{console.log("edit frame duration")}}/> 
+                        </span>
                     </div>
+
                     <div className="tools">
+                        
                         <MenuButton iconClass="menu_btn fas fa-play-circle" action={this.openPreview} hasFrames={!noFrames}/>
                         <MenuButton iconClass="menu_btn fas fa-file-upload" action={this.handle_openUploadCover}/>
-                        <MenuButton iconClass="menu_btn fas fa-pen" action={()=>{console.log("batch edit")}} hasFrames={!noFrames}/>
+                        <MenuButton iconClass="menu_btn fas fa-pen" action={()=>{console.log("batch edit")}} hasFrames={false}/>
                         <MenuButton iconClass="menu_btn fas fa-trash" action={this.handle_deleteSceneConfirm}/>
                         <MenuButton iconClass="menu_btn fas fa-ellipsis-h" action={this.openMenu}/>
                     </div>

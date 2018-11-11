@@ -270,10 +270,12 @@ class FrameStage extends PureComponent{
 
 		//Make timeline
 		var frameCount = this.currStrip.getAttribute('count');
+		var frameDuration = Number(this.currStrip.getAttribute('dur'));
+			frameDuration = frameDuration || T_STEP;
 		for(var i=0;i<frameCount;i++){
 			// Add reference to stop it later
           	this.setTimeOutArr.push(
-          		setTimeout(this.playFrame.bind(this, i, useScrollTop), i*T_STEP)
+          		setTimeout(this.playFrame.bind(this, i, useScrollTop), i*frameDuration)
           	);
 		}
 
@@ -342,10 +344,6 @@ class FrameStage extends PureComponent{
 			}
 		}
 
-
-		
-
-		
 	}
 
 
