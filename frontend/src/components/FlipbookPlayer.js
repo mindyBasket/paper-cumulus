@@ -64,8 +64,8 @@ var flipbook_publicFunctions = {
 			return false;
 		}
 		const frameImages = $strip.querySelectorAll('img');
-		if (!frameImages){
-			console.error("[Recalc Dimension] Cannot find <img>s in strip object");
+		if (!frameImages || !frameImages.length){
+			console.warn("[Recalc Dimension] Cannot find <img>s in strip object");
 			return false;
 		}
 
@@ -78,19 +78,15 @@ var flipbook_publicFunctions = {
 		if (!di) {
 			// TODO: implement alternatie way to get dimension if none of 
 			//		 the frames contain dimensions
+			// Warning: getting offsetWidth and Height causes reflow! 
 			return false;
 		}
 
 		// Calc new aspect ratio
 		// Currently, width is fixed, so change the height
 		let newHeight = h.calcHeight(width, di);
-
-	
-		//return newHeight;
+		console.log("Set new height: " + newHeight);
 		this.setState({windowHeight: newHeight});
-
-
-
 	}
 }
 
@@ -439,7 +435,7 @@ class FrameStage extends PureComponent{
 									{/* map can be empty */}
 									{h.getUnignoredFrames(el_strip).length == 0 && 
 										<span className="frame empty">
-											NO FRAME FOUND
+											EMPTY STRIP
 										</span>
 									}
 
@@ -454,7 +450,9 @@ class FrameStage extends PureComponent{
 											)
 										} else {
 											return (
-												<p>MISSING IMAGE</p>
+												<span className="frame empty">
+													FRAME WITH MISSING IMAGE
+												</span>
 											)
 										}
 										

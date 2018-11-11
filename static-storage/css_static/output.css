@@ -361,8 +361,10 @@
 }
 
 .flipbook_player .frame_stage .strip .frame.empty {
-  height: 400px;
-  /* arbitary default height */
+  height: 2000px;
+  /* arbitary height to ensure next frame is not visible */
+  text-align: center;
+  padding-top: 50px;
 }
 
 .flipbook_player .frame_scrubber .scrubber {
