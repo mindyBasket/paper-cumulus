@@ -119,16 +119,24 @@ class FramePreviewCard extends Component{
     constructor(props){
         super(props);
 
-        this.errorMessage = "Strip could not initialized.";
+        this.errorMessage = "Strip could not be initialized.";
         this.state={
             isError: false
         }
+
+        this.showError = this.showError.bind(this);
     }
 
     componentDidUpdate(prevProps, prevState, snapshot){
         console.log("Opening preview");
     }
 
+    showError(msg){
+        // Note: Not a robust error msg function. Do not use outside of render().
+        this.state.isError = true; //NO RERENDER
+        this.errorMessage = msg;
+
+    }
 
 
     render(){
@@ -157,12 +165,16 @@ class FramePreviewCard extends Component{
                 try {
                     height = Math.round( (defaultWidth*di[1])/di[0] );
                     // Note: subtracting 1 for a cheap fix for overshoot issue
+                    console.log(height);
                 } catch(err){
                     console.error("Height could not be calculated: " + err);
                     this.state.isError = true; //NO UPDATE
-                    this.errorMessage = "Invalid dimension. Check width and height of the first frame.";
+                    this.errorMessage = "Error while calculating dimension. Does first frame have valid dimension?";
                 }
-            } else { this.state.isError = true; }     
+            } else { 
+                console.log("invalid dimension");
+                this.showError("Invalid dimension. Check dimension of the first frame.");
+            }     
         }
         
 
