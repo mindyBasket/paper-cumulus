@@ -98,34 +98,28 @@ def copy_demo_chapter(request, *args, **kwargs):
 
 
 
+# class DemoIntroView(generic.TemplateView):
 
-
-
-
-
-
-class DemoIntroView(generic.TemplateView):
-
-    model = Chapter
+#     model = Chapter
     
-    queryset = Chapter.objects.all()
-    template_name = "frontend/chapter_detail.html" # use frontend
+#     queryset = Chapter.objects.all()
+#     template_name = "frontend/chapter_detail.html" # use frontend
     
-    def get_context_data(self, *args, **kwargs):
+#     def get_context_data(self, *args, **kwargs):
 
-        context = super(ChapterDetailView_REACT, self).get_context_data(*args, **kwargs)
+#         context = super(ChapterDetailView_REACT, self).get_context_data(*args, **kwargs)
         
-        # Get book from URL
-        book = Book.objects.get(pk=kwargs['book_pk'])
+#         # Get book from URL
+#         book = Book.objects.get(pk=kwargs['book_pk'])
 
-        # make context for the Chapter and its Scenes        
-        chapter = book.chapter_set.filter(number=kwargs['chapter_number'])[0]
-        context['object_chapter'] = chapter
-        context['object_scene_list'] = context['object_chapter'].scene_set.order_by('order')
+#         # make context for the Chapter and its Scenes        
+#         chapter = book.chapter_set.filter(number=kwargs['chapter_number'])[0]
+#         context['object_chapter'] = chapter
+#         context['object_scene_list'] = context['object_chapter'].scene_set.order_by('order')
 
-        # prepare invisible form. Make sure you put it into context!
-        scene_create_form = forms.SceneCreateForm(initial={"chapter_number": chapter.number})
-        context["scene_create_form"] = scene_create_form
+#         # prepare invisible form. Make sure you put it into context!
+#         scene_create_form = forms.SceneCreateForm(initial={"chapter_number": chapter.number})
+#         context["scene_create_form"] = scene_create_form
 
         
-        return context
+#         return context

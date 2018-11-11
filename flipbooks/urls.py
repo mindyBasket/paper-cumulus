@@ -19,9 +19,6 @@ urlpatterns = [
     # project homepage for now
     re_path(r'^$', views_demo.home_demo, name='home-demo'),
 
-
-
-    
     # Book Urls
     path('books/', views.BookListView.as_view(), name='book-list'),
     # path('book/<slug:book_slug>', views.BookDetailView.as_view(), name='book-detail'),
