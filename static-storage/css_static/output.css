@@ -607,12 +607,18 @@ a:hover {
   border-left: 1px solid #cfcfcf;
 }
 
+.flexy_content_wrapper.columned .container .left_column,
+.flexy_content_wrapper.columned .container .right_column {
+  padding-top: 15px;
+}
+
 .headband_wrapper {
   /* I was going to call this 'header' but that name is used in other places */
   display: flex;
   justify-content: space-between;
   min-height: 60px;
   padding: 0px 60px;
+  border-bottom: 1px solid #1d1e1f26;
 }
 
 .headband_wrapper.disabled {

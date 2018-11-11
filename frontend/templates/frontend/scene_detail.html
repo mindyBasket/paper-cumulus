@@ -8,14 +8,22 @@
 {% block title %} {{block.super}} | Scene Detail{% endblock title %}
 
 
-{% block headband_class %}disabled{% endblock headband_class %}
+{% block top_content %}
+    <div class="headband">
+        <span class="bigtext-3">Editing: {% if object.name %}{{object.name}}{% else %}#{{object.id}}{% endif %}</span>
+        <span>|</span>
+        <a href="{% url 'flipbooks:chapter-detail-64' id64=object.chapter.id64 %}">Back to Chapter</a>
+    </div>
+
+    <div class="headband">
+        <a href="{% url 'flipbooks:scene-play' pk=object.pk %}">See flipbook</a>
+    </div>
+    
+{% endblock %}
 
 
 {% block left_column %}
 
-    <h3>{{object.name}}</h3>
-    <!--<h3>Scene Under Chapter {{object.chapter.number}}</h3>-->
-    
     <p>
         <b>Book</b> : {{object.chapter.book.title}}
         </br>
@@ -24,10 +32,6 @@
         <b>Scene id</b>: {{object.id}}
     </p>
     
-    <p>
-        <a href="{% url 'flipbooks:chapter-detail-64' id64=object.chapter.id64 %}">< Back to Chapter</a>
-    </p>
-
     <ul class="list_scenes_mini">
         {% for scene in object.chapter.scene_set.all %}
             <li><a href="{% url 'flipbooks:scene-edit' pk=scene.pk %}">
@@ -75,7 +79,8 @@
     </div>
     -->
 
-    <h3>Editing: {% if object.name %}{{object.name}}{% else %}#{{object.id}}{% endif %}</h3>
+
+    
     {% if object.description %}
         <p>description: {{object.description}}</p>
     {% endif %}
