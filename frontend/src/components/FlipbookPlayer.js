@@ -12,9 +12,10 @@ const h = new Helper();
 
 
 // Global param
-var T_STEP = 400; //ms
-var STANDBY_OPACITY = 0.7;
-var TEMP_WIDTH = 800;
+const T_STEP = 400; //ms
+const STANDBY_OPACITY = 0.7;
+const TEMP_WIDTH = 800;
+const LAZYLOAD_THRESHOLD = 3; 
 
 // Static functions
 // These are used to make components communicate with each other
@@ -124,6 +125,8 @@ class FrameStage extends PureComponent{
 		// this.props.isStandAlone; // this component can be used by itself without scrubber and timer
 
 		this.data = this.props.data; // passed down from FrameFeeder
+		this.sceneCount = h.getTotalSceneCount(this.props.data);
+
 		this.state = {
 			lazyDataCount: 0
 		}
@@ -146,6 +149,7 @@ class FrameStage extends PureComponent{
 
 		this.playFrame=this.playFrame.bind(this);
 		this.killSetTimeOut=this.killSetTimeOut.bind(this);
+		this.lazyLoad = this.lazyLoad.bind(this);
 	}
 
 
@@ -184,6 +188,7 @@ class FrameStage extends PureComponent{
 			    }
 			    else if(event.keyCode == 39) {
 			    	this.gotoNextAndPlay();
+			    	this.lazyLoad();
 			    }
 			});
 
@@ -219,9 +224,21 @@ class FrameStage extends PureComponent{
 		// Kill any preexisting animation
 		this.killSetTimeOut();
 
-		if (!this.frameState.isStripHead && this.currStrip.nextElementSibling != null ){
-			// Go to next Strip
-			this.currStrip = this.currStrip.nextElementSibling;
+		// Get next strip
+		if (!this.frameState.isStripHead){
+			let nextStrip = null;
+			if (this.currStrip.className.includes('last')){
+				// You are on the last strip of current scene, so move to next scene
+				nextStrip = this.currStrip.parentElement.nextElementSibling.querySelector('.strip.start');
+			} else {
+				nextStrip = this.currStrip.nextElementSibling;
+			}
+
+			if (nextStrip == null){
+					console.error("Yikes. next strip is null. Stay put.");
+			}
+			this.currStrip = nextStrip==null ? this.currStrip : nextStrip;
+			
 
 			if (useScrollTop){
 				this.$node.current.parentElement.scrollTop = currStrip.offsetTop;
@@ -231,7 +248,11 @@ class FrameStage extends PureComponent{
 
 			// Note: it became a positive feature to replay the last existing strip.
 			//		 For now, do not add extra behavior to indicate end of Scene.	 
+		} else {
+			// next strip may be over at next scene container
+			
 		}
+
 
 		// set frame_window to the right aspect ratio matching new strip
 		flpb.pub_recalcDimension(this.currStrip);
@@ -338,20 +359,20 @@ class FrameStage extends PureComponent{
 	}
 
 	lazyLoad(){
-
-      // there is a rumor React can render...basically arrays. 0: 
-
-      // select data to load. if there is only one, just put one.
-      if (this.loadedSceneCount == 0){
-        const loadableData = data[0]; //a scene object
-        this.loadedSceneCount++;
-      } else if (this.loadedSceneCount > 0) {
-        console.warn("WE NEED MOAR FRAMES");
-        const loadableData = data.slice(0, this.loadedSceneCount+1);
-        this.loadedSceneCount++;
-      }
-
-	    // WHERE TO CONTROL LAZY DATA?
+		// Check if 1) the chapter is not fully loaded
+		//			2) user is not currently at tip of loaded (I can probably do something with class instead)
+		if (this.state.lazyDataCount < this.sceneCount &&
+			Number(this.currStrip.parentElement.getAttribute('index')) >= this.state.lazyDataCount){
+			// is the user at threshold?
+			const currPos = Number(this.currStrip.getAttribute("index"));
+			const totalPos = this.currStrip.parentElement.querySelectorAll('.strip').length;
+			console.log("threshold check: " +  totalPos + " - " + currPos + " = " + (totalPos-currPos));
+			if (totalPos - currPos <= LAZYLOAD_THRESHOLD){
+				console.warn("LAZY LOAD MORE");
+				this.setState({lazyDataCount: this.state.lazyDataCount+1});
+				// see render() to see how this effects the loaded frames
+			}
+		}
 
 	}
 
@@ -377,14 +398,23 @@ class FrameStage extends PureComponent{
 				<div className="frame_stage" onClick={this.gotoNextAndPlay} ref={this.$node}>
 			 
 				 	{/* data.strips is an array of JSON objects */}
-				 	{lazyData.map((el_scene)=>(
-				 		<span className="scene" key={'scene'+el_scene}>
+				 	{lazyData.map((el_scene,index)=>(
+				 		<span className="scene" 
+				 			  key={'scene'+el_scene}
+				 			  index={index}>
 
 				 			{el_scene['strips'].map((el_strip,index) => (
-								<span className={`strip${index==0 ? " start" : ""}`} 
+								<span className={`strip ${index==0 ? "start" : ""}${index==el_scene['strips'].length-1 ? "last" : ""}`} 
 									  key={"strip"+el_strip.id}
 									  index={index} 
 									  count={h.getUnignoredFrames(el_strip).length}>
+
+									{/* map can be empty */}
+									{h.getUnignoredFrames(el_strip).length == 0 && 
+										<span className="frame empty">
+											No frame found
+										</span>
+									}
 
 									{h.reorderFrames(el_strip).map(el_frame => {
 										{/* TODO: edge case there are no frames */}
@@ -402,6 +432,7 @@ class FrameStage extends PureComponent{
 										}
 										
 									})}
+
 								</span>
 							))} 
 

@@ -404,6 +404,9 @@
   flex-grow: 1;
   width: 100%;
 }
+.flipbook_player .frame_stage .strip .frame.empty{
+  height: 400px; /* arbitary default height */
+}
 
 .flipbook_player .frame_scrubber .scrubber{
   max-width: 800px;
