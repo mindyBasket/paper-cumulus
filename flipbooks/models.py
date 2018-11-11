@@ -223,6 +223,7 @@ class Strip(models.Model):
 
     description = models.TextField(max_length=100, blank=True, default="")
     dimension = models.CharField(max_length=9, blank=True, default="")
+    frame_duration = models.IntegerField(blank=True, default="400")
 
     scene = models.ForeignKey(Scene, on_delete=models.CASCADE)
     

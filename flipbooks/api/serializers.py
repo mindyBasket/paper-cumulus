@@ -127,6 +127,7 @@ class StripModelSerializer(serializers.ModelSerializer):
             'scene',
             'order',
             'dimension',
+            'frame_duration',
             'description',
             'children_li',
             # 'frame_set' # only returns IDs

@@ -30,7 +30,7 @@ class SceneModelAdmin(admin.ModelAdmin):
     
 class StripModelAdmin(admin.ModelAdmin):
 
-    list_display = ("id", "__str__", "scene", "dimension", "children_li", "description")
+    list_display = ("id", "__str__", "scene", "dimension", "frame_duration", "children_li", "description")
     empty_value_display = 'unknown'
     
 

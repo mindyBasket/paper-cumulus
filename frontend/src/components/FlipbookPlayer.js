@@ -438,6 +438,7 @@ class FrameStage extends PureComponent{
 									  key={"strip"+el_strip.id}
 									  index={stripCount+index_st}
 									  localindex={index_st}
+									  dur={el_strip.frame_duration}
 									  count={h.getUnignoredFrames(el_strip).length}>
 
 									{/* map can be empty */}
