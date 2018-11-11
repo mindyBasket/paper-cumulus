@@ -128,7 +128,7 @@ class FrameStage extends PureComponent{
 		this.totalSceneCount = h.getTotalSceneCount(this.props.data);
 
 		this.state = {
-			lazySceneCount: 0
+			lazySceneCount: 1 // always load at least one scene
 		}
 
 		this.currStrip;
@@ -199,7 +199,7 @@ class FrameStage extends PureComponent{
 			});
 
 			// initialize lazySceneCount
-			this.setState({lazySceneCount: 1});
+			// this.setState({lazySceneCount: 1});
 
 			// Tell parent the frame has been loaded
 			_setState_FlipbookPlayer({frameLoaded: true});
@@ -230,17 +230,25 @@ class FrameStage extends PureComponent{
 		// Get next strip
 		if (this.currStrip == null){
 			// never initialized. Do it now!
+			console.log("currStrip never initialized...");
 			this.currStrip = this.$node.current.querySelector('.strip.start');
 		}
 
 		if (!this.frameState.isStripHead){
 			let nextStrip = null;
-			// Note: you maybe on the last strip of current scene, so move to next scene
-			nextStrip = this.currStrip.className.includes('last') ? (
-				this.currStrip.parentElement.nextElementSibling.querySelector('.strip.start')
-			) : (
-			 	this.currStrip.nextElementSibling
-			)
+
+			try {
+				// Note: you maybe on the last strip of current scene, so move to next scene
+				nextStrip = this.currStrip.className.includes('last') ? (
+					this.currStrip.parentElement.nextElementSibling.querySelector('.strip.start')
+				) : (
+				 	this.currStrip.nextElementSibling
+				)
+			}
+			catch (err) {
+				if (err instanceof TypeError) { console.warn("Could not grab next frame. It may not exist.") }
+				else {console.error(err);return false;}
+			}
 
 			if (nextStrip == null){ console.error("No more next strip.");}
 			this.currStrip = nextStrip==null ? this.currStrip : nextStrip;
@@ -412,7 +420,7 @@ class FrameStage extends PureComponent{
 	
 			let lazyData = data.slice(0,this.state.lazySceneCount);
 			console.log("LAZY LOAD DATA length : " + lazyData.length);
-			console.log(this.state.lazySceneCount);
+			console.log("Curr lazySceneCount: " + this.state.lazySceneCount);
 			return (
 				<div className="frame_stage" onClick={this.gotoNextAndPlay} ref={this.$node}>
 			 
@@ -426,7 +434,7 @@ class FrameStage extends PureComponent{
 				 			  index={index_sc}>
 
 				 			{el_scene['strips'].map((el_strip,index_st) => (
-								<span className={`strip ${index_st==0 ? "start" : ""}${index_st==el_scene['strips'].length-1 ? "last" : ""}`} 
+								<span className={`strip${index_st==0 ? " start" : ""}${index_st==el_scene['strips'].length-1 ? " last" : ""}`} 
 									  key={"strip"+el_strip.id}
 									  index={stripCount+index_st}
 									  localindex={index_st}
