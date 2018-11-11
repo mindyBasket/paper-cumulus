@@ -167,7 +167,7 @@ class Helper {
             frameNewArr_cleaned.push(...frameLeftOver);
         }
 
-        console.warn(`Prepped frame for stripId=${strip.id} : frames of length ${frameNewArr_cleaned.length}`);
+        // console.warn(`Prepped frame for stripId=${strip.id} : frames of length ${frameNewArr_cleaned.length}`);
         return frameNewArr_cleaned;
     }
 

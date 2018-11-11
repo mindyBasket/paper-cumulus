@@ -59,9 +59,13 @@ var flipbook_publicFunctions = {
 		let width = this.state.windowWidth;
 		let height = this.state.windowHeight;
 
+		if (!$strip){
+			console.error("[Recalc Dimension] Strip DOM element is null!");
+			return false;
+		}
 		const frameImages = $strip.querySelectorAll('img');
 		if (!frameImages){
-			console.error("Cannto find <img>s in strip object");
+			console.error("[Recalc Dimension] Cannot find <img>s in strip object");
 			return false;
 		}
 
@@ -125,10 +129,10 @@ class FrameStage extends PureComponent{
 		// this.props.isStandAlone; // this component can be used by itself without scrubber and timer
 
 		this.data = this.props.data; // passed down from FrameFeeder
-		this.sceneCount = h.getTotalSceneCount(this.props.data);
+		this.totalSceneCount = h.getTotalSceneCount(this.props.data);
 
 		this.state = {
-			lazyDataCount: 0
+			lazySceneCount: 0
 		}
 
 		this.currStrip;
@@ -161,9 +165,9 @@ class FrameStage extends PureComponent{
 		}	
 
 		// NOTE: update this.$node to this.currStrip. It is not always aware. 
-
-		// scroll to first element just in case
-		this.currStrip = this.$node.current.querySelector('.strip.start');
+		//		 this is especially the case since the lazy load makes the number of 
+		//		 loaded scene to be 0 when first mounted.
+		// this.currStrip = this.$node.current.querySelector('.strip.start');
 
 		if (this.props.isStandAlone){
 		 	// This component can be used by itself. Currently used in SceneEditor's preview
@@ -198,6 +202,9 @@ class FrameStage extends PureComponent{
 				numLoadedScene: 1
 			});
 
+			// initialize lazySceneCount
+			this.setState({lazySceneCount: 1});
+
 			// Tell parent the frame has been loaded
 			_setState_FlipbookPlayer({frameLoaded: true});
 		}
@@ -225,33 +232,29 @@ class FrameStage extends PureComponent{
 		this.killSetTimeOut();
 
 		// Get next strip
+		if (this.currStrip == null){
+			// never initialized. Do it now!
+			this.currStrip = this.$node.current.querySelector('.strip.start');
+		}
+
 		if (!this.frameState.isStripHead){
 			let nextStrip = null;
-			if (this.currStrip.className.includes('last')){
-				// You are on the last strip of current scene, so move to next scene
-				nextStrip = this.currStrip.parentElement.nextElementSibling.querySelector('.strip.start');
-			} else {
-				nextStrip = this.currStrip.nextElementSibling;
-			}
+			// Note: you maybe on the last strip of current scene, so move to next scene
+			nextStrip = this.currStrip.className.includes('last') ? (
+				this.currStrip.parentElement.nextElementSibling.querySelector('.strip.start')
+			) : (
+			 	this.currStrip.nextElementSibling
+			)
 
-			if (nextStrip == null){
-					console.error("Yikes. next strip is null. Stay put.");
-			}
+			if (nextStrip == null){ console.error("No more next strip.");}
 			this.currStrip = nextStrip==null ? this.currStrip : nextStrip;
 			
-
 			if (useScrollTop){
-				this.$node.current.parentElement.scrollTop = currStrip.offsetTop;
+				this.$node.current.parentElement.scrollTop = this.currStrip.offsetTop;
 			} else { 
 				this.currStrip.scrollIntoView(true);
-			}
-
-			// Note: it became a positive feature to replay the last existing strip.
-			//		 For now, do not add extra behavior to indicate end of Scene.	 
-		} else {
-			// next strip may be over at next scene container
-			
-		}
+			} 
+		} 
 
 
 		// set frame_window to the right aspect ratio matching new strip
@@ -300,30 +303,43 @@ class FrameStage extends PureComponent{
 	}
 
 	gotoPrev(){
-		if (this.currStrip.previousElementSibling != null){
-			//scroll
-			this.currStrip = this.currStrip.previousElementSibling;
-			this.currStrip.scrollIntoView(true);
 
-			// set frame_window to the right aspect ratio
-			flpb.pub_recalcDimension(this.currStrip);
-
+		// check if you reached the beginning
+		if (this.currStrip.getAttribute("index") == 0){
+			// turn on intro page
+			//_setState_FlipbookPlayer({introActive: true});
+			flpb.pub_setIntroCover(true);
 			_setState_Scrubber({
-				numFrames: Number(this.currStrip.getAttribute("count")),
-				currStrip: Number(this.currStrip.getAttribute("index"))
+				currStrip: -1
 			});
 		} else {
-			// check if you reached the beginning
-			if (this.currStrip.getAttribute("index") == 0){
-				// turn on intro page
-				//_setState_FlipbookPlayer({introActive: true});
-				flpb.pub_setIntroCover(true);
+			// Get previous strip
+			// Note: you maybe on the first strip of current scene, so move to previous scene
+			let prevStrip = null;
+				prevStrip = this.currStrip.className.includes('start') ? (
+					this.currStrip.parentElement.previousElementSibling.querySelector('.strip.last')
+				) : (
+				 	this.currStrip.previousElementSibling
+				)
+
+			if (prevStrip != null){
+				//scroll
+				this.currStrip = prevStrip;
+				this.currStrip.scrollIntoView(true);
+
+				// set frame_window to the right aspect ratio
+				flpb.pub_recalcDimension(this.currStrip);
+
+
 				_setState_Scrubber({
-					currStrip: -1
+					numFrames: Number(this.currStrip.getAttribute("count")),
+					currStrip: Number(this.currStrip.getAttribute("index"))
 				});
 			}
-			
 		}
+
+
+		
 
 		
 	}
@@ -361,16 +377,21 @@ class FrameStage extends PureComponent{
 	lazyLoad(){
 		// Check if 1) the chapter is not fully loaded
 		//			2) user is not currently at tip of loaded (I can probably do something with class instead)
-		if (this.state.lazyDataCount < this.sceneCount &&
-			Number(this.currStrip.parentElement.getAttribute('index')) >= this.state.lazyDataCount){
+		if (this.state.lazySceneCount < this.totalSceneCount &&
+			Number(this.currStrip.parentElement.getAttribute('index')) >= this.state.lazySceneCount-1){
 			// is the user at threshold?
-			const currPos = Number(this.currStrip.getAttribute("index"));
+			const currPos = Number(this.currStrip.getAttribute("localindex"));
 			const totalPos = this.currStrip.parentElement.querySelectorAll('.strip').length;
-			console.log("threshold check: " +  totalPos + " - " + currPos + " = " + (totalPos-currPos));
+			// console.log("totalPos - currPos = " + (totalPos - currPos));
 			if (totalPos - currPos <= LAZYLOAD_THRESHOLD){
-				console.warn("LAZY LOAD MORE");
-				this.setState({lazyDataCount: this.state.lazyDataCount+1});
+				let lazyDataSoFar = this.state.lazySceneCount;
+				this.setState({lazySceneCount:lazyDataSoFar+1});
 				// see render() to see how this effects the loaded frames
+
+				// Update scrubber
+				_setState_Scrubber({
+					numLoadedScene:lazyDataSoFar+1
+				});
 			}
 		}
 
@@ -384,35 +405,41 @@ class FrameStage extends PureComponent{
 		//		 component not render from its parents.
 		//if (this.props.isStandAlone && !this.props.on){ return false;}
 
+		let stripCount = 0; // used for properly indexing strip
+
 		const data = Array.isArray(this.props.data) ? this.props.data : new Array(this.props.data); //unify format
 
 		if (!data || !data.length){
 			return (<p ref={this.$node}>No frame registered to this strip</p>)
 		} 
 		else{
-			console.log("Slice lazyData. Scene count = " + data.length);
-			let lazyData = data.slice(0,this.state.lazyDataCount+1);
-			console.log(lazyData.length);
-
+	
+			let lazyData = data.slice(0,this.state.lazySceneCount);
+			console.log("LAZY LOAD DATA length : " + lazyData.length);
+			console.log(this.state.lazySceneCount);
 			return (
 				<div className="frame_stage" onClick={this.gotoNextAndPlay} ref={this.$node}>
 			 
 				 	{/* data.strips is an array of JSON objects */}
-				 	{lazyData.map((el_scene,index)=>(
+				 	{lazyData.map((el_scene,index_sc)=>{
+				 		stripCount += index_sc > 0 ? lazyData[index_sc-1]['strips'].length : 0;
+
+				 		return (
 				 		<span className="scene" 
 				 			  key={'scene'+el_scene}
-				 			  index={index}>
+				 			  index={index_sc}>
 
-				 			{el_scene['strips'].map((el_strip,index) => (
-								<span className={`strip ${index==0 ? "start" : ""}${index==el_scene['strips'].length-1 ? "last" : ""}`} 
+				 			{el_scene['strips'].map((el_strip,index_st) => (
+								<span className={`strip ${index_st==0 ? "start" : ""}${index_st==el_scene['strips'].length-1 ? "last" : ""}`} 
 									  key={"strip"+el_strip.id}
-									  index={index} 
+									  index={stripCount+index_st}
+									  localindex={index_st}
 									  count={h.getUnignoredFrames(el_strip).length}>
 
 									{/* map can be empty */}
 									{h.getUnignoredFrames(el_strip).length == 0 && 
 										<span className="frame empty">
-											No frame found
+											NO FRAME FOUND
 										</span>
 									}
 
@@ -427,7 +454,7 @@ class FrameStage extends PureComponent{
 											)
 										} else {
 											return (
-												<p>CANNOT FIND IMAGE</p>
+												<p>MISSING IMAGE</p>
 											)
 										}
 										
@@ -436,8 +463,8 @@ class FrameStage extends PureComponent{
 								</span>
 							))} 
 
-				 		</span>
-				 	))}
+				 		</span>)
+				 	})}
 					
 				</div>
 
@@ -571,7 +598,7 @@ class FrameWindow extends Component{
 // ███████║╚██████╗██║  ██║╚██████╔╝██████╔╝██████╔╝███████╗██║  ██║
 // ╚══════╝ ╚═════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝
                                                                  
-class Scrubber extends Component{
+class Scrubber extends PureComponent{
 	constructor(props){
 		super(props);
 
@@ -595,9 +622,12 @@ class Scrubber extends Component{
 		// get number of loaded strip
 		let loadedStripCount = 0;
 		const el_scene = document.querySelectorAll('.scene');
-		for(let i=0; i<this.state.numLoadedScene;i++){
-			loadedStripCount += el_scene[i].querySelectorAll('.strip').length;
+		if(el_scene && el_scene.length){
+			for(let i=0; i<this.state.numLoadedScene;i++){
+				loadedStripCount += el_scene[i].querySelectorAll('.strip').length;
+			}
 		}
+		
 
 		return(
 			<div className="frame_scrubber">
