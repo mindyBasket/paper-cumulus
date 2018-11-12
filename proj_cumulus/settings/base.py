@@ -66,7 +66,7 @@ else:
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "agile-cliffs-66542.herokuapp.com"]
+ALLOWED_HOSTS = ["localhost", "playflipbook.herokuapp.com"]
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
