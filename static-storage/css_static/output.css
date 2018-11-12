@@ -1680,10 +1680,10 @@ input[type=text] {
   cursor: pointer;
 }
 
-.tool_btn.small {
-  font-size: 7pt;
-  padding: 5px;
-  margin: 0px;
+.tool_btn.compact {
+  font-size: 8pt;
+  padding: 6px;
+  margin: 0 7px;
 }
 
 .tool_btn:not(.loading):hover {
@@ -1694,6 +1694,10 @@ input[type=text] {
 .tool_btn.loading {
   background-color: transparent;
   color: #bba2da;
+}
+
+.tool_btn.green {
+  background-color: #ade8c7;
 }
 
 .editable_text {

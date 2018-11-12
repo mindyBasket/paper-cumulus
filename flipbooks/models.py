@@ -256,8 +256,13 @@ class Strip(models.Model):
             if cleaned_children_li:
                 self.children_li = cleaned_children_li
 
+        # 2. Validate frame_duration
+        if self.frame_duration >= 10000:
+            self.frame_duration = 9999
+        elif self.frame_duration <= 10:
+            self.frame_duration = 10
 
-        # 2. Save self!
+        # 3. Save self!
         super(Strip, self).save(*args, **kwargs) 
 
         # 3. Position update on children_li of its parent (scene)

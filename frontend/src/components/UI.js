@@ -20,6 +20,7 @@ class ToolButton extends Component{
     constructor(props){
         super(props);
         this.icon = null;
+        this.iconClassName = null;
         this.position = this.makePositionStyle(this.props.position);
     }
 
@@ -46,7 +47,6 @@ class ToolButton extends Component{
             }
         }
     	
-    	console.log(JSON.stringify(styleDict));
     	return styleDict;
     }
 
@@ -56,14 +56,18 @@ class ToolButton extends Component{
     			this.iconClassName = "fas fa-pen";
     			break;
     		case "submit":
-    			this.iconClassName = "fas fa-check";
+    			this.iconClassName = "green fas fa-check";
     			break;
     		case "loading":
     			this.iconClassName = "fas fa-spinner loading";
     	}
 
+        const visualStyle = this.props.visualStyle;
+
     	return (
-    		<div className={"tool_btn " + this.iconClassName} 
+    		<div className={"tool_btn" +
+                            (visualStyle ? " "+visualStyle : '') +
+                            (this.iconClassName ? " "+this.iconClassName : '')} 
     			 onClick={this.props.action ? this.props.action : undefined}
     			 style={this.position}></div>
     	)
@@ -127,20 +131,41 @@ class EditableTextField extends PureComponent{
             inputData[this.props.fieldLabel] = this.r_input.current.value;
         }
 
-        // FrameModal's updateFrame()
-        this.props.action(inputData);
+        // Strip update. 
+        // This makes an assumption that the action function returns a promise..
+        // DOH, it doesn't work! Maybe I can't do it this way.
+        // if (this.props.action){
+        //     this.props.action(inputData).then(res=>{
+        //         console.log("Checking if data is okay");
+        //         if (res && res.data){
+        //             let stripData = res.data;
+        //             // update strip info?
+        //             console.log("Strip updated!!");
+        //         }
+        //     });
+        // }
+        if (this.props.action){ this.props.action() }
 
     }
 
 
     startEditing(){
         this.setState({editing: true})
-        console.log("Start Editing");
     }
 
     stopEditing(){
         this.setState({editing: false})
-        console.log("You clicked on the field!");
+
+        if(this.props.fieldLabel){
+            // gather data
+            let data = {};
+                data[this.props.fieldLabel] = this.r_input.current.value;
+            this.props.action(data);
+
+        } else {
+            console.error("[EditableTextField] Cannot make data because FieldLabel is invalid.");
+        }
+        
     }
     
 
@@ -172,13 +197,11 @@ class EditableTextField extends PureComponent{
 
                 {/* render submit button. It is not visible if it is readOnly */}
                 {!this.props.readOnly && 
-                    (this.state.editing ? 
+                    (this.state.editing && 
                         <ToolButton iconType="submit"
                                     position="inline"
+                                    visualStyle={this.props.visualStyle}
                                     action={this.handle_submit}/>
-                        :
-                        <ToolButton iconType={(this.state.loading ? "loading" : "edit")}
-                                    position="inline"/>
                     )
                 }
                     

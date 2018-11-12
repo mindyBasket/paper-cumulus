@@ -139,6 +139,21 @@ class SceneCreateAPIView(generics.CreateAPIView):
 class StripCreateAPIView(generics.CreateAPIView):
     serializer_class = StripModelSerializer
 
+
+class StripUpdateAPIView(generics.UpdateAPIView):
+    serializer_class = StripModelSerializer
+
+    def get_queryset(self):
+        return Strip.objects.all()
+    
+    def partial_update(self, request, *args, **kwargs):
+
+        return super(StripUpdateAPIView, self).partial_update(request, *args, **kwargs)
+
+
+        
+
+
 class StripDeleteAPIview(generics.DestroyAPIView):
     serializer_class = StripModelSerializer
     queryset = Strip.objects.all()
@@ -206,6 +221,7 @@ class FrameDetailAPIView(generics.RetrieveAPIView):
     #     """
     #     usernames = [user.username for user in User.objects.all()]
     #     return Response(usernames)
+
 
 class FrameUpdateAPIView(generics.UpdateAPIView):
     serializer_class = FrameModelSerializer

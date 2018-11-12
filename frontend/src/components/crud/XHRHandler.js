@@ -88,6 +88,27 @@ class XhrHandler {
 	}
 
 
+	updateStrip(stripId, formData, csrfToken){
+		return (
+			axios({
+	            method: 'patch',
+	            url: `/api/strip/${stripId}/update/`,
+	            data: formData,
+	            headers: {"X-CSRFToken": csrfToken}
+	        })
+	        .then(response => {
+	            return response;
+	        })
+	        .catch(error => {
+	        	console.log(error);
+	        	// TODO: add better error message that is visible on frontend
+	        })
+	    )
+	}
+
+
+
+
 
 
 

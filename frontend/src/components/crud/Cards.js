@@ -291,6 +291,7 @@ class StripCard extends PureComponent {
         this.handle_deleteSceneConfirm = this.handle_deleteSceneConfirm.bind(this);
         this.handle_createFrame = this.handle_createFrame.bind(this);
         this.handle_deleteScene = this.handle_deleteScene.bind(this);
+        this.handle_updateStrip = this.handle_updateStrip.bind(this);
         this.handle_frameSort = this.handle_frameSort.bind(this);
         this.handle_dragMessageToggle = this.handle_dragMessageToggle.bind(this);
         this.handle_dragAndDrop = this.handle_dragAndDrop.bind(this);
@@ -431,10 +432,7 @@ class StripCard extends PureComponent {
             // Update: unified into just ONE CardCover.
             // Note: lightBox and spotlighting is controlled inside the CardCover
         });
-
-    
     }
-
 
 
     handle_deleteScene(){
@@ -452,6 +450,26 @@ class StripCard extends PureComponent {
         });
     }
 
+    handle_updateStrip(data){
+
+        const strip = this.props.stripObj;
+        let fd = h.makeFormData(data);
+        const csrfToken = axh.getCSRFToken();
+
+        return axh.updateStrip(strip.id, fd, csrfToken).then(res=>{
+            // TODO: update the field based on what comes back.
+            //       For example, sending 1000000 for frame_duration will
+            //       return 9999. 
+
+            if (res && res.data){
+                // FETCH SCENE
+                pub_handle_fetchScene();
+            }
+
+        });
+    }
+
+
     handle_openUploadCover(){
         //turn on cover
         this.setState({
@@ -459,6 +477,8 @@ class StripCard extends PureComponent {
             cardCover_messageType: "upload" 
         });
     }
+
+
 
     handle_frameSort(idArr){
 
@@ -841,9 +861,9 @@ class StripCard extends PureComponent {
                             <EditableTextField fieldLabel="frame_duration" 
                                                fieldValue={strip.frame_duration}
                                                fieldUnit="ms"
-                                               widthSize="3" 
-                                               style="compact"
-                                               action={()=>{console.log("edit frame duration")}}/> 
+                                               widthSize="2" 
+                                               visualStyle="compact"
+                                               action={this.handle_updateStrip}/> 
                         </span>
                     </div>
 

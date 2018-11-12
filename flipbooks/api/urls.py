@@ -28,13 +28,11 @@ urlpatterns = [
     # Strip
     re_path(r'^scene/(?P<pk>\d+)/strip/create/$', views.StripCreateAPIView.as_view(), name="create-strip-under-scene"),
     path('strip/<int:pk>/', views.StripDeleteAPIview.as_view(), name="delete-strip"),
+    path('strip/<int:pk>/update/', views.StripUpdateAPIView.as_view(), name="update-strip"),
     
     # Frames
     re_path(r'^strip/(?P<pk>\d+)/frame/create/$', views.FrameCreateAPIView.as_view(), name="create-frame-under-strip"),
     path('frame/<int:pk>/', views.FrameDeleteAPIview.as_view(), name="delete-frame"),
-    
-
-
     path('frame/<int:pk>/', views.FrameDetailAPIView.as_view(), name="detail-frame"),
     re_path(r'^frame/(?P<pk>\d+)/update/$', views.FrameUpdateAPIView.as_view(), name="update-frame")
 ]
