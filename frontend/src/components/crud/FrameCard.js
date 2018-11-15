@@ -120,6 +120,9 @@ class FramePreviewCard extends Component{
         super(props);
 
         this.errorMessage = "Strip could not be initialized.";
+
+        // TODO: isError is currently being used like a regular property.
+        //       Does it have to be a state??
         this.state={
             isError: false
         }
@@ -127,9 +130,9 @@ class FramePreviewCard extends Component{
         this.showError = this.showError.bind(this);
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot){
-        console.log("Opening preview");
-    }
+    // componentDidUpdate(prevProps, prevState, snapshot){
+    //     console.warn("[FRAME PREVIEW UPDATE]");
+    // }
 
     showError(msg){
         // Note: Not a robust error msg function. Do not use outside of render().
@@ -150,7 +153,6 @@ class FramePreviewCard extends Component{
         // Calc width and height of frame window based on first frame
         const defaultWidth = 450; //px
         let height = 100; //px default height
-
         if (!strip.frames || strip.frames.length <= 0){
             this.errorMessage = "No frames to play in this strip. Add some!";
             this.state.isError = true; //NO UPDATE
@@ -179,6 +181,7 @@ class FramePreviewCard extends Component{
         
 
         let frame_window_di = [`${defaultWidth}px`, `${height}px`]; 
+        this.state.isError = false; //NO UPDATE
 
         return (
             <div className={"strip_preview_container" + (this.props.on ? " active " : "") + " flipbook_player"}

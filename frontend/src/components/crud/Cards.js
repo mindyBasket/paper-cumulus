@@ -574,14 +574,11 @@ class StripCard extends PureComponent {
                 fd.append("strip", this.props.stripObj.id);
                 fd.append("frame_image", file)
 
-                console.warn("FormData inspect: " + fd);
-                console.warn(this.props.stripObj.id);
+                this.setState({loadingFrames: true}); 
 
-                console.warn(csrfToken);
-                
                 axh.createFrame(this.props.stripObj.id, fd, csrfToken).then(res=>{
                     if (res && res.data){
-                        console.log("FrameCreate response: " + JSON.stringify(res.data));
+                        console.log("[FrameCreate response] " + JSON.stringify(res.data));
                         // stop loading state and Re-fetch scene
                         // TODO: In the future, it may not be just one request
                         this.setState({loadingFrames: false}); 
@@ -636,17 +633,20 @@ class StripCard extends PureComponent {
                     let curr_fd = fd_arr.pop();
                     return recur(fd_arr)
                     .then(()=>{
-                        this.props.handle_fetchScene();
+                        //this.props.handle_fetchScene();
                         return axh.createFrame(reqconf[0], curr_fd, reqconf[1]);
                     })
                     
                 }
 
                 // recursion starter
+                this.setState({loadingFrames: true}); 
+
                 recur(fd_arr)
                 .then((res)=>{
                     // ALL DONE
-                    this.props.handle_fetchScene(); // fetch one more time just in case
+                    // this.props.handle_fetchScene(); // fetch one more time just in case
+                    pub_handle_fetchScene();
                     this.setState({loadingFrames: false}); 
                 })
                 .catch(error=>{
@@ -666,7 +666,7 @@ class StripCard extends PureComponent {
         } 
 
         // Pass event to removeDragData for cleanup
-        removeDragData(e)
+        this.removeDragData(e)
 
         // If you reached this point, then you avoided all errors from user side.
         this.setState({loadingFrames: false});

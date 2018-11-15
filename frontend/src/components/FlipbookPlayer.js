@@ -85,7 +85,7 @@ var flipbook_publicFunctions = {
 		// Calc new aspect ratio
 		// Currently, width is fixed, so change the height
 		let newHeight = h.calcHeight(width, di);
-		console.log("Set new height: " + newHeight);
+		// console.log("Set new height: " + newHeight);
 		this.setState({windowHeight: newHeight});
 	}
 }
@@ -353,7 +353,6 @@ class FrameStage extends PureComponent{
 		if (targetFrame != null) {
 			if (useScrollTop){
 				this.$node.current.parentElement.scrollTop = targetFrame.offsetTop;
-				console.log(targetFrame.offsetTop);
 			} else {
 				targetFrame.scrollIntoView(true);
 			}
