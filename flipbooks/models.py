@@ -257,10 +257,11 @@ class Strip(models.Model):
                 self.children_li = cleaned_children_li
 
         # 2. Validate frame_duration
-        if self.frame_duration >= 10000:
-            self.frame_duration = 9999
-        elif self.frame_duration <= 10:
-            self.frame_duration = 10
+        f_dur = int(self.frame_duration)
+        if f_dur >= 10000:
+            f_dur = 9999
+        elif f_dur <= 10:
+            f_dur = 10
 
         # 3. Save self!
         super(Strip, self).save(*args, **kwargs) 
