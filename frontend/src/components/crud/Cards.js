@@ -633,7 +633,7 @@ class StripCard extends PureComponent {
                     let curr_fd = fd_arr.pop();
                     return recur(fd_arr)
                     .then(()=>{
-                        //this.props.handle_fetchScene();
+                        this.props.handle_fetchScene();
                         return axh.createFrame(reqconf[0], curr_fd, reqconf[1]);
                     })
                     
