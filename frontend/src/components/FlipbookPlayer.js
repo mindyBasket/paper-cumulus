@@ -416,8 +416,6 @@ class FrameStage extends PureComponent{
 		else{
 	
 			let lazyData = data.slice(0,this.state.lazySceneCount);
-			console.log("LAZY LOAD DATA length : " + lazyData.length);
-			console.log("Curr lazySceneCount: " + this.state.lazySceneCount);
 			return (
 				<div className="frame_stage" onClick={this.gotoNextAndPlay} ref={this.$node}>
 			 

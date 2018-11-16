@@ -542,6 +542,8 @@ class StripCard extends PureComponent {
     handle_dragAndDrop(e){
         // parse data?
         e.preventDefault();
+        this.setState({loadingFrames: true}); 
+
 
         if (e.dataTransfer.items) {
             // Use DataTransferItemList interface to access the file.
@@ -574,13 +576,11 @@ class StripCard extends PureComponent {
                 fd.append("strip", this.props.stripObj.id);
                 fd.append("frame_image", file)
 
-                this.setState({loadingFrames: true}); 
+                
 
                 axh.createFrame(this.props.stripObj.id, fd, csrfToken).then(res=>{
                     if (res && res.data){
-                        console.log("[FrameCreate response] " + JSON.stringify(res.data));
                         // stop loading state and Re-fetch scene
-                        // TODO: In the future, it may not be just one request
                         this.setState({loadingFrames: false}); 
                         this.props.handle_fetchScene();
 
@@ -605,7 +605,7 @@ class StripCard extends PureComponent {
                         fd.append("strip", this.props.stripObj.id);
 
                     var file = e.dataTransfer.items[i].getAsFile();
-                    console.log('>> file[' + i + '].name = ' + file.name + " : type = " + file.type);
+                    // console.log('>> file[' + i + '].name = ' + file.name + " : type = " + file.type);
 
                     // Add only if it is a valid image file
                     const allowedImageTypes = ['image/png', 'image/gif', 'image/jpg', 'image/jpeg'];
@@ -640,8 +640,6 @@ class StripCard extends PureComponent {
                 }
 
                 // recursion starter
-                this.setState({loadingFrames: true}); 
-
                 recur(fd_arr)
                 .then((res)=>{
                     // ALL DONE
@@ -669,11 +667,7 @@ class StripCard extends PureComponent {
         this.removeDragData(e)
 
         // If you reached this point, then you avoided all errors from user side.
-        this.setState({loadingFrames: false});
-        // crap...I thought any kind of setState is async? if I don't put this
-        // here, anything that happens afterward may or may not happen
-        console.warn("Request send success. Escape dragAndDrop state.");
-        
+
         // Close
 
         // [Outdated Note. setSpotlightAll is removed] 
@@ -1007,7 +1001,6 @@ class SceneCardList extends Component {
 
     handle_fetchScene(){
         axh.fetchScene(this.props.sceneId).then(res =>{
-            console.log("[SetState Scene Data]")
             this.setState({data: res.data});
             this.firstLoad = false;
         });
