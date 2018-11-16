@@ -27,11 +27,16 @@ class SceneCreateModal extends PureComponent{
 		// this.$node = React.createRef();
 		
 		this.state = {
-			valid: false
+			valid: false,
+
+			isWorking: false,
+			isError: false
 		}
 
 		this.handle_nameChange = this.handle_nameChange.bind(this);
 		this.handle_createScene = this.handle_createScene.bind(this);
+
+		this.reset = this.reset.bind(this);
 	}
 
 	componentDidUpdate(prevProps, prevStates){
@@ -48,7 +53,7 @@ class SceneCreateModal extends PureComponent{
             lb.pub_LightBox_on();
 
         } else if (prevProps.on == true && this.props.on == false){
-        	this.setState({valid: false});
+        	this.reset();
             lb.pub_LightBox_off();
         }
 
@@ -82,10 +87,11 @@ class SceneCreateModal extends PureComponent{
 				return false;
 			}
 
-			axh.django_getSceneUrl("flipbooks:scene-edit", {'pk': res.data.id}).then(res=>{
-				if (res.data && res.data.hasOwnProperty('url') && res.data.url ) {
+			axh.django_getSceneUrl("flipbooks:scene-edit22", {'pk': res.data.id}).then(res=>{
+				if (res && res.data && res.data.hasOwnProperty('url') && res.data.url ) {
 					window.location.href = res.data.url;
 				} else {
+					this.setState({isError: true});
 					console.error("Cannot find the new Scene. Something went wrong while creating a new scene.");
 				}
 				
@@ -93,6 +99,16 @@ class SceneCreateModal extends PureComponent{
 
 
 			
+		});
+	}
+
+
+	reset(){
+		// resets component as if it was reinitialized
+		this.setState({
+			valid: false,
+			isWorking: false,
+			isError: false
 		});
 	}
 
@@ -112,12 +128,32 @@ class SceneCreateModal extends PureComponent{
 				<div className="scene_form_content" ref={this.r_form}>
 				 	<span>Name: <input id="scene_name" name="name" type="text" onChange={this.handle_nameChange}/></span>
 
-				 	<span className="align_right">
-				 		<button className={this.state.valid ? "" : "disabled"}
-				 				onClick={this.handle_createScene}>
-				 			Create
-				 		</button>
-				 	</span>
+				 	{this.state.isError ? (
+				 		<div className="color red cb5959">
+				 			<span className="bigtext-1 far fa-frown-open">
+					 		</span>
+					 		<span>
+					 			NOOOO something went wrong. Try again later?
+					 		</span>
+				 		</div>
+				 		
+				 	) : (
+				 		<span className="align_right">
+					 		{this.state.isWorking ? (
+					 			<span className="bigtext-3">Working...</span>
+					 		) : (
+					 			<button className={this.state.valid ? "" : "disabled"}
+						 				onClick={(e)=>{
+						 					this.setState({isWorking:true});
+						 					this.handle_createScene();
+						 				}}>
+						 			Create
+						 		</button>
+					 		)}
+					 		
+					 	</span>
+				 	)}
+				 	
 				</div>
 				 
 				 
