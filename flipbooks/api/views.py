@@ -151,9 +151,6 @@ class StripUpdateAPIView(generics.UpdateAPIView):
         return super(StripUpdateAPIView, self).partial_update(request, *args, **kwargs)
 
 
-        
-
-
 class StripDeleteAPIview(generics.DestroyAPIView):
     serializer_class = StripModelSerializer
     queryset = Strip.objects.all()

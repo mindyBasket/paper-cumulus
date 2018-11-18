@@ -193,6 +193,15 @@ class ChapterDetailView_REACT(generic.TemplateView):
 
 
 
+
+
+
+
+
+
+
+
+
 # http://patorjk.com/software/taag/#p=display&f=Modular&t=Type%20Something%20
 
 #  _______  _______  _______  __    _  _______  
@@ -322,9 +331,6 @@ class SceneDetailView_REACT(generic.DetailView):
         return context
 
 
-
-
-
 # This one "plays" the frames.
 
 # It loads all the strip under a scene here, but when this view first loads
@@ -369,6 +375,18 @@ class ScenePlayView_REACT(generic.DetailView):
         # because recommended to keep views and template as clean as possible
     
         return context
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -609,6 +627,18 @@ def scene_sort_children(request, *args, **kwargs):
 
     # Response
     return JsonResponse({'strip_ids': scene.children_li})
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

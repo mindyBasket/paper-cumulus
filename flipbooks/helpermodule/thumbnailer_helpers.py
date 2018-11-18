@@ -144,7 +144,7 @@ def regenerate_frame_images(frame):
 
 def delete_frame_images_s3(frame):
 
-    # image_path = frame.frame_image.path # aws not happy with accessing path..?
+    # image_path = frame.frame_image.path # aws not happy with accessing 'path'..?
     image_path = frame.frame_image.url
 
     # New in python 3.4+: 'Path'

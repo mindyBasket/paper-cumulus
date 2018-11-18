@@ -187,6 +187,19 @@ class Scene(models.Model):
         children_li = self.children_li
         
         return helpers.order_by_id_ref(strips, children_li)
+
+
+    def delete(self, **kwargs):
+        
+        target_id = self.id 
+        
+        #delete Scene!
+        super(Scene, self).delete() 
+
+        # position removal on children_li of its parent (chapter)
+        chapter = self.chapter
+        chapter.children_li = helpers.remove_child(self.chapter, target_id)
+        chapter.save() # save parent!
       
 
         
@@ -273,13 +286,19 @@ class Strip(models.Model):
 
     def delete(self, **kwargs):
         
-        # position removal on children_li of its parent (scene)
-        scene = self.scene
-        scene.children_li = helpers.remove_child(self.scene, self.id)
-        scene.save() # save parent!
-        
+        target_id = self.id 
+
         #delete Strip!
         super(Strip, self).delete() 
+
+        # position removal on children_li of its parent (scene)
+        scene = self.scene
+        scene.children_li = helpers.remove_child(self.scene, target_id)
+        scene.save() # save parent!
+        
+        
+
+
         
         
         
@@ -394,17 +413,21 @@ class Frame(models.Model):
         
         
     def delete(self, **kwargs):
+
+        target_id = self.id 
+
+        #delete Frame!
+        super(Frame, self).delete() 
+        # For removing thumbnails, check post_save receiver!
         
         # position removal on children_li of its parent (strip)
         strip = self.strip
-        strip.children_li = helpers.remove_child(self.strip, self.id)
+        strip.children_li = helpers.remove_child(self.strip, target_id)
         strip.save() # save parent!
         
-        # Remove thumbnails
-        # Check post_save receiver!
         
-        #delete Frame!
-        super(Frame, self).delete() 
+        
+        
         
 
 
