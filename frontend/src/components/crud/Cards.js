@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 
 import { Sortable } from '@shopify/draggable';
-// import Sortable from 'sortablejs';
+import axios from 'axios';
 
 import { FrameCard, FramePreviewCard } from "./FrameCard";
 import { FrameWindow } from "./../FlipbookPlayer";
@@ -437,7 +437,6 @@ class StripCard extends PureComponent {
 
     handle_deleteScene(){
         // DANGER ZONE!
-
         const strip = this.props.stripObj;
 
         console.log("handle_deleteScene for Strip id: " + this.props.stripObj.id);
