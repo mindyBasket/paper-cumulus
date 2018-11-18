@@ -230,7 +230,7 @@ class FrameStage extends PureComponent{
 		// Get next strip
 		if (this.currStrip == null){
 			// never initialized. Do it now!
-			console.log("currStrip never initialized...");
+			console.log("currStrip never initialized. Grab the first .strip.start.");
 			this.currStrip = this.$node.current.querySelector('.strip.start');
 		}
 
@@ -409,20 +409,22 @@ class FrameStage extends PureComponent{
 		let stripCount = 0; // used for properly indexing strip
 
 		const data = Array.isArray(this.props.data) ? this.props.data : new Array(this.props.data); //unify format
-
+		console.log("[FrameStage] scenecount : " + data.length);
 		if (!data || !data.length){
-			return (<p ref={this.$node}>No frame registered to this strip</p>)
+			console.warn("[FrameStage] No frame registered to this scene");
+			return (<p ref={this.$node}>No frame registered to this scene</p>)
 		} 
 		else{
-	
 			let lazyData = data.slice(0,this.state.lazySceneCount);
+
 			return (
 				<div className="frame_stage" onClick={this.gotoNextAndPlay} ref={this.$node}>
 			 
 				 	{/* data.strips is an array of JSON objects */}
 				 	{lazyData.map((el_scene,index_sc)=>{
 				 		stripCount += index_sc > 0 ? lazyData[index_sc-1]['strips'].length : 0;
-
+				 		console.log("StripCount in curr lazyScene: " + el_scene.strips.length);
+				 		console.log(JSON.stringify(el_scene));
 				 		return (
 				 		<span className="scene" 
 				 			  key={'scene'+el_scene}

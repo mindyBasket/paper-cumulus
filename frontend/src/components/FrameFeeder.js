@@ -14,6 +14,7 @@ class FrameFeeder extends Component {
     };
 
   componentDidMount() {
+    console.log("[FrameFeeder] Fetching frames..." + this.props.endpoint);
 
     fetch(this.props.endpoint)
       .then(response => {
@@ -23,8 +24,13 @@ class FrameFeeder extends Component {
         return response.json();
       })
       .then(data => {
-        console.log("Data fetched successfully");
-        return this.setState({ data: data, loaded: true });
+        if (data){
+          console.log(`[FrameFeeder] Data fetched successfully.`);
+          return this.setState({ data: data, loaded: true });
+        } else {
+          console.error("[FrameFeeder] fetched data is invalid");
+        }
+        
       }
 
       );
