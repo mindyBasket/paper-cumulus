@@ -96,20 +96,22 @@ def regenerate_frame_images(frame):
 
         # copy
         try: 
-            if storage.exists(rel_im_path):
+            print("...storage.exists? {}".format(storage.listdir("")))
+            if storage.exists(str(rel_im_path)):
                 print("File to copy: {}".format(rel_im_path))
 
                 # https://docs.djangoproject.com/en/2.1/topics/files/
                 # print("Size check: {}".format(storage.size(rel_im_path)))
-                f = storage.open(rel_im_path)
+                f = storage.open(str(rel_im_path))
                 cf = ContentFile(f.read())
-
+                print("File opened")
+                
                 # make copy dir
                 file_iden = "{}_copy-{}".format(rel_im_path.stem, helpers.get_rand_base64(6)) 
                 file_iden_name = "{}{}".format(file_iden, rel_im_path.suffix)
                 dest_strip_path = rel_im_path.parent.parent
                 copy_im_name = dest_strip_path.joinpath(file_iden, file_iden_name)
-
+                
       
                 output_name = storage.save(str(copy_im_name), cf) #output appears to be just string
                 # The code above copies successfully. The problem now is...how to make it point to this?
@@ -118,6 +120,8 @@ def regenerate_frame_images(frame):
                 frame.frame_image.name = output_name
                 frame.save()
                 print("[FRAME COPIED] to: {}".format(frame.frame_image.url))
+            else:
+                Print("Cannot find file at path: " + rel_im_path)
 
         except FileNotFoundError: 
             print("[FILE NOT FOUND] Cannot find file to copy at: {}".format(frame.frame_image.url))

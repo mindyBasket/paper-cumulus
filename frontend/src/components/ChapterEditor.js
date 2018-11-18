@@ -87,7 +87,7 @@ class SceneCreateModal extends PureComponent{
 				return false;
 			}
 
-			axh.django_getSceneUrl("flipbooks:scene-edit22", {'pk': res.data.id}).then(res=>{
+			axh.django_getSceneUrl("flipbooks:scene-edit", {'pk': res.data.id}).then(res=>{
 				if (res && res.data && res.data.hasOwnProperty('url') && res.data.url ) {
 					window.location.href = res.data.url;
 				} else {
