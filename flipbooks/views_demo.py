@@ -63,9 +63,19 @@ def copy_demo_chapter(request, *args, **kwargs):
         new_pk = new_demo_chapter.pk
         print("====== new Pk for cloned demo: {}".format(new_pk))
 
+        # TEMP, hardcoded solution just for demo chapter: 
+        # get ordered scene
+        ordered_scene = [None] * len(obj_li)
+        cl = ch_original.children_li.split(",")
+        cl = list( item.strip() for item in cl )
+
+        for sc in ch_original.scene_set.all():
+            order_position = cl.index(str(sc.id))
+            ordered_scene[order_position] = sc
+
         # copy children
         
-        for sc in ch_original.scene_set.all():
+        for sc in ordered_scene:
             sc_original = Scene.objects.get(pk=sc.pk) # for retireving children
             sc.pk = None # will have no children
             sc.name = "Demo " + sc_original.name
@@ -83,15 +93,15 @@ def copy_demo_chapter(request, *args, **kwargs):
                     fr.strip = st
                     fr.is_mirroring = True
                     fr.save()
-                    print("[FRAME] ------ new pk = {}".format(fr.pk))
-                    
                     # Too slow and resource redundant to copy all image
                     # thumbnailer_helpers.regenerate_frame_images(fr)
+                    print("[FRAME] ------ new pk = {}".format(fr.pk))
 
-      
+                print("[STRIP CLONING DONE]")
+            print("[SCENE CLONING DONE]")
 
         # TODO: give the demo scene, proper children_li to fake "correct order"
-
+        print("====== CHAPTER CLONING DONE ======")
         resp['url'] = "/flipbooks/chapter/%s/" % new_demo_chapter.id64
         resp['demoChapterId'] = new_demo_chapter.id64;
         resp['timestamp'] =  time.time();

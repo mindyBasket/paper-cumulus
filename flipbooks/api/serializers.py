@@ -95,6 +95,7 @@ class FrameModelSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'ignored',
+            'is_mirroring',
             'note',
             'strip',
             'dimension',
