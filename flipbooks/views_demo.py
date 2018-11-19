@@ -65,7 +65,7 @@ def copy_demo_chapter(request, *args, **kwargs):
 
         # TEMP, hardcoded solution just for demo chapter: 
         # get ordered scene
-        ordered_scene = [None] * len(obj_li)
+        ordered_scene = [None] * len(ch_original.scene_set.all())
         cl = ch_original.children_li.split(",")
         cl = list( item.strip() for item in cl )
 
