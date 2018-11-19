@@ -81,10 +81,16 @@ def copy_demo_chapter(request, *args, **kwargs):
                 for fr in st_original.frame_set.all():
                     fr.pk = None
                     fr.strip = st
+                    fr.is_mirroring = True
                     fr.save()
                     print("[FRAME] ------ new pk = {}".format(fr.pk))
-                    thumbnailer_helpers.regenerate_frame_images(fr)
+                    
+                    # Too slow and resource redundant to copy all image
+                    # thumbnailer_helpers.regenerate_frame_images(fr)
 
+      
+
+        # TODO: give the demo scene, proper children_li to fake "correct order"
 
         resp['url'] = "/flipbooks/chapter/%s/" % new_demo_chapter.id64
         resp['demoChapterId'] = new_demo_chapter.id64;

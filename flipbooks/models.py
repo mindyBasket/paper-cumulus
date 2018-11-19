@@ -351,7 +351,9 @@ class Frame(models.Model):
         blank=False
     )
     
+
     ignored = models.BooleanField(default=False)
+    is_mirroring = models.BooleanField(default=False)
 
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
@@ -446,7 +448,9 @@ def frame_post_delete(sender, **kwargs):
         return 
     
     # remove uploaded images and associated thumbnails
-    thumbnailer_helpers.delete_frame_images(frame)
+    if not frame.is_mirroring:
+        # frame's image is its true source 
+        thumbnailer_helpers.delete_frame_images(frame)
   
     return True
 

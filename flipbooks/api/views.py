@@ -246,14 +246,16 @@ class FrameUpdateAPIView(generics.UpdateAPIView):
                 #     image_paths.append(thumbnail.path)
                 # frame._old_image_paths = image_paths
  
-                # Remove old images
-                # Old image and thumbnails are deleted upon DELETE request.
-                # Check the signal receivers in models.py 
-                print("")
-                print("======= PATCH: removing old images =========")
-                thumbnailer_helpers.delete_frame_images(frame)
-                print("=============================================")
-                print("")
+                # Remove old images.
+                # DON'T remove if the frame's resource is mirrored
+                if not frame.is_mirroring:
+                    print("")
+                    print("======= PATCH: removing old images =========")
+                    thumbnailer_helpers.delete_frame_images(frame)
+                    print("=============================================")
+                    print("")
+                else:
+                    print("======= Frame is mirrored: image not deleted =========")
 
 
                 # intercept!!
