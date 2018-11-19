@@ -161,7 +161,7 @@ class Scene(models.Model):
         # https://docs.python.org/2/library/stdtypes.html#str.format
         return "Scene #{} [order: {}, name: {} ]".format(self.pk, self.order, self.name)
         
-        
+
     def save(self, *args, **kwargs):
         # 1. Check if valid children_li exists:
         self.children_li = helpers.refresh_or_cleanup_children_li(self)
@@ -170,7 +170,7 @@ class Scene(models.Model):
         super(Scene, self).save(*args, **kwargs)
         
         # 3. Position update on children_li of its parent (chapter)
-        _insert_at = -1 # at the end
+        _insert_at = 0
         self.chapter.children_li = helpers.update_children_li(self.chapter, self.id, _insert_at)
         self.chapter.save() # save parent!
 
