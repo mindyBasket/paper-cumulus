@@ -171,6 +171,89 @@ class Helper {
         return frameNewArr_cleaned;
     }
 
+    reorderChildren(obj, children_li){
+        // This functin accepts two form of "obj". 
+        // A. It's an object with children nested inside
+        // B. It's an Array of objects. If this is the case, children_li MUST be passed.
+
+        if (Array.isArray(obj) && !children_li){
+            console.error("[reorderChildren] children_li is required to order an array.");
+            return [];
+        }
+
+        let childrenArr = null;
+        // get Array of children
+        if (children_li){
+            console.warn("children_li is passed");
+            childrenArr = obj;
+        } else {
+            // identify what the object is
+            let childrenName = null;
+            if        (obj.hasOwnProperty("frames")) {
+                childrenName = "frames";
+            } else if (obj.hasOwnProperty("strips")) {
+                childrenName = "strips";
+            } else if (obj.hasOwnProperty("scenes")) {
+                childrenName = "scenes";
+            }
+
+            if (childrenName == null || obj[childrenName].length == 0){
+                // object has no valid children
+                return [];
+            }
+
+            if (!obj.hasOwnProperty('children_li') || !obj.children_li || obj.children_li.trim() == ''){
+                // no children_li. Return frame array as is
+                console.error("No valid children_li");
+                return obj[childrenName];
+            }
+
+            // define variable that will be used when reordering
+            children_li = obj.children_li;
+            childrenArr = obj[childrenName];
+        }
+
+        console.log("ChildrenArr extracted. Length = " + childrenArr.length);
+
+        // Check validity of children_li
+        const childrenIdList = children_li.split(",");
+        if (!childrenIdList || childrenIdList==='') {return childrenArr;}
+
+        // Reorder childrenArr based on children_li
+        let childrenNewArr = Array.apply(null, Array(childrenIdList.length));
+        let childrenLeftOver = [];
+
+        let ignoredCount = 0;
+        childrenArr.forEach((c)=>{
+            if (!c.hasOwnProperty("ignored") || (c.hasOwnProperty("ignored") && !c.ignored) ){
+                const insertAt = childrenIdList.indexOf(String(c.id));
+                if (insertAt>=0 && insertAt<childrenNewArr.length){
+                    childrenNewArr[insertAt] = c; 
+                } else if (insertAt==-1){
+                    childrenLeftOver.push(c);
+                }
+            } else { ignoredCount++; }
+        });
+
+        // Remove empty cells caused by ignored frames
+        let childrenNewArr_cleaned = [];
+        if (ignoredCount>0){
+            childrenNewArr.forEach((c)=>{
+                if(c){childrenNewArr_cleaned.push(c)}
+            });
+        } else {
+            childrenNewArr_cleaned = childrenNewArr;
+        }
+
+        // children not ref'd in children_li is just placed at the end
+        if (childrenLeftOver.length>0){
+            childrenNewArr_cleaned.push(...childrenLeftOver);
+        }
+
+        // console.warn(`Prepped frame for stripId=${strip.id} : frames of length ${frameNewArr_cleaned.length}`);
+        return childrenNewArr_cleaned;
+    }
+
 
 }
 

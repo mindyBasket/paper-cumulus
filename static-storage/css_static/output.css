@@ -1025,6 +1025,10 @@ ul.list_strips {
   counter-reset: stripNum;
 }
 
+ul.list_strips:focus {
+  outline: none;
+}
+
 ul.list_strips li.strip_card {
   display: flex;
   flex-direction: column;

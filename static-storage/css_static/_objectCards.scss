@@ -171,9 +171,13 @@ ul.list_scenes_mini li .preview img{
 /* -------------------------------------- */
 /* -------------------------------------- */
 
+
 ul.list_strips{
     padding: 0;
     counter-reset: stripNum;
+}
+ul.list_strips:focus {
+    outline: none;
 }
 
 

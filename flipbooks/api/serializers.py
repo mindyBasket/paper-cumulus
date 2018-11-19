@@ -177,6 +177,7 @@ class ChapterModelSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'id64',
+            'children_li',
             'number',
             'title',
             'scene_set'

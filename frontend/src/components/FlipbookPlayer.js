@@ -124,7 +124,8 @@ class FrameStage extends PureComponent{
 		// props reference
 		// this.props.isStandAlone; // this component can be used by itself without scrubber and timer
 
-		this.data = this.props.data; // passed down from FrameFeeder
+		// Data is passed down from either 1) FrameFeeder, 2) Directly (in case of standalone)
+		this.data = this.props.data;
 		this.totalSceneCount = h.getTotalSceneCount(this.props.data);
 
 		this.state = {
@@ -408,14 +409,21 @@ class FrameStage extends PureComponent{
 
 		let stripCount = 0; // used for properly indexing strip
 
-		const data = Array.isArray(this.props.data) ? this.props.data : new Array(this.props.data); //unify format
-		console.log("[FrameStage] scenecount : " + data.length);
+		var data = Array.isArray(this.props.data) ? this.props.data : new Array(this.props.data); //unify format
+
 		if (!data || !data.length){
 			console.warn("[FrameStage] No frame registered to this scene");
 			return (<p ref={this.$node}>No frame registered to this scene</p>)
 		} 
 		else{
+
+			// Order scenes based on children_li, if provided
+			if (this.props.children_li){
+				data = h.reorderChildren(data, this.props.children_li); 
+			} 
+
 			let lazyData = data.slice(0,this.state.lazySceneCount);
+
 
 			return (
 				<div className="frame_stage" onClick={this.gotoNextAndPlay} ref={this.$node}>
@@ -424,7 +432,6 @@ class FrameStage extends PureComponent{
 				 	{lazyData.map((el_scene,index_sc)=>{
 				 		stripCount += index_sc > 0 ? lazyData[index_sc-1]['strips'].length : 0;
 				 		console.log("StripCount in curr lazyScene: " + el_scene.strips.length);
-				 		console.log(JSON.stringify(el_scene));
 				 		return (
 				 		<span className="scene" 
 				 			  key={'scene'+el_scene}
@@ -556,7 +563,8 @@ class FrameWindow extends Component{
 				{/* If NOT standalone */}
 				{ !this.props.isStandAlone && (
 					<FrameFeeder endpoint = {this.endpoint} 
-								 render={data => <FrameStage data={data} />} />
+								 render={dataDict => <FrameStage data={dataDict.data}
+								 						         children_li={dataDict.children_li} />} />
 				)}
 				
 				{!this.props.isStandAlone && 

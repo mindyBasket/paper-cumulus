@@ -161,26 +161,21 @@ class Scene(models.Model):
         # https://docs.python.org/2/library/stdtypes.html#str.format
         return "Scene #{} [order: {}, name: {} ]".format(self.pk, self.order, self.name)
         
+        
     def save(self, *args, **kwargs):
-    
         # 1. Check if valid children_li exists:
-        if self.children_li == '' or "".join(self.children_li.split(","))== '':
-            print("WARNING. children_li on this Scene is empty. Refreshing children_li.")
-            new_children_li = helpers.refresh_children_li(self)
-            if new_children_li:
-                self.children_li = new_children_li
-        else:
-            # Children_li exists. Clean up just in case
-            # You are in strip right now, so query it RIGHT
-            cleaned_children_li = helpers.cleanup_children_li(self)
-            if cleaned_children_li:
-                self.children_li = cleaned_children_li
+        self.children_li = helpers.refresh_or_cleanup_children_li(self)
 
-
-
+        # 2. Save self!
         super(Scene, self).save(*args, **kwargs)
         
-        
+        # 3. Position update on children_li of its parent (chapter)
+        _insert_at = -1 # at the end
+        self.chapter.children_li = helpers.update_children_li(self.chapter, self.id, _insert_at)
+        self.chapter.save() # save parent!
+
+
+
     # Custom functions
     def ordered_strip_set(self):
         strips = Strip.objects.filter(scene=self)
@@ -255,7 +250,6 @@ class Strip(models.Model):
         _insert_at = int(self.order) 
         self.order = 0 # reset to "do not change position unless specified"
         
-
         # 1. Check if valid children_li exists:
         if self.children_li == '' or "".join(self.children_li.split(","))== '':
             print("WARNING. children_li on this strip is empty. Refreshing children_li.")
