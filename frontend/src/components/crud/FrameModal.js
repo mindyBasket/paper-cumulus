@@ -241,8 +241,6 @@ class FrameModal extends Component{
             return false;
         }
 
-        console.log("Input data provided: " + JSON.stringify(inputData));
-
         const frame = this.state.frameObj;
         const csrfToken = axh.getCSRFToken();
         const formData = h.makeFormData(inputData); 
@@ -341,7 +339,7 @@ class FrameModal extends Component{
 
     render(){
         const frame = this.state.frameObj;
-        console.log("[FRAME MODAL RE-RENDER] Curr obj: " + JSON.stringify(this.state.frameObj));
+        // console.log("[FRAME MODAL RE-RENDER] Curr obj: " + JSON.stringify(this.state.frameObj));
 
         return (
             <div>
