@@ -87,6 +87,14 @@ class ChapterAPIDetailView(generics.RetrieveAPIView):
         return Chapter.objects.all()
 
 
+class Chapter64_APIDetailView(generics.RetrieveAPIView):
+    
+    queryset = Chapter.objects.all()
+    serializer_class = ChapterModelSerializer
+    lookup_field = 'id64'
+
+    def get_queryset(self):
+        return Chapter.objects.all()
 
 
 # http://patorjk.com/software/taag/#p=display&f=Cyberlarge&t=Scene

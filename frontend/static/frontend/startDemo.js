@@ -71,9 +71,6 @@ function isExpired(date){
 }
 
 
-
-
-
 function showMessage(domId){
     document.querySelectorAll(".hideable_content").forEach((msgBox)=>{
         msgBox.setAttribute("style", "display: none");
@@ -96,6 +93,33 @@ function displayErrorMessage(msg){
 }
 
 
+
+function checkDemoObject(id64){
+
+    fetch('/api/chapter/id64/'+id64+'/')
+      .then(response => {
+        if (response.status !== 200) {
+          return false
+        }
+
+        return response.json();
+      })
+      .then(data => {
+        
+        if (data==false){
+            // remove
+            showMessage("#msg_new");
+            const $msgNewContainer = document.querySelector("#msg_new");
+            const $msg = $msgNewContainer.querySelector("#msg");
+            
+            $msg.textContent = `A demo you made ${timeago} ago expired. \nMake a new one that will be available for 3 days?`
+            window.localStorage.clear();
+        }
+        
+        
+      });
+
+}
 
 
 
@@ -126,6 +150,10 @@ if (window.localStorage){
 
 
     if (demoChapterId && demoIsExpired == false){
+
+        // check its status!
+        checkDemoObject(demoChapterId);
+
         // Demo Chapter Exists
         // put id and date
         const $msgReturningContainer = document.querySelector("#msg_returning");
@@ -219,8 +247,6 @@ if (window.localStorage){
                         } else {
                             displayErrorMessage("Response from the server was a mutant!");
                         }
-                        
-                        
                     });
                 }
 

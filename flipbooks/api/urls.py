@@ -19,6 +19,7 @@ urlpatterns = [
 
     # Chapter
     path('chapter/<int:pk>/', views.ChapterAPIDetailView.as_view(), name="detail-chapter"), # simple list
+    re_path(r'^chapter/id64/(?P<id64>\w+)/$', views.Chapter64_APIDetailView.as_view(), name="detail-chapter64"), # simple list
     path('chapter/<int:pk>/scene/all/', views.SceneAPIListView.as_view(), name="list-scene"), # full list
 
     # Scene 
