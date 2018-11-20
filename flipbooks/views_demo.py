@@ -22,7 +22,7 @@ from . import forms
 
 #custom helper functions 
 from .helpermodule import thumbnailer_helpers
-
+from .helpermodule import helpers
 
 def home_demo(request):
     context = {'welcome_msg': "Start Demo?"}
@@ -88,7 +88,9 @@ def copy_demo_chapter(request, *args, **kwargs):
                 st.scene = sc
                 st.save()
                 print("[STRIP] --- new pk = {}".format(st.pk))
-                for fr in st_original.frame_set.all():
+
+                # retain frame order
+                for fr in helpers.order_by_id_ref(st_original.frame_set.all(), helpers.list2String(st.children_li.split(",")) ):
                     fr.pk = None
                     fr.strip = st
                     fr.is_mirroring = True
