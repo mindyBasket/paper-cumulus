@@ -196,7 +196,6 @@ class ChapterEditor extends Component{
 	}
 
 	handle_openSceneCreateModal(){
-		console.log("Create scene under chapter " + this.chapter.id);
 		lb.pub_LightBox_addToOnClick( ()=>{
 			this.setState({
 				sceneCreateOn: false,

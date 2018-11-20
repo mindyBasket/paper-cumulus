@@ -70,7 +70,7 @@
         {% with object_chapter.scene_set.all|map_queryset:object_chapter.children_li as mapped_scene_set %}
         {% for scene in mapped_scene_set %}
             <li>
-                <a class="scene_container" href="{% url 'flipbooks:scene-play' pk=scene.pk %}">
+                <a class="scene_container" href="{% url 'flipbooks:scene-edit' pk=scene.pk %}">
                     <span class="flex_item preview_container">
 
                         {% with scene.strip_set.all|map_queryset:scene.children_li as mapped_strip_set %}

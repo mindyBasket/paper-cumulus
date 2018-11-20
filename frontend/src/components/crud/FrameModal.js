@@ -252,8 +252,6 @@ class FrameModal extends Component{
 
             if (res && res.data){
                 console.log("Frame Updated!")
-                console.warn(JSON.stringify(res.data));
-
                 // refresh data and no longer loading
                 setst_FrameModal({frameObj:res.data});
 
@@ -392,9 +390,10 @@ class FrameModal extends Component{
                         <EditableField fieldDisplayLabel="Note" 
                                        fieldLabel="note" fieldValue={frame.note}
                                        action={this.updateFrame}/>
-                        <EditableField fieldDisplayLabel="Ignored?" 
+
+                        {/*<EditableField fieldDisplayLabel="Ignored?" 
                                        fieldLabel="ignored" fieldValue={frame.ignored}
-                                       action={this.updateFrame}/>
+                                       action={this.updateFrame}/>*/}
 
                         {/*<button onClick={this.thumbnailTest}>Do that thumbnail thing</button>*/}
                         
