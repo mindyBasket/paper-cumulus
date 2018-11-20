@@ -22,6 +22,65 @@ function getCSRFToken(){
     return $form.querySelector("input[name='csrfmiddlewaretoken']").value;
 }
 
+function bind_makeNewDemo(){
+
+    const $startDemo = document.querySelector('#make_demo');
+
+    if($startDemo){
+        $startDemo.onclick = (e) =>{
+
+            // grab CSRF token
+            const csrfToken = getCSRFToken();
+
+            if (csrfToken){
+                axios({
+                    method: 'post', // should be POST?
+                    data: null,
+                    url: '/flipbooks/demo_chapter/create/',
+                    headers: {"X-CSRFToken": csrfToken}
+                })
+                .then(res => {
+       
+                    if (res.data && res.data.hasOwnProperty('url') && res.data.url ) {
+                        const demoChapterId = res.data.hasOwnProperty('demoChapterId') ? res.data['demoChapterId'] : false;
+                        if (demoChapterId && demoChapterId.length == 8){
+                            // store chapter info before locating you there
+                            stor.setItem("demoChapterId", demoChapterId);
+                            stor.setItem("demoTimestamp", res.data.timestamp);
+                            window.location.href = res.data.url;
+                        } else {
+                            displayErrorMessage("Cloned demo chapter was a mutant!");
+                        }
+                        
+                    } else {
+                        displayErrorMessage("Could not complete the cloning process!");
+                    }
+                })
+                .catch(error => {
+                    if(error.response){
+                        console.log(error.response.data);
+                        console.log(error.response.status);
+                        console.log(error.response.headers);
+                        displayErrorMessage("Something went wrong on server side!")
+                    } else {
+                        displayErrorMessage("Response from the server was a mutant!");
+                    }
+                });
+            }
+
+            // display loader
+            $startDemo.setAttribute("style", "display:none;");
+            document.querySelector("#loading_msg").className="active";
+
+        }
+    }
+}
+
+
+
+
+
+
 function timeSince(date) {
 
   const seconds = Math.floor((new Date() - date) / 1000.00);
@@ -107,19 +166,28 @@ function checkDemoObject(id64){
       .then(data => {
         
         if (data==false){
-            // remove
+            // Remove existing message and allow user to create new chapter
             showMessage("#msg_new");
+
             const $msgNewContainer = document.querySelector("#msg_new");
             const $msg = $msgNewContainer.querySelector("#msg");
             
             $msg.textContent = `A demo you made ${timeago} ago expired. \nMake a new one that will be available for 3 days?`
             window.localStorage.clear();
+
+            // Make button for creating new demo 
+            bind_makeNewDemo();
+
         }
         
         
       });
 
 }
+
+
+
+
 
 
 
@@ -149,9 +217,10 @@ if (window.localStorage){
     }
 
 
+    // Case 1: Live demo chapter exists
     if (demoChapterId && demoIsExpired == false){
 
-        // check its status!
+        // But wait! It COULD be expired! [Async]
         checkDemoObject(demoChapterId);
 
         // Demo Chapter Exists
@@ -194,8 +263,8 @@ if (window.localStorage){
         }
 
 
-    } else {
-        // No demo chapter exists, let user create new one
+    } else { // Case 2: There is no demo chapter in record, or it expired
+
         showMessage("#msg_new");
 
         const $msgNewContainer = document.querySelector("#msg_new");
@@ -206,56 +275,8 @@ if (window.localStorage){
             window.localStorage.clear();
         }
 
-        // Bind startDemo button 
-        const $startDemo = document.querySelector('#make_demo');
-        if($startDemo){
-            $startDemo.onclick = (e) =>{
-
-                // grab CSRF token
-                const csrfToken = getCSRFToken();
-
-                if (csrfToken){
-                    axios({
-                        method: 'post', // should be POST?
-                        data: null,
-                        url: '/flipbooks/demo_chapter/create/',
-                        headers: {"X-CSRFToken": csrfToken}
-                    })
-                    .then(res => {
-           
-                        if (res.data && res.data.hasOwnProperty('url') && res.data.url ) {
-                            const demoChapterId = res.data.hasOwnProperty('demoChapterId') ? res.data['demoChapterId'] : false;
-                            if (demoChapterId && demoChapterId.length == 8){
-                                // store chapter info before locating you there
-                                stor.setItem("demoChapterId", demoChapterId);
-                                stor.setItem("demoTimestamp", res.data.timestamp);
-                                window.location.href = res.data.url;
-                            } else {
-                                displayErrorMessage("Cloned demo chapter was a mutant!");
-                            }
-                            
-                        } else {
-                            displayErrorMessage("Could not complete the cloning process!");
-                        }
-                    })
-                    .catch(error => {
-                        if(error.response){
-                            console.log(error.response.data);
-                            console.log(error.response.status);
-                            console.log(error.response.headers);
-                            displayErrorMessage("Something went wrong on server side!")
-                        } else {
-                            displayErrorMessage("Response from the server was a mutant!");
-                        }
-                    });
-                }
-
-                // display loader
-                $startDemo.setAttribute("style", "display:none;");
-                document.querySelector("#loading_msg").className="active";
-
-            }
-        }
+        // Make button for creating new demo 
+        bind_makeNewDemo();
 
 
 
