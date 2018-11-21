@@ -533,15 +533,6 @@ body {
   transition-duration: 0.5s;
 }
 
-a {
-  color: #da8d8d;
-}
-
-a:hover {
-  color: #e65f89;
-  text-decoration: none;
-}
-
 /* -------------------------------------- */
 /* -------------------------------------- */
 /*        globally used text styles       */
@@ -1676,6 +1667,18 @@ body.dark .footer span {
   margin: 0 5px;
 }
 
+a {
+  color: #da8d8d;
+  transition-property: color;
+  transition-duration: 0.2s;
+}
+
+a:hover {
+  /*color: #e65f89;*/
+  color: #bd4168;
+  text-decoration: none;
+}
+
 button {
   padding: 10px 15px;
   margin: 5px;
@@ -1719,6 +1722,20 @@ button.disabled {
   border: 0px solid;
   background-color: #b9b9b9;
   color: #dedede;
+}
+
+.button.flat {
+  padding: 7px 12px;
+  border: 1px solid #da8d8d;
+  border-radius: 4px 10px;
+  color: #da8d8d;
+  transition-property: color, border;
+  transition-duration: 0.2s;
+}
+
+.button.flat:hover {
+  border-color: #bd4168;
+  color: #bd4168;
 }
 
 input[type=text] {
