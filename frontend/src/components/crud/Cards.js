@@ -46,13 +46,31 @@ function pub_handle_fetchScene(){
 class MenuButton extends Component {
     constructor(props){
         super(props);
+        this.state ={
+            hover: false
+        }
+        this.handle_hover = this.handle_hover.bind(this);
     }
 
-    render (){
+    handle_hover(){
+        if(this.props.comingSoon){
+            this.setState({hover: true});
+        }
+    }
+
+    render(){
         const hasFrames = this.props.hasFrames;
         return (
-            <a className={this.props.iconClass + (hasFrames == null ? "" : (!hasFrames ? " disabled" : "")  )} 
-               onClick={hasFrames != null && !hasFrames? ()=>{} : this.props.action}></a>
+            <span className={this.props.iconClass + (hasFrames == null ? "" : (!hasFrames ? " disabled" : "")  )} 
+                  onClick={hasFrames != null && !hasFrames? ()=>{} : this.props.action}>
+               {this.props.comingSoon && (
+                    <span className={"mtooltip" + 
+                                     (this.state.hover ? " active" : "")}>
+                        Coming soon
+                    </span>
+                )}
+                
+            </span>
         )
     }
 }
@@ -864,7 +882,7 @@ class StripCard extends PureComponent {
                         
                         <MenuButton iconClass="menu_btn fas fa-play-circle" action={this.openPreview} hasFrames={!noFrames}/>
                         <MenuButton iconClass="menu_btn fas fa-file-upload" action={this.handle_openUploadCover}/>
-                        <MenuButton iconClass="menu_btn fas fa-pen" action={()=>{console.log("batch edit")}} hasFrames={false}/>
+                        <MenuButton iconClass="menu_btn fas fa-pen" action={()=>{}} hasFrames={false} comingSoon={true}/>
                         <MenuButton iconClass="menu_btn fas fa-trash" action={this.handle_deleteSceneConfirm}/>
                         <MenuButton iconClass="menu_btn fas fa-ellipsis-h" action={this.openMenu}/>
                     </div>

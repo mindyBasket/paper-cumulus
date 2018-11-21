@@ -438,6 +438,7 @@ ul.list_strips li.spotlighted{
 }
 
 .strip_flex_toolbar .menu_btn{ 
+    position: relative;
     /* icon size */
     font-size: 1.6em;
     margin: 0 4px;
@@ -454,7 +455,52 @@ ul.list_strips li.spotlighted{
     opacity:1;
 }
 
+.mtooltip{
+    font-family: 'Quicksand', sans-serif;
 
+    position: absolute;
+    pointer-events: none;
+    top: -35px; left: -20px;
+
+    display:inline-block;
+    background-color: #9e8f8f;
+    width: 100px;
+    height:40px;
+    padding: 12px 0px;
+    text-align: center;
+
+    font-size: 10pt;
+    border-radius:5px;
+
+    color: white;
+
+    opacity: 0;
+
+    transition-property: opacity, top;
+    transition-duration: 0.2s;
+}
+
+.mtooltip::after{
+    position: absolute;
+    bottom: -10px; left: 20px;
+ 
+    content: "";
+    width: 0; 
+    height: 0; 
+
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+      
+    border-top: 10px solid #9e8f8f;
+
+}
+
+.menu_btn:hover .mtooltip{
+
+    top: -54px;
+    opacity: 1;
+
+}
 
 
 
