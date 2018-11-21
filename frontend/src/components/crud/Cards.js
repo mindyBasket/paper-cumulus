@@ -903,9 +903,14 @@ class StripCard extends PureComponent {
                     {noFrames ?
                         (
                             <div className="strip_flex_container" stripid={strip.id}>
-                                <div className="tile empty-strip ui-state-disabled">
-                                    <span>No frames in this strip. Upload some!</span>
-                                </div>
+                                {this.state.loadingFrames ? (
+                                   <FrameCard standby={true}/>
+                                ) : (
+                                    <div className="tile empty-strip ui-state-disabled">
+                                        <span>No frames in this strip. Upload some!</span>
+                                    </div>
+                                )}
+                                
                             </div>
                         ) : (
                             <div className="strip_flex_container" stripid={strip.id}>
