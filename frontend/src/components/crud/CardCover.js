@@ -89,7 +89,7 @@ function getCardCoverMessage(templateName, offFunc, handlerMap){
             return (
                 <div className="cover_message">
                     <p>
-                    <span className="bigtext 2">Are you sure you want to delete this strip?</span>
+                    <span className="bigtext 2">Are you sure you want to delete this <span class="fas fa-film"/> strip?</span>
                     </p>
                     <p>
                         <span>
