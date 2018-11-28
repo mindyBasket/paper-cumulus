@@ -39,11 +39,14 @@
         
         {% with object.chapter.scene_set.all|map_queryset:object.chapter.children_li as mapped_scene_set %}
         {% for scene in mapped_scene_set %}
-            <li><a href="{% url 'flipbooks:scene-edit' pk=scene.pk %}">
+            <li><a class="mini_scene {% if scene.pk == object.pk %}current{% endif %}"
+                   href="{% url 'flipbooks:scene-edit' pk=scene.pk %}">
+                    <div class="mini_scene_label">
+                        <span class="fas fa-film"/>
+                    </div>
                 {% with scene.strip_set.all|map_queryset:scene.children_li as mapped_strip_set %}
-                    <div class="preview {% if scene.pk == object.pk %}current{% endif %}" >
+                    <div class="preview" >
                         {% for strip in mapped_strip_set|slice:":1" %}
-
                
                             {% with strip.frame_set.all|first as first_frame %}
                             

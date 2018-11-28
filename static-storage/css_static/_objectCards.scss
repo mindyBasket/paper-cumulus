@@ -146,7 +146,7 @@ ul.list_scenes_mini{
 
 ul.list_scenes_mini li{
     margin: 0 auto;
-
+    padding-bottom: 5px;
 }
 
 
@@ -158,29 +158,60 @@ ul.list_scenes_mini li .preview{
     overflow: hidden; 
 
     border: 3px solid transparent;
-    border-radius: 3px;
+    /* allows preview to have thick border highlight
+       without changing the size of the box*/
+    border-radius: 5px;
 
 }
 
-ul.list_scenes_mini li .preview.current{
-    pointer-events: none;
-    border: 8px solid #7e7979;
-}
 
 
-ul.list_scenes_mini li .preview:hover{
-    border: 3px solid #ff8982;
-}
+
+
 
 ul.list_scenes_mini li .preview span{
     width: 100%;
 }
 
-ul.list_scenes_mini li .preview img{
+ul.list_scenes_mini .mini_scene{ /*the <a> tag*/
+    display:flex;
+    flex-direction: row;
+    position: relative; /* there is a floating tickmark*/
+
+    border-radius: 5px;
+    background-color: #d2c1c4;
+
+    transition-property: background;
+    transition-duration: 0.3s;
+}
+
+ul.list_scenes_mini .mini_scene:hover{
+    background-color: #ff8982;
+}
+
+ul.list_scenes_mini .mini_scene.current{
+    pointer-events: none;
+    background-color: #bca9a9;
+}
+ul.list_scenes_mini .mini_scene.current::after{
+    position: absolute;
+    top: 20px; right: -10px;
+ 
+    content: "";
+    width: 0; 
+    height: 0; 
+
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+      
+    border-left: 10px solid #bca9a9;
 
 }
 
 
+.mini_scene .mini_scene_label{
+    color: white;
+}
 
 
 
