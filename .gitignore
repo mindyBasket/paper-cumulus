@@ -1,8 +1,9 @@
 env
 .gitignore.swp
-
 *.pyo 
 *.pyc
+
+*.map
 
 static-serve
 node_modules

@@ -71,9 +71,11 @@ class SceneCreateForm extends Component {
     }
 
 
-
     handle_SceneCreate(e){
       e.preventDefault();
+
+      // scroll to bottom
+      window.scrollTo(0,document.body.scrollHeight);
 
       // this is a fuax Scene Create. Submit the REAL form on html
       const $form = this.form.$node;
@@ -88,14 +90,20 @@ class SceneCreateForm extends Component {
 
     render() {
     	const { name, email, message } = this.state;
+      const buttonLabel = this.props.condensed ? (
+        <span>+ <span class="fas fa-film"/></span>
+      ) : (
+        <span>+ <span class="fas fa-film"/> Add a new Strip</span>
+      ); 
     	return (
 
-          <div className="fauxForm">
+          <div className="fauxForm"
+               id={this.props.condensed ? "condensed_strip_create" : ""}>
             {this.state.error ? (
                 <span className="error">New Strip cannot be created at this time.</span>
               ) : (
                 <button onClick={this.handle_SceneCreate}>
-                  + Add a new Strip
+                  {buttonLabel}
                 </button>
             )} 
           </div>

@@ -70,6 +70,12 @@ class SceneEditor extends Component{
 
 		}
 
+		// temp solution for rendering a condensed version of strip-create button
+		// that is outside of React component area (currently on the left sidebar)
+		const condSc = document.querySelector("#condensed_strip_create");
+		const formParent = document.querySelector("#condensed_sc");
+			  formParent.appendChild(condSc);
+
 		// Attempt at solving issue where sibling-comp's function is set
 		// as a prop before it bind(this)
 		this.setState({mounted: true});
@@ -135,6 +141,11 @@ class SceneEditor extends Component{
 
 				<SceneCreateForm endpoint={`/api/scene/${this.state.sceneId}/strip/create/`}
 								 setParentState={this.setParentState}/>
+
+				{/* temp solution to put a condensed button on the left sidebar */}
+				<SceneCreateForm endpoint={`/api/scene/${this.state.sceneId}/strip/create/`}
+								 setParentState={this.setParentState}
+								 condensed={true}/>
 
 				{/* invisible */}
 				<LightBox addToOnClick={this.addTo_LightBoxOnClick}
