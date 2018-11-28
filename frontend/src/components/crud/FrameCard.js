@@ -92,7 +92,7 @@ class FrameMenu extends Component {
                        ref={this.r} 
                        readOnly  />
                 <ul onMouseDown={this.refocus}>
-                    <li>Detail Edit</li>
+                    <li><span className="bigtext-3 fas fa-sticky-note"></span> Detail</li>
                     <li onClick={(e)=>{this.blurAndAction(e,this.props.actionDelete)}}>Delete</li>
                 </ul>
             </div>
@@ -440,7 +440,7 @@ class FrameCard extends Component{
                         {/* this is what is actually visible to the user */}
                         
                         <span className="overlay_box" frameid={frame.id} onClick={(e)=>{e.stopPropagation()}}>
-                            <a>[ {frame.id} ]</a>
+                            {/*<a>[ {frame.id} ]</a>*/}
                             <a className={"far " + (this.state.visible ? "fa-eye" : "fa-eye-slash")}
                                onClick={this.toggleVisibility}></a>
                             <a className="fas fa-ellipsis-h"

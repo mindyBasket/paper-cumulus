@@ -718,22 +718,26 @@ input.untouchable{
     justify-content: center;
 }
 
-.cover_message.columns{
+.cover_message.columns,
+.cover_message .columns{
     /* sometimes you want more than one containres */
     display:flex;
     flex-flow: row;
+    justify-content: center;
+
+
+    .center{
+        align-self: center;
+        margin: 0 5px;
+    }
+
+    .bottom{
+        align-self: flex-end;
+        padding-bottom: 20px;
+    }
 
 }
 
-.cover_message.columns .center{
-    align-self: center;
-    margin: 0 5px;
-}
-
-.cover_message.columns .bottom{
-    align-self: flex-end;
-    padding-bottom: 20px;
-}
 
 
 

@@ -134,7 +134,7 @@ class StripMenu extends Component {
                        ref={this.r} 
                        readOnly  />
                 <ul onMouseDown={this.refocus}>   
-                    <li onClick={()=>{this.blurAndAction(this.props.actionOpenUpload)}}>Upload Frames</li>
+                    <li onClick={()=>{this.blurAndAction(this.props.actionOpenUpload)}}>Add Frames</li>
                     <li className="disabled">Batch Frame Edit</li>
                     <li className="disabled">Copy</li>
                     <li className="disabled">Properties</li>
@@ -881,7 +881,7 @@ class StripCard extends PureComponent {
                     <div className="tools">
                         
                         <MenuButton iconClass="menu_btn fas fa-play-circle" action={this.openPreview} hasFrames={!noFrames}/>
-                        <MenuButton iconClass="menu_btn fas fa-file-upload" action={this.handle_openUploadCover}/>
+                        <MenuButton iconClass="menu_btn fas fa-plus-square" action={this.handle_openUploadCover}/>
                         <MenuButton iconClass="menu_btn fas fa-pen" action={()=>{}} hasFrames={false} comingSoon={true}/>
                         <MenuButton iconClass="menu_btn fas fa-trash" action={this.handle_deleteSceneConfirm}/>
                         <MenuButton iconClass="menu_btn fas fa-ellipsis-h" action={this.openMenu}/>

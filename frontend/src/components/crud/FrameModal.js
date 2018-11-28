@@ -352,6 +352,9 @@ class FrameModal extends Component{
 
                         <img src={frame.frame_image}/>
 
+                        <span className="float_btn fas fa-times">
+                        </span>
+
                         <ToolButton iconType="edit" 
                                     position="bottom right"
                                     action={this.openFrameImageCover} />
@@ -374,7 +377,11 @@ class FrameModal extends Component{
                     </div>
 
                     <div className="frame_content">
-                        
+                        <span>
+                            <span className="bigtext-3 fas fa-sticky-note"></span>
+                            Frame [{frame.id}]
+                        </span>
+
                         {/* image info */}
                         {frame.dimension != '' ? 
                             <EditableField fieldDisplayLabel="Image" 

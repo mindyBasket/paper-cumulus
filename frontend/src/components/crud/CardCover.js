@@ -61,21 +61,27 @@ function getCardCoverMessage(templateName, offFunc, handlerMap){
                 handle_createFrame = handlerMap.createFrame;
             }
             return (
-                <div className="cover_message columns">
-                    <div className="center">
-                        <FileInputButton message="Choose file"
-                                         fieldLabel="frame_image"
-                                         action={handle_createFrame}
-                                         onClickAction={offFunc}/>
+                <div className="cover_message">
+                    <p>
+                        + <span className="bigtext-3 fas fa-sticky-note"></span> Add frames?
+                    </p>
+                    <div class="columns">
+                        <div className="center">
+                            <FileInputButton message="Choose file"
+                                             fieldLabel="frame_image"
+                                             action={handle_createFrame}
+                                             onClickAction={offFunc}/>
+                        </div>
+                        <p className="center">
+                            <span className="bigtext-3">OR</span>
+                        </p>
+                        <p className="center">
+                            <span className="bigtext-1 fas fa-file-upload"></span>
+                            <br/>
+                            <span className="bigtext-3">drag and drop</span>
+                        </p>
                     </div>
-                    <p className="center">
-                        <span className="bigtext-2">OR</span>
-                    </p>
-                    <p className="center">
-                        <span className="bigtext-1 fas fa-file-upload"></span>
-                        <br/>
-                        <span className="bigtext-3">drag and drop</span>
-                    </p>
+                    
                     
                 </div>           
          
