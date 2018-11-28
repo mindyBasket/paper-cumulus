@@ -112,12 +112,20 @@
     height: 8px;
     margin-bottom: -10px; /*height of .cell*/
     width: 0%; /*filled up in flip.js */
-    background-color: tomato;
+
+    /*background-color: tomato;*/
+    background-color: #ff6347b8;
     float: left;
+
+    transition-property: width;
+    transition-duration: 0.2s;
+
+
 }
 
 .frame_scrubber .cell_fill.loaded{
     background-color: #432424;
+
 }
 
 .frame_scrubber .cell_container{
@@ -129,11 +137,12 @@
     background-color: #0b0b0b;
     width: 100%;
     
-}
+    .cell{
+        flex-grow: 1;
+        height: 8px;
+     
+        border: 1px solid #1d1e1f;
+    }
 
-.frame_scrubber .cell_container .cell{
-    flex-grow: 1;
-    height: 8px;
- 
-    border: 1px solid #1d1e1f;
+    
 }

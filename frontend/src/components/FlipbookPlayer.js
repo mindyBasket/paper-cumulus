@@ -640,8 +640,12 @@ class Scrubber extends PureComponent{
 			}
 		}
 		
+		const cellStep = this.state.numStrips > 0 ? 100/this.state.numStrips : 0;
+		const frameStep = this.state.numFrames > 0 ? (this.state.currFrame+1)/this.state.numFrames : 0;
 
 		return(
+			
+
 			<div className="frame_scrubber">
 				
 		    	<div className="scrubber">
@@ -654,7 +658,7 @@ class Scrubber extends PureComponent{
 
 		    		<div className="cell_fill"
 			    		 style={{
-			    		 	width: (this.state.currStrip+1)*(100/this.state.numStrips) + "%"
+			    		 	width: ( (this.state.currStrip)*cellStep + cellStep*frameStep ) + "%"
 			    		 }}
 			    	/>
 
@@ -663,7 +667,7 @@ class Scrubber extends PureComponent{
 			    	{/* Method 2: map it directly */}
 			    	<div className="cell_container">
 			    		{Array.apply(null, Array(this.state.numStrips)).map((n,index) => (
-			    			<div className="cell"
+			    			<div className={"cell " + (this.state.currStrip == index ? "curr" : "")} 
 			    				 key={key({cell: "cell"+index})}/>
 			    		))}
 
