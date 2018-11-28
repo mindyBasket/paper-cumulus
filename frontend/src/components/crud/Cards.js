@@ -865,7 +865,7 @@ class StripCard extends PureComponent {
    
                 <div className="strip_flex_toolbar">
                     <div className="info">
-                        <span className="bigtext-3">{index}</span>
+                        <span className="bigtext-3"><span class="fas fa-film"/> {index}</span>
                         <span className="divider">|</span>
                         <span>
                             <span className="far fa-clock"/>

@@ -655,10 +655,12 @@ body {
 
 .splash_float a {
   color: white;
-  opacity: 0.8;
+  opacity: 0.7;
+  transition: opacity 0.3s;
 }
 
 .splash_float a:hover {
+  color: white;
   opacity: 1;
 }
 
@@ -906,7 +908,6 @@ ul.list_scenes {
 }
 
 ul.list_scenes .scene_container {
-  /*flex item*/
   display: flex;
   flex-direction: column;
   /* flex: 1; make all container same width*/
@@ -915,11 +916,7 @@ ul.list_scenes .scene_container {
   /* Or just set a width */
   width: 240px;
   margin: 3px;
-  color: white;
-}
-
-ul.list_scenes .scene_container:hover {
-  background-color: black;
+  /*color: white;*/
 }
 
 .scene_container .flex_item:last-child {
@@ -927,24 +924,36 @@ ul.list_scenes .scene_container:hover {
   /*flushes to the bottom*/
 }
 
-.scene_container .header {
+.scene_container .letter_box_button {
+  /* contains letter-boxed preview and title */
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.letter_box_button .header {
   padding: 3px 12px 10px 12px;
   background-color: #2f2f2f;
   color: #7d7d7d;
+  margin-top: -10px;
+  position: relative;
+  /* hack-ish solution to make sure this element
+     is above preview_container */
   transition-property: background-color, color;
   transition-duration: 0.3s;
 }
 
-.scene_container:hover .header {
+.letter_box_button:hover .header {
   color: white;
   background-color: black;
 }
 
-.scene_container .header a {
+.letter_box_button .header a {
   text-decoration: none;
 }
 
-.scene_container .preview_container {
+.letter_box_button .preview_container {
   /* big <a> */
   position: relative;
   overflow: hidden;
@@ -958,12 +967,12 @@ ul.list_scenes .scene_container:hover {
   transition-duration: 0.3s;
 }
 
-.scene_container:hover .preview_container {
+.letter_box_button:hover .preview_container {
   border-top: 30px solid black;
   border-bottom: 30px solid black;
 }
 
-.scene_container .preview_container .preview {
+.letter_box_button .preview_container .preview {
   position: absolute;
   display: inline-block;
   width: 100%;
@@ -973,9 +982,16 @@ ul.list_scenes .scene_container:hover {
   text-align: center;
 }
 
-.scene_container .description {
+.letter_box_button .description {
   padding: 8px;
   color: #9c9c9c;
+}
+
+.letter_box_button .scene_edit {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  margin: 10px;
 }
 
 .scene_container .timestamp {

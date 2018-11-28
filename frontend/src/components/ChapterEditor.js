@@ -120,9 +120,9 @@ class SceneCreateModal extends PureComponent{
 				 object="scene">
 
 				<div className="header">
-					<span className="bigtext-2">{chapter.title}</span>
+					<span className="bigtext-2"><span class="fas fa-video"/> New scene</span>
 					<span className="divider bigtext-3">|</span>
-					<span>New scene</span>
+					<span>for {chapter.title}</span>
 				</div>
 
 				<div className="scene_form_content" ref={this.r_form}>
@@ -208,7 +208,7 @@ class ChapterEditor extends Component{
 	render(){
 		return(
 			<div>
-				<button onClick={this.handle_openSceneCreateModal}>+ Scene</button>
+				<button onClick={this.handle_openSceneCreateModal}>+ <span class="fas fa-video"/></button>
 
 				{/* invisible */}
 				<LightBox addToOnClick={this.addTo_LightBoxOnClick}

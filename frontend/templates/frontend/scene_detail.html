@@ -10,7 +10,7 @@
 
 {% block top_content %}
     <div class="headband">
-        <span class="bigtext-3">Editing: {% if object.name %}{{object.name}}{% else %}#{{object.id}}{% endif %}</span>
+        <span class="bigtext-3">Editing: <span class="fas fa-video"></span> {% if object.name %}{{object.name}}{% else %}#{{object.id}}{% endif %}</span>
         <span>|</span>
         <a href="{% url 'flipbooks:chapter-detail-64' id64=object.chapter.id64 %}">Back to Chapter</a>
     </div>
