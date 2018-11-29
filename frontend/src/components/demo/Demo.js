@@ -90,8 +90,10 @@ class DemoGuideBtn extends PureComponent{
 
 	render(){
 		return (
-			<button onClick={this.openDemoMessage}>
-				GUIDE
+			<button className="demoguide"
+					onClick={this.openDemoMessage}>
+				<span className="fas fa-lightbulb"></span>
+				#1
 				<DemoModal on={this.state.messageOpen}
 						   close={this.closeDemoMessage}
 						   messageNum={1}/>

@@ -1954,7 +1954,7 @@ input[type=text] {
 }
 .demo_modal .message_wrapper::after {
   display: block;
-  content: "< Click anywhere to continue > ";
+  content: "< Click anywhere to close > ";
   color: #ffb9b9;
   text-align: right;
 }
@@ -1965,6 +1965,18 @@ input[type=text] {
 
 .demo_modal.active {
   opacity: 1;
+}
+
+.demoguide {
+  /* button*/
+  background-color: #575757;
+  color: #a4ffc5;
+  border-color: #303030;
+}
+
+.demoguide:hover {
+  background-color: #627270;
+  color: #a9ffe4;
 }
 
 /*# sourceMappingURL=output.css.map */
