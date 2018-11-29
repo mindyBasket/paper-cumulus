@@ -135,9 +135,9 @@ class StripMenu extends Component {
                        readOnly  />
                 <ul onMouseDown={this.refocus}>   
                     <li onClick={()=>{this.blurAndAction(this.props.actionOpenUpload)}}>Add Frames</li>
-                    <li className="disabled">Batch Frame Edit</li>
-                    <li className="disabled">Copy</li>
-                    <li className="disabled">Properties</li>
+                    <li className="disabled wip">Batch Frame Edit</li>
+                    <li className="disabled wip">Copy</li>
+                    <li className="disabled wip">Properties</li>
                     <li onClick={()=>{this.blurAndAction(this.props.actionDelete)}}>Delete</li>
                 </ul>
             </div>
