@@ -1933,4 +1933,38 @@ input[type=text] {
   color: transparent;
 }
 
+.demo_modal {
+  position: fixed;
+  pointer-events: none;
+  top: 50%;
+  left: 50%;
+  text-align: left;
+  transform: translate(-50%, -50%);
+  color: white;
+  z-index: 100;
+  opacity: 0;
+  transition-property: opacity;
+  transition-duration: 0.2s;
+}
+.demo_modal .message_wrapper {
+  display: inline-block;
+  background-color: #434141eb;
+  padding: 10px 35px 30px 35px;
+  border-radius: 10px;
+}
+.demo_modal .message_wrapper::after {
+  display: block;
+  content: "< Click anywhere to continue > ";
+  color: #ffb9b9;
+  text-align: right;
+}
+.demo_modal strong {
+  font-weight: normal;
+  color: #e48060;
+}
+
+.demo_modal.active {
+  opacity: 1;
+}
+
 /*# sourceMappingURL=output.css.map */

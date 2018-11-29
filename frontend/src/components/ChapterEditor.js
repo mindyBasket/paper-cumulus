@@ -11,6 +11,9 @@ const h = new Helper();
 import XhrHandler from "./crud/XHRHandler"
 const axh = new XhrHandler(); //axios helper
 
+//DEMOONLY
+import { DemoModal,DemoGuideBtn } from "./demo/Demo";
+
 
 // Note: Chapter editor is kept extremely minimal due to time constraint. 
 // 		 It only render a single button that creates new scene. That's it.
@@ -208,7 +211,18 @@ class ChapterEditor extends Component{
 	render(){
 		return(
 			<div>
-				<button onClick={this.handle_openSceneCreateModal}>+ <span class="fas fa-video"/></button>
+				<button onClick={this.handle_openSceneCreateModal}>
+					+ <span class="fas fa-video"/>
+				</button>
+				
+				{/* DEMOONLY */}
+				<button onClick={this.handle_openSceneCreateModal}>
+					Download sample
+				</button>
+
+				<DemoGuideBtn>
+				</DemoGuideBtn>
+
 
 				{/* invisible */}
 				<LightBox addToOnClick={this.addTo_LightBoxOnClick}
@@ -217,6 +231,8 @@ class ChapterEditor extends Component{
 
 				<SceneCreateModal on={this.state.sceneCreateOn}
 								  chapterObj={this.chapter}/>
+
+				
 
 			</div>
 		)
@@ -227,6 +243,7 @@ class ChapterEditor extends Component{
 
 // render flipbook
 const wrapper = document.getElementById("chapter_editor_wrapper");
+
 
 // const refNode = wrapper ? document.getElementById("ref").querySelector("#ref-content") : null;
 // const sceneId = wrapper ? refNode.getAttribute("sceneId") : null;
