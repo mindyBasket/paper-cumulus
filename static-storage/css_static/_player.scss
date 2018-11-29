@@ -119,8 +119,6 @@
 
     transition-property: width;
     transition-duration: 0.2s;
-
-
 }
 
 .frame_scrubber .cell_fill.loaded{
@@ -138,11 +136,57 @@
     width: 100%;
     
     .cell{
+        position: relative;
         flex-grow: 1;
         height: 8px;
-     
+
         border: 1px solid #1d1e1f;
+        border-top: 8px solid #1d1e1f;
+        border-bottom: 8px solid #1d1e1f;
+        margin: -8px 0 -8px 0; /*reposition due to thick border*/
+        box-sizing: content-box;
     }
 
+    .cell:hover{
+        background-color: white;
+    }
     
+}
+
+
+.scrubber_tooltip{
+    display:inline-block;
+    position: absolute;
+    pointer-events: none;
+
+    background-color: white;
+
+    padding: 15px;
+    /*margin-top:20px;*/ /*Stopped working*/
+
+    opacity: 0;
+
+    transition-property: opacity, left;
+    transition-duration: 0.2s;
+
+    z-index:1000;
+}
+
+.scrubber_tooltip.active{
+    opacity: 1;
+}
+
+.scrubber_tooltip::after{
+    position: absolute;
+    top: -10px; left: 20px;
+ 
+    content: "";
+    width: 0; 
+    height: 0; 
+
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+      
+    border-bottom: 10px solid #9e8f8f;
+
 }

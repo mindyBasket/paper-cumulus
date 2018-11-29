@@ -194,7 +194,9 @@ class FrameStage extends PureComponent{
 			});
 
 			// initialize the Scrubber.
+			console.log("init scrubber");
 			_setState_Scrubber({
+				data: this.props.data,
 				numStrips: h.getTotalStripCount(this.props.data),
 				numLoadedScene: 1
 			});
@@ -598,7 +600,28 @@ class FrameWindow extends Component{
 // ██║     ███████╗   ██║   ╚██████╗██║  ██║███████╗██║  ██║
 // ╚═╝     ╚══════╝   ╚═╝    ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
                                                          
+class ScrubberTooltip extends PureComponent{
+	constructor(props){
+		super(props);
+		//prop ref
+		// this.props.position = [left, top]
+		
+		this.topMargin = 40; //px
+	}
 
+	render(){
+		const pos = this.props.position;
+		// console.log("[tooltip] " + pos);
+		return (
+			<span className={"scrubber_tooltip " + 
+							 (this.props.active ? "active":"")}
+				  style={{top: pos[1]+this.topMargin, left: pos[0]}}>
+				Hello
+			</span>
+		)
+		
+	}
+}
 
 
 
@@ -616,6 +639,8 @@ class Scrubber extends PureComponent{
 
 		// These states are unknown until FrameStage is mounted
 		this.state={
+			data: null, // TODO: passed from FrameStage. I know. It's bad.
+
 			numFrames: 0,
 			currFrame: -1,
 
@@ -624,10 +649,29 @@ class Scrubber extends PureComponent{
 
 			numLoadedScene: 0,
 
+			tooltipActive: false,
+			tooltipPos: [0,0]
+
 		}
+
+		this.callTooltip = this.callTooltip.bind(this);
+		this.outTooltip = this.outTooltip.bind(this);
 
 		//static function
 		_setState_Scrubber = _setState_Scrubber.bind(this);
+	}
+
+
+	callTooltip(e){
+		const el = e.target;
+		// console.log(`Cell pos?: x: ${el.offsetTop}, y: ${el.offsetLeft}`);
+		this.setState({ tooltipActive: true,
+						tooltipPos: [el.offsetLeft, el.offsetTop] });
+
+	}
+
+	outTooltip(e){
+		this.setState({tooltipActive: false});
 	}
 
 	render(){
@@ -662,13 +706,15 @@ class Scrubber extends PureComponent{
 			    		 }}
 			    	/>
 
-			    	
-
 			    	{/* Method 2: map it directly */}
 			    	<div className="cell_container">
 			    		{Array.apply(null, Array(this.state.numStrips)).map((n,index) => (
-			    			<div className={"cell " + (this.state.currStrip == index ? "curr" : "")} 
-			    				 key={key({cell: "cell"+index})}/>
+			    			<div className={"cell " + (this.state.currStrip == index ? "curr" : "")}
+			    				 onMouseEnter={this.callTooltip}
+			    				 onMouseOut={this.outTooltip}
+
+			    				 key={key({cell: "cell"+index})}>
+			    			</div>
 			    		))}
 
 			    	</div>
@@ -679,6 +725,10 @@ class Scrubber extends PureComponent{
 		    		   currFrame={this.state.currFrame}>
 		    		<span className="frame_icon"/>
 		    	</Timer>
+
+		    	<ScrubberTooltip position={this.state.tooltipPos}
+		    					 active={this.state.tooltipActive}/>
+
 		    	
 
 		    </div>
