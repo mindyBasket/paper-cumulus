@@ -1687,10 +1687,16 @@ input.untouchable {
   display: inline-block;
   position: absolute;
   pointer-events: none;
-  background-color: white;
-  padding: 15px;
+  background-color: #393939;
+  padding: 10px 0px;
+  width: 100px;
+  text-align: center;
   /*margin-top:20px;*/
   /*Stopped working*/
+  color: #b0b0b0;
+  /* for centering*/
+  transform: translateX(-25%);
+  /* For visibility and animation */
   opacity: 0;
   transition-property: opacity, left;
   transition-duration: 0.2s;
@@ -1704,13 +1710,14 @@ input.untouchable {
 .scrubber_tooltip::after {
   position: absolute;
   top: -10px;
-  left: 20px;
+  left: 50%;
+  transform: translateX(-50%);
   content: "";
   width: 0;
   height: 0;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
-  border-bottom: 10px solid #9e8f8f;
+  border-bottom: 10px solid #393939;
 }
 
 .ui-sortable-placeholder {

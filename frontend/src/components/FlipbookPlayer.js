@@ -606,17 +606,36 @@ class ScrubberTooltip extends PureComponent{
 		//prop ref
 		// this.props.position = [left, top]
 		
-		this.topMargin = 40; //px
+		this.topMargin = 30; //px
 	}
 
 	render(){
 		const pos = this.props.position;
 		// console.log("[tooltip] " + pos);
+		let content = this.props.content;
+		if (!content || content === undefined){
+			content=null;
+		} else{
+			content = content.split("-");
+
+		}
+
+
 		return (
 			<span className={"scrubber_tooltip " + 
 							 (this.props.active ? "active":"")}
 				  style={{top: pos[1]+this.topMargin, left: pos[0]}}>
-				Hello
+				
+				{!content ? (
+					<span>???</span>
+				) : (
+					<span>
+						<span className="dimmed fas fa-video"></span>
+						{content[0]} - 
+						<span className="dimmed fas fa-film"></span>
+						{content[1]}</span>
+				)}
+
 			</span>
 		)
 		
@@ -650,7 +669,8 @@ class Scrubber extends PureComponent{
 			numLoadedScene: 0,
 
 			tooltipActive: false,
-			tooltipPos: [0,0]
+			tooltipContent: null,
+			tooltipPos: [0,0],
 
 		}
 
@@ -666,6 +686,7 @@ class Scrubber extends PureComponent{
 		const el = e.target;
 		// console.log(`Cell pos?: x: ${el.offsetTop}, y: ${el.offsetLeft}`);
 		this.setState({ tooltipActive: true,
+						tooltipContent: el.getAttribute("stamp"),
 						tooltipPos: [el.offsetLeft, el.offsetTop] });
 
 	}
@@ -675,6 +696,19 @@ class Scrubber extends PureComponent{
 	}
 
 	render(){
+		let data = null;
+		if(!Array.isArray(this.state.data)){
+			console.error("[Scrubber] Scrubber can only accept Array data");
+		} else {
+			//console.warn("[Scrubber] data accepted: " + JSON.stringify(this.state.data) );
+			data = this.state.data; 
+			// data.map((el_scene)=>{
+			// 	console.warn("Scene: " + el_scene['strips'].length);
+			// });
+		}
+
+		
+		
 		// get number of loaded strip
 		let loadedStripCount = 0;
 		const el_scene = document.querySelectorAll('.scene');
@@ -689,7 +723,6 @@ class Scrubber extends PureComponent{
 
 		return(
 			
-
 			<div className="frame_scrubber">
 				
 		    	<div className="scrubber">
@@ -708,14 +741,32 @@ class Scrubber extends PureComponent{
 
 			    	{/* Method 2: map it directly */}
 			    	<div className="cell_container">
-			    		{Array.apply(null, Array(this.state.numStrips)).map((n,index) => (
-			    			<div className={"cell " + (this.state.currStrip == index ? "curr" : "")}
-			    				 onMouseEnter={this.callTooltip}
-			    				 onMouseOut={this.outTooltip}
+			    		
+			    		{/* Mapping over an array generated on the fly */}
+			    		{/*Array.apply(null, Array(this.state.numStrips)).map((n,index) => (
+                            <div className="cell"/>
+                        ))*/}
 
-			    				 key={key({cell: "cell"+index})}>
-			    			</div>
-			    		))}
+
+			    		{data ? (
+			    			data.map((el_scene, ind_sc)=>{
+								return el_scene['strips'].map((el,ind_st)=>{
+									return (
+			    						<div className="cell"
+						    				 onMouseEnter={this.callTooltip}
+						    				 onMouseOut={this.outTooltip}
+						    				 stamp={`${ind_sc+1}-${ind_st+1}`}
+						    				 key={{cell: `${ind_sc}-${ind_st}`}}>
+						    			</div>
+			    					)
+								})
+			    			})
+			    		) : (
+			    			<div className="cell">
+						    </div>
+			    		)} 
+
+
 
 			    	</div>
 		    	</div>
@@ -727,6 +778,7 @@ class Scrubber extends PureComponent{
 		    	</Timer>
 
 		    	<ScrubberTooltip position={this.state.tooltipPos}
+		    				     content={this.state.tooltipContent}
 		    					 active={this.state.tooltipActive}/>
 
 		    	
