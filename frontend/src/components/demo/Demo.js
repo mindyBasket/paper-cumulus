@@ -27,11 +27,51 @@ class DemoModal extends PureComponent{
 			</div>
 			,
 			<div id="msg2">
-				<h2>Chapter View</h2>
 				<p>
-					You are viewing chapter detail
+					On this page, you can choose to view the resulting flipbook
+					or view detail of each scene and edit them. 
+				</p>
+
+				<p>
+					Click <strong>View from the start</strong> to what's already in this demo chapter.
 				</p>
 			</div>
+			,
+			<div id="msg3">
+				<p>
+					 In the future, this page is what will be visible to public, making it shareable.
+				</p>
+				<p>
+					Hover over the scrubber for small detail on what you are looking at.
+				</p>
+			</div>
+			,
+			<div id="msg4">
+				<p>
+					Switch between scenes on the left bar, and edit corresponding scene by 
+					adding more strip and frames. 
+				</p>
+
+				<p>
+					You can drag and drop images, or select file to upload.
+				</p>
+			</div>
+			,
+			<div id="msg5">
+				<p>
+					Whatever is in one strip will play consequtively, creating a short animation.
+				</p>
+				<p>
+					Each keypress on the flipbook player switches between strips.
+				</p>
+				<p>
+					Flipbook player loads strips <strong>lazily</strong> -- one scene at a time -- 
+					so separate bulk of strip into scene for organization sake, but also 
+					for better performance for the user.
+				</p>
+			</div>
+
+
 		]
 		
 	}
