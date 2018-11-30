@@ -220,7 +220,8 @@ class ChapterEditor extends Component{
 					Download sample
 				</button>
 
-				<DemoGuideBtn num="1"/>
+				<DemoGuideBtn num="1"
+							  onAtMount={true}/>
 				<DemoGuideBtn num="2"
 							  proxyId="#proxy_demoguide_2"/>
 

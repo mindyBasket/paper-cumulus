@@ -36,13 +36,6 @@ class DemoModal extends PureComponent{
 		
 	}
 
-	componentDidMount(){
-		lb.pub_LightBox_on();
-        lb.pub_LightBox_addToOnClick( ()=>{
-			this.props.close();
-		});
-	}
-
 	componentDidUpdate(prevProps, prevStates){
 
 		// check if this card was rendered to be active, 
@@ -87,13 +80,17 @@ class DemoGuideBtn extends PureComponent{
 	}
 
 	componentDidMount(){
+		if(this.props.onAtMount==true){
+			this.openDemoMessage();
+		}
+
+
 		if(this.props.proxyId != null || this.props.proxyId != undefined){
 			// append to proxy
 			const proxy = document.querySelector(this.props.proxyId);
 			if(proxy){
 				proxy.appendChild(this.r.current);
 			}	  
-
 		}
 	}
 
