@@ -41,11 +41,21 @@
 
 .demoguide{
 	/* button*/
-	background-color: #575757;
-	color: #a4ffc5;
-	border-color:#303030;
+	background-color: #cbe8b8;
+	color: #64b38b;
+	border-color:#97b485;
 }
 .demoguide:hover{
-	background-color: #627270;
-	color: #a9ffe4;
+	background-color: #a8cf8e;
+	color: #15545f;
+}
+
+
+
+
+/* Individual guide buttons */
+
+#proxy_demoguide_2{
+	position:absolute;
+	top:0;right:0;
 }

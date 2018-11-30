@@ -220,8 +220,9 @@ class ChapterEditor extends Component{
 					Download sample
 				</button>
 
-				<DemoGuideBtn>
-				</DemoGuideBtn>
+				<DemoGuideBtn num="1"/>
+				<DemoGuideBtn num="2"
+							  proxyId="#proxy_demoguide_2"/>
 
 
 				{/* invisible */}

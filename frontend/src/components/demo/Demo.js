@@ -24,9 +24,13 @@ class DemoModal extends PureComponent{
 			 	<p>
 			 		Look for the demo guide buttons for more information as you explore.
 			 	</p>
-
-
-			 	
+			</div>
+			,
+			<div id="msg2">
+				<h2>Chapter View</h2>
+				<p>
+					You are viewing chapter detail
+				</p>
 			</div>
 		]
 		
@@ -72,12 +76,25 @@ class DemoGuideBtn extends PureComponent{
 	constructor(props){
 		super(props);
 
+		this.r = React.createRef();
+
 		this.state = {
-			messageOpen: true
+			messageOpen: false
 		}
 
 		this.openDemoMessage=this.openDemoMessage.bind(this);
 		this.closeDemoMessage=this.closeDemoMessage.bind(this);
+	}
+
+	componentDidMount(){
+		if(this.props.proxyId != null || this.props.proxyId != undefined){
+			// append to proxy
+			const proxy = document.querySelector(this.props.proxyId);
+			if(proxy){
+				proxy.appendChild(this.r.current);
+			}	  
+
+		}
 	}
 
 	openDemoMessage(){
@@ -91,12 +108,15 @@ class DemoGuideBtn extends PureComponent{
 	render(){
 		return (
 			<button className="demoguide"
-					onClick={this.openDemoMessage}>
-				<span className="fas fa-lightbulb"></span>
-				#1
+					onClick={this.openDemoMessage}
+					ref={this.r}>
+				<span className="far fa-lightbulb"></span>
+				
+				{`#${this.props.num}`}
+
 				<DemoModal on={this.state.messageOpen}
 						   close={this.closeDemoMessage}
-						   messageNum={1}/>
+						   messageNum={this.props.num}/>
 			</button>
 		)
 	}
