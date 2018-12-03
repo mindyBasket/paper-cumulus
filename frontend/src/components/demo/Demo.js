@@ -22,7 +22,7 @@ const JSXMESSAGE1 = [
 		<p>
 			This app makes shareable instances of <strong>"flipbook"</strong>.                  
 			It is somewhere <strong>between a movie and a storyboard</strong>, 
-			an experimenal story telling media that is scenamatically but low-cost.
+			an experimenal way to tell a story scenamatically but at low-cost.
         </p>
     </div>
     ,
@@ -41,11 +41,16 @@ const JSXMESSAGE1 = [
 		<h3>Getting started</h3>
 		<img src="/static/img/tutorial/tut01c.jpg"/>
 		<p>
-			Click 'View from the start' to see what a flipbook looks like for this
+			Click <strong>'View from the start'</strong> to see what a flipbook looks like for this
 			demo chapter. 
 		</p>
+		<span className="img_space">
+			<img src="/static/img/tutorial/tut01d.jpg"
+			 className="no_stretch"/>
+		</span>
+		
 		<p>
-			Look for more green guide buttons for more hints!
+			The green guide buttons are there to help you!
 		</p>
 	</div>
 ];
@@ -55,10 +60,13 @@ const JSXMESSAGE2 = [
     	<h3>Flipbook View</h3>
     	<img src="/static/img/tutorial/tut02a_strip.jpg"/>
 		<p>
-			View flipbook using your arrow keys:  
+			Use your <strong>arrow keys:  
 			<span class="bigtext-3 far fa-caret-square-left"></span>
-			<span class="bigtext-3 far fa-caret-square-right"></span>.
-			More control options are coming soon. The scrubber visualizes where you are.
+			<span class="bigtext-3 far fa-caret-square-right"></span></strong> to view.
+			More control options are coming soon.
+		</p>
+		<p>
+			Hover over the scrubber to see which strip it corresponds to.
 		</p>
 	</div>
 	,
@@ -70,8 +78,7 @@ const JSXMESSAGE2 = [
 			Each key press 
 			<span class="bigtext-3 far fa-caret-square-left"></span>
 			<span class="bigtext-3 far fa-caret-square-right"></span>
-			"animates" one <strong><span className="bigtext-3 fas fa-film"/>strip</strong>,
-			the main unit of animation.
+			"animates" one <strong><span className="bigtext-3 fas fa-film"/>strip</strong>.
 		</p>
 	</div>
 	,
@@ -79,8 +86,7 @@ const JSXMESSAGE2 = [
     	<h3>Editing a flipbook</h3>
 		<img src="/static/img/tutorial/tut02d.jpg"/>
 		<p>
-			This flipbook is <strong>incomplete</strong>. After viewing, you can see flipbook details 
-			in the edit mode.
+			After viewing, you can see flipbook details and make any changes in the edit mode.
 		</p>
 	</div>
 
@@ -91,14 +97,14 @@ const JSXMESSAGE3 = [
 		<h3>Scenes</h3>
 		<img src="/static/img/tutorial/tut03a_scene.jpg"/>
 		<p>
-			A group of <span className="bigtext-3 fas fa-film"/>strip 
+			A group of <span className="bigtext-3 fas fa-film"/>strips 
 			makes a <strong><span className="bigtext-3 fas fa-video"/>scene
-			</strong>, so that user can navigate the story better.
+			</strong>.
 		</p>
 		<img src="/static/img/tutorial/tut03b_chapter.jpg"/>
 		<p>
-			A <strong>chapter</strong> contains a collection of 
-			<span className="bigtext-3 fas fa-video"/>scenes. 
+			A collection of <span className="bigtext-3 fas fa-video"/>scenes makes 
+			a <strong>chapter</strong>. 
 		</p>
 	</div>
 	,
@@ -106,9 +112,12 @@ const JSXMESSAGE3 = [
 		<h3>Editing</h3>
 		<img src="/static/img/tutorial/tut03c.jpg"/>
 		<p>
-			Adding new images generates new <span className="bigtext-3 fas fa-sticky-note"/>frames under a 
+			Add new images to generate new <strong>
+			<span className="bigtext-3 fas fa-sticky-note"/>frames</strong> under a 
 			<span className="bigtext-3 fas fa-film"/>strip. 
-			You can reorder frames, strips, and also preview strip animations.
+		</p>
+		<p>
+			You can bulk upload, reorder frames and strips, preview strip animations, and more.
 		</p>
 	</div>
 ];
