@@ -75,7 +75,7 @@
                 <div class="scene_container">
 
                     <div class="letter_box_button"
-                         onclick="goToScene('{% url 'flipbooks:scene-edit' pk=scene.pk %}') ">
+                         onclick="goToScene('{% url 'flipbooks:scene-edit' id64=scene.id64 %}') ">
                         <span class="flex_item preview_container">
 
                             {% with scene.strip_set.all|map_queryset:scene.children_li as mapped_strip_set %}
@@ -112,7 +112,7 @@
                             {{scene.description}}
                         </div>-->
 
-                        <a class="scene_edit" href="{% url 'flipbooks:scene-edit' pk=scene.pk %}">Edit</a>
+                        <a class="scene_edit" href="{% url 'flipbooks:scene-edit' id64=scene.id64 %}">Edit</a>
                     </div>
                     
                     

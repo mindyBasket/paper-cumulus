@@ -149,6 +149,7 @@ class Scene(models.Model):
     children_li = models.TextField(max_length=600, blank=True, default="")
     
     name = models.CharField(max_length=50, blank=True, default="")
+    id64 = models.CharField(max_length=8, blank=True, default='')
     description = models.TextField(max_length=100, blank=True, default="")
     
     # TODO: make this NOT CASCADE. Kinda dangerous
@@ -163,6 +164,11 @@ class Scene(models.Model):
         
 
     def save(self, *args, **kwargs):
+        
+        # check if this has base64 id
+        if self._state.adding or self.id64 == '':
+            self.id64 = get_rand_base64(8)
+
         # 1. Check if valid children_li exists:
         self.children_li = helpers.refresh_or_cleanup_children_li(self)
 

@@ -24,7 +24,7 @@ class ChapterModelAdmin(admin.ModelAdmin):
 
 class SceneModelAdmin(admin.ModelAdmin):
 
-    list_display = ("id", "__str__", "order", "name", "children_li")
+    list_display = ("id", "__str__", "id64", "order", "name", "children_li")
 
     
     

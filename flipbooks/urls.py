@@ -35,8 +35,9 @@ urlpatterns = [
     re_path(r'^scene/(?P<pk>\d+)/flip/$', views.ScenePlayView_REACT.as_view(), name='scene-play'), #play REACT!
 
     re_path(r'^scene/legacy/(?P<pk>\d+)/$', views.SceneDetailView.as_view(), name='scene-detail-legacy'),
-    re_path(r'^scene/(?P<pk>\d+)/$', views.SceneDetailView_REACT.as_view(), name='scene-edit'), #detail/EDIT!
-    
+    # re_path(r'^scene/(?P<pk>\d+)/$', views.SceneDetailView_REACT.as_view(), name='scene-edit'), #detail/EDIT!
+    path('scene/<id64>/', views.SceneDetailView_REACT.as_view(), name='scene-edit'), #detail/EDIT!
+
     # Strip Urls
     re_path(r'^scene/(?P<scene_pk>\d+)/strip/create/$', views.StripCreateView.as_view(), name='strip-create'),
     re_path(r'^strip/(?P<pk>\d+)/update/$', views.StripUpdateView.as_view(), name='strip-update'),

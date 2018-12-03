@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseNotFound
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
@@ -301,7 +301,9 @@ class SceneDetailView(generic.DetailView):
         return context
 
 
-class SceneDetailView_REACT(generic.DetailView):
+class SceneDetailView_REACT(generic.TemplateView):
+    # Note: uses TemplateView instead of DetailView in order to override requirement of pk
+    #       for retrieving object
 
     model = Scene
     queryset = Scene.objects.all()
@@ -311,16 +313,29 @@ class SceneDetailView_REACT(generic.DetailView):
 
         context = super(SceneDetailView_REACT, self).get_context_data(*args, **kwargs)
         
+        # override object using id64
+        if 'id64' in kwargs:
+            # retrieve chapter by base64 identifier
+            scene = Scene.objects.filter(id64=kwargs['id64'])[0]
+            context['object'] = scene
+        else:
+            return HttpResponseNotFound("Cannot find scene.")  
+
+        # because this template does not use pk, so extract it
+        pk = scene.pk
+        # otherwise, you can access it like this: self.kwargs['pk']
+
+
         # For AJAX submits
-        strip_create_form = forms.StripCreateForm(initial={'scene': self.kwargs['pk']})
+        strip_create_form = forms.StripCreateForm(initial={'scene': pk})
         strip_create_form.fields['scene'].widget.attrs['invisible'] = True #hiding by css
         strip_create_form.fields['scene'].label = ''
         strip_create_form.fields['description'].widget.attrs['invisible'] = True #hiding by css
         strip_create_form.fields['description'].label = ''
         context["strip_create_form"] = strip_create_form
-        context['strip_create_url'] = reverse_lazy("flipbooks:strip-create", kwargs={'scene_pk':self.kwargs['pk'] })
+        context['strip_create_url'] = reverse_lazy("flipbooks:strip-create", kwargs={'scene_pk':pk })
 
-        frame_create_form = forms.FrameCreateForm({"scene_pk": self.kwargs['pk']})
+        frame_create_form = forms.FrameCreateForm({"scene_pk": pk})
         frame_create_form.fields['strip'].widget.attrs['invisible'] = True #hiding by css
         # frame_create_form.fields['frame_image'].widget = f.HiddenInput()
         context['frame_create_form'] = frame_create_form
