@@ -212,19 +212,21 @@ class ChapterEditor extends Component{
 		return(
 			<div>
 				<button onClick={this.handle_openSceneCreateModal}>
-					+ <span class="fas fa-video"/>
+					+ <span className="fas fa-video"/>
 				</button>
 				
 				{/* DEMOONLY */}
+				<br/>
+				Demo sample images:
 				<button onClick={this.handle_openSceneCreateModal}>
-					Download sample
+					<span className="bigtext-3 fas fa-file-archive"/>
+					<span style={{fontSize:"0.6em"}}>Download</span>
 				</button>
 
-				<DemoGuideBtn num="1"
-							  onAtMount={true}/>
-				<DemoGuideBtn num="2"
-							  proxyId="#proxy_demoguide_2"/>
-
+				{/* DEMOONLY */}
+				<DemoGuideBtn onAtMount={true}
+							  num={1}
+						      proxyId={"#proxy_demoguide_float"}/>
 
 				{/* invisible */}
 				<LightBox addToOnClick={this.addTo_LightBoxOnClick}

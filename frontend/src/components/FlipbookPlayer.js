@@ -4,11 +4,15 @@ import PropTypes from "prop-types";
 
 import FrameFeeder from "./FrameFeeder";
 import Spinner from "./Spinner";
+import { LightBox } from "./LightBox";
 import key from "weak-key";
 
 // Custom helpers
 import Helper from "./Helper"
 const h = new Helper();
+
+//DEMOONLY
+import { DemoModal,DemoGuideBtn } from "./demo/Demo";
 
 
 // Global param
@@ -891,6 +895,17 @@ class FlipbookPlayer extends Component{
 						 float={true} 
 						 bgColor="#1d1e1f"
 						 spinning={this.state.frameLoaded ? false : true}/>
+
+				{/* invisible */}
+				<LightBox addToOnClick={this.addTo_LightBoxOnClick}
+						  handle_dragAndDrop={this.handle_dragAndDrop}
+						  setParentState={this.setParentState}/>
+
+				{/* DEMOONLY */}
+				<DemoGuideBtn onAtMount={true}
+							  num={2}
+						      proxyId={"#proxy_demoguide"}/>
+
 
 			</div>
 		)

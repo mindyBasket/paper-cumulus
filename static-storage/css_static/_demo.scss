@@ -1,8 +1,12 @@
 .demo_modal{
 	position: fixed;
 	pointer-events: none;
+	cursor: default;
 	top: 50%; left:50%;
 	text-align: left;
+
+	/* changes on screen-size*/
+	width: 700px;
 
 	transform: translate(-50%, -50%);
 
@@ -18,13 +22,29 @@
 		background-color: #434141eb;
 		padding:10px 35px 30px 35px;
 		border-radius: 10px;
+
+		font-size:0.8em;
+
+		img{
+			width:100%;
+			margin-bottom:10px;
+		}
 	}
 
-	.message_wrapper::after{
+	/*.message_wrapper::after{
 		display:block;
 		content:"< Click anywhere to close > ";
 		color: #ffb9b9;
 		text-align:right;
+	}*/
+
+	.message_nav{
+		display:flex;
+		justify-content: space-between;
+
+		button{
+			cursor: pointer;
+		}
 	}
 
 
@@ -34,7 +54,28 @@
 	}
 }
 
+
+@media only screen and (max-width: 1024px) {
+    .demo_modal{
+    	width: 600px;
+    }
+}
+
+@media only screen and (max-width:700px) {
+    .demo_modal{
+    	width: 500px;
+    }
+}
+
+@media only screen and (max-width: 425px) {
+    .demo_modal{
+    	width: 400px;
+    }
+}
+
 .demo_modal.active{
+
+	pointer-events: auto;
 	opacity: 1;
 }
 
@@ -54,8 +95,10 @@
 
 
 /* Individual guide buttons */
-
-#proxy_demoguide_2{
+#proxy_demoguide{
+	display:inline-block;
+}
+#proxy_demoguide_float{
 	position:absolute;
 	top:0;right:0;
 }

@@ -1936,34 +1936,65 @@ input[type=text] {
 .demo_modal {
   position: fixed;
   pointer-events: none;
+  cursor: default;
   top: 50%;
   left: 50%;
   text-align: left;
+  /* changes on screen-size*/
+  width: 700px;
   transform: translate(-50%, -50%);
   color: white;
   z-index: 100;
   opacity: 0;
   transition-property: opacity;
   transition-duration: 0.2s;
+  /*.message_wrapper::after{
+  	display:block;
+  	content:"< Click anywhere to close > ";
+  	color: #ffb9b9;
+  	text-align:right;
+  }*/
 }
 .demo_modal .message_wrapper {
   display: inline-block;
   background-color: #434141eb;
   padding: 10px 35px 30px 35px;
   border-radius: 10px;
+  font-size: 0.8em;
 }
-.demo_modal .message_wrapper::after {
-  display: block;
-  content: "< Click anywhere to close > ";
-  color: #ffb9b9;
-  text-align: right;
+.demo_modal .message_wrapper img {
+  width: 100%;
+  margin-bottom: 10px;
+}
+.demo_modal .message_nav {
+  display: flex;
+  justify-content: space-between;
+}
+.demo_modal .message_nav button {
+  cursor: pointer;
 }
 .demo_modal strong {
   font-weight: normal;
   color: #e48060;
 }
 
+@media only screen and (max-width: 1024px) {
+  .demo_modal {
+    width: 600px;
+  }
+}
+@media only screen and (max-width: 700px) {
+  .demo_modal {
+    width: 500px;
+  }
+}
+@media only screen and (max-width: 425px) {
+  .demo_modal {
+    width: 400px;
+  }
+}
 .demo_modal.active {
+  pointer-events: auto;
   opacity: 1;
 }
 
@@ -1980,7 +2011,11 @@ input[type=text] {
 }
 
 /* Individual guide buttons */
-#proxy_demoguide_2 {
+#proxy_demoguide {
+  display: inline-block;
+}
+
+#proxy_demoguide_float {
   position: absolute;
   top: 0;
   right: 0;

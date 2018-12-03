@@ -11,6 +11,9 @@ import { LightBox, lightBox_publicFunctions as lb } from "./LightBox";
 import Spinner from "./Spinner";
 import key from "weak-key";
 
+//DEMOONLY
+import { DemoModal,DemoGuideBtn } from "./demo/Demo";
+
 // Global param
 var T_STEP = 400; //ms
 var STANDBY_OPACITY = 0.5
@@ -155,7 +158,11 @@ class SceneEditor extends Component{
 				{/* A bit unsure where is the best place to put this */}
 	            <FrameModal/>
 
-	    
+	    		{/* DEMOONLY */}
+				<DemoGuideBtn onAtMount={true}
+							  num={3}
+						      proxyId={"#proxy_demoguide"}/>
+
 
 
 			</div>
