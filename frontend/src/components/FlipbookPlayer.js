@@ -5,6 +5,8 @@ import PropTypes from "prop-types";
 import FrameFeeder from "./FrameFeeder";
 import Spinner from "./Spinner";
 import { LightBox } from "./LightBox";
+import { MenuButton } from "./UI";
+
 import key from "weak-key";
 
 // Custom helpers
@@ -896,10 +898,17 @@ class FlipbookPlayer extends Component{
 						 bgColor="#1d1e1f"
 						 spinning={this.state.frameLoaded ? false : true}/>
 
+				{/* flipbook player controls */}
+				<MenuButton iconClass="menu_btn fas fa-share-square" action={()=>{}} 
+                            label="Share" tooltipDirection="bottom"
+                            proxyId="#proxy_share"
+                            comingSoon={true} />
+
 				{/* invisible */}
 				<LightBox addToOnClick={this.addTo_LightBoxOnClick}
 						  handle_dragAndDrop={this.handle_dragAndDrop}
 						  setParentState={this.setParentState}/>
+
 
 				{/* DEMOONLY */}
 				<DemoGuideBtn onAtMount={true}

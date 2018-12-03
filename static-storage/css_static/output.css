@@ -1393,6 +1393,25 @@ ul.list_strips li.spotlighted {
   opacity: 1;
 }
 
+/* tooltip flipped direction */
+.mtooltip.bottom {
+  top: 47px;
+  z-index: 100;
+}
+
+.menu_btn:hover .mtooltip.bottom {
+  top: 37px;
+}
+
+.mtooltip.bottom::after {
+  top: -10px;
+  left: 20px;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 0px solid;
+  border-bottom: 10px solid #9e8f8f;
+}
+
 /*modified thumb or tile*/
 .strip_flex_container .thumb.incompatible {
   /* This was a quick and easy way to make the .thumb slender

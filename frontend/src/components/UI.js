@@ -8,11 +8,34 @@ import PropTypes from "prop-types";
 class MenuButton extends Component {
     constructor(props){
         super(props);
+
+        // prop ref
+        // this.props.label //label for display 
+        // this.props.hasFrames // if this value is passed at all, it is dependent on frames existing
+        // this.props.tooltipDirection
+        // this.proxyId // move to this div on mount
+
+        this.r = React.createRef();
+
         this.state ={
             hover: false
         }
         this.handle_hover = this.handle_hover.bind(this);
+    }  
+
+    componentDidMount(){
+
+        // relocate to proxy div
+        if(this.props.proxyId != null || this.props.proxyId != undefined){
+            // append to proxy
+            const proxy = document.querySelector(this.props.proxyId);
+            if(proxy){
+                proxy.appendChild(this.r.current);
+            }     
+        }
     }
+
+
 
     handle_hover(){
         if(this.props.comingSoon){
@@ -22,12 +45,15 @@ class MenuButton extends Component {
 
     render(){
         const hasFrames = this.props.hasFrames;
+        const ttDir = this.props.tooltipDirection;
+
         return (
-            <span>
+            <span ref={this.r}>
                 <span className={this.props.iconClass + (hasFrames == null ? "" : (!hasFrames ? " disabled" : "")  )} 
                       onClick={hasFrames != null && !hasFrames? ()=>{} : this.props.action}>
                    {this.props.comingSoon && (
-                        <span className={"mtooltip" + 
+                        <span className={"mtooltip " + 
+                                         (ttDir ? `${ttDir} ` : "") + 
                                          (this.state.hover ? " active" : "")}>
                             {this.props.label && `${this.props.label}: `}Coming soon
                         </span>

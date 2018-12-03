@@ -227,6 +227,10 @@ class ChapterEditor extends Component{
 					</a>
 				</span>
 
+				<MenuButton iconClass="menu_btn fas fa-layer-group" action={()=>{}}
+							proxyId={"#proxy_share"} 
+                            comingSoon={true}/>
+
 				{/* DEMOONLY */}
 				<DemoGuideBtn onAtMount={true}
 							  num={1}
