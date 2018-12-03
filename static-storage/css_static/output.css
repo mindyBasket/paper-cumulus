@@ -2003,6 +2003,7 @@ input[type=text] {
   background-color: #cbe8b8;
   color: #64b38b;
   border-color: #97b485;
+  padding: 5px 13px 5px 8px;
 }
 
 .demoguide:hover {
