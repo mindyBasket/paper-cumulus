@@ -44,9 +44,8 @@ const JSXMESSAGE1 = [
 			Click 'View from the start' to see what a flipbook looks like for this
 			demo chapter. 
 		</p>
-		<img src="/static/img/tutorial/tut01d.jpg"/>
 		<p>
-			Look for more green guide buttons.
+			Look for more green guide buttons for more hints!
 		</p>
 	</div>
 ];
@@ -270,8 +269,24 @@ class DemoGuideBtn extends PureComponent{
 	}
 
 	componentDidMount(){
-		if(this.props.onAtMount==true){
-			this.openDemoMessage();
+
+		// Show the modal first thing when mounted, but
+		// don't do it if there is no local storage on the browser!
+		if(this.props.onAtMount==true) {
+			const currTutIndex = window.localStorage.getItem("currTutIndex"); 
+			if(window.localStorage){
+				if( currTutIndex != null){
+					if(this.props.num > currTutIndex){
+						// This page is new to the user
+						this.openDemoMessage();
+						window.localStorage.setItem("currTutIndex", this.props.num);
+					}
+				} else {
+					// currTutIndex was never set
+					this.openDemoMessage();
+					window.localStorage.setItem("currTutIndex", this.props.num);
+				}
+			}
 		}
 
 		if(this.props.proxyId != null || this.props.proxyId != undefined){
@@ -292,6 +307,7 @@ class DemoGuideBtn extends PureComponent{
 	}
 
 	render(){
+
 		return (
 			<button className="demoguide"
 					onClick={this.openDemoMessage}

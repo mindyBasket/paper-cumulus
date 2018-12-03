@@ -91,6 +91,19 @@
 	background-color: #a8cf8e;
 	color: #15545f;
 }
+/* dark version*/
+body.dark{
+	.demoguide{
+		background-color: #324c3a;
+		border-color:#253b2b;
+	}
+	.demoguide:hover{
+		background-color: #3e654a;
+		color: #64b38b;
+	}
+}
+
+
 
 
 

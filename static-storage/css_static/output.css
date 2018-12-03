@@ -2011,6 +2011,16 @@ input[type=text] {
   color: #15545f;
 }
 
+/* dark version*/
+body.dark .demoguide {
+  background-color: #324c3a;
+  border-color: #253b2b;
+}
+body.dark .demoguide:hover {
+  background-color: #3e654a;
+  color: #64b38b;
+}
+
 /* Individual guide buttons */
 #proxy_demoguide {
   display: inline-block;
