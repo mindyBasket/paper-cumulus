@@ -68,4 +68,4 @@ THUMBNAIL_DEFAULT_STORAGE = 'proj_cumulus.settings.media_backends.MediaStorage'
 
 # Map static
 # ref: https://stackoverflow.com/questions/30624104/django-on-amazon-web-service-aws
-STATIC_ROOT = os.path.join(BASE_DIR, '..','static')
+# STATIC_ROOT = os.path.join(BASE_DIR, '..','static')
