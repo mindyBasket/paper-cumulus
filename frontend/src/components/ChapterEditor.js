@@ -218,10 +218,12 @@ class ChapterEditor extends Component{
 				{/* DEMOONLY */}
 				<br/>
 				Demo sample images:
-				<button onClick={this.handle_openSceneCreateModal}>
+				<br/>
+				<a class="button" href="https://www.dropbox.com/s/cwcxp8qgg85krhp/sampleImages.zip?dl=0" 
+						target="_blank">
 					<span className="bigtext-3 fas fa-file-archive"/>
 					<span style={{fontSize:"0.6em"}}>Download</span>
-				</button>
+				</a>
 
 				{/* DEMOONLY */}
 				<DemoGuideBtn onAtMount={true}

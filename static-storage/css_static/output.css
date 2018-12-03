@@ -1797,6 +1797,7 @@ a:hover {
   text-decoration: none;
 }
 
+a.button,
 button {
   padding: 10px 15px;
   margin: 5px;
@@ -1808,10 +1809,12 @@ button {
   color: white;
 }
 
+a.button:hover,
 button:hover {
   background-color: #6a5458;
 }
 
+a.button:focus,
 button:focus {
   outline: none;
 }
