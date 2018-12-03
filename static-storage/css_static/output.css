@@ -76,6 +76,12 @@
   height: 300px;
 }
 
+.frame_content .frame_modal_menu_wrapper {
+  /* div right underneath the image that contain frame edit tools */
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+}
 .editable_field {
   display: flex;
   margin-bottom: 8px;
@@ -427,6 +433,16 @@
   transition: height 0.2s ease-out;
   /*transition-property: max-height;
     transition-duration: 0.3s;*/
+}
+.strip_preview_container .frame_window_menu {
+  /* control menu for preview */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 10px;
+}
+.strip_preview_container .frame_window_menu .menu_btn {
+  margin: 5px 0;
 }
 
 .strip_preview_container.active {
@@ -1313,7 +1329,7 @@ ul.list_strips li.spotlighted {
   transition-duration: 0.2s;
 }
 
-.strip_flex_toolbar .menu_btn {
+.menu_btn {
   position: relative;
   /* icon size */
   font-size: 1.6em;
@@ -1322,7 +1338,7 @@ ul.list_strips li.spotlighted {
   cursor: pointer;
 }
 
-.strip_flex_toolbar .menu_btn:hover {
+.menu_btn:hover {
   color: #545b5d;
   text-decoration: none;
 }
@@ -1348,9 +1364,9 @@ ul.list_strips li.spotlighted {
   left: -20px;
   display: inline-block;
   background-color: #9e8f8f;
-  width: 100px;
-  height: 40px;
-  padding: 12px 0px;
+  width: max-content;
+  height: auto;
+  padding: 12px 14px;
   text-align: center;
   font-size: 10pt;
   border-radius: 5px;

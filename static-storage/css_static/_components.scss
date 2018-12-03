@@ -86,7 +86,17 @@
     margin: 0 auto;
     height: 300px;
   }
+}
 
+.frame_content .frame_modal_menu_wrapper{
+  /* div right underneath the image that contain frame edit tools */
+  display:flex;
+  flex-flow: row;
+  justify-content: space-between;
+
+  .frame_modal_menu{
+    
+  }
 }
 
 
@@ -476,6 +486,18 @@
 
   /*transition-property: max-height;
     transition-duration: 0.3s;*/
+
+  .frame_window_menu{
+    /* control menu for preview */
+    display:flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 10px;
+
+    .menu_btn{
+      margin: 5px 0;
+    }
+  }
 }
 
 .strip_preview_container.active{

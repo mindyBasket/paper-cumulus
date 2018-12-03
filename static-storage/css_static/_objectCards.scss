@@ -489,14 +489,14 @@ ul.list_strips li.spotlighted{
 
 }
 
-.strip_flex_toolbar .menu_btn{ 
+.menu_btn{ 
     position: relative;
     /* icon size */
     font-size: 1.6em;
     margin: 0 4px;
     color: #859297; cursor:pointer;
 }
-.strip_flex_toolbar .menu_btn:hover{ color: #545b5d; text-decoration: none;}
+.menu_btn:hover{ color: #545b5d; text-decoration: none;}
 
 
 .menu_btn.disabled{ opacity: 0.5; }
@@ -516,9 +516,9 @@ ul.list_strips li.spotlighted{
 
     display:inline-block;
     background-color: #9e8f8f;
-    width: 100px;
-    height:40px;
-    padding: 12px 0px;
+    width: max-content;
+    height: auto;
+    padding: 12px 14px;
     text-align: center;
 
     font-size: 10pt;

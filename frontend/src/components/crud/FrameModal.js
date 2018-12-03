@@ -7,7 +7,7 @@ import { FrameImageCover } from "./ModalCover";
 
 import { lightBox_publicFunctions as lb } from "./../LightBox";
 import Spinner from "./../Spinner";
-import { ToolButton } from "./../UI";
+import { ToolButton, MenuButton } from "./../UI";
 
 
 // Custom helpers
@@ -377,10 +377,22 @@ class FrameModal extends Component{
                     </div>
 
                     <div className="frame_content">
-                        <span>
-                            <span className="bigtext-3 fas fa-sticky-note"></span>
-                            Frame [{frame.id}]
-                        </span>
+                        <div className="frame_modal_menu_wrapper">
+                            <span>
+                                <span className="bigtext-3 fas fa-sticky-note"></span>
+                                Frame [{frame.id}]
+                            </span>
+                            
+
+                            <div className="frame_modal_menu">
+                                <MenuButton iconClass="menu_btn fas fa-layer-group" action={()=>{}} 
+                                label="+ Layer" comingSoon={true}/>
+                                <MenuButton iconClass="menu_btn fas fa-comment" action={()=>{}} 
+                                            label="+ Speech Bubble" comingSoon={true}/>
+                                <MenuButton iconClass="menu_btn fas fa-font" action={()=>{}} 
+                                            label="+ text" comingSoon={true}/>
+                            </div>
+                        </div>
 
                         {/* image info */}
                         {frame.dimension != '' ? 
@@ -401,6 +413,8 @@ class FrameModal extends Component{
                         {/*<EditableField fieldDisplayLabel="Ignored?" 
                                        fieldLabel="ignored" fieldValue={frame.ignored}
                                        action={this.updateFrame}/>*/}
+
+
 
                         {/*<button onClick={this.thumbnailTest}>Do that thumbnail thing</button>*/}
                         

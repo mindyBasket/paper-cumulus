@@ -3,6 +3,42 @@ import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 
 
+// TODO: copy of this still exists in Cards.js
+
+class MenuButton extends Component {
+    constructor(props){
+        super(props);
+        this.state ={
+            hover: false
+        }
+        this.handle_hover = this.handle_hover.bind(this);
+    }
+
+    handle_hover(){
+        if(this.props.comingSoon){
+            this.setState({hover: true});
+        }
+    }
+
+    render(){
+        const hasFrames = this.props.hasFrames;
+        return (
+            <span>
+                <span className={this.props.iconClass + (hasFrames == null ? "" : (!hasFrames ? " disabled" : "")  )} 
+                      onClick={hasFrames != null && !hasFrames? ()=>{} : this.props.action}>
+                   {this.props.comingSoon && (
+                        <span className={"mtooltip" + 
+                                         (this.state.hover ? " active" : "")}>
+                            {this.props.label && `${this.props.label}: `}Coming soon
+                        </span>
+                    )}
+                </span>
+                
+            </span>
+        )
+    }
+}
+
 
 
 // ████████╗ ██████╗  ██████╗ ██╗     ██████╗ ████████╗███╗   ██╗
@@ -307,6 +343,7 @@ class FileInputButton extends Component {
 
 
 export {
+    MenuButton,
     ToolButton,
     EditableTextField,
     FileInputButton

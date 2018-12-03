@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 
 import { Sortable } from '@shopify/draggable';
 import Spinner from "./../Spinner";
+import { MenuButton } from "./../UI";
 
 import { FrameWindow } from "./../FlipbookPlayer";
 import { pub_handle_fetchScene } from "./Cards";
@@ -210,6 +211,19 @@ class FramePreviewCard extends Component{
                 
                 {/* CLOSE button */}
                 <div className="float_btn fas fa-times" onClick={this.props.off}></div>
+
+                {/* Other controls */}
+                <div className="frame_window_menu">
+                    <MenuButton iconClass="menu_btn fas fa-layer-group" action={()=>{}} 
+                                label="+ Layer" comingSoon={true}/>
+                    <MenuButton iconClass="menu_btn fas fa-comment" action={()=>{}} 
+                                label="+ Speech Bubble" comingSoon={true}/>
+                    <MenuButton iconClass="menu_btn fas fa-font" action={()=>{}} 
+                                label="+ text" comingSoon={true}/>
+                </div>
+                
+
+
             </div>
         )
 
