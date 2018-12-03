@@ -1797,7 +1797,7 @@ a:hover {
   text-decoration: none;
 }
 
-a.button,
+a.a_button,
 button {
   padding: 10px 15px;
   margin: 5px;
@@ -1809,12 +1809,12 @@ button {
   color: white;
 }
 
-a.button:hover,
+a.a_button:hover,
 button:hover {
   background-color: #6a5458;
 }
 
-a.button:focus,
+a.a_button:focus,
 button:focus {
   outline: none;
 }
@@ -1964,10 +1964,19 @@ input[type=text] {
   padding: 10px 35px 30px 35px;
   border-radius: 10px;
   font-size: 0.8em;
+  /*not all image should be stretched*/
 }
 .demo_modal .message_wrapper img {
   width: 100%;
   margin-bottom: 10px;
+}
+.demo_modal .message_wrapper .img_space {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+.demo_modal .message_wrapper img.no_stretch {
+  width: auto;
 }
 .demo_modal .message_nav {
   display: flex;

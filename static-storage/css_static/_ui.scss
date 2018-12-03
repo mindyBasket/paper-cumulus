@@ -18,7 +18,7 @@ a:hover{
 }
 
 
-a.button,
+a.a_button,
 button{
 	padding: 10px 15px;
 	margin: 5px;
@@ -32,12 +32,13 @@ button{
 	color: white;
 }
 
-a.button:hover,
+
+a.a_button:hover,
 button:hover{
 	background-color: #6a5458;
 }
 
-a.button:focus,
+a.a_button:focus,
 button:focus{
 	outline: none;
 }

@@ -29,6 +29,17 @@
 			width:100%;
 			margin-bottom:10px;
 		}
+
+		.img_space{
+			display:block;
+			width:100%;
+			text-align: center;
+		}
+
+		/*not all image should be stretched*/
+		img.no_stretch{
+			width: auto;
+		}
 	}
 
 	/*.message_wrapper::after{

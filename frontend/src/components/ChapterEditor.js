@@ -219,11 +219,13 @@ class ChapterEditor extends Component{
 				<br/>
 				Demo sample images:
 				<br/>
-				<a class="button" href="https://www.dropbox.com/s/cwcxp8qgg85krhp/sampleImages.zip?dl=0" 
-						target="_blank">
-					<span className="bigtext-3 fas fa-file-archive"/>
-					<span style={{fontSize:"0.6em"}}>Download</span>
-				</a>
+				<span style={{display:"inline-block", padding: "10px 0 0 0"}}>
+					<a class="a_button" href="https://www.dropbox.com/s/cwcxp8qgg85krhp/sampleImages.zip?dl=0" 
+							target="_blank">
+						<span className="bigtext-3 fas fa-file-archive"/>
+						<span style={{fontSize:"0.6em"}}>Download</span>
+					</a>
+				</span>
 
 				{/* DEMOONLY */}
 				<DemoGuideBtn onAtMount={true}
