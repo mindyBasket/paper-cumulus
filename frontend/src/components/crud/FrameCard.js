@@ -42,6 +42,7 @@ const axh = new XhrHandler(); //axios helper
 // ╚═╝     ╚═╝╚══════╝╚═╝  ╚═══╝ ╚═════╝     
                                           
 
+
 class FrameMenu extends Component {
    	// TODO: this is extremely similar to StripMenu...
    	//		 Everything is the same except the render
@@ -81,6 +82,9 @@ class FrameMenu extends Component {
 
     //blur out to close the menu, and then execute whatever action 
     blurAndAction(e,actionFunc){
+        // Note: you may have noticed that "Detail" menu button does not have any action associated.
+        //       it is because this entire popup menu is considered a hitbox for frame thumbnail. 
+        //       And clicking on thumbnail opens frame detail.
         e.stopPropagation();
         this.r.current.blur();
         actionFunc();
@@ -93,7 +97,8 @@ class FrameMenu extends Component {
                        ref={this.r} 
                        readOnly  />
                 <ul onMouseDown={this.refocus}>
-                    <li><span className="bigtext-3 fas fa-sticky-note"></span> Detail</li>
+                    <li onClick={(e)=>{this.r.current.blur();}}>
+                        <span className="bigtext-3 fas fa-sticky-note"></span> Detail</li>
                     <li onClick={(e)=>{this.blurAndAction(e,this.props.actionDelete)}}>Delete</li>
                 </ul>
             </div>
@@ -467,7 +472,7 @@ class FrameCard extends Component{
                     </div>
 
                     <FrameMenu on={this.state.menuOn} off={()=>{this.endModalState("menuOn");}}
-                       actionDelete={this.handle_deleteFrameConfirm}/>
+                               actionDelete={this.handle_deleteFrameConfirm}/>
                     
 
                 </div> 
