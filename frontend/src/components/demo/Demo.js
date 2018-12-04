@@ -15,114 +15,128 @@ import ReactDOM from "react-dom";
                                                         
 
                                                         
-const JSXMESSAGE1 = [
-	<div id="msg1">
-		<h3>Welcome!</h3>
-		<img src="/static/img/tutorial/tut01a_flipbook.jpg"/>
-		<p>
-			This app makes shareable instances of <strong>"flipbook"</strong>.                  
-			It is somewhere <strong>between a movie and a storyboard</strong>, 
-			an experimenal way to tell a story scenamatically but at low-cost.
-        </p>
-    </div>
-    ,
-    <div id="msg2">
-		<h3>Getting started</h3>
-		<img src="/static/img/tutorial/tut01b_download.jpg"/>
-		<p>
-			This demo chapter contains an <strong>incomplete stop-motion 
-			animation</strong>.
-			Images used to complete it can be <strong>downloaded</strong>. 
-			Or, you can experiment with your own images.
-		</p>
-	</div>
-    ,
-    <div id="msg3">
-		<h3>Getting started</h3>
-		<img src="/static/img/tutorial/tut01c.jpg"/>
-		<p>
-			Click <strong>'View from the start'</strong> to see what a flipbook looks like for this
-			demo chapter. 
-		</p>
-		<span className="img_space">
-			<img src="/static/img/tutorial/tut01d.jpg"
-			 className="no_stretch"/>
-		</span>
-		
-		<p>
-			The green guide buttons are there to help you!
-		</p>
-	</div>
-];
+const getJSXDemoMessage = function(msgIndex, staticroot) {
+	staticroot = staticroot || "/static/";
+	if (staticroot[staticroot.length-1] != "/"){
+		staticroot = staticroot + "/"
+	}
 
-const JSXMESSAGE2 = [
-	<div id="msg1">
-    	<h3>Flipbook View</h3>
-    	<img src="/static/img/tutorial/tut02a_strip.jpg"/>
-		<p>
-			Use your <strong>arrow keys:  
-			<span class="bigtext-3 far fa-caret-square-left"></span>
-			<span class="bigtext-3 far fa-caret-square-right"></span></strong> to view.
-			More control options are coming soon.
-		</p>
-		<p>
-			Hover over the scrubber to see which strip it corresponds to.
-		</p>
-	</div>
-	,
-	<div id="msg2">
-    	<h3>Animation</h3>
-    	<img src="/static/img/tutorial/tut02b_strip.jpg"/>
-    	<img src="/static/img/tutorial/tut02c_strip.jpg"/>
-		<p>
-			Each key press 
-			<span class="bigtext-3 far fa-caret-square-left"></span>
-			<span class="bigtext-3 far fa-caret-square-right"></span>
-			"animates" one <strong><span className="bigtext-3 fas fa-film"/>strip</strong>.
-		</p>
-	</div>
-	,
-	<div id="msg3">
-    	<h3>Editing a flipbook</h3>
-		<img src="/static/img/tutorial/tut02d.jpg"/>
-		<p>
-			After viewing, you can see flipbook details and make any changes in the edit mode.
-		</p>
-	</div>
+	const jsxArr = [
 
-];
-
-const JSXMESSAGE3 = [
-	<div id="msg1">
-		<h3>Scenes</h3>
-		<img src="/static/img/tutorial/tut03a_scene.jpg"/>
-		<p>
-			A group of <span className="bigtext-3 fas fa-film"/>strips 
-			makes a <strong><span className="bigtext-3 fas fa-video"/>scene
-			</strong>.
-		</p>
-		<img src="/static/img/tutorial/tut03b_chapter.jpg"/>
-		<p>
-			A collection of <span className="bigtext-3 fas fa-video"/>scenes makes 
-			a <strong>chapter</strong>. 
-		</p>
-	</div>
-	,
-	<div id="msg2">
-		<h3>Editing</h3>
-		<img src="/static/img/tutorial/tut03c.jpg"/>
-		<p>
-			Add new images to generate new <strong>
-			<span className="bigtext-3 fas fa-sticky-note"/>frames</strong> under a 
-			<span className="bigtext-3 fas fa-film"/>strip. 
-		</p>
-		<p>
-			You can bulk upload, reorder frames and strips, preview strip animations, and more.
-		</p>
-	</div>
-];
+		// Message 1
+		[
+			<div id="msg1">
+				<h3>Welcome!</h3>
+				<img src={`${staticroot}img/tutorial/tut01a_flipbook.jpg`}/>
+				<p>
+					This app makes shareable instances of <strong>"flipbook"</strong>.                  
+					It is somewhere <strong>between a movie and a storyboard</strong>, 
+					an experimenal way to tell a story scenamatically but at low-cost.
+		        </p>
+		    </div>
+		    ,
+		    <div id="msg2">
+				<h3>Getting started</h3>
+				<img src={`${staticroot}img/tutorial/tut01b_download.jpg`}/>
+				<p>
+					This demo chapter contains an <strong>incomplete stop-motion 
+					animation</strong>. Images used to complete it can be 
+					<strong>downloaded</strong>. Or, you can experiment with your own images.
+				</p>
+			</div>
+		    ,
+		    <div id="msg3">
+				<h3>Getting started</h3>
+				<img src={`${staticroot}img/tutorial/tut01c.jpg`}/>
+				<p>
+					Click <strong>'View from the start'</strong> to see what a flipbook looks like for this
+					demo chapter. 
+				</p>
+				<span className="img_space">
+					<img src={`${staticroot}img/tutorial/tut01d.jpg`}
+					 	 className="no_stretch"/>
+				</span>
+				<p>
+					The green guide buttons are there to help you!
+				</p>
+			</div>
+		],
 
 
+
+		// Message 2
+		[
+			<div id="msg1">
+		    	<h3>Flipbook View</h3>
+		    	<img src={`${staticroot}img/tutorial/tut02a_strip.jpg`}/>
+				<p>
+					Use your <strong>arrow keys:  
+					<span class="bigtext-3 far fa-caret-square-left"></span>
+					<span class="bigtext-3 far fa-caret-square-right"></span></strong> to view.
+					More control options are coming soon.
+				</p>
+				<p>
+					Hover over the scrubber to see which strip it corresponds to.
+				</p>
+			</div>
+			,
+			<div id="msg2">
+		    	<h3>Animation</h3>
+		    	<img src={`${staticroot}img/tutorial/tut02b_strip.jpg`}/>
+		    	<img src={`${staticroot}img/tutorial/tut02c_strip.jpg`}/>
+				<p>
+					Each key press 
+					<span class="bigtext-3 far fa-caret-square-left"></span>
+					<span class="bigtext-3 far fa-caret-square-right"></span>
+					"animates" one <strong><span className="bigtext-3 fas fa-film"/>strip</strong>.
+				</p>
+			</div>
+			,
+			<div id="msg3">
+		    	<h3>Editing a flipbook</h3>
+				<img src={`${staticroot}img/tutorial/tut02d.jpg`}/>
+				<p>
+					After viewing, you can see flipbook details and make any changes in the edit mode.
+				</p>
+			</div>
+		],
+
+
+
+		// Message 3
+		[
+			<div id="msg1">
+				<h3>Scenes</h3>
+				<img src={`${staticroot}img/tutorial/tut03a_scene.jpg`}/>
+				<p>
+					A group of <span className="bigtext-3 fas fa-film"/>strips 
+					makes a <strong><span className="bigtext-3 fas fa-video"/>scene
+					</strong>.
+				</p>
+				<img src={`${staticroot}img/tutorial/tut03b_chapter.jpg`}/>
+				<p>
+					A collection of <span className="bigtext-3 fas fa-video"/>scenes makes 
+					a <strong>chapter</strong>. 
+				</p>
+			</div>
+			,
+			<div id="msg2">
+				<h3>Editing</h3>
+				<img src={`${staticroot}img/tutorial/tut03c.jpg`}/>
+				<p>
+					Add new images to generate new <strong>
+					<span className="bigtext-3 fas fa-sticky-note"/>frames</strong> under a 
+					<span className="bigtext-3 fas fa-film"/>strip. 
+				</p>
+				<p>
+					You can bulk upload, reorder frames and strips, preview strip animations, and more.
+				</p>
+			</div>
+		]
+	];
+
+	return jsxArr[msgIndex];
+}
 
 
 
@@ -138,9 +152,6 @@ const JSXMESSAGE3 = [
 // ██║ ╚═╝ ██║╚██████╔╝██████╔╝██║  ██║███████╗
 // ╚═╝     ╚═╝ ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝
                                             
-
-
-
 class DemoModal extends PureComponent{
 
 	constructor(props){
@@ -155,9 +166,6 @@ class DemoModal extends PureComponent{
 			currPage: 0
 		}
 
-
-		
-
 		this.nextMsg=this.nextMsg.bind(this);
 		this.prevMsg=this.prevMsg.bind(this);
 		
@@ -165,20 +173,26 @@ class DemoModal extends PureComponent{
 
 	componentDidMount(){
 		// select message
-		switch(this.props.messageNum) {
-		    case 1:
-		        this.message = JSXMESSAGE1;
-		        break;
-		    case 2:
-		        this.message = JSXMESSAGE2;
-		        break;
-		    case 3:
-		        this.message = JSXMESSAGE3;
-		        break;
-		    default:
-		        this.message = [];
-		}
+		// switch(this.props.messageNum) {
+		//     case 1:
+		//         this.message = JSXMESSAGE1;
+		//         break;
+		//     case 2:
+		//         this.message = JSXMESSAGE2;
+		//         break;
+		//     case 3:
+		//         this.message = JSXMESSAGE3;
+		//         break;
+		//     default:
+		//         this.message = [];
+		// }
 
+		// get static root
+		const refDom = document.querySelector("#dtemplt_ref");
+		const STATIC_ROOT = refDom ? refDom.getAttribute("staticroot") : undefined;
+
+		
+		this.message = getJSXDemoMessage(this.props.messageNum-1, STATIC_ROOT);
 	}
 
 	componentDidUpdate(prevProps, prevStates){
@@ -199,10 +213,7 @@ class DemoModal extends PureComponent{
 
 	}
 
-
 	nextMsg(){
-
-		
 		if(this.state.currPage < this.message.length-1){
 			this.setState({currPage: this.state.currPage+1});
 		}
@@ -230,7 +241,7 @@ class DemoModal extends PureComponent{
 								<span></span> 
 							) : (
 								<span className="button flat" 
-								  onClick={this.prevMsg}>
+								  	  onClick={this.prevMsg}>
 									{`< Page ${pageNum}`}
 								</span>
 								
