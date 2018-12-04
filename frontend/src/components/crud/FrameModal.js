@@ -210,7 +210,7 @@ class FrameModal extends Component{
             lb.pub_LightBox_on();
             lb.pub_LightBox_addToOnClick(()=>{pub_FrameModal_openModal(null, false)}); 
         } else if (prevState.on == true && this.state.on == false){
-            //lb.pub_LightBox_off();
+            lb.pub_LightBox_off();
             this.endModalState("All"); // close anything else 
         }  
     }
@@ -352,8 +352,9 @@ class FrameModal extends Component{
 
                         <img src={frame.frame_image}/>
 
-                        <span className="float_btn fas fa-times">
-                        </span>
+                        {/* close button */}
+                        <span className="float_btn fas fa-times"
+                              onClick={ (e)=>{ pub_FrameModal_openModal(null, false)}}/>
 
                         <ToolButton iconType="edit" 
                                     position="bottom right"

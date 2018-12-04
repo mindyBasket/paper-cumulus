@@ -183,7 +183,7 @@ const wrapper = document.getElementById("scene_editor_wrapper");
 // const sceneId = wrapper ? refNode.getAttribute("sceneId") : null;
 wrapper ? ReactDOM.render(<SceneEditor/>, wrapper) : null;
 
-console.log("SceneEditor ---- 0.1.3");
+console.log("SceneEditor ---- 0.1.4");
 
 
 export {
