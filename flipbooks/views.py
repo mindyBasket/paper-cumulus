@@ -5,7 +5,7 @@ from datetime import datetime
 
 from django.http import JsonResponse, HttpResponseNotFound
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.template.loader import render_to_string
 
@@ -173,7 +173,8 @@ class ChapterDetailView_REACT(generic.TemplateView):
         # Check if demo expired
         if chapter.is_demo == True:
             print("-------------CHECK IF DEMO EXPIRED--------------")
-            print(chapter.date_created.year)
+            print(chapter.date_created)
+            print(datetime.now())
             chdate = chapter.date_created
             nwdate = datetime.now().date()
             chdate_f = int("{0}{1:0>2}{2:0>2}".format(chdate.year, chdate.month, chdate.day))
@@ -183,11 +184,21 @@ class ChapterDetailView_REACT(generic.TemplateView):
             print(nwdate_f)
 
             if nwdate_f - chdate_f > 3:
-                # expired
+                # Past 3 days. Expired
                 print ("EXPIRED by {} units".format(nwdate_f-chdate_f))
+                
             elif nwdate_f - chdate_f == 3:
-                # MIGHT be expired?
-                pass
+                # MIGHT be expired. Check down to seconds.
+                chdate_f = int("1{0:0>2}{1:0>2}{2:0>2}".format(chdate.hour, chdate.minute, chdate.second))
+                nwdate = datetime.now()
+                nwdate_f = int("1{0:0>2}{1:0>2}{2:0>2}".format(nwdate.hour, nwdate.minute, nwdate.second))
+                
+                print(chdate_f)
+                print(nwdate_f)
+
+                if nwdate_f - chdate_f >= 0: 
+                    # definitely expired
+                    print("EXPIRED")
 
             print("------------------------------------------------")
 
