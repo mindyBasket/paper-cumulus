@@ -103,6 +103,9 @@ class Chapter(models.Model):
     
     # relationship
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
+
+    # For demo
+    is_demo = models.BooleanField(blank=True, default=False)
     
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)

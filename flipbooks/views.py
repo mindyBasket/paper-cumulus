@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from datetime import datetime
+
 from django.http import JsonResponse, HttpResponseNotFound
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, get_object_or_404
@@ -145,6 +147,11 @@ class ChapterDetailView_REACT(generic.TemplateView):
     
     queryset = Chapter.objects.all()
     template_name = "frontend/chapter_detail.html" # use frontend
+
+    # def get(self, request, *args, **kwargs):
+    #    return super(ChapterDetailView_REACT, self).get(*args, **kwargs)
+
+
     
     def get_context_data(self, *args, **kwargs):
 
@@ -161,6 +168,29 @@ class ChapterDetailView_REACT(generic.TemplateView):
         else:
             book = Book.objects.get(pk=kwargs['book_pk'])
             chapter = book.chapter_set.filter(number=kwargs['chapter_number'])[0]
+
+        # DEMOONLY
+        # Check if demo expired
+        if chapter.is_demo == True:
+            print("-------------CHECK IF DEMO EXPIRED--------------")
+            print(chapter.date_created.year)
+            chdate = chapter.date_created
+            nwdate = datetime.now().date()
+            chdate_f = int("{0}{1:0>2}{2:0>2}".format(chdate.year, chdate.month, chdate.day))
+            nwdate_f = int("{0}{1:0>2}{2:0>2}".format(nwdate.year, nwdate.month, nwdate.day))
+
+            print(chdate_f)
+            print(nwdate_f)
+
+            if nwdate_f - chdate_f > 3:
+                # expired
+                print ("EXPIRED by {} units".format(nwdate_f-chdate_f))
+            elif nwdate_f - chdate_f == 3:
+                # MIGHT be expired?
+                pass
+
+            print("------------------------------------------------")
+
 
         # make context for the Chapter and its Scenes
         context['object_chapter'] = chapter
