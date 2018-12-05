@@ -3,10 +3,9 @@
 {% load flipbooks_custom_tags %}
 {% load static %}
 
-
-
 {% block title %} {{block.super}} | Scene Detail{% endblock title %}
 
+{% block is_demo %}{% if object.chapter.is_demo %}active{% endif %}{% endblock %}
 
 {% block top_content %}
     <div class="headband">

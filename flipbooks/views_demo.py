@@ -58,6 +58,7 @@ def copy_demo_chapter(request, *args, **kwargs):
         new_demo_chapter.pk = None
         new_demo_chapter.title = "New Demo Chapter"
         new_demo_chapter.id64=''
+        new_demo_chapter.is_demo = True
         new_demo_chapter.save()
 
         new_pk = new_demo_chapter.pk
@@ -78,6 +79,7 @@ def copy_demo_chapter(request, *args, **kwargs):
         for sc in ordered_scene:
             sc_original = Scene.objects.get(pk=sc.pk) # for retireving children
             sc.pk = None # will have no children
+            sc.id65 ='' 
             sc.name = "Demo " + sc_original.name
             sc.chapter = new_demo_chapter
             sc.save()
@@ -101,6 +103,7 @@ def copy_demo_chapter(request, *args, **kwargs):
 
                 print("[STRIP CLONING DONE]")
             print("[SCENE CLONING DONE]")
+
 
         # TODO: give the demo scene, proper children_li to fake "correct order"
         print("====== CHAPTER CLONING DONE ======")

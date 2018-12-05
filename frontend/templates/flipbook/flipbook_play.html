@@ -4,6 +4,7 @@
 
 {% block title %} {{block.super}} | Strips{% endblock title %}
 
+{% block is_demo %}{% if object.chapter.is_demo%}active{% endif %}{% endblock %}
 {% block body_class %}dark{% endblock body_class %}
 
 {% block top_content %}

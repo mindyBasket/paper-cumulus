@@ -4,9 +4,9 @@
 
 {% block title %} {{block.super}} | Scenes{% endblock title %}
 
-
-
+{% block is_demo %}{% if object_chapter.is_demo%}active{% endif %}{% endblock %}
 {% block headband_class %}dark with_splash{% endblock headband_class %}
+
 
 {% block top_content %}
     

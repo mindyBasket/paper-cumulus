@@ -1971,6 +1971,27 @@ input[type=text] {
   color: transparent;
 }
 
+.demo_marker {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  opacity: 0;
+}
+.demo_marker span {
+  display: inline-block;
+  background-color: #ff7373d4;
+  color: #57006c;
+  padding: 5px 12px 8px 8px;
+  border-bottom-right-radius: 20px;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.demo_marker.active {
+  opacity: 1;
+}
+
 .demo_modal {
   position: fixed;
   pointer-events: none;
