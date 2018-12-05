@@ -79,7 +79,7 @@ def copy_demo_chapter(request, *args, **kwargs):
         for sc in ordered_scene:
             sc_original = Scene.objects.get(pk=sc.pk) # for retireving children
             sc.pk = None # will have no children
-            sc.id65 ='' 
+            sc.id64 ='' 
             sc.name = "Demo " + sc_original.name
             sc.chapter = new_demo_chapter
             sc.save()
