@@ -160,10 +160,6 @@ class ChapterDetailView_REACT(generic.TemplateView):
 
     def get(self, request, *args, **kwargs):
 
-        print("------------- GET --------------")
-        print(dir(kwargs))
-        # Get book from URL
-
         if 'id64' in kwargs:
             # retrieve chapter by base64 identifier
             # https://docs.djangoproject.com/en/2.1/topics/http/shortcuts/#id2
@@ -185,6 +181,7 @@ class ChapterDetailView_REACT(generic.TemplateView):
             if nwdate_f - chdate_f > DEMO_LIFESPAN:
                 # Past 3 days. Expired
                 print ("EXPIRED by comparing dates. {}-{}={} units".format(nwdate_f,chdate_f,nwdate_f-chdate_f))
+                chapter.delete()
                 return redirect('/flipbooks/')
                 
             elif nwdate_f - chdate_f == DEMO_LIFESPAN:
@@ -196,6 +193,7 @@ class ChapterDetailView_REACT(generic.TemplateView):
                 if nwdate_f - chdate_f >= 0: 
                     # definitely expired
                     print("EXPIRED by comparing down to seconds. {}-{}={} units".format(nwdate_f, chdate_f, nwdate_f-chdate_f))
+                    chapter.delete()
                     return redirect('/flipbooks/')
 
 
