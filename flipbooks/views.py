@@ -39,7 +39,7 @@ from .helpermodule import helpers
 # .................................................. 
 # .................................................. 
 
-DEMO_LIFESPAN = 3 # days
+DEMO_LIFESPAN = 1 # days
 
 
 
