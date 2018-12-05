@@ -1978,14 +1978,17 @@ input[type=text] {
   z-index: 100;
   opacity: 0;
 }
-.demo_marker span {
+.demo_marker .demo_btn {
   display: inline-block;
   background-color: #ff7373d4;
-  color: #57006c;
+  color: #ffffffa1;
   padding: 5px 12px 8px 8px;
   border-bottom-right-radius: 20px;
   font-size: 1.2em;
   font-weight: bold;
+}
+.demo_marker .demo_btn:hover {
+  background-color: #dc5c5c;
 }
 
 .demo_marker.active {
