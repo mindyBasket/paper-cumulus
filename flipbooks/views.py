@@ -33,6 +33,10 @@ from .helpermodule import helpers
 
 
 
+
+
+
+
 # .................................................. 
 # .................................................. 
 #                  Book Views
@@ -148,8 +152,55 @@ class ChapterDetailView_REACT(generic.TemplateView):
     queryset = Chapter.objects.all()
     template_name = "frontend/chapter_detail.html" # use frontend
 
-    # def get(self, request, *args, **kwargs):
-    #    return super(ChapterDetailView_REACT, self).get(*args, **kwargs)
+    def get(self, request, *args, **kwargs):
+
+        print("------------- GET --------------")
+        print(dir(kwargs))
+        # Get book from URL
+
+        if 'id64' in kwargs:
+            # retrieve chapter by base64 identifier
+            # https://docs.djangoproject.com/en/2.1/topics/http/shortcuts/#id2
+            chapter = get_object_or_404(Chapter, id64=kwargs['id64'])
+        else:
+            return HttpResponseNotFound("Chapter id not provided in the request")
+
+        # DEMOONLY
+        # Check if demo expired
+        if chapter.is_demo == True:
+            print("-------------CHECK IF DEMO EXPIRED--------------")
+            print(chapter.date_created)
+            print(datetime.now())
+            chdate = chapter.date_created
+            nwdate = datetime.now().date()
+            chdate_f = int("{0}{1:0>2}{2:0>2}".format(chdate.year, chdate.month, chdate.day))
+            nwdate_f = int("{0}{1:0>2}{2:0>2}".format(nwdate.year, nwdate.month, nwdate.day))
+
+            print(chdate_f)
+            print(nwdate_f)
+
+            if nwdate_f - chdate_f > 178:
+                # Past 3 days. Expired
+                print ("EXPIRED by comparing dates. {}-{}={} units".format(nwdate_f,chdate_f,nwdate_f-chdate_f))
+                return redirect('/flipbooks/')
+                
+            elif nwdate_f - chdate_f == 178:
+                # MIGHT be expired. Check down to seconds
+                chdate_f = int("1{0:0>2}{1:0>2}{2:0>2}".format(chdate.hour, chdate.minute, chdate.second))
+                nwdate = datetime.now()
+                nwdate_f = int("1{0:0>2}{1:0>2}{2:0>2}".format(nwdate.hour, nwdate.minute, nwdate.second))
+                
+                print(chdate_f)
+                print(nwdate_f)
+
+                if nwdate_f - chdate_f >= 0: 
+                    # definitely expired
+                    print("EXPIRED by comparing down to seconds. {}-{}={} units".format(nwdate_f, chdate_f, nwdate_f-chdate_f))
+                    return redirect('/flipbooks/')
+
+
+
+        return super(ChapterDetailView_REACT, self).get(request, *args, **kwargs)
 
 
     
@@ -169,39 +220,7 @@ class ChapterDetailView_REACT(generic.TemplateView):
             book = Book.objects.get(pk=kwargs['book_pk'])
             chapter = book.chapter_set.filter(number=kwargs['chapter_number'])[0]
 
-        # DEMOONLY
-        # Check if demo expired
-        if chapter.is_demo == True:
-            print("-------------CHECK IF DEMO EXPIRED--------------")
-            print(chapter.date_created)
-            print(datetime.now())
-            chdate = chapter.date_created
-            nwdate = datetime.now().date()
-            chdate_f = int("{0}{1:0>2}{2:0>2}".format(chdate.year, chdate.month, chdate.day))
-            nwdate_f = int("{0}{1:0>2}{2:0>2}".format(nwdate.year, nwdate.month, nwdate.day))
-
-            print(chdate_f)
-            print(nwdate_f)
-
-            if nwdate_f - chdate_f > 3:
-                # Past 3 days. Expired
-                print ("EXPIRED by {} units".format(nwdate_f-chdate_f))
-                
-            elif nwdate_f - chdate_f == 3:
-                # MIGHT be expired. Check down to seconds.
-                chdate_f = int("1{0:0>2}{1:0>2}{2:0>2}".format(chdate.hour, chdate.minute, chdate.second))
-                nwdate = datetime.now()
-                nwdate_f = int("1{0:0>2}{1:0>2}{2:0>2}".format(nwdate.hour, nwdate.minute, nwdate.second))
-                
-                print(chdate_f)
-                print(nwdate_f)
-
-                if nwdate_f - chdate_f >= 0: 
-                    # definitely expired
-                    print("EXPIRED")
-
-            print("------------------------------------------------")
-
+    
 
         # make context for the Chapter and its Scenes
         context['object_chapter'] = chapter
