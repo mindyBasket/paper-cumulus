@@ -33,7 +33,13 @@ from .helpermodule import helpers
 
 
 
+# .................................................. 
+# .................................................. 
+#                    CONSTANTS
+# .................................................. 
+# .................................................. 
 
+DEMO_LIFESPAN = 3 # days
 
 
 
@@ -176,23 +182,17 @@ class ChapterDetailView_REACT(generic.TemplateView):
             chdate_f = int("{0}{1:0>2}{2:0>2}".format(chdate.year, chdate.month, chdate.day))
             nwdate_f = int("{0}{1:0>2}{2:0>2}".format(nwdate.year, nwdate.month, nwdate.day))
 
-            print(chdate_f)
-            print(nwdate_f)
-
-            if nwdate_f - chdate_f > 178:
+            if nwdate_f - chdate_f > DEMO_LIFESPAN:
                 # Past 3 days. Expired
                 print ("EXPIRED by comparing dates. {}-{}={} units".format(nwdate_f,chdate_f,nwdate_f-chdate_f))
                 return redirect('/flipbooks/')
                 
-            elif nwdate_f - chdate_f == 178:
+            elif nwdate_f - chdate_f == DEMO_LIFESPAN:
                 # MIGHT be expired. Check down to seconds
                 chdate_f = int("1{0:0>2}{1:0>2}{2:0>2}".format(chdate.hour, chdate.minute, chdate.second))
                 nwdate = datetime.now()
                 nwdate_f = int("1{0:0>2}{1:0>2}{2:0>2}".format(nwdate.hour, nwdate.minute, nwdate.second))
-                
-                print(chdate_f)
-                print(nwdate_f)
-
+ 
                 if nwdate_f - chdate_f >= 0: 
                     # definitely expired
                     print("EXPIRED by comparing down to seconds. {}-{}={} units".format(nwdate_f, chdate_f, nwdate_f-chdate_f))
