@@ -4,10 +4,15 @@
   "description": "An experimental visual novel delivery tool that has \"animation\" more in mind. A story will be told as if it is a flipbook, where there smallest unit is a short, few-framed animation. This is not intended to be a full blown animation tool. It's somewhere between an animatic and a storyboard.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "setvar_w": "set DJANGO_SETTINGS_MODULE=proj_cumulus.settings.local",
+    "setvar_m": "export DJANGO_SETTINGS_MODULE=proj_cumulus.settings.local",
+
+    "sass":  "cd static_storage/css_static/ && sass --watch input.scss output.css",
+
     "dev": "webpack --mode development --config webpack.config.js",
-    "analyzer": "webpack --mode development --config webpack-analyzer.config.js",
     "build": "webpack --mode production --config webpack.prod.config.js",
+    "analyzer": "webpack --mode development --config webpack-analyzer.config.js",
+
     "postinstall": "webpack --mode production --config webpack.prod.config.js",
     "heroku-postbuild": "echo \"Webpack build done.\" "
   },
