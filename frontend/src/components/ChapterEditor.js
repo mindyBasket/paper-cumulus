@@ -14,13 +14,10 @@ const axh = new XhrHandler(); //axios helper
 //DEMOONLY
 import { DemoModal,DemoGuideBtn } from "./demo/Demo";
 
-
 // Note: Chapter editor is kept extremely minimal due to time constraint. 
 // 		 It only render a single button that creates new scene. That's it.
 
-
 class SceneCreateModal extends PureComponent{
-
 
 	constructor(props){
 		super(props);

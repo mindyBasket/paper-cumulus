@@ -1,5 +1,5 @@
-import React, { Component, PureComponent } from "react";
-import ReactDOM from "react-dom";
+import React, { Component, PureComponent } from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from "prop-types";
 
 import FrameFeeder from "./FrameFeeder";
@@ -409,7 +409,6 @@ class FrameStage extends PureComponent{
 
 
 	render(){
-
 		// Note: do not do it like this. It causes this.$node to be sometimes null. 
 		//		 which consequently messed up this.currStrip. Instead, make the whole 
 		//		 component not render from its parents.
