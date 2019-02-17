@@ -49,7 +49,8 @@ class MenuButton extends Component {
     const hasFrames = this.props.hasFrames;
     return (
       <span
-        className={this.props.iconClass + (hasFrames == null ? "" : (!hasFrames ? " disabled" : ""))}
+        className={this.props.iconClass + " " +
+                   (hasFrames == null ? "" : (!hasFrames ? "disabled" : ""))}
         onClick={hasFrames != null && !hasFrames ? () => { } : this.props.action}
       >
         {this.props.comingSoon && (
@@ -108,7 +109,7 @@ class StripMenu extends Component {
   }
 
   refocus(e) {
-    // Note: clicking on children of <ul> is considered of blur. 
+    // Note: clicking on children of <ul> is considered of blur.
     //       To prevent menu from unintentionally closing, set to ignore blur
     //       if menu wrapper <ul> is clicked.
     this.ignoreBlur = true;
@@ -138,7 +139,7 @@ class StripMenu extends Component {
           <li onClick={() => { this.blurAndAction(this.props.actionDelete); }}>Delete</li>
         </ul>
       </div>
-    )
+    );
   }
 }
 
@@ -162,29 +163,30 @@ function initializeSortable($container, name, callback) {
     },
     scrollable: {
       speed: 0,
-      sensitivity: 0
-    }
+      sensitivity: 0,
+    },
   });
 
   frameSortable.on('sortable:start', () => {
-    //tilt the chosen
+    // tilt the chosen
     const pickedUp = document.querySelector('.thumb.draggable-mirror');
   });
-  frameSortable.on('sortable:stop', () => {
-    //get new order
-    let thOrder = [];
-    $container.querySelectorAll(".thumb").forEach(th => {
-      let thclass = th.getAttribute("class");
-      let id = th.getAttribute("frameid");
 
-      if (!thclass.includes("draggable")) {
+  frameSortable.on('sortable:stop', () => {
+    // get new order
+    const thOrder = [];
+    $container.querySelectorAll('.thumb').forEach(th => {
+      const thclass = th.getAttribute('class');
+      const id = th.getAttribute('frameid');
+
+      if (!thclass.includes('draggable')) {
         thOrder.push(id);
-      } else if (thclass.includes("draggable-source")) {
+      } else if (thclass.includes('draggable-source')) {
         thOrder.push(id);
       }
     });
 
-    console.log(thOrder.join(','));
+    logr.log(thOrder.join(','));
     callback(thOrder);
 
   });
@@ -223,7 +225,7 @@ class StripCard extends PureComponent {
       cardCover_messageType: 'default',
     }
 
-    // List of state name that is related to modal. 
+    // List of state name that is related to modal.
     // This roster used when turning all of them off
     this.modalStateKeys = ['cardCoverOn', 'menuOn', 'dragAndDropOn'];
 
@@ -245,30 +247,29 @@ class StripCard extends PureComponent {
     this.endModalState = this.endModalState.bind(this); // more generic version of 'removeCardCover'
     this.setStripState = this.setStripState.bind(this); // for communication
     this.setSpotlight = this.setSpotlight.bind(this);
-
   }
 
   componentDidMount() {
     const delay = this.props.delay;
-    const $node = this.$node.current
+    const $node = this.$node.current;
 
-    if (delay != -1) { // Note: decided to remove animation when it first mounts.
+    if (delay !== -1) { 
+      // Note: decided to remove animation when it first mounts.
 
-      var mountAnim = anime.timeline();
+      const mountAnim = anime.timeline();
       mountAnim
         .add({
-          targets: $node, scale: 0, duration: 0
+          targets: $node, scale: 0, duration: 0,
         })
         .add({
           targets: $node, scale: 0.5, duration: 0,
-          delay: delay * 80
+          delay: delay * 80,
         })
         .add({
           targets: $node, scale: 1, duration: 600,
-          elasticity: 200
+          elasticity: 200,
         });
     }
-
 
     // Sortable magic
     initializeSortable(this.$node.current.querySelector('.strip_flex_container'),
@@ -285,7 +286,7 @@ class StripCard extends PureComponent {
   // TODO: this function doesn't consider "ignored" field of each Frame. 
   //       Updated version of function of same name [BAD. Don't leave it this way]
   //       in FlipbookPlayer.js
-  reorderFrames(strip) {
+  static reorderFrames(strip) {
     const frameIdList = strip.children_li.split(",");
     if (frameIdList == null || frameIdList === '') { return null; }
 
@@ -346,9 +347,9 @@ class StripCard extends PureComponent {
 
 
   // ---------------------------------------------------------------------------
-  // _______ _    _ _______ __   _ _______                        
-  // |______  \  /  |______ | \  |    |                           
-  // |______   \/   |______ |  \_|    |                           
+  // _______ _    _ _______ __   _ _______
+  // |______  \  /  |______ | \  |    |
+  // |______   \/   |______ |  \_|    |
 
   // _     _ _______ __   _ ______         _______  ______ _______
   // |_____| |_____| | \  | |     \ |      |______ |_____/ |______
@@ -358,12 +359,12 @@ class StripCard extends PureComponent {
 
 
   handle_deleteSceneConfirm() {
-    console.log('handle_deleteSceneCONFIRM');
+    logr.log('handle_deleteSceneCONFIRM');
 
-    //turn on cover
+    // turn on cover
     this.setState({
       cardCoverOn: true,
-      cardCover_messageType: "deleteConfirm"
+      cardCover_messageType: 'deleteConfirm',
       // this is a shared state between 2 CardCovers. Might be bad idea.
       // Update: unified into just ONE CardCover.
       // Note: lightBox and spotlighting is controlled inside the CardCover
@@ -379,7 +380,7 @@ class StripCard extends PureComponent {
     const csrfToken = axh.getCSRFToken();
     axh.destroyStrip(strip.id, csrfToken).then(res => {
       // Destroy successful. Re-fetch.
-      console.log("[Strip destory] response came back");
+      console.log('[Strip destory] response came back');
       // FETCH SCENE
       this.props.handle_fetchScene();
     });
@@ -412,10 +413,9 @@ class StripCard extends PureComponent {
   }
 
   handle_frameSort(idArr) {
-
     const strip = this.props.stripObj;
-    const sortableData = { frame_ids: idArr.join(',') }
-    console.log('ready to send: ' + JSON.stringify(sortableData));
+    const sortableData = { frame_ids: idArr.join(',') };
+    logr.log('ready to send: ' + JSON.stringify(sortableData));
 
     axios({
       method: 'get',
@@ -424,14 +424,14 @@ class StripCard extends PureComponent {
 
     }).then(res => {
       if (res && res.data) {
-        console.log('sucessfully came back: ' + res.data['frame_ids']);
+        logr.log('sucessfully came back: ' + res.data.frame_ids);
         // FETCH SCENE
         this.props.handle_fetchScene();
       }
     }).catch(err => {
-      console.error(JSON.stringify(err));
-      console.error(err.data);
-      console.log(err.data.status);
+      logr.warn(JSON.stringify(err));
+      logr.warn(err.data);
+      logr.warn(err.data.status);
     })
   }
 
@@ -453,9 +453,8 @@ class StripCard extends PureComponent {
     }
   }
 
-
-  removeDragData(e) {
-    console.log('[Drag data clean up]');
+  static removeDragData(e) {
+    logr.log('Drag data clean up');
     if (e.dataTransfer.items) {
       // Use DataTransferItemList interface to remove the drag data
       e.dataTransfer.items.clear();
@@ -474,13 +473,13 @@ class StripCard extends PureComponent {
       if (e.dataTransfer.items.length === 1 && e.dataTransfer.items[0].kind === 'file') { 
 
         const file = e.dataTransfer.items[0].getAsFile();
-        console.log(`File check: file[0].name = ${file.name}: type = ${file.type}`);
+        logr.info(`File check: file[0].name = ${file.name}: type = ${file.type}`);
 
         /////// CHECKPOINT 1: image only
         const allowedImageTypes = ['image/png', 'image/gif', 'image/jpg', 'image/jpeg'];
         if (!allowedImageTypes.includes(file.type)) {
           // exit abruptly. This causes this component to remain in dragAndDrop state
-          this.setState({ cardCover_messageType: "wrongFileType" });
+          this.setState({ cardCover_messageType: 'wrongFileType' });
           return false;
         }
 
@@ -489,7 +488,7 @@ class StripCard extends PureComponent {
         /////// CHECKPOINT 2: valid CSRF token
         if (!csrfToken) {
           // exit abruptly. This causes this component to remain in dragAndDrop state.
-          this.setState({ cardCover_messageType: "invalidForm" });
+          this.setState({ cardCover_messageType: 'invalidForm' });
           return false;
         }
 
@@ -504,16 +503,14 @@ class StripCard extends PureComponent {
             // stop loading state and Re-fetch scene
             this.setState({ loadingFrames: false });
             this.props.handle_fetchScene();
-
           } else {
-            console.error("Frame Create Failed");
+            logr.warn('Invalid response for FrameCreate');
           }
-
         }).catch(error => {
-          console.log(error);
+          logr.warn(error);
           // Well that didn't work!
-          console.log("Something went wrong processing the response");
-          this.setState({ cardCover_messageType: "frameCreateError" });
+          logr.warn('Error while creating frame');
+          this.setState({ cardCover_messageType: 'frameCreateError' });
         });
 
       } else if (e.dataTransfer.items.length > 1) {
@@ -544,7 +541,7 @@ class StripCard extends PureComponent {
         const reqconf = [this.props.stripObj.id, csrfToken];
 
         const recur = frameData_arr => {
-          if (frameData_arr.length == 1) { // tail
+          if (frameData_arr.length === 1) { // tail
             return axh.createFrame(reqconf[0], frameData_arr[0], reqconf[1])
           }
 
@@ -585,7 +582,7 @@ class StripCard extends PureComponent {
 
     // Close
 
-    // [Outdated Note. setSpotlightAll is removed] 
+    // [Outdated Note. setSpotlightAll is removed]
     // DragAndDrop is a bit unique in a sense that it can be initated by SceneEditor, the parent.
     // But it can still be triggered by individual StripCard.
 
@@ -595,13 +592,13 @@ class StripCard extends PureComponent {
   }
 
   // ---------------------------------------------------------------------------
-  // _______ _______ __   _ _     _    /  _____  _______ __   _ _______       
-  // |  |  | |______ | \  | |     |   /  |_____] |_____| | \  | |______ |     
+  // _______ _______ __   _ _     _    /  _____  _______ __   _ _______
+  // |  |  | |______ | \  | |     |   /  |_____] |_____| | \  | |______ |
   // |  |  | |______ |  \_| |_____|  /   |       |     | |  \_| |______ |_____
-  //                                /                                         
-  // _______ _  _  _ _____ _______ _______ _     _ _______ _______            
-  // |______ |  |  |   |      |    |       |_____| |______ |______            
-  // ______| |__|__| __|__    |    |_____  |     | |______ ______|            
+  //                                /
+  // _______ _  _  _ _____ _______ _______ _     _ _______ _______
+  // |______ |  |  |   |      |    |       |_____| |______ |______
+  // ______| |__|__| __|__    |    |_____  |     | |______ ______|
 
   // ---------------------------------------------------------------------------
 
@@ -614,16 +611,15 @@ class StripCard extends PureComponent {
     this.$node.current.setAttribute('style', '');
   }
 
-  openDurationField() {
-    console.log("change duration");
+  static openDurationField() {
+    logr.log('change duration');
   }
 
   openPreview() {
-
     // Play if preview already opened
     if (this.state.previewOn) {
       // Anti-pattern? Using increments to cause it to refresh every setState
-      console.log("Curr playPreviewNow count: " + this.state.playPreviewNow);
+      logr.log('Curr playPreviewNow count: ' + this.state.playPreviewNow);
       this.setState({ playPreviewNow: this.state.playPreviewNow ? this.state.playPreviewNow + 1 : 1 });
     } else {
       this.setState({ previewOn: true });
@@ -693,7 +689,7 @@ class StripCard extends PureComponent {
     }
 
     this.setState(() => {
-      let s = {};
+      const s = {};
       // TODO: WARNING, endModalState(All) is needed in setSpotlight
       //       but...this function calls setSpotlight()...infinite loop.
 
@@ -713,7 +709,7 @@ class StripCard extends PureComponent {
       return s;
     });
 
-    // Note: do not setSpotlight(false) here. 
+    // Note: do not setSpotlight(false) here.
     // It should taken care of, by the component's componentDidUpdate.
 
 
@@ -764,7 +760,7 @@ class StripCard extends PureComponent {
                 fieldUnit="ms"
                 widthSize="2"
                 visualStyle="compact"
-                action={this.handle_updateStrip} 
+                action={this.handle_updateStrip}
               />
             </span>
           </div>
