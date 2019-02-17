@@ -4,13 +4,13 @@ import PropTypes from 'prop-types';
 
 import FrameFeeder from './FrameFeeder';
 import SceneCreateForm from './crud/Form';
-import {SceneCardList} from './crud/Cards';
-import {FrameModal} from './crud/FrameModal';
+import { SceneCardList } from './crud/Cards';
+import { FrameModal } from './crud/FrameModal';
 
 import { LightBox, lightBox_publicFunctions as lb } from './LightBox';
 import Spinner from './Spinner';
 
-//DEMOONLY
+// DEMOONLY
 import { DemoModal,DemoGuideBtn } from './demo/Demo';
 
 // Global param
@@ -39,7 +39,7 @@ class SceneEditor extends Component {
 
       toSceneCardList: null,
       spotlightedAll: false, // lightbox is off by default
-    }
+    };
 
     this.setParentState = this.setParentState.bind(this);
     this.handle_dragAndDrop = this.handle_dragAndDrop.bind(this);

@@ -10,6 +10,7 @@
         "react/prop-types": 0,
         "react/jsx-one-expression-per-line": 0,
         "react/no-multi-comp": 0,
+        "react/destructuring-assignment": 0,
         
         "import/imports-first": ["error", "absolute-first"],
         "import/newline-after-import": "error",
@@ -20,6 +21,7 @@
         "camelcase": 0,
         "arrow-parens": 0,
         "no-param-reassign": 0,
+        "prefer-template": 0,
 
         "jsx-a11y/click-events-have-key-events": 0
       },

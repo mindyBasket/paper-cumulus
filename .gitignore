@@ -7,5 +7,6 @@ env
 
 static-serve
 node_modules
+.vscode
 package-lock.json
 env.json
