@@ -17,6 +17,9 @@ import { DemoModal,DemoGuideBtn } from './demo/Demo';
 const T_STEP = 400; // ms
 const STANDBY_OPACITY = 0.5;
 
+
+console.log('SceneEditor ---- 0.2.5');
+
 // http://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=FrameStage
 
 // ███████╗██████╗ ██╗████████╗ ██████╗ ██████╗ 
@@ -174,8 +177,6 @@ const wrapper = document.getElementById('scene_editor_wrapper');
 // const refNode = wrapper ? document.getElementById("ref").querySelector("#ref-content") : null;
 // const sceneId = wrapper ? refNode.getAttribute("sceneId") : null;
 wrapper ? ReactDOM.render(<SceneEditor/>, wrapper) : null;
-
-console.log("SceneEditor ---- 0.2.1");
 
 export {
 

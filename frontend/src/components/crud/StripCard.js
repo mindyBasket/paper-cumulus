@@ -12,11 +12,13 @@ import { EditableTextField } from '../UI';
 import Spinner from '../Spinner';
 
 // Custom helpers
+import Logr from '../tools/Logr';
 import Helper from '../Helper';
 import XhrHandler from './XHRHandler';
 
+const logr = new Logr('StripCard');
 const h = new Helper();
-const axh = new XhrHandler(); //axios helper
+const axh = new XhrHandler(); // axios helper
 
 // http://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=CallOuts
 
@@ -26,7 +28,7 @@ const axh = new XhrHandler(); //axios helper
 // ██║     ██╔══██║██║     ██║     ██║   ██║██║   ██║   ██║   ╚════██║
 // ╚██████╗██║  ██║███████╗███████╗╚██████╔╝╚██████╔╝   ██║   ███████║
 //  ╚═════╝╚═╝  ╚═╝╚══════╝╚══════╝ ╚═════╝  ╚═════╝    ╚═╝   ╚══════╝
-                                                                                                                                                           
+
 class MenuButton extends Component {
   constructor(props) {
     super(props);
@@ -52,8 +54,8 @@ class MenuButton extends Component {
       >
         {this.props.comingSoon && (
           <span
-            className={"mtooltip" +
-                       (this.state.hover ? " active" : "")}
+            className={'mtooltip' + ' ' +
+                       (this.state.hover ? 'active' : '')}
           >
             Coming soon
           </span>
@@ -79,38 +81,43 @@ class StripMenu extends Component {
     this.r = React.createRef();
 
     this.ignoreBlur = false;
+
     this.refocus = this.refocus.bind(this);
+    this.handle_onBlur = this.handle_onBlur.bind(this);
     this.blurAndAction = this.blurAndAction.bind(this);
   }
 
   componentDidMount() {
-    this.r.current.onblur = (e) => {
-      if (this.props.on) {
-        if (this.ignoreBlur) {
-          this.ignoreBlur = false;
-          this.r.current.focus();
-          // blur will potentially not be ignored the next click
-        } else {
-          this.props.off();
-        }
-      }
-    };
+    this.r.current.onblur = this.handle_onBlur;
   }
 
   componentDidUpdate() {
     if (this.props.on) { this.r.current.focus(); } // focus on
   }
 
-  // if any element inside the menu is clicked focus on
+  handle_onBlur() {
+    logr.info(`BLUR, with ignoreBlur = ${this.ignoreBlur}`);
+    if (this.props.on) {
+      if (this.ignoreBlur) {
+        this.ignoreBlur = false; // assume next blur is not ignored
+        this.r.current.focus();
+      } else {
+        this.props.off();
+      }
+    }
+  }
+
   refocus(e) {
-    // any focuses immediately blurred out. See .focus() line in r.current.onblur
-    // this.r.current.focus(); 
-    this.ignoreBlur = true; // will briefly protect from being blurred
+    // Note: clicking on children of <ul> is considered of blur. 
+    //       To prevent menu from unintentionally closing, set to ignore blur
+    //       if menu wrapper <ul> is clicked.
+    this.ignoreBlur = true;
   }
 
   // blur out to close the menu, and then execute whatever action
   blurAndAction(actionFunc) {
-    this.r.current.blur();
+    // this.r.current.blur(); // this doesn't fire in firefox for some reason :(
+    this.handle_onBlur();
     actionFunc();
   }
 
@@ -124,11 +131,11 @@ class StripMenu extends Component {
           readOnly
         />
         <ul onMouseDown={this.refocus}>
-          <li onClick={() => { this.blurAndAction(this.props.actionOpenUpload) }}>Add Frames</li>
+          <li onClick={() => { this.blurAndAction(this.props.actionOpenUpload); }}>Add Frames</li>
           <li className="disabled wip">Batch Frame Edit</li>
           <li className="disabled wip">Copy</li>
           <li className="disabled wip">Properties</li>
-          <li onClick={() => { this.blurAndAction(this.props.actionDelete) }}>Delete</li>
+          <li onClick={() => { this.blurAndAction(this.props.actionDelete); }}>Delete</li>
         </ul>
       </div>
     )
@@ -177,7 +184,7 @@ function initializeSortable($container, name, callback) {
       }
     });
 
-    console.log(thOrder.join(","));
+    console.log(thOrder.join(','));
     callback(thOrder);
 
   });
