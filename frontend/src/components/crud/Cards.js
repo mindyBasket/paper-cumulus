@@ -4,20 +4,17 @@ import PropTypes from 'prop-types';
 import { Sortable } from '@shopify/draggable';
 import axios from 'axios';
 
-import { FrameCard, FramePreviewCard } from './FrameCard';
 import { StripCard } from './StripCard';
-import { FrameWindow } from './../FlipbookPlayer';
-import { CardCover } from './CardCover';
 
 import { lightBox_publicFunctions as lb } from '../LightBox';
 import { EditableTextField } from '../UI';
-import Spinner from '../Spinner';
 
 // Custom helpers
 import Helper from '../Helper';
-const h = new Helper();
 import XhrHandler from './XHRHandler';
-const axh = new XhrHandler(); //axios helper
+
+const h = new Helper();
+const axh = new XhrHandler(); // axios helper
 
 function pub_handle_fetchScene() {
   // bind to SceneCardList
@@ -30,101 +27,58 @@ function pub_handle_fetchScene() {
 // ╚════██║██║   ██║██╔══██╗   ██║   ██╔══██║██╔══██╗██║     ██╔══╝  
 // ███████║╚██████╔╝██║  ██║   ██║   ██║  ██║██████╔╝███████╗███████╗
 // ╚══════╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚═════╝ ╚══════╝╚══════╝
-                                                                  
-     
-function initializeSortable($container, name, callback){
-    if ($container == null) {return false;}
 
-    const frameSortable = new Sortable($container, {
-        draggable: '.thumb',
-        delay: 200,
-        mirror: {
-            appendTo: document.querySelector('body'),
-            //appendTo: $container.getAttribute("class"),
-            constrainDimensions: true,
-        },
-        scrollable: {
-            speed: 0,
-            sensitivity: 0
-        }
+function initializeSortable_Scene($container, name, callback) {
+  if ($container == null) { return false; }
+
+  console.log('initialize sortable for StripCards');
+
+  const targetName = '.strip_card';
+  const StripSortable = new Sortable($container, {
+    draggable: targetName,
+    delay: 300,
+    mirror: {
+      appendTo: document.querySelector('body'),
+      // appendTo: $container.getAttribute("class"),
+      constrainDimensions: true,
+    },
+    scrollable: {
+      speed: 0,
+      sensitivity: 0,
+    },
+  });
+
+  // because this takes much longer delay, add animated indicator
+  // $container.querySelectorAll(targetName).forEach((stripCard)=>{
+
+  // });
+
+  StripSortable.on('sortable:start', (e) => {
+    //tilt the chosen
+    // const pickedUp = document.querySelector(targetName+'.draggable-mirror');
+    const childBeingDragged = e.startContainer.querySelector(".draggable-source--is-dragging");
+    if (childBeingDragged) {
+      e.cancel();
+    }
+  });
+  StripSortable.on('sortable:stop', () => {
+    //get new order
+    let thOrder = [];
+    $container.querySelectorAll(targetName).forEach(th => {
+      let thclass = th.getAttribute("class");
+      let id = th.getAttribute("stripid");
+
+      if (!thclass.includes("draggable")) {
+        thOrder.push(id);
+      } else if (thclass.includes("draggable-source")) {
+        thOrder.push(id);
+      }
     });
 
-    frameSortable.on('sortable:start', () => {
-        //tilt the chosen
-        const pickedUp = document.querySelector('.thumb.draggable-mirror');
-    });
-    frameSortable.on('sortable:stop', () => {
-        //get new order
-        let thOrder = [];
-        $container.querySelectorAll(".thumb").forEach(th=>{
-            let thclass = th.getAttribute("class");
-            let id = th.getAttribute("frameid");
+    console.log(thOrder.join(","));
+    callback(thOrder);
 
-            if (!thclass.includes("draggable")){
-                thOrder.push(id);
-            } else if (thclass.includes("draggable-source")){
-                thOrder.push(id);
-            }
-        });
-
-        console.log(thOrder.join(","));
-        callback(thOrder);
-
-    });
-}
-
-
-function initializeSortable_Scene($container, name, callback){
-    if ($container == null) {return false;}
-
-    console.log("initialize sortable for StripCards");
-
-    const targetName = '.strip_card';
-    const StripSortable = new Sortable($container, {
-        draggable: targetName,
-        delay: 300,
-        mirror: {
-            appendTo: document.querySelector('body'),
-            //appendTo: $container.getAttribute("class"),
-            constrainDimensions: true,
-        },
-        scrollable: {
-            speed:0,
-            sensitivity: 0
-        }
-    });
-
-    // because this takes much longer delay, add animated indicator
-    // $container.querySelectorAll(targetName).forEach((stripCard)=>{
-
-    // });
-
-    StripSortable.on('sortable:start', (e) => {
-        //tilt the chosen
-        // const pickedUp = document.querySelector(targetName+'.draggable-mirror');
-        const childBeingDragged = e.startContainer.querySelector(".draggable-source--is-dragging");
-        if (childBeingDragged){
-            e.cancel();
-        }
-    });
-    StripSortable.on('sortable:stop', () => {
-        //get new order
-        let thOrder = [];
-        $container.querySelectorAll(targetName).forEach(th=>{
-            let thclass = th.getAttribute("class");
-            let id = th.getAttribute("stripid");
-
-            if (!thclass.includes("draggable")){
-                thOrder.push(id);
-            } else if (thclass.includes("draggable-source")){
-                thOrder.push(id);
-            }
-        });
-
-        console.log(thOrder.join(","));
-        callback(thOrder);
-
-    });
+  });
 }
 
 
@@ -247,7 +201,6 @@ class SceneCardList extends Component {
   // returns list of frame objects in order referencing children_li
 
   reorderedStrips(scene) {
-
     if (scene && scene.hasOwnProperty('strips') && scene.strips.length > 0) {
 
       const stripIdList = scene.children_li.split(",");
