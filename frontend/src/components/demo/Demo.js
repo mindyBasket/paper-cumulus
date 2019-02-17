@@ -307,8 +307,8 @@ class DemoGuideBtn extends PureComponent {
 
   render() {
     return (
-      <button 
-        className='demoguide'
+      <a  
+        className='demoguide a_button'
         onClick={this.openDemoMessage}
         ref={this.r}
       >
@@ -318,7 +318,7 @@ class DemoGuideBtn extends PureComponent {
         <DemoModal on={this.state.messageOpen}
           close={this.closeDemoMessage}
           messageNum={this.props.num} />
-      </button>
+      </a>
     )
   }
 

@@ -20,11 +20,14 @@ a:hover{
 
 a.a_button,
 button{
+	cursor: pointer;
+
 	padding: 10px 15px;
 	margin: 5px;
 	border: 0px solid;
 	border-radius: 8px 18px;
 	border-bottom: 4px solid #615154;
+	
 
 	background-color: #826e72;
 
@@ -70,6 +73,8 @@ button.disabled{
 
 
 .button.flat{
+	cursor: pointer;
+	
 	padding: 7px 12px;
 	border: 1px solid #da8d8d;
 	border-radius: 4px 10px;

@@ -1834,6 +1834,7 @@ a:hover {
 
 a.a_button,
 button {
+  cursor: pointer;
   padding: 10px 15px;
   margin: 5px;
   border: 0px solid;
@@ -1881,6 +1882,7 @@ button.disabled {
 }
 
 .button.flat {
+  cursor: pointer;
   padding: 7px 12px;
   border: 1px solid #da8d8d;
   border-radius: 4px 10px;
@@ -2069,7 +2071,7 @@ input[type=text] {
   opacity: 1;
 }
 
-.demoguide {
+.a_button.demoguide {
   /* button*/
   background-color: #cbe8b8;
   color: #64b38b;
@@ -2077,7 +2079,7 @@ input[type=text] {
   padding: 5px 13px 5px 8px;
 }
 
-.demoguide:hover {
+.a_button.demoguide:hover {
   background-color: #a8cf8e;
   color: #15545f;
 }
