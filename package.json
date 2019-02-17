@@ -6,7 +6,7 @@
   "scripts": {
     "setvar_w": "set DJANGO_SETTINGS_MODULE=proj_cumulus.settings.local",
     "setvar_m": "export DJANGO_SETTINGS_MODULE=proj_cumulus.settings.local",
-    "sass": "cd static_storage/css_static/ && sass --watch input.scss output.css",
+    "sass": "cd static-storage/css_static/ && sass --watch input.scss output.css",
     "dev": "webpack --mode development --config webpack.config.js",
     "build": "webpack --mode production --config webpack.prod.config.js",
     "analyzer": "webpack --mode development --config webpack-analyzer.config.js",
@@ -37,7 +37,7 @@
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-jsx-a11y": "^6.2.1",
     "eslint-plugin-react": "^7.12.4",
-    "prop-types": "^15.6.2",
+    
     "terser-webpack-plugin": "^1.1.0",
     "weak-key": "^1.0.1",
     "webpack": "^4.19.0",
@@ -47,6 +47,7 @@
   "dependencies": {
     "react": "^16.5.1",
     "react-dom": "^16.5.1",
+    "prop-types": "^15.6.2",
     "@shopify/draggable": "^1.0.0-beta.8",
     "axios": "^0.18.0",
     "npm": "^6.4.1"

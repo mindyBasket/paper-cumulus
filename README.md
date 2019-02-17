@@ -58,7 +58,9 @@ This project does not run on node but npm is used to take advantage of npm packa
 ### Setup Sass
 This project compiles a single master .css (called `output.css`) using sass. Sass continuously watches a target folder and compiles output when changes are detected.
 
-1. Setup Sass at section "Install Anywhere (Standalone)" at their [install page](https://sass-lang.com/install). Make sure you add Sass to your PATH variable.
+1. Setup Sass at section "Install Anywhere (Standalone)" at their [install page](https://sass-lang.com/install).
+2. Unzip the folder somewhere you can find it. For example: `c:\dart-sass`
+3. Add Sass to your PATH variable. Sass provides [instructions](https://katiek2.github.io/path-doc/) 
 2. cd into `static_storage/css_static/`.
 3. Run sass: `sass --watch input.scss output.css`
 
