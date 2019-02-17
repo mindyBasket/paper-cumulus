@@ -110,7 +110,9 @@ def get_url_by_name(request, *args, **kwargs):
     pk = kwargs['pk']
     print("-------------------------------------------")
     print ("Ready to respond? {} : {} ".format(url_name, pk))
-    return JsonResponse({'url': reverse_lazy(url_name, kwargs={'pk': pk})  })  
+
+    # TODO: very confusing variable names switching between pk to id64
+    return JsonResponse({'url': reverse_lazy(url_name, kwargs={'id64': pk})  })  
 
 
 

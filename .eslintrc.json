@@ -10,13 +10,17 @@
         "react/prop-types": 0,
         "react/jsx-one-expression-per-line": 0,
         "react/no-multi-comp": 0,
-        "no-underscore-dangle": 0,
+        
         "import/imports-first": ["error", "absolute-first"],
         "import/newline-after-import": "error",
+
+        "no-underscore-dangle": 0,
         "linebreak-style": ["error", "windows"],
         "no-tabs": 0,
+        "camelcase": 0,
         "arrow-parens": 0,
         "no-param-reassign": 0,
+
         "jsx-a11y/click-events-have-key-events": 0
       },
     "globals": {

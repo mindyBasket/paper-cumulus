@@ -48,8 +48,6 @@ urlpatterns = [
     re_path(r'^frame/(?P<pk>\d+)/update/$', views.FrameUpdateView.as_view(), name='frame-update'),
     re_path(r'^frame/(?P<pk>\d+)/delete/$', views.frame_delete, name='frame-delete'), #function view
 
-
-
     #ajax calls
     re_path(r'^ajax/spawn/create_scene/(?P<scene_pk>\d+)/$', views.spawn_create_scene, name='spawn__create_scene'), 
     re_path(r'^ajax/load_more_strips/$', views.load_more_strips, name='load_more_strips'),
@@ -65,7 +63,7 @@ urlpatterns = [
     re_path(r'^json_partials/frame_container/(?P<pk>\d+)/$', views_jsonpr.return_thumbnail_partial, name='json_partial__frame_thumb_container'), 
 
     # React helper
-    path('rh/get_url_by_name/<slug:url_name>/<int:pk>/', views_jsonpr.get_url_by_name, name='reacthelper__get-url-by-name'),
+    path('rh/get_url_by_name/<slug:url_name>/<str:pk>/', views_jsonpr.get_url_by_name, name='reacthelper__get-url-by-name'),
     path('rh/test_thumbnail/<int:frame_pk>/', views_jsonpr.test_thumbnail, name="reacthelper__test-thumbnail"),
 ]
 

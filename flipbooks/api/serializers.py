@@ -156,6 +156,7 @@ class SceneModelSerializer(serializers.ModelSerializer):
         model = Scene
         fields = [
             'id',
+            'id64',
             'chapter',
             'children_li',
             'name',
