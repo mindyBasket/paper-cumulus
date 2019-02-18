@@ -1,14 +1,14 @@
 import React, { PureComponent } from 'react';
 import { lightBox_publicFunctions as lb } from '../LightBox';
 
-//http://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=Jxs%20Msg
+// http://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=Jxs%20Msg
 
-//      ██╗███████╗██╗  ██╗    ███╗   ███╗███████╗ ██████╗ 
-//      ██║██╔════╝╚██╗██╔╝    ████╗ ████║██╔════╝██╔════╝ 
+//      ██╗███████╗██╗  ██╗    ███╗   ███╗███████╗ ██████╗
+//      ██║██╔════╝╚██╗██╔╝    ████╗ ████║██╔════╝██╔════╝
 //      ██║███████╗ ╚███╔╝     ██╔████╔██║███████╗██║  ███╗
 // ██   ██║╚════██║ ██╔██╗     ██║╚██╔╝██║╚════██║██║   ██║
 // ╚█████╔╝███████║██╔╝ ██╗    ██║ ╚═╝ ██║███████║╚██████╔╝
-//  ╚════╝ ╚══════╝╚═╝  ╚═╝    ╚═╝     ╚═╝╚══════╝ ╚═════╝ 
+//  ╚════╝ ╚══════╝╚═╝  ╚═╝    ╚═╝     ╚═╝╚══════╝ ╚═════╝
 
 const getJSXDemoMessage = (msgIndex, staticroot) => {
   staticroot = staticroot || '/static/';
@@ -22,11 +22,11 @@ const getJSXDemoMessage = (msgIndex, staticroot) => {
     [
       <div id="msg1">
         <h3>Welcome!</h3>
-        <img src={`${staticroot}img/tutorial/tut01a_flipbook.jpg`} />
+        {/* <img src={`${staticroot}img/tutorial/tut01a_flipbook.jpg`} /> */}
         <p>
           This app makes shareable instances of <strong>"flipbook"</strong>.
 					It is somewhere <strong>between a movie and a storyboard</strong>,
-					an experimenal way to tell a story scenamatically but at low-cost.
+					an experimenal way to tell a story using fewer images but still look scenamatic.
         </p>
       </div>
       ,
@@ -35,14 +35,14 @@ const getJSXDemoMessage = (msgIndex, staticroot) => {
         <img src={`${staticroot}img/tutorial/tut01b_download.jpg`} />
         <p>
           This demo chapter contains an <strong>incomplete stop-motion
-					animation</strong>. Images used to complete it can be
-					<strong>downloaded</strong>. Or, you can experiment with your own images.
+					animation</strong>. Images used to complete it can be <strong>downloaded</strong>.
+          Or, you can experiment with your own images.
 				</p>
       </div>
       ,
       <div id="msg3">
         <h3>Getting started</h3>
-        <img src={`${staticroot}img/tutorial/tut01c.jpg`} />
+        <img src={`${staticroot}img/tutorial/tut01c_2.jpg`} />
         <p>
           Click <strong>'View from the start'</strong> to see what a flipbook looks like for this
 					demo chapter.
@@ -105,7 +105,7 @@ const getJSXDemoMessage = (msgIndex, staticroot) => {
 					makes a <strong><span className="bigtext-3 fas fa-video" />scene
 					</strong>.
 				</p>
-        <img src={`${staticroot}img/tutorial/tut03b_chapter.jpg`} />
+        {/* <img src={`${staticroot}img/tutorial/tut03b_chapter.jpg`} /> */}
         <p>
           A collection of <span className="bigtext-3 fas fa-video" />scenes makes
 					a <strong>chapter</strong>.
