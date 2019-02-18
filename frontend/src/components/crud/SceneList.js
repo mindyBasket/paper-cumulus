@@ -23,8 +23,8 @@ function pub_handle_fetchScene() {
 
 // ███████╗ ██████╗ ██████╗ ████████╗ █████╗ ██████╗ ██╗     ███████╗
 // ██╔════╝██╔═══██╗██╔══██╗╚══██╔══╝██╔══██╗██╔══██╗██║     ██╔════╝
-// ███████╗██║   ██║██████╔╝   ██║   ███████║██████╔╝██║     █████╗  
-// ╚════██║██║   ██║██╔══██╗   ██║   ██╔══██║██╔══██╗██║     ██╔══╝  
+// ███████╗██║   ██║██████╔╝   ██║   ███████║██████╔╝██║     █████╗
+// ╚════██║██║   ██║██╔══██╗   ██║   ██╔══██║██╔══██╗██║     ██╔══╝
 // ███████║╚██████╔╝██║  ██║   ██║   ██║  ██║██████╔╝███████╗███████╗
 // ╚══════╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚═════╝ ╚══════╝╚══════╝
 
@@ -84,10 +84,10 @@ function initializeSortable_Scene($container, name, callback) {
 
 // ███████╗ ██████╗███████╗███╗   ██╗███████╗██╗     ██╗███████╗████████╗
 // ██╔════╝██╔════╝██╔════╝████╗  ██║██╔════╝██║     ██║██╔════╝╚══██╔══╝
-// ███████╗██║     █████╗  ██╔██╗ ██║█████╗  ██║     ██║███████╗   ██║   
-// ╚════██║██║     ██╔══╝  ██║╚██╗██║██╔══╝  ██║     ██║╚════██║   ██║   
-// ███████║╚██████╗███████╗██║ ╚████║███████╗███████╗██║███████║   ██║   
-// ╚══════╝ ╚═════╝╚══════╝╚═╝  ╚═══╝╚══════╝╚══════╝╚═╝╚══════╝   ╚═╝   
+// ███████╗██║     █████╗  ██╔██╗ ██║█████╗  ██║     ██║███████╗   ██║
+// ╚════██║██║     ██╔══╝  ██║╚██╗██║██╔══╝  ██║     ██║╚════██║   ██║
+// ███████║╚██████╗███████╗██║ ╚████║███████╗███████╗██║███████║   ██║
+// ╚══════╝ ╚═════╝╚══════╝╚═╝  ╚═══╝╚══════╝╚══════╝╚═╝╚══════╝   ╚═╝
 
 class SceneCardList extends Component {
 
@@ -139,11 +139,6 @@ class SceneCardList extends Component {
         this.handle_stripSort);
       this.sortablified = true;
     }
-
-
-
-
-
   }
 
   handle_fetchScene() {
@@ -155,12 +150,11 @@ class SceneCardList extends Component {
 
 
   handle_stripSort(idArr) {
-
     // TODO: this function is very similar to handle_frameSort. BAD!
 
     const sceneId = this.props.sceneId;
-    const sortableData = { strip_ids: idArr.join(",") }
-    console.log("ready to send: " + JSON.stringify(sortableData));
+    const sortableData = { strip_ids: idArr.join(',') }
+    console.log('ready to send: ' + JSON.stringify(sortableData));
 
     axios({
       method: 'get',
@@ -180,7 +174,7 @@ class SceneCardList extends Component {
 
 
   // takes only one key from newData. Rest will be ignored for now.
-  appendData(data, newData) {
+  static appendData(data, newData) {
     console.log('New Data looks like this: ' + JSON.stringify(newData.newStrip));
 
     if (newData == null || Object.keys(newData).length === 0) {
@@ -189,9 +183,11 @@ class SceneCardList extends Component {
     }
 
     switch (Object.keys(newData)[0]) {
-      case "newStrip":
-        //add it to list of strips
-        if (data.hasOwnProperty("strips")) { data.strips.push(newData.newStrip) }
+      case 'newStrip':
+        // add it to list of strips
+        if (data.hasOwnProperty('strips')) { data.strips.push(newData.newStrip); }
+        break;
+
       default:
         return data;
     }
@@ -200,17 +196,17 @@ class SceneCardList extends Component {
 
   // returns list of frame objects in order referencing children_li
 
-  reorderedStrips(scene) {
+  static reorderedStrips(scene) {
     if (scene && scene.hasOwnProperty('strips') && scene.strips.length > 0) {
 
-      const stripIdList = scene.children_li.split(",");
+      const stripIdList = scene.children_li.split(',');
       if (stripIdList == null || stripIdList === '') {
         // children_li could be empty even if it has valid children
-        return scene.strips
+        return scene.strips;
       }
 
-      let stripOrderedArr = Array.apply(null, Array(stripIdList.length));
-      let stripLeftOver = [];
+      const stripOrderedArr = Array.apply(null, Array(stripIdList.length));
+      const stripLeftOver = [];
 
       scene.strips.forEach((st) => {
         const insertAt = stripIdList.indexOf(String(st.id));
@@ -228,11 +224,9 @@ class SceneCardList extends Component {
       }
 
       return stripOrderedArr;
-    } else {
-      return [];
     }
 
-
+    return [];
   }
 
 
@@ -264,13 +258,12 @@ class SceneCardList extends Component {
                     handle_fetchScene={this.handle_fetchScene}
                     setState_LightBox={this.props.setState_LightBox}
 
-                    key={"strip" + strip.id} 
+                    key={'strip' + strip.id}
                   />
                 );
               }
 
               return null;
-
             })}
           </ul>
         )}

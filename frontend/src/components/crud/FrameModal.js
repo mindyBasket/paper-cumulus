@@ -1,8 +1,8 @@
-import React, { Component, PureComponent } from "react";
-import ReactDOM from "react-dom";
+import React, { Component, PureComponent } from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from "prop-types";
 
-import { pub_handle_fetchScene } from "./Cards";
+import { pub_handle_fetchScene } from "./SceneList";
 import { FrameImageCover } from "./ModalCover";
 
 import { lightBox_publicFunctions as lb } from "./../LightBox";

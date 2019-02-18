@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 
-import FrameFeeder from './FrameFeeder';
+// import FrameFeeder from './FrameFeeder';
 import SceneCreateForm from './crud/Form';
-import { SceneCardList } from './crud/Cards';
+import { SceneCardList } from './crud/SceneList';
 import { FrameModal } from './crud/FrameModal';
 
 import { LightBox, lightBox_publicFunctions as lb } from './LightBox';
