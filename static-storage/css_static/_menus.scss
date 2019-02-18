@@ -38,10 +38,15 @@
 
 	border-bottom: 1px solid #685656;
 	margin: 0;
-	padding: 10px;
+	padding: 0;
 
 	color: #ede5e5;
+	a {
+		display:block;
+		padding: 10px;
 
+		color: #ede5e5;
+	}
 }
 
 
@@ -63,6 +68,10 @@
 	position: relative;
 	cursor: default;
 	color: #4a3d3d;
+
+	a{
+		color: #4a3d3d;
+	}
 }
 .popup_menu ul li.disabled:hover{
 	background-color: transparent;

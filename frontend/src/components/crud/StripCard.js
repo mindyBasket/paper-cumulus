@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { Sortable } from '@shopify/draggable';
 import axios from 'axios';
 
+import { StripMenu, PopupMenuItem } from './widgets/PopupMenu';
 import { FrameCard, FramePreviewCard } from './FrameCard';
 import { CardCover } from './CardCover';
 
@@ -67,81 +68,6 @@ class MenuButton extends Component {
 }
 
 
-// http://patorjk.com/software/taag/#p=display&f=Cyberlarge&t=PopupMenu
-// ---------------------------------------------------------------------------
-//  _____   _____   _____  _     _  _____  _______ _______ __   _ _     _
-// |_____] |     | |_____] |     | |_____] |  |  | |______ | \  | |     |
-// |       |_____| |       |_____| |       |  |  | |______ |  \_| |_____|
-
-// ---------------------------------------------------------------------------
-
-class StripMenu extends Component {
-  /* behaves similarly to CardCover */
-  constructor(props) {
-    super(props);
-    this.r = React.createRef();
-
-    this.ignoreBlur = false;
-
-    this.refocus = this.refocus.bind(this);
-    this.handle_onBlur = this.handle_onBlur.bind(this);
-    this.blurAndAction = this.blurAndAction.bind(this);
-  }
-
-  componentDidMount() {
-    this.r.current.onblur = this.handle_onBlur;
-  }
-
-  componentDidUpdate() {
-    if (this.props.on) { this.r.current.focus(); } // focus on
-  }
-
-  handle_onBlur() {
-    logr.info(`BLUR, with ignoreBlur = ${this.ignoreBlur}`);
-    if (this.props.on) {
-      if (this.ignoreBlur) {
-        this.ignoreBlur = false; // assume next blur is not ignored
-        this.r.current.focus();
-      } else {
-        this.props.off();
-      }
-    }
-  }
-
-  refocus(e) {
-    // Note: clicking on children of <ul> is considered of blur.
-    //       To prevent menu from unintentionally closing, set to ignore blur
-    //       if menu wrapper <ul> is clicked.
-    this.ignoreBlur = true;
-  }
-
-  // blur out to close the menu, and then execute whatever action
-  blurAndAction(actionFunc) {
-    // this.r.current.blur(); // this doesn't fire in firefox for some reason :(
-    this.handle_onBlur();
-    actionFunc();
-  }
-
-  render() {
-    return (
-      <div className={'popup_menu ' + (this.props.on ? 'active' : '')}>
-        <input
-          className="untouchable"
-          type="text"
-          ref={this.r}
-          readOnly
-        />
-        <ul onMouseDown={this.refocus}>
-          <li onClick={() => { this.blurAndAction(this.props.actionOpenUpload); }}>Add Frames</li>
-          <li className="disabled wip">Batch Frame Edit</li>
-          <li className="disabled wip">Copy</li>
-          <li className="disabled wip">Properties</li>
-          <li onClick={() => { this.blurAndAction(this.props.actionDelete); }}>Delete</li>
-        </ul>
-      </div>
-    );
-  }
-}
 
 // ███████╗ ██████╗ ██████╗ ████████╗ █████╗ ██████╗ ██╗     ███████╗
 // ██╔════╝██╔═══██╗██╔══██╗╚══██╔══╝██╔══██╗██╔══██╗██║     ██╔════╝
@@ -286,7 +212,7 @@ class StripCard extends PureComponent {
   // TODO: this function doesn't consider "ignored" field of each Frame. 
   //       Updated version of function of same name [BAD. Don't leave it this way]
   //       in FlipbookPlayer.js
-  static reorderFrames(strip) {
+  reorderFrames(strip) {
     const frameIdList = strip.children_li.split(",");
     if (frameIdList == null || frameIdList === '') { return null; }
 
@@ -359,7 +285,7 @@ class StripCard extends PureComponent {
 
 
   handle_deleteSceneConfirm() {
-    logr.log('handle_deleteSceneCONFIRM');
+    logr.info('handle_deleteSceneCONFIRM');
 
     // turn on cover
     this.setState({
@@ -453,8 +379,8 @@ class StripCard extends PureComponent {
     }
   }
 
-  static removeDragData(e) {
-    logr.log('Drag data clean up');
+  removeDragData(e) {
+    logr.info('Drag data clean up');
     if (e.dataTransfer.items) {
       // Use DataTransferItemList interface to remove the drag data
       e.dataTransfer.items.clear();
@@ -611,15 +537,15 @@ class StripCard extends PureComponent {
     this.$node.current.setAttribute('style', '');
   }
 
-  static openDurationField() {
-    logr.log('change duration');
+  openDurationField() {
+    logr.info('change duration');
   }
 
   openPreview() {
     // Play if preview already opened
     if (this.state.previewOn) {
       // Anti-pattern? Using increments to cause it to refresh every setState
-      logr.log('Curr playPreviewNow count: ' + this.state.playPreviewNow);
+      logr.info('Curr playPreviewNow count: ' + this.state.playPreviewNow);
       this.setState({ playPreviewNow: this.state.playPreviewNow ? this.state.playPreviewNow + 1 : 1 });
     } else {
       this.setState({ previewOn: true });
@@ -840,7 +766,13 @@ class StripCard extends PureComponent {
           off={() => { this.endModalState('menuOn'); }}
           actionOpenUpload={this.handle_openUploadCover}
           actionDelete={this.handle_deleteSceneConfirm}
-        />
+        >
+          <PopupMenuItem action={this.handle_openUploadCover}>Add Frames</PopupMenuItem>
+          <PopupMenuItem>Batch Frame Edit</PopupMenuItem>
+          <PopupMenuItem>Copy</PopupMenuItem>
+          <PopupMenuItem>Settings</PopupMenuItem>
+          <PopupMenuItem action={this.handle_deleteSceneConfirm}>Delete</PopupMenuItem>
+        </StripMenu>
 
       </li>
     )

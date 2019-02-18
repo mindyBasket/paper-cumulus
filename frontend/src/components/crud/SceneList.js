@@ -174,7 +174,7 @@ class SceneCardList extends Component {
 
 
   // takes only one key from newData. Rest will be ignored for now.
-  static appendData(data, newData) {
+  appendData(data, newData) {
     console.log('New Data looks like this: ' + JSON.stringify(newData.newStrip));
 
     if (newData == null || Object.keys(newData).length === 0) {
@@ -196,7 +196,7 @@ class SceneCardList extends Component {
 
   // returns list of frame objects in order referencing children_li
 
-  static reorderedStrips(scene) {
+  reorderedStrips(scene) {
     if (scene && scene.hasOwnProperty('strips') && scene.strips.length > 0) {
 
       const stripIdList = scene.children_li.split(',');

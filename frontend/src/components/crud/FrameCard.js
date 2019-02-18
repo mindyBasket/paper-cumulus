@@ -1,11 +1,10 @@
 import React, { Component, PureComponent } from "react";
-import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 
-import { Sortable } from '@shopify/draggable';
 import Spinner from "./../Spinner";
 import { MenuButton } from "./../UI";
 
+import { FrameMenu, PopupMenuItem } from './widgets/PopupMenu';
 import { FrameWindow } from "./../FlipbookPlayer";
 import { pub_handle_fetchScene } from "./SceneList";
 import { pub_FrameModal_openModal } from "./FrameModal";
@@ -18,7 +17,6 @@ import Helper from "./../Helper"
 const h = new Helper();
 import XhrHandler from "./XHRHandler"
 const axh = new XhrHandler(); //axios helper
-
 
 
 // http://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=popup%0Amenu
@@ -56,7 +54,7 @@ class FrameMenu extends Component {
         if (this.ignoreBlur) {
           this.ignoreBlur = false;
           this.r.current.focus();
-          //blur will potentially not be ignored the next click
+          // blur will potentially not be ignored the next click
         } else {
           this.props.off();
         }
@@ -475,7 +473,7 @@ class FrameCard extends Component {
         <div className="slashes" />
 
         <FrameMenu
-          on={this.state.menuOn} 
+          on={this.state.menuOn}
           off={() => { this.endModalState('menuOn'); }}
           actionDelete={this.handle_deleteFrameConfirm}
         />

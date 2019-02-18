@@ -854,6 +854,11 @@ body {
   list-style-type: none;
   border-bottom: 1px solid #685656;
   margin: 0;
+  padding: 0;
+  color: #ede5e5;
+}
+.popup_menu ul li a {
+  display: block;
   padding: 10px;
   color: #ede5e5;
 }
@@ -876,6 +881,9 @@ body {
 .popup_menu ul li.disabled {
   position: relative;
   cursor: default;
+  color: #4a3d3d;
+}
+.popup_menu ul li.disabled a {
   color: #4a3d3d;
 }
 
