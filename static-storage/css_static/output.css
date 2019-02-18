@@ -1305,7 +1305,9 @@ ul.list_strips li.spotlighted {
 }
 
 .thumb.dying .frame_image {
-  opacity: 0.5;
+  opacity: 0.3;
+  -webkit-filter: grayscale(1);
+  filter: grayscale(1);
 }
 
 .thumb .overlay_box .mini_menu {

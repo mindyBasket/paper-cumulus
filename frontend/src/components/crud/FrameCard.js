@@ -16,114 +16,94 @@ import { FrameStage } from "./../FlipbookPlayer";
 import Helper from "./../Helper"
 const h = new Helper();
 import XhrHandler from "./XHRHandler"
-const axh = new XhrHandler(); //axios helper
+const axh = new XhrHandler(); // axios helper
 
+
+
+
+// class FrameMenu extends Component {
+//   // TODO: this is extremely similar to StripMenu...
+//   //		 Everything is the same except the render
+
+//   constructor(props) {
+//     super(props);
+//     this.r = React.createRef();
+
+//     this.ignoreBlur = false;
+//     this.refocus = this.refocus.bind(this);
+//     this.blurAndAction = this.blurAndAction.bind(this);
+//   }
+
+//   componentDidMount() {
+//     this.r.current.onblur = (e) => {
+//       if (this.props.on) {
+//         if (this.ignoreBlur) {
+//           this.ignoreBlur = false;
+//           this.r.current.focus();
+//           // blur will potentially not be ignored the next click
+//         } else {
+//           this.props.off();
+//         }
+//       }
+//     };
+//   }
+//   componentDidUpdate(prevProps, prevState, snapshot) {
+//     if (this.props.on) { this.r.current.focus() } //focus on
+//   }
+
+//   // if any element inside the menu is clicked focus on
+//   refocus(e) {
+//     // any focuses immediately blurred out. See .focus() line in r.current.onblur
+//     //this.r.current.focus(); 
+//     this.ignoreBlur = true; // will briefly protect from being blurred
+//   }
+
+//   //blur out to close the menu, and then execute whatever action 
+//   blurAndAction(e, actionFunc) {
+//     // Note: you may have noticed that "Detail" menu button does not have any action associated.
+//     //       it is because this entire popup menu is considered a hitbox for frame thumbnail. 
+//     //       And clicking on thumbnail opens frame detail.
+//     e.stopPropagation();
+//     this.r.current.blur();
+//     actionFunc();
+//   }
+
+//   render() {
+//     return (
+//       <div className={"popup_menu " + (this.props.on ? "active" : "")}>
+//         <input className="untouchable" type="text"
+//           ref={this.r}
+//           readOnly />
+//         <ul onMouseDown={this.refocus}>
+//           <li onClick={(e) => { this.r.current.blur(); }}>
+//             <span className="bigtext-3 fas fa-sticky-note"></span> Detail</li>
+//           <li onClick={(e) => { this.blurAndAction(e, this.props.actionDelete) }}>Delete</li>
+//         </ul>
+//       </div>
+//     )
+//   }
+// }
 
 // http://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=popup%0Amenu
-
-// ██████╗  ██████╗ ██████╗ ██╗   ██╗██████╗ 
-// ██╔══██╗██╔═══██╗██╔══██╗██║   ██║██╔══██╗
-// ██████╔╝██║   ██║██████╔╝██║   ██║██████╔╝
-// ██╔═══╝ ██║   ██║██╔═══╝ ██║   ██║██╔═══╝ 
-// ██║     ╚██████╔╝██║     ╚██████╔╝██║     
-// ╚═╝      ╚═════╝ ╚═╝      ╚═════╝ ╚═╝     
-
-// ███╗   ███╗███████╗███╗   ██╗██╗   ██╗    
-// ████╗ ████║██╔════╝████╗  ██║██║   ██║    
-// ██╔████╔██║█████╗  ██╔██╗ ██║██║   ██║    
-// ██║╚██╔╝██║██╔══╝  ██║╚██╗██║██║   ██║    
-// ██║ ╚═╝ ██║███████╗██║ ╚████║╚██████╔╝    
-// ╚═╝     ╚═╝╚══════╝╚═╝  ╚═══╝ ╚═════╝     
-
-class FrameMenu extends Component {
-  // TODO: this is extremely similar to StripMenu...
-  //		 Everything is the same except the render
-
-  constructor(props) {
-    super(props);
-    this.r = React.createRef();
-
-    this.ignoreBlur = false;
-    this.refocus = this.refocus.bind(this);
-    this.blurAndAction = this.blurAndAction.bind(this);
-  }
-
-  componentDidMount() {
-    this.r.current.onblur = (e) => {
-      if (this.props.on) {
-        if (this.ignoreBlur) {
-          this.ignoreBlur = false;
-          this.r.current.focus();
-          // blur will potentially not be ignored the next click
-        } else {
-          this.props.off();
-        }
-      }
-    };
-  }
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    if (this.props.on) { this.r.current.focus() } //focus on
-  }
-
-  // if any element inside the menu is clicked focus on
-  refocus(e) {
-    // any focuses immediately blurred out. See .focus() line in r.current.onblur
-    //this.r.current.focus(); 
-    this.ignoreBlur = true; // will briefly protect from being blurred
-  }
-
-  //blur out to close the menu, and then execute whatever action 
-  blurAndAction(e, actionFunc) {
-    // Note: you may have noticed that "Detail" menu button does not have any action associated.
-    //       it is because this entire popup menu is considered a hitbox for frame thumbnail. 
-    //       And clicking on thumbnail opens frame detail.
-    e.stopPropagation();
-    this.r.current.blur();
-    actionFunc();
-  }
-
-  render() {
-    return (
-      <div className={"popup_menu " + (this.props.on ? "active" : "")}>
-        <input className="untouchable" type="text"
-          ref={this.r}
-          readOnly />
-        <ul onMouseDown={this.refocus}>
-          <li onClick={(e) => { this.r.current.blur(); }}>
-            <span className="bigtext-3 fas fa-sticky-note"></span> Detail</li>
-          <li onClick={(e) => { this.blurAndAction(e, this.props.actionDelete) }}>Delete</li>
-        </ul>
-      </div>
-    )
-  }
-}
-
-
-
-
-
-
 
 // ███████╗██████╗  █████╗ ███╗   ███╗███████╗██████╗ ██████╗ ██╗   ██╗██╗███████╗██╗    ██╗
 // ██╔════╝██╔══██╗██╔══██╗████╗ ████║██╔════╝██╔══██╗██╔══██╗██║   ██║██║██╔════╝██║    ██║
 // █████╗  ██████╔╝███████║██╔████╔██║█████╗  ██████╔╝██████╔╝██║   ██║██║█████╗  ██║ █╗ ██║
 // ██╔══╝  ██╔══██╗██╔══██║██║╚██╔╝██║██╔══╝  ██╔═══╝ ██╔══██╗╚██╗ ██╔╝██║██╔══╝  ██║███╗██║
 // ██║     ██║  ██║██║  ██║██║ ╚═╝ ██║███████╗██║     ██║  ██║ ╚████╔╝ ██║███████╗╚███╔███╔╝
-// ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝╚═╝     ╚═╝  ╚═╝  ╚═══╝  ╚═╝╚══════╝ ╚══╝╚══╝ 
-
+// ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝╚═╝     ╚═╝  ╚═╝  ╚═══╝  ╚═╝╚══════╝ ╚══╝╚══╝
 
 class FramePreviewCard extends Component {
-
   constructor(props) {
     super(props);
 
-    this.errorMessage = "Strip could not be initialized.";
+    this.errorMessage = 'Strip could not be initialized.';
 
     // TODO: isError is currently being used like a regular property.
     //       Does it have to be a state??
     this.state = {
-      isError: false
-    }
+      isError: false,
+    };
 
     this.showError = this.showError.bind(this);
   }
@@ -134,11 +114,9 @@ class FramePreviewCard extends Component {
 
   showError(msg) {
     // Note: Not a robust error msg function. Do not use outside of render().
-    this.state.isError = true; //NO RERENDER
+    this.state.isError = true; // NO RERENDER
     this.errorMessage = msg;
-
   }
-
 
   render() {
     // it expects it in a form of Scene data. So like this 
@@ -440,7 +418,7 @@ class FrameCard extends Component {
 
     return (
       <div
-        className={"thumb" +
+        className={'thumb' +
                    (this.state.loading ? " loading" : "") +
                    (!this.state.visible ? " ignore" : "") +
                    (this.state.dying ? " dying" : "")}
@@ -453,19 +431,18 @@ class FrameCard extends Component {
 
         <div
           className="frame_image"
-          style={{ backgroundImage: `url(${thumbPath})` }}>
+          style={{ backgroundImage: `url(${thumbPath})` }}
+        >
           {/* this is what is actually visible to the user */}
 
           <span className="overlay_box" frameid={frame.id} onClick={(e) => { e.stopPropagation() }}>
             {/*<a>[ {frame.id} ]</a>*/}
             <a
               className={"far " + (this.state.visible ? "fa-eye" : "fa-eye-slash")}
-              onClick={this.toggleVisibility}>
-            </a>
+              onClick={this.toggleVisibility}/>
             <a
               className="fas fa-ellipsis-h"
-              onClick={this.openMenu}>
-            </a>
+              onClick={this.openMenu}/>
           </span>
 
         </div>
@@ -475,9 +452,12 @@ class FrameCard extends Component {
         <FrameMenu
           on={this.state.menuOn}
           off={() => { this.endModalState('menuOn'); }}
-          actionDelete={this.handle_deleteFrameConfirm}
-        />
-
+        >
+          <PopupMenuItem action={(e) => { pub_FrameModal_openModal(e, frame); }}>
+            <span className="bigtext-3 fas fa-sticky-note" />Detail
+          </PopupMenuItem>
+          <PopupMenuItem action={this.handle_deleteFrameConfirm}>Delete</PopupMenuItem>
+        </FrameMenu>
 
       </div>
     );

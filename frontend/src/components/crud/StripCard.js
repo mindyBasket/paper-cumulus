@@ -764,8 +764,6 @@ class StripCard extends PureComponent {
         <StripMenu
           on={this.state.menuOn}
           off={() => { this.endModalState('menuOn'); }}
-          actionOpenUpload={this.handle_openUploadCover}
-          actionDelete={this.handle_deleteSceneConfirm}
         >
           <PopupMenuItem action={this.handle_openUploadCover}>Add Frames</PopupMenuItem>
           <PopupMenuItem>Batch Frame Edit</PopupMenuItem>

@@ -443,7 +443,9 @@ ul.list_strips li.spotlighted{
     background-color: black;
 }
 .thumb.dying .frame_image{
-    opacity: 0.5;
+    opacity: 0.3;
+    -webkit-filter: grayscale(1);
+    filter: grayscale(1);
 }
 
 

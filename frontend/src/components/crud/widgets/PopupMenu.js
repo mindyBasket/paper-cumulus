@@ -44,11 +44,8 @@ class PopupMenuItem extends Component {
           className="disabled wip"
         >
           <a
-            href="#"
-            onMouseDown={(e) => {
-              e.preventDefault(); e.stopPropagation();
-            }}
             onClick={(e) => {
+              e.preventDefault(); e.stopPropagation();
               this.preventBlur(); this.r.current.focus();
             }}
             ref={this.r}
@@ -62,11 +59,8 @@ class PopupMenuItem extends Component {
     return (
       <li>
         <a
-          href="#"
-          onMouseDown={(e) => {
-            e.preventDefault(); e.stopPropagation();
-          }}
           onClick={(e) => {
+            e.preventDefault(); e.stopPropagation();
             this.blurAndAction(this.props.action);
           }}
           ref={this.r}
@@ -159,7 +153,7 @@ class StripMenu extends PopupMenu {
   // Currently has nothing to extend, but may in the future
 }
 
-class FramepMenu extends PopupMenu {
+class FrameMenu extends PopupMenu {
   // Currently has nothing to extend, but may in the future
 }
 
@@ -168,5 +162,5 @@ export {
   PopupMenu,
   PopupMenuItem,
   StripMenu,
-  FramepMenu,
+  FrameMenu,
 }
