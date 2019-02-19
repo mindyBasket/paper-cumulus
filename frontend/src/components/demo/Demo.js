@@ -34,10 +34,10 @@ const getJSXDemoMessage = (msgIndex, staticroot) => {
         <h3>Getting started</h3>
         <img src={`${staticroot}img/tutorial/tut01b_download.jpg`} />
         <p>
-          This demo chapter contains an <strong>incomplete stop-motion
-					animation</strong>. Images used to complete it can be <strong>downloaded</strong>.
+          This demo chapter contains an <strong>incomplete stop-motion animation</strong>. 
+          Images used to complete it can be <strong>downloaded</strong>.
           Or, you can experiment with your own images.
-				</p>
+        </p>
       </div>
       ,
       <div id="msg3">
@@ -46,16 +46,17 @@ const getJSXDemoMessage = (msgIndex, staticroot) => {
         <p>
           Click <strong>'View from the start'</strong> to see what a flipbook looks like for this
 					demo chapter.
-				</p>
+        </p>
         <span className="img_space">
-          <img 
+          <img
             src={`${staticroot}img/tutorial/tut01d.jpg`}
-            className="no_stretch" />
+            className="no_stretch"
+          />
         </span>
         <p>
           The green guide buttons are there to help you!
-				</p>
-      </div>
+        </p>
+      </div>,
     ],
 
     // Message 2
@@ -65,13 +66,13 @@ const getJSXDemoMessage = (msgIndex, staticroot) => {
         <img src={`${staticroot}img/tutorial/tut02a_strip.jpg`} />
         <p>
           Use your <strong>arrow keys:
-					<span class="bigtext-3 far fa-caret-square-left"></span>
-            <span class="bigtext-3 far fa-caret-square-right"></span></strong> to view.
-					More control options are coming soon.
-				</p>
+          <span className="bigtext-3 far fa-caret-square-left" />
+            <span className="bigtext-3 far fa-caret-square-right"/></strong> to view.
+        More control options are coming soon.
+        </p>
         <p>
           Hover over the scrubber to see which strip it corresponds to.
-				</p>
+        </p>
       </div>
       ,
       <div id="msg2">
@@ -80,10 +81,10 @@ const getJSXDemoMessage = (msgIndex, staticroot) => {
         <img src={`${staticroot}img/tutorial/tut02c_strip.jpg`} />
         <p>
           Each key press
-					<span class="bigtext-3 far fa-caret-square-left"></span>
-          <span class="bigtext-3 far fa-caret-square-right"></span>
+					<span className="bigtext-3 far fa-caret-square-left"/>
+          <span className="bigtext-3 far fa-caret-square-right"/>
           "animates" one <strong><span className="bigtext-3 fas fa-film" />strip</strong>.
-				</p>
+        </p>
       </div>
       ,
       <div id="msg3">
@@ -91,8 +92,8 @@ const getJSXDemoMessage = (msgIndex, staticroot) => {
         <img src={`${staticroot}img/tutorial/tut02d.jpg`} />
         <p>
           After viewing, you can see flipbook details and make any changes in the edit mode.
-				</p>
-      </div>
+        </p>
+      </div>,
     ],
 
     // Message 3
@@ -102,14 +103,13 @@ const getJSXDemoMessage = (msgIndex, staticroot) => {
         <img src={`${staticroot}img/tutorial/tut03a_scene.jpg`} />
         <p>
           A group of <span className="bigtext-3 fas fa-film" />strips
-					makes a <strong><span className="bigtext-3 fas fa-video" />scene
-					</strong>.
-				</p>
+					makes a <strong><span className="bigtext-3 fas fa-video" />scene</strong>.
+        </p>
         {/* <img src={`${staticroot}img/tutorial/tut03b_chapter.jpg`} /> */}
         <p>
           A collection of <span className="bigtext-3 fas fa-video" />scenes makes
 					a <strong>chapter</strong>.
-				</p>
+        </p>
       </div>
       ,
       <div id="msg2">
@@ -119,11 +119,22 @@ const getJSXDemoMessage = (msgIndex, staticroot) => {
           Add new images to generate new <strong>
             <span className="bigtext-3 fas fa-sticky-note" />frames</strong> under a
 					<span className="bigtext-3 fas fa-film" />strip.
-				</p>
+        </p>
         <p>
           You can bulk upload, reorder frames and strips, preview strip animations, and more.
-				</p>
+        </p>
       </div>
+      ,
+      <div id="msg3">
+        <h3>Viewing your changes</h3>
+        <img src={`${staticroot}img/tutorial/tut03d_flipbook.jpg`} />
+        <p>
+          After you are satisfied with your changes, you can check the updated flipbook!
+        </p>
+        <p>
+          Keep in mind, you can also preview your changes right here on the edit page.
+        </p>
+      </div>,
     ]
   ];
 
@@ -131,21 +142,14 @@ const getJSXDemoMessage = (msgIndex, staticroot) => {
 }
 
 
-
-
-
-
-
-
-// ███╗   ███╗ ██████╗ ██████╗  █████╗ ██╗     
-// ████╗ ████║██╔═══██╗██╔══██╗██╔══██╗██║     
-// ██╔████╔██║██║   ██║██║  ██║███████║██║     
-// ██║╚██╔╝██║██║   ██║██║  ██║██╔══██║██║     
+// ███╗   ███╗ ██████╗ ██████╗  █████╗ ██╗
+// ████╗ ████║██╔═══██╗██╔══██╗██╔══██╗██║
+// ██╔████╔██║██║   ██║██║  ██║███████║██║
+// ██║╚██╔╝██║██║   ██║██║  ██║██╔══██║██║
 // ██║ ╚═╝ ██║╚██████╔╝██████╔╝██║  ██║███████╗
 // ╚═╝     ╚═╝ ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝
 
 class DemoModal extends PureComponent {
-
   constructor(props) {
     super(props);
 
@@ -171,13 +175,13 @@ class DemoModal extends PureComponent {
     this.message = getJSXDemoMessage(this.props.messageNum - 1, STATIC_ROOT);
   }
 
-  componentDidUpdate(prevProps, prevStates) {
+  componentDidUpdate(prevProps) {
     console.log(`prev: ${prevProps.on}...curr ${this.props.on}`);
     // check if this card was rendered to be active,
     // then control lightbox
     if (prevProps.on === false && this.props.on === true) {
       lb.pub_LightBox_on();
-      this.setState({ currPage: 0 }); //reset page
+      this.setState({ currPage: 0 }); // reset page
       lb.pub_LightBox_addToOnClick(() => {
         this.props.close();
       });
@@ -206,8 +210,8 @@ class DemoModal extends PureComponent {
 
       return (
         <div
-          className={"demo_modal " +
-                    (this.props.on ? "active" : "")}
+          className={'demo_modal' + ' ' +
+                     (this.props.on ? "active" : "")}
           onClick={(e) => { e.stopPropagation(); }}
         >
           <div className="message_wrapper">
@@ -215,46 +219,43 @@ class DemoModal extends PureComponent {
 
             <span className="message_nav">
               {pageNum <= 0 ? (
-                <span></span>
+                <span />
               ) : (
-                  <span 
-                    className="button flat"
-                    onClick={this.prevMsg}
-                  >
-                    {`< Page ${pageNum}`}
-                  </span>
-
-                )}
+                <span
+                  className="button flat"
+                  onClick={this.prevMsg}
+                >
+                  {`< Page ${pageNum}`}
+                </span>
+              )}
 
               {pageNum >= maxPageNum - 1 ? (
-                <span 
+                <span
                   className="button flat"
                   onClick={this.props.close}
                 >
                   Close
-								</span>
+                </span>
               ) : (
-                  <span className="button flat"
-                    onClick={this.nextMsg}>
-                    {`Page ${pageNum + 2} >`}
-                  </span>
-
-                )}
-
+                <span
+                  className="button flat"
+                  onClick={this.nextMsg}
+                >
+                  {`Page ${pageNum + 2} >`}
+                </span>
+              )}
             </span>
           </div>
         </div>
-      )
-    } else {
-      return false
+      );
     }
 
+    return false;
   }
 }
 
 
 class DemoGuideBtn extends PureComponent {
-
   constructor(props) {
     super(props);
 
@@ -262,7 +263,7 @@ class DemoGuideBtn extends PureComponent {
 
     this.state = {
       messageOpen: false,
-    }
+    };
 
     this.openDemoMessage = this.openDemoMessage.bind(this);
     this.closeDemoMessage = this.closeDemoMessage.bind(this);
@@ -307,25 +308,25 @@ class DemoGuideBtn extends PureComponent {
 
   render() {
     return (
-      <a  
-        className='demoguide a_button'
+      <a
+        className="demoguide a_button"
         onClick={this.openDemoMessage}
         ref={this.r}
       >
-        <span className="far fa-lightbulb"></span>
+        <span className="far fa-lightbulb" />
         {`#${this.props.num}`}
 
-        <DemoModal on={this.state.messageOpen}
+        <DemoModal
+          on={this.state.messageOpen}
           close={this.closeDemoMessage}
-          messageNum={this.props.num} />
+          messageNum={this.props.num}
+        />
       </a>
-    )
+    );
   }
-
 }
-
 
 export {
   DemoModal,
-  DemoGuideBtn
+  DemoGuideBtn,
 };

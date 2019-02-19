@@ -12,6 +12,7 @@
         "react/no-multi-comp": 0,
         "react/destructuring-assignment": 0,
         "react/sort-comp": 0,
+        "react/no-did-update-set-state": 0,
         
         "import/imports-first": ["error", "absolute-first"],
         "import/newline-after-import": "error",
