@@ -185,7 +185,7 @@ class XhrHandler {
     // TODO: investigate why using this.getCSRFToken gets 403 error
     // if (csrfToken === undefined) {const csrfToken = this.getCSRFToken();}
 
-    hder = hder ? {} || { "X-CSRFToken": csrfToken };
+    hder = hder ? {} : { 'X-CSRFToken': csrfToken };
 
     return (
       axios({
