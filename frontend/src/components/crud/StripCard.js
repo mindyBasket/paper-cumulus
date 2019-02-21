@@ -371,11 +371,11 @@ class StripCard extends PureComponent {
 
     // TODO: hard coding this for now, but this should be sceneid
     const testId = 70;
-    
+
     axh.makeLambdaPie(testId).then(res => {
       // Lambda responded
-      if (res) {
-        logr.info('Reponse: ' + JSON.stringify(res));
+      if (res && res.data) {
+        logr.info('Reponse: ' + JSON.stringify(res.data));
       }
     });
   }

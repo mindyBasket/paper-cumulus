@@ -162,7 +162,7 @@ class XhrHandler {
   makeLambdaPie(stripId) {
     // TODO: this should take sceneId instead
     const param = 'stripid';
-    const endpoint = `https://rvqydcwzb1.execute-api.us-east-1.amazonaws.com/default/framePie?${param}=${stripId}`;
+    const endpoint = `https://53e5kyqgq7.execute-api.us-east-2.amazonaws.com/production/framePie?${param}=${stripId}`;
     return this.makeXHR('get', null, endpoint, null, 1);
   }
 
