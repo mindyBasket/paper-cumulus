@@ -109,9 +109,6 @@ class XhrHandler {
 
 
 
-
-
-
   createFrame(stripId, formData, csrfToken) {
     return this.makeXHR('post', formData, `/api/strip/${stripId}/frame/create/`, csrfToken)
   }
@@ -158,6 +155,16 @@ class XhrHandler {
   }
 
 
+
+
+
+
+  makeLambdaPie(stripId) {
+    // TODO: this should take sceneId instead
+    const param = 'stripid';
+    const endpoint = `https://rvqydcwzb1.execute-api.us-east-1.amazonaws.com/default/framePie?${param}=${stripId}`;
+    return this.makeXHR('get', null, endpoint, null);
+  }
 
 
   // Trying this out

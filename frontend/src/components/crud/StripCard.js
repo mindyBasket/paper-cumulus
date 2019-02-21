@@ -166,6 +166,8 @@ class StripCard extends PureComponent {
     this.handle_dragMessageToggle = this.handle_dragMessageToggle.bind(this);
     this.handle_dragAndDrop = this.handle_dragAndDrop.bind(this);
 
+    this.handle_lambdaPie = this.handle_lambdaPie.bind(this);
+
     this.openMenu = this.openMenu.bind(this);
     this.openDurationField = this.openDurationField.bind(this);
     this.openPreview = this.openPreview.bind(this);
@@ -361,6 +363,23 @@ class StripCard extends PureComponent {
     })
   }
 
+  handle_lambdaPie() {
+    const strip = this.props.stripObj;
+    const sceneId = strip.scene;
+    logr.warn('Make Lambda Pie');
+    logr.info(JSON.stringify(strip));
+
+    // TODO: hard coding this for now, but this should be sceneid
+    const testId = 70;
+    
+    axh.makeLambdaPie(testId).then(res => {
+      // Lambda responded
+      if (res) {
+        logr.info('Reponse: ' + JSON.stringify(res));
+      }
+    });
+  }
+
   handle_dragMessageToggle(e, on) {
     // probably already true'd by setSpotlightALL, but just in case
     e.stopPropagation();
@@ -514,7 +533,6 @@ class StripCard extends PureComponent {
 
     this.setSpotlight(false); // This doesn't turn off setSpotlightAll
     lb.pub_LightBox_off();
-
   }
 
   // ---------------------------------------------------------------------------
@@ -637,8 +655,6 @@ class StripCard extends PureComponent {
 
     // Note: do not setSpotlight(false) here.
     // It should taken care of, by the component's componentDidUpdate.
-
-
   }
 
 
@@ -767,6 +783,7 @@ class StripCard extends PureComponent {
         >
           <PopupMenuItem action={this.handle_openUploadCover}>Add Frames</PopupMenuItem>
           <PopupMenuItem>Batch Frame Edit</PopupMenuItem>
+          <PopupMenuItem action={this.handle_lambdaPie}>Lambda Test</PopupMenuItem>
           <PopupMenuItem>Copy</PopupMenuItem>
           <PopupMenuItem>Settings</PopupMenuItem>
           <PopupMenuItem action={this.handle_deleteSceneConfirm}>Delete</PopupMenuItem>
