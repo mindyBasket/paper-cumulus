@@ -163,7 +163,7 @@ class XhrHandler {
     // TODO: this should take sceneId instead
     const param = 'stripid';
     const endpoint = `https://rvqydcwzb1.execute-api.us-east-1.amazonaws.com/default/framePie?${param}=${stripId}`;
-    return this.makeXHR('get', null, endpoint, null);
+    return this.makeXHR('get', null, endpoint, null, 1);
   }
 
 
@@ -180,17 +180,19 @@ class XhrHandler {
 
 
   // Attempt at generic
-  makeXHR(method, data, endpoint, csrfToken) {
+  makeXHR(method, data, endpoint, csrfToken, hder) {
 
     // TODO: investigate why using this.getCSRFToken gets 403 error
     // if (csrfToken === undefined) {const csrfToken = this.getCSRFToken();}
+
+    hder = hder ? {} || { "X-CSRFToken": csrfToken };
 
     return (
       axios({
         method: method,
         url: endpoint,
         data: data,
-        headers: { "X-CSRFToken": csrfToken }
+        headers: hder
       })
         .then(response => {
           return response;
@@ -201,7 +203,6 @@ class XhrHandler {
 
         })
     )
-
   }
 
   // For recursion!
