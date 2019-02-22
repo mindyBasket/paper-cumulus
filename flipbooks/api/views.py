@@ -135,7 +135,14 @@ class SceneAPIDetailView(generics.RetrieveAPIView):
 class SceneCreateAPIView(generics.CreateAPIView):
     serializer_class = SceneModelSerializer
 
+class SceneUpdateAPIView(generics.UpdateAPIView):
+    serializer_class = SceneModelSerializer
 
+    def get_queryset(self):
+        return Scene.objects.all()
+    
+    def partial_update(self, request, *args, **kwargs):
+        return super(SceneUpdateAPIView, self).partial_update(request, *args, **kwargs)
 
 
 

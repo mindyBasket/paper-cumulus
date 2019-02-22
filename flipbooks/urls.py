@@ -54,6 +54,7 @@ urlpatterns = [
     re_path(r'^ajax/retrieve_scene__strip/$', views.retrieve_scene__strip, name='retrieve_scene__strip'),
     re_path(r'^ajax/strips/(?P<pk>\d+)/sort-children/$', views.sort_children, name='strip-sort-children'),
     re_path(r'^ajax/scene/(?P<pk>\d+)/sort-children/$', views.scene_sort_children, name='scene-sort-children'),
+    path('ajax/scene/<int:pk>/update_movie/', views.update_scene_movie, name='scene-update-movie'), 
 
     # returns json objects
     # TODO: since REACT conversion, none of them are used. Confirm it and remove.

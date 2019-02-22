@@ -1,6 +1,8 @@
 import axios from 'axios';
 import Helper from '../Helper';
+import Logr from '../tools/Logr';
 
+const logr = new Logr('XHR');
 const h = new Helper();
 
 class XhrHandler {
@@ -36,8 +38,49 @@ class XhrHandler {
     return csrfToken;
   }
 
+
+
+
+
   createScene(chapterId, formData, csrfToken) {
     return this.makeXHR('post', formData, `/api/chapter/${chapterId}/scene/create/`, csrfToken);
+  }
+
+  updateScene(sceneId, formData, csrfToken) {
+
+    // TODO: patch update for Scene does not exist yet. This is template
+    //       copied from updateStrip
+
+    return (
+      axios({
+        method: 'patch',
+        url: `/api/scene/${sceneId}/update/`,
+        data: formData,
+        headers: { 'X-CSRFToken': csrfToken },
+      })
+        .then(response => {
+          return response;
+        })
+        .catch(error => {
+          logr.error(error);
+          // TODO: add better error message that is visible on frontend
+        })
+    )
+  }
+
+  updateSceneMovie(sceneId, newurl) {
+    return (
+      axios({
+        method: 'get',
+        params: { new_url: newurl },
+        url: `/flipbooks/ajax/scene/${sceneId}/update_movie/`,
+      }).then(res => {
+        return res;
+      }).catch(err => {
+        logr.error(err.data);
+      })
+    )
+
   }
 
 
@@ -93,7 +136,7 @@ class XhrHandler {
         method: 'patch',
         url: `/api/strip/${stripId}/update/`,
         data: formData,
-        headers: { "X-CSRFToken": csrfToken }
+        headers: { 'X-CSRFToken': csrfToken },
       })
         .then(response => {
           return response;

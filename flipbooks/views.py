@@ -450,8 +450,20 @@ class ScenePlayView_REACT(generic.DetailView):
         return context
 
 
+def update_scene_movie(request, *args, **kwargs):
+    # because movies are uploaded by lambda, and not not uploaded from django side, 
+    # there is no data to send for a PATCH request. Instead, simply update url. 
+    
+    # newurl is passed by params
+    new_url = request.GET.get('new_url', None)
+     
+    # Swap out url
+    scene = Scene.objects.get(id=kwargs['pk']) 
+    scene.movie.url = new_url
+    scene.save()
 
-
+    # Response
+    return JsonResponse({'scene_id': scene.id, 'new_url': new_url})
 
 
 
@@ -622,7 +634,7 @@ def load_more_strips(request):
     #note: https://docs.python.org/2/tutorial/introduction.html#strings
     #      degenerate slice indices are handled nice and safe.
     
-    strip_set_str_li = [];
+    strip_set_str_li = []
     for strip in strip_set_to_load:
         for frame in strip.frame_set.all():
             strip_set_str_li+=[frame.frame_image.url]

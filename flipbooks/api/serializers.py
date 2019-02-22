@@ -158,6 +158,7 @@ class SceneModelSerializer(serializers.ModelSerializer):
             'id',
             'id64',
             'chapter',
+            'movie',
             'children_li',
             'name',
             'strips',
