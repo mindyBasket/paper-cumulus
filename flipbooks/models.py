@@ -139,12 +139,6 @@ class Chapter(models.Model):
 # ╚══════╝ ╚═════╝╚══════╝╚═╝  ╚═══╝╚══════╝
                                           
 
-# -------------------------------------------------
-# -------------------------------------------------
-#                     Scene
-# -------------------------------------------------
-# -------------------------------------------------
-
 # Scene: holds multiple strips. In convensional web-comic sense, this is like a "page"
 class Scene(models.Model):
     
@@ -154,7 +148,8 @@ class Scene(models.Model):
     name = models.CharField(max_length=50, blank=True, default="")
     id64 = models.CharField(max_length=8, blank=True, default='')
     description = models.TextField(max_length=100, blank=True, default="")
-    
+    movie = models.FileField(upload_to='', blank=True)
+
     # TODO: make this NOT CASCADE. Kinda dangerous
     chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE, default=0)
     

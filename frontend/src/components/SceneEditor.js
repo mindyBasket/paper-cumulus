@@ -115,13 +115,11 @@ class SceneEditor extends Component {
     const sceneId = this.sceneId;
     logr.warn('Make Lambda Pie');
 
-    // TODO: hard coding this for now, but this should be sceneid
-    const testId = 70;
-
-    axh.makeLambdaPie(testId).then(res => {
+    axh.makeLambdaPie(sceneId).then(res => {
       // Lambda responded
       if (res && res.data) {
-        logr.info('Reponse: ' + JSON.stringify(res.data));
+        logr.info('Response: ' + JSON.stringify(res.data));
+        logr.info(`PATCH with video: ${res.data.scene_out_path}`);
       }
     });
   }

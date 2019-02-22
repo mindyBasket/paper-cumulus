@@ -94,12 +94,12 @@ class ChapterEditor extends Component {
         <LightBox
           addToOnClick={this.addTo_LightBoxOnClick}
           handle_dragAndDrop={this.handle_dragAndDrop}
-          setParentState={this.setParentState} 
+          setParentState={this.setParentState}
         />
 
         <SceneCreateModal
           on={this.state.sceneCreateOn}
-          chapterObj={this.chapter} 
+          chapterObj={this.chapter}
         />
 
       </div>
