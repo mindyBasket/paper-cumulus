@@ -20,7 +20,7 @@ const logr = new Logr('SceneEditor');
 const h = new Helper();
 const axh = new XhrHandler(); // axios helper
 
-logr.info('---- v0.4.0');
+logr.info('---- v0.4.1');
 
 // http://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=FrameStage
 
@@ -49,8 +49,7 @@ class SceneEditor extends Component {
     this.setParentState = this.setParentState.bind(this);
     this.handle_dragAndDrop = this.handle_dragAndDrop.bind(this);
     this.handle_lambdaPie = this.handle_lambdaPie.bind(this);
-    this.handle_updateScene = this.handle_updateScene.bind(this);
-
+  
     this.setSpotlightAll = this.setSpotlightAll.bind(this);
     this.addTo_LightBoxOnClick = this.addTo_LightBoxOnClick.bind(this);
   }
