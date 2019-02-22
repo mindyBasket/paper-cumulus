@@ -112,7 +112,7 @@ function initializeSortable($container, name, callback) {
       }
     });
 
-    logr.log(thOrder.join(','));
+    logr.info(thOrder.join(','));
     callback(thOrder);
 
   });
@@ -165,8 +165,6 @@ class StripCard extends PureComponent {
     this.handle_frameSort = this.handle_frameSort.bind(this);
     this.handle_dragMessageToggle = this.handle_dragMessageToggle.bind(this);
     this.handle_dragAndDrop = this.handle_dragAndDrop.bind(this);
-
-    this.handle_lambdaPie = this.handle_lambdaPie.bind(this);
 
     this.openMenu = this.openMenu.bind(this);
     this.openDurationField = this.openDurationField.bind(this);
@@ -225,7 +223,7 @@ class StripCard extends PureComponent {
       const insertAt = frameIdList.indexOf(String(f.id));
       if (insertAt >= 0 && insertAt < frameOrderedArr.length) {
         frameOrderedArr[insertAt] = f;
-      } else if (insertAt == -1) {
+      } else if (insertAt === -1) {
         // children not ref'd in children_li is just placed at the end
         frameLeftOver.push(f);
       }
@@ -251,11 +249,11 @@ class StripCard extends PureComponent {
     const csrfToken = axh.getCSRFToken();
     if (!csrfToken) { return false; }
 
-    let fd = h.makeFormData(inputData);
-    fd.set("strip", this.props.stripObj.id);
+    const fd = h.makeFormData(inputData);
+    fd.set('strip', this.props.stripObj.id);
 
     // quick validation
-    if (!fd.has("frame_image")) { return false; }
+    if (!fd.has('frame_image')) { return false; }
 
     axh.createFrame(this.props.stripObj.id, fd, csrfToken).then(res => {
       if (res && res.data) {
@@ -270,7 +268,7 @@ class StripCard extends PureComponent {
       // Well that didn't work!
       console.log("Something went wrong processing the response");
       this.setState({ cardCover_messageType: "frameCreateError" });
-    });
+    })
   }
 
 
@@ -298,7 +296,6 @@ class StripCard extends PureComponent {
       // Note: lightBox and spotlighting is controlled inside the CardCover
     });
   }
-
 
   handle_deleteScene() {
     // DANGER ZONE!
@@ -343,7 +340,7 @@ class StripCard extends PureComponent {
   handle_frameSort(idArr) {
     const strip = this.props.stripObj;
     const sortableData = { frame_ids: idArr.join(',') };
-    logr.log('ready to send: ' + JSON.stringify(sortableData));
+    logr.info('ready to send: ' + JSON.stringify(sortableData));
 
     axios({
       method: 'get',
@@ -352,7 +349,7 @@ class StripCard extends PureComponent {
 
     }).then(res => {
       if (res && res.data) {
-        logr.log('sucessfully came back: ' + res.data.frame_ids);
+        logr.info('sucessfully came back: ' + res.data.frame_ids);
         // FETCH SCENE
         this.props.handle_fetchScene();
       }
@@ -361,23 +358,6 @@ class StripCard extends PureComponent {
       logr.warn(err.data);
       logr.warn(err.data.status);
     })
-  }
-
-  handle_lambdaPie() {
-    const strip = this.props.stripObj;
-    const sceneId = strip.scene;
-    logr.warn('Make Lambda Pie');
-    logr.info(JSON.stringify(strip));
-
-    // TODO: hard coding this for now, but this should be sceneid
-    const testId = 70;
-
-    axh.makeLambdaPie(testId).then(res => {
-      // Lambda responded
-      if (res && res.data) {
-        logr.info('Reponse: ' + JSON.stringify(res.data));
-      }
-    });
   }
 
   handle_dragMessageToggle(e, on) {
@@ -783,7 +763,6 @@ class StripCard extends PureComponent {
         >
           <PopupMenuItem action={this.handle_openUploadCover}>Add Frames</PopupMenuItem>
           <PopupMenuItem>Batch Frame Edit</PopupMenuItem>
-          <PopupMenuItem action={this.handle_lambdaPie}>Lambda Test</PopupMenuItem>
           <PopupMenuItem>Copy</PopupMenuItem>
           <PopupMenuItem>Settings</PopupMenuItem>
           <PopupMenuItem action={this.handle_deleteSceneConfirm}>Delete</PopupMenuItem>

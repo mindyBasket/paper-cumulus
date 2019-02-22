@@ -8,17 +8,16 @@ import { SceneCardList } from './crud/SceneList';
 import { FrameModal } from './crud/FrameModal';
 
 import { LightBox, lightBox_publicFunctions as lb } from './LightBox';
-import Spinner from './Spinner';
+import XhrHandler from './crud/XHRHandler';
+import Logr from './tools/Logr';
 
 // DEMOONLY
 import { DemoModal,DemoGuideBtn } from './demo/Demo';
 
-// Global param
-const T_STEP = 400; // ms
-const STANDBY_OPACITY = 0.5;
+const logr = new Logr('SceneEditor');
+const axh = new XhrHandler(); // axios helper
 
-
-console.log('SceneEditor ---- 0.2.5');
+logr.info('---- v0.3.0');
 
 // http://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=FrameStage
 
@@ -46,6 +45,8 @@ class SceneEditor extends Component {
 
     this.setParentState = this.setParentState.bind(this);
     this.handle_dragAndDrop = this.handle_dragAndDrop.bind(this);
+    this.handle_lambdaPie = this.handle_lambdaPie.bind(this);
+
     this.setSpotlightAll = this.setSpotlightAll.bind(this);
     this.addTo_LightBoxOnClick = this.addTo_LightBoxOnClick.bind(this);
   }
@@ -61,12 +62,12 @@ class SceneEditor extends Component {
       // if (!$body.className.includes("dark_justcolor")){
       // 	document.querySelector('body').className += " " + "dark_justcolor";
       // }
-    }
+    };
 
     document.querySelector('body').ondrop = e => {
       e.preventDefault();
-      console.log('DragAndDrop Misfire: do nothing');
-    }
+      logr.info('DragAndDrop Misfire: do nothing');
+    };
 
     // temp solution for rendering a condensed version of strip-create button
     // that is outside of React component area (currently on the left sidebar)
@@ -85,7 +86,7 @@ class SceneEditor extends Component {
   }
 
   setSpotlightAll(on) {
-    // Set ALL StripCards on spotlight. 
+    // Set ALL StripCards on spotlight.
     // For individual spotlight, see each StripCard's 'selfSpotlighted'.
     // Currently, this function is not used. Setting ALL StripCard added
     // needless complications turning spotligh on and off.
@@ -97,18 +98,32 @@ class SceneEditor extends Component {
     } else {
       this.setState({ spotlightedAll: false });
       // this.$lb.classList.remove('active');
-      lb.setState_LightBox({ active: false })
+      lb.setState_LightBox({ active: false });
     }
   }
 
   handle_dragAndDrop(on) {
     // Might get rid of this...
     if (on) {
-      this.setSpotlightAll(true); 
+      this.setSpotlightAll(true);
+    } else {
+      this.setSpotlightAll(false);
     }
-    else { 
-      this.setSpotlightAll(false); 
-    }
+  }
+
+  handle_lambdaPie() {
+    const sceneId = this.sceneId;
+    logr.warn('Make Lambda Pie');
+
+    // TODO: hard coding this for now, but this should be sceneid
+    const testId = 70;
+
+    axh.makeLambdaPie(testId).then(res => {
+      // Lambda responded
+      if (res && res.data) {
+        logr.info('Reponse: ' + JSON.stringify(res.data));
+      }
+    });
   }
 
   // _______ ______  ______   _____  __   _
@@ -139,21 +154,32 @@ class SceneEditor extends Component {
 
         <SceneCreateForm
           endpoint={`/api/scene/${this.state.sceneId}/strip/create/`}
-          setParentState={this.setParentState} 
+          setParentState={this.setParentState}
         />
 
         {/* temp solution to put a condensed button on the left sidebar */}
         <SceneCreateForm
           endpoint={`/api/scene/${this.state.sceneId}/strip/create/`}
           setParentState={this.setParentState}
-          condensed={true} 
+          condensed
         />
+
+        {/* portal */}
+        <FramePiePortal>
+          <a
+            id="proxy_make_scene"
+            className="button flat"
+            onClick={this.handle_lambdaPie}
+          >
+            Save scene
+          </a>
+        </FramePiePortal>
 
         {/* invisible */}
         <LightBox
           addToOnClick={this.addTo_LightBoxOnClick}
           handle_dragAndDrop={this.handle_dragAndDrop}
-          setParentState={this.setParentState} 
+          setParentState={this.setParentState}
         />
 
         {/* A bit unsure where is the best place to put this */}
@@ -161,14 +187,25 @@ class SceneEditor extends Component {
 
         {/* DEMOONLY */}
         <DemoGuideBtn
-          onAtMount={true}
+          onAtMount
           num={3}
           proxyId="#proxy_demoguide"
         />
       </div>
-    )
+    );
   }
+}
 
+class FramePiePortal extends Component {
+  render() {
+    // React does *not* create a new div. It renders the children into `domNode`.
+    // `domNode` is any valid DOM node, regardless of its location in the DOM.
+    const portal = document.querySelector('#portal_frame_pie');
+    return ReactDOM.createPortal(
+      this.props.children,
+      portal,
+    );
+  }
 }
 
 // render flipbook
