@@ -457,8 +457,6 @@ class ScenePlayView_REACT(generic.DetailView):
 
 
 
-
-
 #  _______  _______  ______    ___   _______    
 # |       ||       ||    _ |  |   | |       |   
 # |  _____||_     _||   | ||  |   | |    _  |   

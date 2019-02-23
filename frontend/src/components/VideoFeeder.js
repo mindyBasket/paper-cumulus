@@ -27,60 +27,44 @@ class VideoFeeder extends Component {
 
     logr.info('Fetching video from storage...' + this.props.endpoint);
 
-    
-
     // 1. Fetch list of Chapter for scene order
     axh.fetchChapter(this.props.chapterId).then(res => {
       if (res && res.data && res.data.hasOwnProperty('children_li')) {
         logr.info(`Children_li for chapter ${this.props.chapterId} retrieved: ${res.data.children_li}`);
-        this.setState({children_li: res.data.children_li });
+        this.setState({ children_li: res.data.children_li });
 
         // 2. Retrieve each video
         axh.fetchSceneList(this.props.chapterId).then(sceneLiRes => {
           if (sceneLiRes && sceneLiRes.data) {
             const scenes = sceneLiRes.data;
+
             // TODO: you must fill up this.state.data for this to render
 
-            // test on ONE video
-            // axh.getVideoFromStore();
+            // TODO: reorder scene by children_li
+            const v_urls = [];
+            scenes.forEach(sc => {
+              if (sc.movie_url) {
+                v_urls.push(sc.movie_url);
+              }
+            });
+            logr.info(`"Passing urls: ${v_urls}`);
+            axh.convertToStoreURLs(v_urls, ['mp4']).then(resArr => {
+
+              if (resArr && resArr.length > 0) {
+                const urls = [];
+                resArr.forEach(urlData => {
+                  logr.info(`Pushing url ${urlData.data.url}`);
+                  urls.push(urlData.data.url);
+                });
+                logr.warn('Setting list of url into data');
+                this.setState({ data: urls, loaded: true });
+              }
+
+            });
           }
         });
       }
     });
-
-    // fetch(chapterUrl)
-    //   .then(response => {
-    //     if (response.status !== 200) {
-    //       return this.setState({ placeholder: "Something went wrong" });
-    //     }
-    //     return response.json();
-    //   })
-    //   .then(data => {
-    //     if (data && data.hasOwnProperty('children_li')) {
-    //       console.log(`[FrameFeeder] Chapter children_li : ${data.children_li}`);
-    //       return this.setState({ children_li: data.children_li });
-    //     } else {
-    //       console.error("[FrameFeeder] fetched chapter is invalid");
-    //     }
-    //   });
-
-
-    // fetch(sceneListUrl)
-    //   .then(response => {
-    //     if (response.status !== 200) {
-    //       return this.setState({ placeholder: "Something went wrong" });
-    //     }
-    //     return response.json();
-    //   })
-    //   .then(data => {
-    //     if (data) {
-    //       console.log(`[FrameFeeder] Data fetched successfully.`);
-    //       return this.setState({ data: data, loaded: true });
-    //     } else {
-    //       console.error("[FrameFeeder] fetched data is invalid");
-    //     }
-    //   });
-
 
   }
 

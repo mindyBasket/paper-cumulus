@@ -10,6 +10,7 @@ from django.conf.urls.static import static
 from . import views
 from . import views_demo
 from . import views_jsonpr
+from .views_v import views_v
 
 urlpatterns = [
     #note: "/" = "{proj}/flipbooks"
@@ -56,7 +57,7 @@ urlpatterns = [
     re_path(r'^ajax/scene/(?P<pk>\d+)/sort-children/$', views.scene_sort_children, name='scene-sort-children'),
 
     #async calls
-    path('s3/getV/', views.SceneDetailView_REACT.as_view(), name='get-v'),
+    path('s3/getURL/', views_v.get_store_URL, name='get-v'),
 
     # returns json objects
     # TODO: since REACT conversion, none of them are used. Confirm it and remove.

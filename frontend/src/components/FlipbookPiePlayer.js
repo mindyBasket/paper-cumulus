@@ -495,7 +495,8 @@ class FrameStage extends PureComponent {
 
 class FlipbookStage extends Component {
   static propTypes = {
-    scene: PropTypes.object.isRequired,
+    videoUrls: PropTypes.array.isRequired,
+    children_li: PropTypes.array.isRequired,
     // handle_fetchScene: PropTypes.func.isRequired,
     // setState_LightBox: PropTypes.func.isRequired,
   };
@@ -510,11 +511,26 @@ class FlipbookStage extends Component {
   }
 
   render() {
+    logr.warn(JSON.stringify(this.props.videoUrls));
+
     return (
       <div>
-        FlipbookStage
+        <div>Children_li: {this.props.children_li}</div>
+        <div>
+          {this.props.videoUrls.map(v => {
+            logr.info(v);
+            return (
+              <video width="320" height="240" controls>
+                <source src={v} type="video/mp4"/>
+                Your browser does not support the video tag.
+              </video>
+            )
+          })}
+
+        </div>
+
       </div>
-    )
+    );
   }
 }
 
@@ -550,10 +566,10 @@ class FlipbookPlayer extends Component {
 
         <VideoFeeder
           chapterId={this.props.chapterId}
-          render={dataDict => (
+          render={renderData => (
             <FlipbookStage
-              data={dataDict.data}
-              children_li={dataDict.children_li}
+              videoUrls={renderData.data}
+              children_li={renderData.children_li}
             />
           )}
         />

@@ -110,30 +110,39 @@ class XhrHandler {
     )
   }
 
-  getVideoFromStore(url) {
+  convertToStoreURLs(urls, extArr) {
     // Takes in relative url, and finds storage link for it
-    if (!url || url === undefined) {
+    if (!urls || urls.length === 0) {
       logr.warn('Url not provided retrieve from storage.');
       return false;
     }
+    if (!extArr || extArr.length === 0) {
+      logr.warn('Extension to check for storage url is not provided');
+      return false;
+    }
 
-    const urlParts = url.split('.');
-    if (urlParts[urlParts.length - 1] === 'mp4') { // make sure it is a video link
-      return (
-        axios({
-          method: 'get',
-          param: encodeURIComponent(url),
-          url: '/flipbooks/s3/getV/',
-        })
-          .then(response => {
+    // chain request to get url
+    const urlReqProms = [];
+    urls.forEach(url => {
+      const urlParts = url.split('.');
+      logr.info(encodeURIComponent(url) );
+      if (extArr.includes(urlParts[urlParts.length - 1])) { // make sure extension matches
+        urlReqProms.push(
+          axios({
+            method: 'get',
+            params: { rel_url: encodeURI(url) },
+            url: '/flipbooks/s3/getURL/',
+          }).then(response => {
             return response;
           })
-          .catch(error => {
-            logr.error(error);
-            // TODO: add better error message that is visible on frontend
-          })
-      )
-    } 
+        );
+      }
+    });
+
+    // resolve all
+    // DO I NEED SEMI COLON OR WILL IT BREAK IT AGAIN
+    return Promise.all(urlReqProms)
+
   }
 
   fetchScene(sceneId) {
@@ -326,7 +335,7 @@ class XhrHandler {
         method: method,
         url: endpoint,
         data: data,
-        headers: { "X-CSRFToken": csrfToken }
+        headers: { 'X-CSRFToken': csrfToken }
       })
     )
 

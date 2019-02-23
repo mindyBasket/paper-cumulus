@@ -1,0 +1,1 @@
+This is a scene that exists in s3. In order to test it locally, I made this folder to have doppleganger resource
