@@ -25,7 +25,7 @@ urlpatterns = [
     # Scene 
     path('chapter/<int:pk>/scene/create/', views.SceneCreateAPIView.as_view(), name="create-scene-under-chapter"),
     path('scene/<int:pk>/', views.SceneAPIDetailView.as_view(), name="detail-scene"),
-    # path('scene/<int:pk>/update/', views.SceneUpdateAPIView.as_view(), name="update-scene"), # see flipobooks.views.update_scene_movie instead
+    path('scene/<int:pk>/update/', views.SceneUpdateAPIView.as_view(), name="update-scene"), # currently only used for movie update
 
     # Strip
     re_path(r'^scene/(?P<pk>\d+)/strip/create/$', views.StripCreateAPIView.as_view(), name="create-strip-under-scene"),

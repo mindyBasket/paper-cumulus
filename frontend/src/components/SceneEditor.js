@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import PropTypes from 'prop-types';
 
 // import FrameFeeder from './FrameFeeder';
 import SceneCreateForm from './crud/Form';
@@ -10,21 +9,21 @@ import { FrameModal } from './crud/FrameModal';
 import { LightBox, lightBox_publicFunctions as lb } from './LightBox';
 
 import XhrHandler from './crud/XHRHandler';
-import Helper from './Helper';
+// import Helper from './Helper';
 import Logr from './tools/Logr';
 
 // DEMOONLY
 import { DemoGuideBtn } from './demo/Demo';
 
 const logr = new Logr('SceneEditor');
-const h = new Helper();
+// const h = new Helper();
 const axh = new XhrHandler(); // axios helper
 
-logr.info('---- v0.4.1');
+logr.info('---- v0.4.3');
 
 // http://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=FrameStage
 
-// ███████╗██████╗ ██╗████████╗ ██████╗ ██████╗ 
+// ███████╗██████╗ ██╗████████╗ ██████╗ ██████╗
 // ██╔════╝██╔══██╗██║╚══██╔══╝██╔═══██╗██╔══██╗
 // █████╗  ██║  ██║██║   ██║   ██║   ██║██████╔╝
 // ██╔══╝  ██║  ██║██║   ██║   ██║   ██║██╔══██╗
@@ -49,7 +48,7 @@ class SceneEditor extends Component {
     this.setParentState = this.setParentState.bind(this);
     this.handle_dragAndDrop = this.handle_dragAndDrop.bind(this);
     this.handle_lambdaPie = this.handle_lambdaPie.bind(this);
-  
+
     this.setSpotlightAll = this.setSpotlightAll.bind(this);
     this.addTo_LightBoxOnClick = this.addTo_LightBoxOnClick.bind(this);
   }
@@ -122,10 +121,13 @@ class SceneEditor extends Component {
       // Lambda responded
       if (res && res.data) {
         logr.info('Response: ' + JSON.stringify(res.data));
-        logr.info(`PATCH with video: ${res.data.scene_out_path}`);
+        logr.info(`New video url: ${res.data.scene_out_path}`);
 
-        axh.updateSceneMovie(sceneId, res.data.scene_out_path).then(sceneRes => {
+        const csrfToken = axh.getCSRFToken();
+        // PATCH the url into movie_url field
+        axh.updateSceneMovieURL(sceneId, res.data.scene_out_path, csrfToken).then(sceneRes => {
           if (sceneRes) {
+            logr.info(JSON.stringify(sceneRes.data));
             logr.info(`Scene id ${sceneRes.data.scene_id} movie is updated to ${sceneRes.data.new_url}`);
           }
         });

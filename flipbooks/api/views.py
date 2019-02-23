@@ -1,6 +1,13 @@
 import os, shutil
+from django.http import JsonResponse
 from rest_framework import generics
 from rest_framework.parsers import FormParser,MultiPartParser,FileUploadParser
+
+from pathlib import Path, PurePath #new in Python 3.4+
+from django.conf import settings
+
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage as storage
 
 
 from .serializers import (
@@ -142,7 +149,26 @@ class SceneUpdateAPIView(generics.UpdateAPIView):
         return Scene.objects.all()
     
     def partial_update(self, request, *args, **kwargs):
-        return super(SceneUpdateAPIView, self).partial_update(request, *args, **kwargs)
+        if 'movie_url' in request.data:
+            # This updates only the url of the movie. Update is currently done by Lambda, not the user.
+            new_url = request.data['movie_url']
+
+            # TODO: verify this is actually in s3!
+            scene = Scene.objects.filter(pk=kwargs['pk'])[0]
+            scene.movie_url = new_url
+            scene.save()
+
+            # More generic response just for the movie field
+            return JsonResponse({'scene_id': scene.id, 'new_url': scene.movie_url})
+        else:
+            # return super(SceneUpdateAPIView, self).partial_update(request, *args, **kwargs)
+            return JsonResponse({
+                'msg': 'PATCH for Field other than "movie_url" for Scene instance is not supported',
+                'request': request.data
+            })
+
+
+
 
 
 

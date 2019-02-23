@@ -148,8 +148,10 @@ class Scene(models.Model):
     name = models.CharField(max_length=50, blank=True, default="")
     id64 = models.CharField(max_length=8, blank=True, default='')
     description = models.TextField(max_length=100, blank=True, default="")
-    movie = models.FileField(upload_to='', blank=True)
 
+    movie_url = models.CharField(max_length=60, blank=True, default="") # lambda
+    movie = models.FileField(upload_to='', blank=True) # direct upload
+    
     # TODO: make this NOT CASCADE. Kinda dangerous
     chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE, default=0)
     

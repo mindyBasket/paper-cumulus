@@ -68,19 +68,26 @@ class XhrHandler {
     )
   }
 
-  updateSceneMovie(sceneId, newurl) {
+  updateSceneMovieURL(sceneId, newUrl, csrfToken) {
+    const fd = new FormData();
+    fd.append('movie_url', newUrl);
+
     return (
       axios({
-        method: 'get',
-        params: { new_url: newurl },
-        url: `/flipbooks/ajax/scene/${sceneId}/update_movie/`,
-      }).then(res => {
-        return res;
-      }).catch(err => {
-        logr.error(err.data);
+        method: 'patch',
+        url: `/api/scene/${sceneId}/update/`,
+        data: fd,
+        headers: { 'X-CSRFToken': csrfToken },
       })
+        .then(response => {
+          return response;
+        })
+        .catch(error => {
+          logr.error(error);
+          // TODO: add better error message that is visible on frontend
+        })
     )
-
+    
   }
 
 
@@ -91,9 +98,9 @@ class XhrHandler {
         url: `/api/scene/${sceneId}/`,
       })
         .then(response => {
-          console.log("[Scene fetch successful]");
-          //thisObj.setState({data: response.data});
-          //this.firstLoad = false;
+          logr.info('[Scene fetch successful]');
+          // thisObj.setState({data: response.data});
+          // this.firstLoad = false;
           return response;
         })
         .catch(error => {
