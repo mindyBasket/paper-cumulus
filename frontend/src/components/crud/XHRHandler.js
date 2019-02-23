@@ -42,6 +42,27 @@ class XhrHandler {
 
 
 
+
+  fetchChapter(chapterId) {
+    return (
+      axios({
+        method: 'get',
+        url: `/api/chapter/${chapterId}/`,
+      }).then(response => {
+        return response;
+      }).catch(error => {
+        logr.error(error);
+      })
+    );
+  }
+
+
+
+
+
+
+
+
   createScene(chapterId, formData, csrfToken) {
     return this.makeXHR('post', formData, `/api/chapter/${chapterId}/scene/create/`, csrfToken);
   }
@@ -87,9 +108,33 @@ class XhrHandler {
           // TODO: add better error message that is visible on frontend
         })
     )
-    
   }
 
+  getVideoFromStore(url) {
+    // Takes in relative url, and finds storage link for it
+    if (!url || url === undefined) {
+      logr.warn('Url not provided retrieve from storage.');
+      return false;
+    }
+
+    const urlParts = url.split('.');
+    if (urlParts[urlParts.length - 1] === 'mp4') { // make sure it is a video link
+      return (
+        axios({
+          method: 'get',
+          param: encodeURIComponent(url),
+          url: '/flipbooks/s3/getV/',
+        })
+          .then(response => {
+            return response;
+          })
+          .catch(error => {
+            logr.error(error);
+            // TODO: add better error message that is visible on frontend
+          })
+      )
+    } 
+  }
 
   fetchScene(sceneId) {
     return (
@@ -108,6 +153,22 @@ class XhrHandler {
         })
     )
   }
+
+  fetchSceneList(chapterId) {
+    return (
+      axios({
+        method: 'get',
+        url: `/api/chapter/${chapterId}/scene/all/`,
+      }).then(res => {
+        logr.info('Scene list fetch successful');
+        return res;
+      }).catch(error => {
+        logr.error(error);
+      })
+    )
+  }
+
+
 
 
 
@@ -135,7 +196,6 @@ class XhrHandler {
         })
     )
   }
-
 
   updateStrip(stripId, formData, csrfToken) {
     return (

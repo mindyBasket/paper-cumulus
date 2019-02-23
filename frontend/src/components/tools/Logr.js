@@ -15,11 +15,6 @@ class Logr {
     } 
   }
 
-  log(msg) {
-    // Adding this for now because it is too easy to make mistake using log()
-    console.log(`[${this.nameSpace}] ${msg}`);
-  }
-
   info(msg) {
     console.log(`[${this.nameSpace}] ${msg}`);
   }

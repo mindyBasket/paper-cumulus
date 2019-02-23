@@ -2,18 +2,20 @@ import React, { Component, PureComponent } from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 
-import FrameFeeder from './FrameFeeder';
+import VideoFeeder from './VideoFeeder';
 import Spinner from './Spinner';
 import { LightBox } from './LightBox';
 import { MenuButton } from './UI';
 
 import key from 'weak-key';
 
-// Custom helpers
+import Logr from './tools/Logr';
 import Helper from './Helper';
+
+const logr = new Logr('Flipbook(pie)Player');
 const h = new Helper();
 
-//DEMOONLY
+// DEMOONLY
 import { DemoModal,DemoGuideBtn } from './demo/Demo';
 
 
@@ -192,7 +194,7 @@ class FrameStage extends PureComponent {
       });
 
       // initialize the Scrubber.
-      console.log("init scrubber");
+      logr.info('init scrubber');
       _setState_Scrubber({
         data: this.props.data,
         numStrips: h.getTotalStripCount(this.props.data),
@@ -205,199 +207,193 @@ class FrameStage extends PureComponent {
       // Tell parent the frame has been loaded
       _setState_FlipbookPlayer({ frameLoaded: true });
     }
+  }
+
+  componentWillUnmount() {
+    // this component have a lot of setTimeOuts flying around. Kill them all.
+    this.killSetTimeOut();
 
   }
 
-	componentWillUnmount(){
-		// this component have a lot of setTimeOuts flying around. Kill them all.
-		this.killSetTimeOut();
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    console.log("[UPDATE] FrameStage");
 
-	}
-	componentDidUpdate(prevProps, prevState, snapshot){
-		console.log("[UPDATE] FrameStage");
-
-		// Note: Used for SceneEditor's Strip animation previews
-		if (prevProps.playPreviewNow != this.props.playPreviewNow){
-			const useScrollTop = true;
-			this.gotoNextAndPlay(useScrollTop);
-		}
-	}
+    // Note: Used for SceneEditor's Strip animation previews
+    if (prevProps.playPreviewNow !== this.props.playPreviewNow) {
+      const useScrollTop = true;
+      this.gotoNextAndPlay(useScrollTop);
+    }
+  }
 
 
-	gotoNextAndPlay(useScrollTop){
-		// Kill any preexisting animation
-		this.killSetTimeOut();
+  gotoNextAndPlay(useScrollTop) {
+    // Kill any preexisting animation
+    this.killSetTimeOut();
 
-		// Get next strip
-		if (this.currStrip == null){
-			// never initialized. Do it now!
-			console.log("currStrip never initialized. Grab the first .strip.start.");
-			this.currStrip = this.$node.current.querySelector('.strip.start');
-		}
+    // Get next strip
+    if (this.currStrip == null) {
+      // never initialized. Do it now!
+      logr.info('currStrip never initialized. Grab the first .strip.start.');
+      this.currStrip = this.$node.current.querySelector('.strip.start');
+    }
 
-		if (!this.frameState.isStripHead){
-			let nextStrip = null;
+    if (!this.frameState.isStripHead) {
+      let nextStrip = null;
 
-			try {
-				// Note: you maybe on the last strip of current scene, so move to next scene
-				nextStrip = this.currStrip.className.includes('last') ? (
-					this.currStrip.parentElement.nextElementSibling.querySelector('.strip.start')
-				) : (
-				 	this.currStrip.nextElementSibling
-				)
-			}
-			catch (err) {
-				if (err instanceof TypeError) { console.warn("Could not grab next frame. It may not exist.") }
-				else {console.error(err);return false;}
-			}
+      try {
+        // Note: you maybe on the last strip of current scene, so move to next scene
+        nextStrip = this.currStrip.className.includes('last') ? (
+          this.currStrip.parentElement.nextElementSibling.querySelector('.strip.start')
+        ) : (
+          this.currStrip.nextElementSibling
+        );
+      } catch (err) {
+        if (err instanceof TypeError) { logr.warn('Could not grab next frame. It may not exist.'); }
+        else { console.error(err); return false; }
+      }
 
-			if (nextStrip == null){ console.error("No more next strip.");}
-			this.currStrip = nextStrip==null ? this.currStrip : nextStrip;
-			
-			if (useScrollTop){
-				this.$node.current.parentElement.scrollTop = this.currStrip.offsetTop;
-			} else { 
-				this.currStrip.scrollIntoView(true);
-			} 
-		} 
+      if (nextStrip == null) { console.error("No more next strip."); }
+      this.currStrip = nextStrip == null ? this.currStrip : nextStrip;
 
-
-		// set frame_window to the right aspect ratio matching new strip
-		flpb.pub_recalcDimension(this.currStrip);
-
-		//Enter playing state
-		this.frameState.isPlaying = true;
-		this.frameState.isStripHead = false;
-
-		//Make timeline
-		var frameCount = this.currStrip.getAttribute('count');
-		var frameDuration = Number(this.currStrip.getAttribute('dur'));
-			frameDuration = frameDuration || T_STEP;
-		for(var i=0;i<frameCount;i++){
-			// Add reference to stop it later
-          	this.setTimeOutArr.push(
-          		setTimeout(this.playFrame.bind(this, i, useScrollTop), i*frameDuration)
-          	);
-		}
+      if (useScrollTop) {
+        this.$node.current.parentElement.scrollTop = this.currStrip.offsetTop;
+      } else {
+        this.currStrip.scrollIntoView(true);
+      }
+    } 
 
 
-		//update scrubber
-		if (!this.props.isStandAlone){
-			_setState_Scrubber({
-				numFrames: Number(frameCount),
-				currStrip: Number(this.currStrip.getAttribute("index"))
-			});
-			
-			flpb.pub_setStandy(false);
+    // set frame_window to the right aspect ratio matching new strip
+    flpb.pub_recalcDimension(this.currStrip);
 
-			if(this.currStrip.getAttribute("index") == 0){
-				//_setState_FlipbookPlayer({introActive: false});
-				console.warn("Current Strip index is 0, so put cover back");
-				flpb.pub_setIntroCover(false);
-			}
-		}
-		
-	 
-	}
+    // Enter playing state
+    this.frameState.isPlaying = true;
+    this.frameState.isStripHead = false;
 
-	rewind(){
-		this.currStrip.scrollIntoView(true);
-
-		// Clear timer
-		_setState_Scrubber({currFrame: -1});
-		flpb.pub_setStandy(true);
-		
-	}
-
-	gotoPrev(){
-
-		// check if you reached the beginning
-		if (this.currStrip.getAttribute("index") == 0){
-			// turn on intro page
-			//_setState_FlipbookPlayer({introActive: true});
-			flpb.pub_setIntroCover(true);
-			_setState_Scrubber({
-				currStrip: -1
-			});
-		} else {
-			// Get previous strip
-			// Note: you maybe on the first strip of current scene, so move to previous scene
-			let prevStrip = null;
-				prevStrip = this.currStrip.className.includes('start') ? (
-					this.currStrip.parentElement.previousElementSibling.querySelector('.strip.last')
-				) : (
-				 	this.currStrip.previousElementSibling
-				)
-
-			if (prevStrip != null){
-				//scroll
-				this.currStrip = prevStrip;
-				this.currStrip.scrollIntoView(true);
-
-				// set frame_window to the right aspect ratio
-				flpb.pub_recalcDimension(this.currStrip);
+    // Make timeline
+    var frameCount = this.currStrip.getAttribute('count');
+    var frameDuration = Number(this.currStrip.getAttribute('dur'));
+    frameDuration = frameDuration || T_STEP;
+    for (var i = 0; i < frameCount; i++) {
+      // Add reference to stop it later
+      this.setTimeOutArr.push(
+        setTimeout(this.playFrame.bind(this, i, useScrollTop), i * frameDuration)
+      );
+    }
 
 
-				_setState_Scrubber({
-					numFrames: Number(this.currStrip.getAttribute("count")),
-					currStrip: Number(this.currStrip.getAttribute("index"))
-				});
-			}
-		}
+    // update scrubber
+    if (!this.props.isStandAlone) {
+      _setState_Scrubber({
+        numFrames: Number(frameCount),
+        currStrip: Number(this.currStrip.getAttribute("index"))
+      });
 
-	}
+      flpb.pub_setStandy(false);
+
+      if (this.currStrip.getAttribute("index") == 0) {
+        //_setState_FlipbookPlayer({introActive: false});
+        console.warn("Current Strip index is 0, so put cover back");
+        flpb.pub_setIntroCover(false);
+      }
+    }
+  }
+
+  rewind() {
+    this.currStrip.scrollIntoView(true);
+
+    // Clear timer
+    _setState_Scrubber({ currFrame: -1 });
+    flpb.pub_setStandy(true);
+
+  }
+
+  gotoPrev() {
+
+    // check if you reached the beginning
+    if (this.currStrip.getAttribute("index") === 0) {
+      // turn on intro page
+      //_setState_FlipbookPlayer({introActive: true});
+      flpb.pub_setIntroCover(true);
+      _setState_Scrubber({
+        currStrip: -1,
+      });
+    } else {
+      // Get previous strip
+      // Note: you maybe on the first strip of current scene, so move to previous scene
+      let prevStrip = null;
+      prevStrip = this.currStrip.className.includes('start') ? (
+        this.currStrip.parentElement.previousElementSibling.querySelector('.strip.last')
+      ) : (
+        this.currStrip.previousElementSibling
+      );
+
+      if (prevStrip != null) {
+        // scroll
+        this.currStrip = prevStrip;
+        this.currStrip.scrollIntoView(true);
+
+        // set frame_window to the right aspect ratio
+        flpb.pub_recalcDimension(this.currStrip);
 
 
-	playFrame(index,useScrollTop){
+        _setState_Scrubber({
+          numFrames: Number(this.currStrip.getAttribute("count")),
+          currStrip: Number(this.currStrip.getAttribute("index"))
+        });
+      }
+    }
 
-		var targetFrame = this.currStrip.querySelectorAll(".frame")[index];
-		if (targetFrame != null) {
-			if (useScrollTop){
-				this.$node.current.parentElement.scrollTop = targetFrame.offsetTop;
-			} else {
-				targetFrame.scrollIntoView(true);
-			}
-			
-		}
-		else {console.warn("Could not find frame at index " + index)}
+  }
 
-		//update timer
-		_setState_Scrubber({currFrame: index});
 
-	}
+  playFrame(index, useScrollTop) {
+    const targetFrame = this.currStrip.querySelectorAll('.frame')[index];
+    if (targetFrame != null) {
+      if (useScrollTop) {
+        this.$node.current.parentElement.scrollTop = targetFrame.offsetTop;
+      } else {
+        targetFrame.scrollIntoView(true);
+      }
 
-	killSetTimeOut(){
-		for(var i=0;i<this.setTimeOutArr.length;i++){
-            clearTimeout(this.setTimeOutArr[i]);
-        }
-        
-        // Dump array
-        // the array only gets new entry in playNext()
-        this.setTimeOutArr = new Array();
-	}
+    }
+    else { console.warn("Could not find frame at index " + index) }
 
-	lazyLoad(){
-		// Check if 1) the chapter is not fully loaded
-		//			2) user is not currently at tip of loaded (I can probably do something with class instead)
-		if (this.state.lazySceneCount < this.totalSceneCount &&
-			Number(this.currStrip.parentElement.getAttribute('index')) >= this.state.lazySceneCount-1){
-			// is the user at threshold?
-			const currPos = Number(this.currStrip.getAttribute("localindex"));
-			const totalPos = this.currStrip.parentElement.querySelectorAll('.strip').length;
-			// console.log("totalPos - currPos = " + (totalPos - currPos));
-			if (totalPos - currPos <= LAZYLOAD_THRESHOLD){
-				let lazyDataSoFar = this.state.lazySceneCount;
-				this.setState({lazySceneCount:lazyDataSoFar+1});
-				// see render() to see how this effects the loaded frames
+    // update timer
+    _setState_Scrubber({ currFrame: index });
+  }
 
-				// Update scrubber
-				_setState_Scrubber({
-					numLoadedScene:lazyDataSoFar+1
-				});
-			}
-		}
+  killSetTimeOut() {
+    for (let i = 0; i < this.setTimeOutArr.length; i++) {
+      clearTimeout(this.setTimeOutArr[i]);
+    }
 
-	}
+    // Dump array
+    // the array only gets new entry in playNext()
+    this.setTimeOutArr = new Array();
+  }
+
+  lazyLoad() {
+    // Check if 1) the chapter is not fully loaded
+    //			2) user is not currently at tip of loaded (I can probably do something with class instead)
+    if (this.state.lazySceneCount < this.totalSceneCount &&
+      Number(this.currStrip.parentElement.getAttribute('index')) >= this.state.lazySceneCount - 1) {
+      // is the user at threshold?
+      const currPos = Number(this.currStrip.getAttribute("localindex"));
+      const totalPos = this.currStrip.parentElement.querySelectorAll('.strip').length;
+      // console.log("totalPos - currPos = " + (totalPos - currPos));
+      if (totalPos - currPos <= LAZYLOAD_THRESHOLD) {
+        let lazyDataSoFar = this.state.lazySceneCount;
+        this.setState({ lazySceneCount: lazyDataSoFar + 1 });
+        // see render() to see how this effects the loaded frames
+
+        // Update scrubber
+        _setState_Scrubber({
+          numLoadedScene: lazyDataSoFar + 1,
+        });
+      }
+    }
+  }
 
 
 	render(){
@@ -482,14 +478,45 @@ class FrameStage extends PureComponent {
 		}
 		
 	}
-
-
-
 }
 
 
 
 
+
+
+
+// ███████╗████████╗ █████╗  ██████╗ ███████╗
+// ██╔════╝╚══██╔══╝██╔══██╗██╔════╝ ██╔════╝
+// ███████╗   ██║   ███████║██║  ███╗█████╗
+// ╚════██║   ██║   ██╔══██║██║   ██║██╔══╝
+// ███████║   ██║   ██║  ██║╚██████╔╝███████╗
+// ╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚══════╝
+
+class FlipbookStage extends Component {
+  static propTypes = {
+    scene: PropTypes.object.isRequired,
+    // handle_fetchScene: PropTypes.func.isRequired,
+    // setState_LightBox: PropTypes.func.isRequired,
+  };
+
+  static defaultProps = {
+
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
+  render() {
+    return (
+      <div>
+        FlipbookStage
+      </div>
+    )
+  }
+}
 
 
 
@@ -498,99 +525,67 @@ class FrameStage extends PureComponent {
 // █████╗  ██████╔╝███████║██╔████╔██║█████╗  ██║ █╗ ██║██║██╔██╗ ██║██║  ██║██║   ██║██║ █╗ ██║
 // ██╔══╝  ██╔══██╗██╔══██║██║╚██╔╝██║██╔══╝  ██║███╗██║██║██║╚██╗██║██║  ██║██║   ██║██║███╗██║
 // ██║     ██║  ██║██║  ██║██║ ╚═╝ ██║███████╗╚███╔███╔╝██║██║ ╚████║██████╔╝╚██████╔╝╚███╔███╔╝
-// ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝ ╚══╝╚══╝ ╚═╝╚═╝  ╚═══╝╚═════╝  ╚═════╝  ╚══╝╚══╝ 
-                                                                                             
-class FrameWindow extends Component{
+// ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝ ╚══╝╚══╝ ╚═╝╚═╝  ╚═══╝╚═════╝  ╚═════╝  ╚══╝╚══╝
 
-	constructor(props){
-		super(props);
+/**
+ * This component, previously a "FrameWindow", will now act as a player component
+ * that wrap the staging area, scrubber and timer altogether
+ */
+class FlipbookPlayer extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
 
-		if (chapterId == null){
-			// if chapterId not provided, only retrieve one scene
-			// Note: response will be an object
-			this.endpoint = `/api/scene/${this.props.startSceneId}/`;
-		} else {
-			// Note: response will be an ARRAY of objects
-			this.endpoint = `/api/chapter/${this.props.chapterId}/scene/all/`;
-		}
+  render() {
+    const wOv = this.props.widthOverride;
+    const hOv = this.props.heightOverride;
 
-		// prop ref
-		// this.props.data 
-		// this.props.isStandAlone 
-		// this.props.widthOverride // should be passed down if standAlone
-		// this.props.heightOverride 
+    return (
+      <div className="flipbook_player">
+        {/*
+          <Scrubber />
+          <Timer /> 
+        */}
 
-		this.state={
-			onStandby: false,
-			onIntro: true,
+        <VideoFeeder
+          chapterId={this.props.chapterId}
+          render={dataDict => (
+            <FlipbookStage
+              data={dataDict.data}
+              children_li={dataDict.children_li}
+            />
+          )}
+        />
 
-			windowHeight: 500, 
-			windowWidth: TEMP_WIDTH, // using a hardcoded width for now
-		}
+        {/*
+        <div className="frame_window_decorations">
+          <div
+            className="player_instruction"
+            style={{ opacity: (this.state.onIntro ? 1 : 0) }}
+          >
+            <span>Use keyboard to navigate</span>
+            <span>
+              <span className="bigtext-2 far fa-caret-square-left" />
+              <span className="bigtext-2 far fa-caret-square-right" />
+            </span>
+          </div>
+        </div>
+        */}
+        {/* <div className={"standby_cover " + (this.state.onStandby ? "active" : "")}></div> */}
 
-		flpb.pub_recalcDimension = flpb.pub_recalcDimension.bind(this);
-		flpb.pub_setStandy = flpb.pub_setStandy.bind(this);
-		flpb.pub_setIntroCover = flpb.pub_setIntroCover.bind(this);
-	}
-
-	render(){
-		const wOv = this.props.widthOverride;
-		const hOv = this.props.heightOverride;
-
-		return (
-			<div className="frame_window" 
-				 style={{ 
-				 	opacity: (this.state.onStandby ? STANDBY_OPACITY : 1),
-				 	width: (wOv ? wOv : this.state.windowWidth + "px"), 
-				 	height: (hOv ? hOv : this.state.windowHeight + "px")
-				 }}>
-
-				 
-
-				{/* If stand alone, render Frames only if it is on. 
-					Otherwise, it's too many unseen elements on the page. */}
-				{ (this.props.isStandAlone && this.props.on) && (
-
-                    <FrameStage data={this.props.data} 
-                                isStandAlone={true} 
-                                on={this.props.on}
-                                playPreviewNow={this.props.playPreviewNow} 
-                    />
-
-				)} 
-
-				{/* If NOT standalone */}
-				{ !this.props.isStandAlone && (
-					<FrameFeeder endpoint = {this.endpoint} 
-								 render={dataDict => <FrameStage data={dataDict.data}
-								 						         children_li={dataDict.children_li} />} />
-				)}
-				
-				{!this.props.isStandAlone && 
-					<div className="frame_window_decorations">
-						<div className="player_instruction" 
-							 style={{opacity: (this.state.onIntro ? 1 : 0) }}>
-							<span>Use keyboard to navigate</span>
-							<span>
-								<span className="bigtext-2 far fa-caret-square-left"></span>
-								<span className="bigtext-2 far fa-caret-square-right"></span>
-							</span>
-						</div>
-					</div>
-				}
-
-				{/*<div className={"standby_cover " + (this.state.onStandby ? "active" : "")}></div>*/}
-				
-			</div>
-		)
-	}
+      </div>
+    )
+  }
 
 }
 
 
 
 
-// ███████╗███████╗████████╗ ██████╗██╗  ██╗███████╗██████╗ 
+
+
+// ███████╗███████╗████████╗ ██████╗██╗  ██╗███████╗██████╗
 // ██╔════╝██╔════╝╚══██╔══╝██╔════╝██║  ██║██╔════╝██╔══██╗
 // █████╗  █████╗     ██║   ██║     ███████║█████╗  ██████╔╝
 // ██╔══╝  ██╔══╝     ██║   ██║     ██╔══██║██╔══╝  ██╔══██╗
@@ -791,9 +786,6 @@ class Scrubber extends PureComponent{
 
 
 
-
-
-
 // ████████╗██╗███╗   ███╗███████╗██████╗ 
 // ╚══██╔══╝██║████╗ ████║██╔════╝██╔══██╗
 //    ██║   ██║██╔████╔██║█████╗  ██████╔╝
@@ -835,11 +827,6 @@ class Timer extends Component{
 
 
 
-
-
-
-
-
 // ███╗   ███╗ █████╗ ██╗███╗   ██╗
 // ████╗ ████║██╔══██╗██║████╗  ██║
 // ██╔████╔██║███████║██║██╔██╗ ██║
@@ -853,10 +840,15 @@ class Timer extends Component{
 // ██╔═══╝ ██║     ██╔══██║  ╚██╔╝  ██╔══╝  ██╔══██╗
 // ██║     ███████╗██║  ██║   ██║   ███████╗██║  ██║
 // ╚═╝     ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝  ╚═╝
-                                                 
 
-
-class FlipbookPlayer extends Component{
+/**
+ * This component is rendered into the HTML
+ */
+class FlipbookLayout extends Component{
+  static propTypes = {
+    chapterId: PropTypes.number.isRequired,
+    startSceneId: PropTypes.number.isRequired,
+  };
 
 	constructor(props){
 		super(props);
@@ -874,20 +866,20 @@ class FlipbookPlayer extends Component{
 
 	render (){
 		return (
-			<div className="flipbook_player">
-				
-				{/* Scrubber, to hint which strip you are on */}
-				<Scrubber/>
+			<div className="flipbook_layout_wrapper">
+
 				{/* Through FrameWindow, you only see one frame at a time */}
-				<FrameWindow 
+				<FlipbookPlayer
 					startSceneId={this.props.startSceneId}
-					chapterId={this.props.chapterId}/>
+					chapterId={this.props.chapterId}
+        />
 
 				{/* Loading spinner. Still looking for a better place to put this*/}
-				<Spinner style="light" 
+				{/* <Spinner style="light" 
 						 float={true} 
 						 bgColor="#1d1e1f"
-						 spinning={this.state.frameLoaded ? false : true}/>
+             spinning={this.state.frameLoaded ? false : true}/>
+        /*}
 
 				{/* flipbook player controls */}
 				<MenuButton iconClass="menu_btn fas fa-share-square" action={()=>{}} 
@@ -924,14 +916,13 @@ const wrapper = document.getElementById("letterbox");
 const refNode = wrapper ? document.getElementById("ref").querySelector("#ref-content") : null;
 const sceneId = wrapper ? refNode.getAttribute("sceneId") : null;
 const chapterId = wrapper ? refNode.getAttribute("chapterId") : null;
-// TODO: disabled to test different version of flipbook. Fuse two version or remove this one.
-// wrapper ? ReactDOM.render(<FlipbookPlayer startSceneId={sceneId} chapterId={chapterId}/>, wrapper) : null;
+wrapper ? ReactDOM.render(<FlipbookLayout startSceneId={sceneId} chapterId={chapterId}/>, wrapper) : null;
 
 
 
 // Can I also export...?
-export {
-    FrameStage,
-    FrameWindow,
-    flipbook_publicFunctions
-};
+// export {
+//     FrameStage,
+//     FrameWindow,
+//     flipbook_publicFunctions
+// };

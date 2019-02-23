@@ -55,6 +55,9 @@ urlpatterns = [
     re_path(r'^ajax/strips/(?P<pk>\d+)/sort-children/$', views.sort_children, name='strip-sort-children'),
     re_path(r'^ajax/scene/(?P<pk>\d+)/sort-children/$', views.scene_sort_children, name='scene-sort-children'),
 
+    #async calls
+    path('s3/getV/', views.SceneDetailView_REACT.as_view(), name='get-v'),
+
     # returns json objects
     # TODO: since REACT conversion, none of them are used. Confirm it and remove.
     re_path(r'^json_partials/strip_container/(?P<pk>\d+)/$', views_jsonpr.return_strip_container_tmplt, name='json_partial__strip_container'), 
