@@ -117,22 +117,38 @@ class SceneEditor extends Component {
     const sceneId = this.sceneId;
     logr.warn('Make Lambda Pie');
 
-    axh.makeLambdaPie(sceneId).then(res => {
-      // Lambda responded
-      if (res && res.data) {
-        logr.info('Response: ' + JSON.stringify(res.data));
-        logr.info(`New video url: ${res.data.scene_out_path}`);
+    // Gather info ...
+    axh.fetchScene(sceneId).then(scRes => {
+      if (scRes && scRes.data) {
+        console.log(scRes.data);
+        const sc = scRes.data;
 
-        const csrfToken = axh.getCSRFToken();
-        // PATCH the url into movie_url field
-        axh.updateSceneMovieURL(sceneId, res.data.scene_out_path, csrfToken).then(sceneRes => {
-          if (sceneRes) {
-            logr.info(JSON.stringify(sceneRes.data));
-            logr.info(`Scene id ${sceneRes.data.scene_id} movie is updated to ${sceneRes.data.new_url}`);
-          }
+        // sort strip
+        const strip_order = sc.children_li;
+        sc.strips.forEach(st => {
         });
+
+        // sort frame
+
       }
     });
+
+    // axh.makeLambdaPie(sceneId).then(res => {
+    //   // Lambda responded
+    //   if (res && res.data) {
+    //     logr.info('Response: ' + JSON.stringify(res.data));
+    //     logr.info(`New video url: ${res.data.scene_out_path}`);
+
+    //     const csrfToken = axh.getCSRFToken();
+    //     // PATCH the url into movie_url field
+    //     axh.updateSceneMovieURL(sceneId, res.data.scene_out_path, csrfToken).then(sceneRes => {
+    //       if (sceneRes) {
+    //         logr.info(JSON.stringify(sceneRes.data));
+    //         logr.info(`Scene id ${sceneRes.data.scene_id} movie is updated to ${sceneRes.data.new_url}`);
+    //       }
+    //     });
+    //   }
+    // });
   }
 
 
