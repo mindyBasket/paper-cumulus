@@ -1,76 +1,79 @@
-"use strict"; 
-
 class Helper {
+  getRandomStr(len) {
+    return (Math.random() + 1).toString(36).substring(len);
+  }
 
-	getRandomStr(len){
-		return (Math.random() + 1).toString(36).substring(len);
-	}
+  string2List(stringyList) {
+    // assumes items are listed with "," only (for now)
+    const li = stringyList.split(',');
+    return li.map(item => String(item).trim());
+  }
 
-    calcHeight(defaultWidth, dimension, heightIfFail){
-        // TODO: this function only accepts dimension in String, 
-        //       in a form of "[num]x[num]". Do I need to be more flexible?
+  calcHeight(defaultWidth, dimension, heightIfFail) {
+    // TODO: this function only accepts dimension in String, 
+    //       in a form of "[num]x[num]". Do I need to be more flexible?
 
-        const di = dimension.split("x");
-        let isError = false;
-        let h;
+    const di = dimension.split('x');
+    let isError = false;
+    let h;
 
-        if(dimension != '' && di.length >= 2){
-            try {
-                h = Math.round( (defaultWidth*di[1])/di[0] );
-            } catch(err){
-                console.error("Height could not be calculated: " + err);
-                isError = true;
-                //return false;
-            }
-        } else { isError = true; } 
+    if (dimension !== '' && di.length >= 2) {
+      try {
+        h = Math.round((defaultWidth * di[1]) / di[0]);
+      } catch (err) {
+        console.error("Height could not be calculated: " + err);
+        isError = true;
+        // return false;
+      }
+    } else { isError = true; }
 
-        const DEFAULT_HEIGHT = 100;
-        if (isError){ return (heightIfFail === undefined ? DEFAULT_HEIGHT : heightIfFail);}
-        else { return h;}
+    const DEFAULT_HEIGHT = 100;
+    if (isError) { return (heightIfFail === undefined ? DEFAULT_HEIGHT : heightIfFail); }
+    else { return h; }
 
+  }
+
+  getTotalSceneCount(data) {
+    // For now, data is assumed to be a single Scene object, or many
+    if (Array.isArray(data)) {
+      // many scenes
+      // check first object if it is scene
+      if (data[0].hasOwnProperty('strips')) {
+        return data.length;
+      } else {
+        return 0;
+      }
+    } else {
+      if (data.hasOwnProperty('strips')) {
+        return 1;
+      } else {
+        return 0;
+      }
     }
+  }
 
-    getTotalSceneCount(data){
-        // For now, data is assumed to be a single Scene object, or many
-        if (Array.isArray(data)){
-            // many scenes
-            // check first object if it is scene
-            if (data[0].hasOwnProperty('strips')){
-                return data.length;
-            } else {
-                return 0;
-            }
-        } else {
-            if (data.hasOwnProperty('strips')){
-                return 1;
-            } else {
-                return 0;
-            }
+  getTotalStripCount(data) {
+    // Assumes data is either array of Scene object, or a single Scene object. 
+    // TODO: make this a better search
+
+    if (Array.isArray(data)) {
+      // many scenes
+      let count = 0;
+      for (let i = 0; i < data.length; i++) {
+        if (data[i].hasOwnProperty('strips')) {
+          count += data[i]['strips'].length;
         }
-    }
-	
-    getTotalStripCount(data){
-        // Assumes data is either array of Scene object, or a single Scene object. 
-        // TODO: make this a better search
+      }
+      return count;
 
-        if (Array.isArray(data)){
-            // many scenes
-            let count = 0; 
-            for (let i=0;i<data.length;i++){
-                if (data[i].hasOwnProperty('strips')) {
-                    count+=data[i]['strips'].length;
-                }
-            }
-            return count;
-
-        } else {
-            if (data.hasOwnProperty('strips')){
-                return data['strips'].length;
-            } else {
-                return 0;
-            }
-        }
+    } else {
+      if (data.hasOwnProperty('strips')) {
+        return data['strips'].length;
+      } else {
+        return 0;
+      }
     }
+  }
 
 
 	serializeForm($form){

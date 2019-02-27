@@ -9,17 +9,19 @@ import { FrameModal } from './crud/FrameModal';
 import { LightBox, lightBox_publicFunctions as lb } from './LightBox';
 
 import XhrHandler from './crud/XHRHandler';
-// import Helper from './Helper';
+import Helper from './Helper';
 import Logr from './tools/Logr';
+import Constants from './Constants';
 
 // DEMOONLY
 import { DemoGuideBtn } from './demo/Demo';
 
 const logr = new Logr('SceneEditor');
-// const h = new Helper();
+const h = new Helper();
 const axh = new XhrHandler(); // axios helper
+const constants = new Constants();
 
-logr.info('---- v0.4.3');
+logr.info('---- v0.5.1');
 
 // http://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=FrameStage
 
@@ -117,19 +119,66 @@ class SceneEditor extends Component {
     const sceneId = this.sceneId;
     logr.warn('Make Lambda Pie');
 
-    // Gather info ...
+    // Gather info ... and build playback information
     axh.fetchScene(sceneId).then(scRes => {
       if (scRes && scRes.data) {
         console.log(scRes.data);
         const sc = scRes.data;
 
-        // sort strip
-        const strip_order = sc.children_li;
+        const orderedFrameArr = [];
+        // const orderedStripArr = [];
+        const scenePlayback = { strips: [] }; // playback data!
+
+        // 1. sort Strip
+        const stripMap = {};
         sc.strips.forEach(st => {
+          stripMap[`strip${st.id}`] = st;
         });
 
-        // sort frame
+        h.string2List(sc.children_li).forEach(stripId => {
+          const targetStripKey = `strip${stripId}`;
+          if (stripMap.hasOwnProperty(targetStripKey)) {
+            const st = stripMap[targetStripKey];
+   
+            // 2. sort Frame
+            const frameMap = {};
+            st.frames.forEach(fr => {
+              frameMap[`frame${fr.id}`] = fr;
+            });
 
+            h.string2List(st.children_li).forEach(frameId => {
+              const targetFrameKey = `frame${frameId}`;
+              if (frameMap.hasOwnProperty(targetFrameKey)) {
+                if (frameMap[targetFrameKey].ignored === false) {
+                  orderedFrameArr.push(frameMap[targetFrameKey]);
+                }
+              }
+            });
+
+            // Build playback data
+            scenePlayback.strips.push({ 
+              frame_duration: st.frame_duration, // ms
+              frame_count: st.frames.length,
+            }); 
+          }
+        });
+
+        // Get all frame image path to ship off to Lambda
+        const orderedFramePathArr = [];
+        orderedFrameArr.forEach(frameObj => {
+          // Note: Lambda expects frame information in this format:
+          //       [ 's20/st92-0__444021504f/st92-0__444021504f.png`, ... ]
+          let imgPath = frameObj.frame_image;
+          if (imgPath !== '') {
+            imgPath = imgPath.split(constants.MEDIA_IMAGES_URL)[1];
+            orderedFramePathArr.push(imgPath);
+          } else {
+            orderedFramePathArr.push('');
+          }
+        });
+
+        console.log(orderedFramePathArr);
+        console.log(scenePlayback);
       }
     });
 
