@@ -110,11 +110,38 @@ class XhrHandler {
     )
   }
 
+  addToScenePlayback(sceneId, newPlayback, csrfToken) {
+    // Scene stores up to 3 playback information in case something goes wrong
+    // with the newest playback data.
+
+    const fd = new FormData();
+    fd.append('playback', newPlayback); 
+    // TODO: validate playback
+
+    // TODO: this appears to be near identical to updateSceneMovieURL.
+    //       It's because both are PATCH request. Find a way to merge them.
+
+    return (
+      axios({
+        method: 'patch',
+        url: `/api/scene/${sceneId}/update/`,
+        data: fd,
+        headers: { 'X-CSRFToken': csrfToken },
+      }).then(response => {
+        return response;
+      }).catch(error => {
+        logr.error(error);
+        // TODO: add better error message that is visible on frontend
+      })
+    )
+
+  }
+
   convertToStoreURLs(urls, extArr) {
     // Takes in relative url, and finds storage link for it
     // Currently used in VideoFeeder in order to retrieve video information from a field
     // that is not actually a FileField!
-    
+
     if (!urls || urls.length === 0) {
       logr.warn('Url not provided retrieve from storage.');
       return false;

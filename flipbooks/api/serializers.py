@@ -165,6 +165,18 @@ class SceneModelSerializer(serializers.ModelSerializer):
             'strips',
         ]
         
+# Just for playback
+class SceneModelPlayBackSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Scene
+        fields = [
+            'id',
+            'id64',
+            'chapter',
+            'movie_url',
+            'playback',
+        ]
         
 
 
@@ -184,8 +196,7 @@ class ChapterModelSerializer(serializers.ModelSerializer):
             'children_li',
             'number',
             'title',
-            'scene_set'
-
+            'scene_set',
         ]
 
 

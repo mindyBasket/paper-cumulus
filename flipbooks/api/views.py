@@ -1,4 +1,5 @@
 import os, shutil
+import json
 from django.http import JsonResponse
 from rest_framework import generics
 from rest_framework.parsers import FormParser,MultiPartParser,FileUploadParser
@@ -14,6 +15,7 @@ from .serializers import (
     BookModelSerializer,
     ChapterModelSerializer,
     SceneModelSerializer,
+    SceneModelPlayBackSerializer,
     StripModelSerializer,
     FrameModelSerializer,
 )
@@ -111,14 +113,33 @@ class Chapter64_APIDetailView(generics.RetrieveAPIView):
                                        
 
 class SceneAPIListView(generics.ListAPIView):
-    # Similar to above, but only lists scene under a book
+    # Similar to above, but only lists scene under a chapter
 
     # queryset = Scene.objects.all() # see get_queryset() below
     serializer_class = SceneModelSerializer
     
     def get_queryset(self):
-        _chapter_pk = self.kwargs['pk'] if ('pk' in self.kwargs) else '1'
-        return Scene.objects.filter(chapter__id=_chapter_pk)
+        # TODO: any reason you set this to default to "1"?
+        _chapter_pk = self.kwargs['pk'] if ('pk' in self.kwargs) else '-1'
+
+        if _chapter_pk > 0:
+            return Scene.objects.filter(chapter__id=_chapter_pk)
+        else:
+            return None
+
+
+class SceneAPIPlaybackListView(generics.ListAPIView):
+    # Similar to above, but only lists scene with Playback info
+
+    serializer_class = SceneModelPlayBackSerializer
+    
+    def get_queryset(self):
+        _chapter_pk = self.kwargs['pk'] if ('pk' in self.kwargs) else '-1'
+
+        if _chapter_pk > 0:
+            return Scene.objects.filter(chapter__id=_chapter_pk)
+        else:
+            return None
 
 
 
@@ -138,7 +159,14 @@ class SceneAPIDetailView(generics.RetrieveAPIView):
     #     return Response(usernames)
     
 
+# Just for playback!
+class SceneAPIPlaybackDetailView(generics.RetrieveAPIView):
     
+    queryset = Scene.objects.all()
+    serializer_class = SceneModelPlayBackSerializer
+    
+
+
 class SceneCreateAPIView(generics.CreateAPIView):
     serializer_class = SceneModelSerializer
 
@@ -149,6 +177,9 @@ class SceneUpdateAPIView(generics.UpdateAPIView):
         return Scene.objects.all()
     
     def partial_update(self, request, *args, **kwargs):
+        # TODO: Currently PATCH request for Scene assumes only ONE FIELD changes at a time
+        #       Investigate if this is desirable or not
+
         if 'movie_url' in request.data:
             # This updates only the url of the movie. Update is currently done by Lambda, not the user.
             new_url = request.data['movie_url']
@@ -160,16 +191,52 @@ class SceneUpdateAPIView(generics.UpdateAPIView):
 
             # More generic response just for the movie field
             return JsonResponse({'scene_id': scene.id, 'new_url': scene.movie_url})
+
+        elif 'playback' in request.data:
+            # This APPENDS playback into with the new one. It does not replace. 
+            # This PATCH request certainly makes a lot of assumptions.
+
+            new_playback = request.data['playback']
+            scene = Scene.objects.filter(pk=kwargs['pk'])[0]
+            STACK_LIMIT = 3
+
+            # get the original
+            playback_data = {}
+            try:
+                playback_data = json.loads(scene.playback)
+            except:
+                print("Existing playback data is not valid. Starting playback stack from scratch.")
+                playback_data = {}
+
+            if len(playback_data.keys) == 0 or 'playback_stack' not in playback_data:
+                playback_data['playback_stack'] = []
+            
+            # add to the stack
+            playback_stack = playback_data['playback_stack']
+
+            while len(playback_stack) >= STACK_LIMIT:
+                playback_stack.pop(-1) # Make space 
+
+            # Validate new playback
+            if (
+                'strips' in new_playback and len(new_playback['strips']) > 0 and 
+                'frame_count' in new_playback['strips'] and len(new_playback['strips']['frame_count'] > 0)
+                ):
+                # Valid. At least one frame can be played
+                playback_stack.append(new_playback)
+            else:
+                # Not valid. Do not push.
+                pass
+
+            # You updated reference to the playback stack, so it should be updated?
+            scene.save()
+
         else:
             # return super(SceneUpdateAPIView, self).partial_update(request, *args, **kwargs)
             return JsonResponse({
-                'msg': 'PATCH for Field other than "movie_url" for Scene instance is not supported',
+                'msg': 'PATCH for Field other than "movie_url" for Scene instance is currently not supported',
                 'request': request.data
             })
-
-
-
-
 
 
  # _______ _______  ______ _____  _____ 

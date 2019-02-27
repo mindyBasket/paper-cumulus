@@ -127,7 +127,11 @@ class SceneEditor extends Component {
 
         const orderedFrameArr = [];
         // const orderedStripArr = [];
-        const scenePlayback = { strips: [] }; // playback data!
+        const scenePlayback = { 
+          // playback data!
+          movie_filename: '', // TODO: make sure this matches with output from lambda
+          strips: [],
+        }; 
 
         // 1. sort Strip
         const stripMap = {};
@@ -189,6 +193,8 @@ class SceneEditor extends Component {
         // TODO: send these data out!
         console.log(orderedFramePathArr);
         console.log(scenePlayback);
+
+
       }
     });
 

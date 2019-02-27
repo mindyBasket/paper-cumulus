@@ -20,11 +20,13 @@ urlpatterns = [
     # Chapter
     path('chapter/<int:pk>/', views.ChapterAPIDetailView.as_view(), name="detail-chapter"), # simple list
     re_path(r'^chapter/id64/(?P<id64>\w+)/$', views.Chapter64_APIDetailView.as_view(), name="detail-chapter64"), # simple list
-    path('chapter/<int:pk>/scene/all/', views.SceneAPIListView.as_view(), name="list-scene"), # full list
+    path('chapter/<int:pk>/scene/all/', views.SceneAPIListView.as_view(), name="list-scene-playback"), # full list
+    path('chapter/<int:pk>/scene/playback/all/', views.SceneAPIPlaybackListView.as_view(), name="list-scene"), # full list for PLAYBACK
 
     # Scene 
     path('chapter/<int:pk>/scene/create/', views.SceneCreateAPIView.as_view(), name="create-scene-under-chapter"),
     path('scene/<int:pk>/', views.SceneAPIDetailView.as_view(), name="detail-scene"),
+    path('scene/<int:pk>/playback', views.SceneAPIPlaybackDetailView.as_view(), name="detail-scene-playback"), # PLAYBACK
     path('scene/<int:pk>/update/', views.SceneUpdateAPIView.as_view(), name="update-scene"), # currently only used for movie update
 
     # Strip
