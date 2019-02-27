@@ -21,7 +21,7 @@ const h = new Helper();
 const axh = new XhrHandler(); // axios helper
 const constants = new Constants();
 
-logr.info('---- v0.5.1');
+logr.info('---- v0.5.2');
 
 // http://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=FrameStage
 
@@ -139,6 +139,7 @@ class SceneEditor extends Component {
           const targetStripKey = `strip${stripId}`;
           if (stripMap.hasOwnProperty(targetStripKey)) {
             const st = stripMap[targetStripKey];
+            let visibleFrameCount = 0;
    
             // 2. sort Frame
             const frameMap = {};
@@ -151,15 +152,23 @@ class SceneEditor extends Component {
               if (frameMap.hasOwnProperty(targetFrameKey)) {
                 if (frameMap[targetFrameKey].ignored === false) {
                   orderedFrameArr.push(frameMap[targetFrameKey]);
+                  visibleFrameCount += 1;
                 }
               }
             });
 
+            // Cases to think about;
+            // 1. Empty strip -> ignored
+            // 2. NON-empty strip but ALL frames are hidden -> should be ignored
+
             // Build playback data
-            scenePlayback.strips.push({ 
-              frame_duration: st.frame_duration, // ms
-              frame_count: st.frames.length,
-            }); 
+            if (visibleFrameCount > 0) {
+              scenePlayback.strips.push({
+                frame_duration: st.frame_duration, // ms
+                frame_count: visibleFrameCount,
+              });
+            }
+
           }
         });
 
