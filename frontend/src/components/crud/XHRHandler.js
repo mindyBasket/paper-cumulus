@@ -112,6 +112,9 @@ class XhrHandler {
 
   convertToStoreURLs(urls, extArr) {
     // Takes in relative url, and finds storage link for it
+    // Currently used in VideoFeeder in order to retrieve video information from a field
+    // that is not actually a FileField!
+    
     if (!urls || urls.length === 0) {
       logr.warn('Url not provided retrieve from storage.');
       return false;

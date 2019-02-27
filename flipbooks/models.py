@@ -151,6 +151,8 @@ class Scene(models.Model):
 
     movie_url = models.CharField(max_length=60, blank=True, default="") # lambda
     movie = models.FileField(upload_to='', blank=True) # direct upload
+
+    playback = models.TextField(blank=True, default="")
     
     # TODO: make this NOT CASCADE. Kinda dangerous
     chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE, default=0)

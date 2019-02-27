@@ -185,7 +185,8 @@ class SceneEditor extends Component {
             orderedFramePathArr.push('');
           }
         });
-
+        
+        // TODO: send these data out!
         console.log(orderedFramePathArr);
         console.log(scenePlayback);
       }
