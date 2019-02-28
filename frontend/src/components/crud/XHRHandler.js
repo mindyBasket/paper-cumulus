@@ -308,11 +308,23 @@ class XhrHandler {
 
 
 
-  makeLambdaPie(sceneId) {
-    // TODO: this should take sceneId instead
+  makeLambdaPie(sceneId, orderedFrameList) {
     const param = 'sceneid';
     const endpoint = `https://53e5kyqgq7.execute-api.us-east-2.amazonaws.com/production/framePie?${param}=${sceneId}`;
-    return this.makeXHR('get', null, endpoint, null, 1);
+
+    return (
+      axios({
+        method: 'post',
+        url: endpoint,
+        body: { frame_file_names: orderedFrameList },
+        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      }).then(response => {
+        return response;
+      }).catch(error => {
+        logr.error(error);
+        // TODO: add better error message that is visible on frontend
+      })
+    )
   }
 
 

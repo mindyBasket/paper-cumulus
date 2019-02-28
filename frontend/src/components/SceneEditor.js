@@ -21,7 +21,7 @@ const h = new Helper();
 const axh = new XhrHandler(); // axios helper
 const constants = new Constants();
 
-logr.info('---- v0.5.3');
+logr.info('---- v0.6.0');
 
 // http://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=FrameStage
 
@@ -119,25 +119,24 @@ class SceneEditor extends Component {
     const sceneId = this.sceneId;
     logr.warn('Make Lambda Pie');
 
-    // Gather info ... and build playback information
+    // ////////////////////////////////////////
+    // 1. Fetch scene
+    // Gather info to ship off to lambda as well as build playback info
+    // ////////////////////////////////////////
     axh.fetchScene(sceneId).then(scRes => {
       if (scRes && scRes.data) {
         console.log(scRes.data);
         const sc = scRes.data;
 
         const orderedFrameArr = [];
-        // const orderedStripArr = [];
         const scenePlayback = {
-          // playback data!
-          movie_filename: '', // TODO: make sure this matches with output from lambda
+          movie_filename: '',
           strips: [],
         };
 
         // 1. sort Strip
         const stripMap = {};
-        sc.strips.forEach(st => {
-          stripMap[`strip${st.id}`] = st;
-        });
+        sc.strips.forEach(st => { stripMap[`strip${st.id}`] = st; }); // build map
 
         h.string2List(sc.children_li).forEach(stripId => {
           const targetStripKey = `strip${stripId}`;
@@ -147,9 +146,7 @@ class SceneEditor extends Component {
    
             // 2. sort Frame
             const frameMap = {};
-            st.frames.forEach(fr => {
-              frameMap[`frame${fr.id}`] = fr;
-            });
+            st.frames.forEach(fr => { frameMap[`frame${fr.id}`] = fr; }); // build map
 
             h.string2List(st.children_li).forEach(frameId => {
               const targetFrameKey = `frame${frameId}`;
@@ -172,7 +169,6 @@ class SceneEditor extends Component {
                 frame_count: visibleFrameCount,
               });
             }
-
           }
         });
 
@@ -189,44 +185,52 @@ class SceneEditor extends Component {
             orderedFramePathArr.push('');
           }
         });
-        
-        // TODO: send these data out!
-        console.log(orderedFramePathArr);
-        console.log(scenePlayback);
 
-        axh.addToScenePlayback(sceneId, scenePlayback, axh.getCSRFToken()).then(res => {
-          if (res) {
-            console.log(res.data);
-            if (res.data.playback_status === 0) {
-              logr.warn(`Playback for scene id=${sceneId} was malformed, so it was not updated!`);
-            } else if (res.data.playback_status == 1) {
-              logr.info(`Playback for scene id=${sceneId} updated successfully!`);
-            } else {
-              logr.warn(`Invalid response for playback returned. No change was made.`);
-            }
+
+        // ////////////////////////////////////////
+        // 2. Send frames to Lambda to build video file!
+        // ////////////////////////////////////////
+        axh.makeLambdaPie(sceneId, orderedFramePathArr).then(lambdaRes => {
+          if (lambdaRes && lambdaRes.data && lambdaRes.data.hasOwnProperty('scene_out_path')) {
+            logr.info('Response: ' + JSON.stringify(lambdaRes.data));
+            logr.info(`New video url: ${lambdaRes.data.scene_out_path}`);
+
+            const csrfToken = axh.getCSRFToken();
+            const movieOutputPath = lambdaRes.data.scene_out_path; // if this exists, that means video output was successful
+            // ////////////////////////////////////////
+            // 2. PATCH the url into movie_url field - sends out orderedFramePathArr
+            // ////////////////////////////////////////
+            axh.updateSceneMovieURL(sceneId, movieOutputPath, csrfToken).then(sceneRes => {
+              if (sceneRes) {
+                logr.info(JSON.stringify(sceneRes.data));
+                logr.info(`Scene id ${sceneRes.data.scene_id} movie is updated to ${sceneRes.data.new_url}`);
+              }
+            });
+
+            // ////////////////////////////////////////
+            // 4. Update Playback - sends out scenePlayback
+            // ////////////////////////////////////////
+            const movieFilename = movieOutputPath.split['/'].pop();
+            console.warn("Movie file name check: " + movieFilename);
+            scenePlayback.movie_filename = movieFilename; 
+            axh.addToScenePlayback(sceneId, scenePlayback, axh.getCSRFToken()).then(res => {
+              if (res) {
+                console.log(res.data);
+                if (res.data.playback_status === 0) {
+                  logr.warn(`Playback for scene id=${sceneId} was malformed, so it was not updated!`);
+                } else if (res.data.playback_status === 1) {
+                  logr.info(`Playback for scene id=${sceneId} updated successfully!`);
+                } else {
+                  logr.warn(`Invalid response for playback returned for scene id=${sceneId}. No change was made.`);
+                }
+              }
+            });
           }
         });
-
-
       }
     });
 
-    // axh.makeLambdaPie(sceneId).then(res => {
-    //   // Lambda responded
-    //   if (res && res.data) {
-    //     logr.info('Response: ' + JSON.stringify(res.data));
-    //     logr.info(`New video url: ${res.data.scene_out_path}`);
-
-    //     const csrfToken = axh.getCSRFToken();
-    //     // PATCH the url into movie_url field
-    //     axh.updateSceneMovieURL(sceneId, res.data.scene_out_path, csrfToken).then(sceneRes => {
-    //       if (sceneRes) {
-    //         logr.info(JSON.stringify(sceneRes.data));
-    //         logr.info(`Scene id ${sceneRes.data.scene_id} movie is updated to ${sceneRes.data.new_url}`);
-    //       }
-    //     });
-    //   }
-    // });
+    
   }
 
 
