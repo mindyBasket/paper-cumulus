@@ -21,7 +21,7 @@ const h = new Helper();
 const axh = new XhrHandler(); // axios helper
 const constants = new Constants();
 
-logr.info('---- v0.5.2');
+logr.info('---- v0.5.3');
 
 // http://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=FrameStage
 
@@ -127,11 +127,11 @@ class SceneEditor extends Component {
 
         const orderedFrameArr = [];
         // const orderedStripArr = [];
-        const scenePlayback = { 
+        const scenePlayback = {
           // playback data!
           movie_filename: '', // TODO: make sure this matches with output from lambda
           strips: [],
-        }; 
+        };
 
         // 1. sort Strip
         const stripMap = {};
@@ -193,6 +193,19 @@ class SceneEditor extends Component {
         // TODO: send these data out!
         console.log(orderedFramePathArr);
         console.log(scenePlayback);
+
+        axh.addToScenePlayback(sceneId, scenePlayback, axh.getCSRFToken()).then(res => {
+          if (res) {
+            console.log(res.data);
+            if (res.data.playback_status === 0) {
+              logr.warn(`Playback for scene id=${sceneId} was malformed, so it was not updated!`);
+            } else if (res.data.playback_status == 1) {
+              logr.info(`Playback for scene id=${sceneId} updated successfully!`);
+            } else {
+              logr.warn(`Invalid response for playback returned. No change was made.`);
+            }
+          }
+        });
 
 
       }

@@ -115,7 +115,7 @@ class XhrHandler {
     // with the newest playback data.
 
     const fd = new FormData();
-    fd.append('playback', newPlayback); 
+    fd.append('playback', JSON.stringify(newPlayback));
     // TODO: validate playback
 
     // TODO: this appears to be near identical to updateSceneMovieURL.

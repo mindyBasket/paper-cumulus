@@ -197,9 +197,10 @@ class SceneUpdateAPIView(generics.UpdateAPIView):
             # This PATCH request certainly makes a lot of assumptions.
 
             new_playback = request.data['playback']
+            new_playback = json.loads(new_playback) if isinstance(request.data['playback'], str) else new_playback
             scene = Scene.objects.filter(pk=kwargs['pk'])[0]
             STACK_LIMIT = 3
-
+        
             # get the original
             playback_data = {}
             try:
@@ -208,7 +209,7 @@ class SceneUpdateAPIView(generics.UpdateAPIView):
                 print("Existing playback data is not valid. Starting playback stack from scratch.")
                 playback_data = {}
 
-            if len(playback_data.keys) == 0 or 'playback_stack' not in playback_data:
+            if len(playback_data.keys()) == 0 or 'playback_stack' not in playback_data:
                 playback_data['playback_stack'] = []
             
             # add to the stack
@@ -218,18 +219,31 @@ class SceneUpdateAPIView(generics.UpdateAPIView):
                 playback_stack.pop(-1) # Make space 
 
             # Validate new playback
+            print("Playback validation -------------------------------")
+            print(json.dumps(new_playback))
+            playback_status = 0
             if (
                 'strips' in new_playback and len(new_playback['strips']) > 0 and 
-                'frame_count' in new_playback['strips'] and len(new_playback['strips']['frame_count'] > 0)
+                'frame_count' in new_playback['strips'][0] and new_playback['strips'][0]['frame_count'] > 0
                 ):
                 # Valid. At least one frame can be played
+                print("Playback added.")
+
                 playback_stack.append(new_playback)
+                playback_status = 1
             else:
                 # Not valid. Do not push.
                 pass
-
+                
             # You updated reference to the playback stack, so it should be updated?
+            scene.playback = json.dumps(playback_data)
             scene.save()
+
+            return JsonResponse({
+                'scene_id': scene.id, 
+                'playback_status': playback_status,
+                'scene_playback_data': playback_data,
+            })
 
         else:
             # return super(SceneUpdateAPIView, self).partial_update(request, *args, **kwargs)
