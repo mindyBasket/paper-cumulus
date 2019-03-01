@@ -21,7 +21,7 @@ const h = new Helper();
 const axh = new XhrHandler(); // axios helper
 const constants = new Constants();
 
-logr.info('---- v0.6.0');
+logr.info('---- v0.6.3');
 
 // http://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=FrameStage
 
@@ -121,7 +121,7 @@ class SceneEditor extends Component {
 
     // ////////////////////////////////////////
     // 1. Fetch scene
-    // Gather info to ship off to lambda as well as build playback info
+    //    Gather info to ship off to lambda as well as build playback info
     // ////////////////////////////////////////
     axh.fetchScene(sceneId).then(scRes => {
       if (scRes && scRes.data) {
@@ -198,7 +198,7 @@ class SceneEditor extends Component {
             const csrfToken = axh.getCSRFToken();
             const movieOutputPath = lambdaRes.data.scene_out_path; // if this exists, that means video output was successful
             // ////////////////////////////////////////
-            // 2. PATCH the url into movie_url field - sends out orderedFramePathArr
+            // 3-a. PATCH the url into movie_url field - sends out orderedFramePathArr
             // ////////////////////////////////////////
             axh.updateSceneMovieURL(sceneId, movieOutputPath, csrfToken).then(sceneRes => {
               if (sceneRes) {
@@ -208,7 +208,7 @@ class SceneEditor extends Component {
             });
 
             // ////////////////////////////////////////
-            // 4. Update Playback - sends out scenePlayback
+            // 3-b. Update Playback - sends out scenePlayback
             // ////////////////////////////////////////
             const movieFilename = movieOutputPath.split['/'].pop();
             console.warn("Movie file name check: " + movieFilename);

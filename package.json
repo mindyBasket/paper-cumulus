@@ -11,6 +11,7 @@
     "build": "webpack --mode production --config webpack.prod.config.js",
     "analyzer": "webpack --mode development --config webpack-analyzer.config.js",
     "hdeploy": "git push heroku master && heroku run python manage.py collectstatic --noinput --clear",
+    "hcollectstatic": "heroku run python manage.py collectstatic --noinput --clear",
     "postinstall": "webpack --mode production --config webpack.prod.config.js",
     "heroku-postbuild": "echo \"Webpack build done.\" "
   },
