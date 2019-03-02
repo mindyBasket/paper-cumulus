@@ -311,7 +311,7 @@ class XhrHandler {
   makeLambdaPie(sceneId, orderedFrameList) {
     const param = 'sceneid';
     // const endpoint = `https://53e5kyqgq7.execute-api.us-east-2.amazonaws.com/production/framePie?${param}=${sceneId}`;
-    const endpoint = `https://0u5szwsc6b.execute-api.us-east-2.amazonaws.com/default/framePie${param}=${sceneId}`;
+    const endpoint = `https://0u5szwsc6b.execute-api.us-east-2.amazonaws.com/default/framePie?${param}=${sceneId}`;
 
     // Hard coded request for testing purpose
     const reqBody = {
