@@ -191,40 +191,42 @@ class SceneEditor extends Component {
         // 2. Send frames to Lambda to build video file!
         // ////////////////////////////////////////
         axh.makeLambdaPie(sceneId, orderedFramePathArr).then(lambdaRes => {
-          if (lambdaRes && lambdaRes.data && lambdaRes.data.hasOwnProperty('scene_out_path')) {
+          if (lambdaRes && lambdaRes.data) {
             logr.info('Response: ' + JSON.stringify(lambdaRes.data));
-            logr.info(`New video url: ${lambdaRes.data.scene_out_path}`);
 
-            const csrfToken = axh.getCSRFToken();
-            const movieOutputPath = lambdaRes.data.scene_out_path; // if this exists, that means video output was successful
-            // ////////////////////////////////////////
-            // 3-a. PATCH the url into movie_url field - sends out orderedFramePathArr
-            // ////////////////////////////////////////
-            axh.updateSceneMovieURL(sceneId, movieOutputPath, csrfToken).then(sceneRes => {
-              if (sceneRes) {
-                logr.info(JSON.stringify(sceneRes.data));
-                logr.info(`Scene id ${sceneRes.data.scene_id} movie is updated to ${sceneRes.data.new_url}`);
-              }
-            });
+            // logr.info(`New video url: ${lambdaRes.data.scene_out_path}`);
 
-            // ////////////////////////////////////////
-            // 3-b. Update Playback - sends out scenePlayback
-            // ////////////////////////////////////////
-            const movieFilename = movieOutputPath.split['/'].pop();
-            console.warn("Movie file name check: " + movieFilename);
-            scenePlayback.movie_filename = movieFilename; 
-            axh.addToScenePlayback(sceneId, scenePlayback, axh.getCSRFToken()).then(res => {
-              if (res) {
-                console.log(res.data);
-                if (res.data.playback_status === 0) {
-                  logr.warn(`Playback for scene id=${sceneId} was malformed, so it was not updated!`);
-                } else if (res.data.playback_status === 1) {
-                  logr.info(`Playback for scene id=${sceneId} updated successfully!`);
-                } else {
-                  logr.warn(`Invalid response for playback returned for scene id=${sceneId}. No change was made.`);
-                }
-              }
-            });
+            // const csrfToken = axh.getCSRFToken();
+            // const movieOutputPath = lambdaRes.data.scene_out_path; // if this exists, that means video output was successful
+            // // ////////////////////////////////////////
+            // // 3-a. PATCH the url into movie_url field - sends out orderedFramePathArr
+            // // ////////////////////////////////////////
+            // axh.updateSceneMovieURL(sceneId, movieOutputPath, csrfToken).then(sceneRes => {
+            //   if (sceneRes) {
+            //     logr.info(JSON.stringify(sceneRes.data));
+            //     logr.info(`Scene id ${sceneRes.data.scene_id} movie is updated to ${sceneRes.data.new_url}`);
+            //   }
+            // });
+
+            // // ////////////////////////////////////////
+            // // 3-b. Update Playback - sends out scenePlayback
+            // // ////////////////////////////////////////
+            // const movieFilename = movieOutputPath.split['/'].pop();
+            // console.warn("Movie file name check: " + movieFilename);
+            // scenePlayback.movie_filename = movieFilename; 
+            // axh.addToScenePlayback(sceneId, scenePlayback, axh.getCSRFToken()).then(res => {
+            //   if (res) {
+            //     console.log(res.data);
+            //     if (res.data.playback_status === 0) {
+            //       logr.warn(`Playback for scene id=${sceneId} was malformed, so it was not updated!`);
+            //     } else if (res.data.playback_status === 1) {
+            //       logr.info(`Playback for scene id=${sceneId} updated successfully!`);
+            //     } else {
+            //       logr.warn(`Invalid response for playback returned for scene id=${sceneId}. No change was made.`);
+            //     }
+            //   }
+            // });
+
           }
         });
       }
