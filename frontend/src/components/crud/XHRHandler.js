@@ -348,7 +348,7 @@ class XhrHandler {
       axios({
         method: 'post',
         url: endpoint,
-        body: reqBody,
+        body: JSON.stringify(reqBody),
         // headers: {
         //   'Content-Type': 'application/x-www-form-urlencoded',
         // },
