@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 import Helper from '../Helper';
 import Logr from '../tools/Logr';
 
@@ -344,33 +345,37 @@ class XhrHandler {
       ]
     };
 
-    // return (
-    //   axios({
-    //     method: 'post',
-    //     url: endpoint,
-    //     data: "hello",
-    //     headers: {
-    //       'Content-Type': 'x-www-form-urlencoded',
-    //     },
-    //   }).then(response => {
-    //     console.log(response);
-    //     return response;
-    //   }).catch(error => {
-    //     logr.error(error);
-    //     logr.error("didn't make it!");
-    //     // TODO: add better error message that is visible on frontend
-    //   })
-    // )
+    const fd = new FormData();
+    fd.append('mytest', 1234);
 
-    return fetch(endpoint, {
-      method: "POST", // *GET, POST, PUT, DELETE, etc.
-      mode: "cors", // no-cors, cors, *same-origin
-      headers: {
-          "Content-Type": "application/json",
-          // "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: JSON.stringify(reqBody), // body data type must match "Content-Type" header
-    }).then(response => response.json()); // parses response to JSON
+    return (
+      axios({
+        method: 'post',
+        url: endpoint,
+        data: fd,
+        headers: {
+          // 'Content-Type': 'x-www-form-urlencoded',
+          'Content-Type': 'multipart/form-data',
+        },
+      }).then(response => {
+        console.log(response);
+        return response;
+      }).catch(error => {
+        logr.error(error);
+        logr.error("didn't make it!");
+        // TODO: add better error message that is visible on frontend
+      })
+    )
+
+    // return window.fetch(endpoint, {
+    //   method: "POST", // *GET, POST, PUT, DELETE, etc.
+    //   mode: "cors", // no-cors, cors, *same-origin
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     // "Content-Type": "application/x-www-form-urlencoded",
+    //   },
+    //   body: JSON.stringify(reqBody), // body data type must match "Content-Type" header
+    // }).then(response => response.json()); // parses response to JSON
 
 
 
