@@ -350,7 +350,7 @@ class XhrHandler {
         url: endpoint,
         body: reqBody,
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Type': 'application/json',
         },
       }).then(response => {
         console.log(response);
