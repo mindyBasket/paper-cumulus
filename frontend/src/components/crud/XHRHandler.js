@@ -311,8 +311,8 @@ class XhrHandler {
 
   makeLambdaPie(sceneId, orderedFrameList) {
     const param = 'sceneid';
-    const endpoint = `https://53e5kyqgq7.execute-api.us-east-2.amazonaws.com/production/framePie?${param}=${sceneId}`;
-    // const endpoint = `https://0u5szwsc6b.execute-api.us-east-2.amazonaws.com/default/framePie?${param}=${sceneId}`;
+    // const endpoint = `https://53e5kyqgq7.execute-api.us-east-2.amazonaws.com/production/framePie?${param}=${sceneId}`;
+    const endpoint = `https://0u5szwsc6b.execute-api.us-east-2.amazonaws.com/default/framePie?${param}=${sceneId}`;
 
     // Hard coded request for testing purpose
     const reqBody = {
@@ -349,34 +349,34 @@ class XhrHandler {
     const fd = new FormData();
     fd.append('mytest', 1234);
 
-    // return (
-    //   axios({
-    //     method: 'post',
-    //     url: endpoint,
-    //     data: { 'data': 123456678 },
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //       //'Content-Type': 'x-www-form-urlencoded'
-    //       //'Content-Type': 'multipart/form-data',
-    //     },
-    //   }).then(response => {
-    //     console.log(response);
-    //     return response;
-    //   }).catch(error => {
-    //     logr.error(error);
-    //     logr.error("didn't make it!");
-    //     // TODO: add better error message that is visible on frontend
-    //   })
-    // )
-
     return (
-      axios.post(endpoint, fd,
-      {
+      axios({
+        method: 'post',
+        url: endpoint,
+        data: fd,
         headers: {
-          'Content-Type': 'multipart/form-data'
+          //'Content-Type': 'application/json',
+          //'Content-Type': 'x-www-form-urlencoded'
+          'Content-Type': 'multipart/form-data',
         },
+      }).then(response => {
+        console.log(response);
+        return response;
+      }).catch(error => {
+        logr.error(error);
+        logr.error("didn't make it!");
+        // TODO: add better error message that is visible on frontend
       })
     )
+
+    // return (
+    //   axios.post(endpoint, fd,
+    //   {
+    //     headers: {
+    //       'Content-Type': 'multipart/form-data'
+    //     },
+    //   })
+    // )
 
 
   }
