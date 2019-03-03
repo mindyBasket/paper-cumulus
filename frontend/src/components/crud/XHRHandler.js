@@ -355,9 +355,9 @@ class XhrHandler {
         url: endpoint,
         data: JSON.stringify({"data": 123456678}),
         headers: {
-          'Content-Type': 'application/json'
+          //'Content-Type': 'application/json'
           //'Content-Type': 'x-www-form-urlencoded'
-          //'Content-Type': 'multipart/form-data',
+          'Content-Type': 'multipart/form-data',
         },
       }).then(response => {
         console.log(response);
