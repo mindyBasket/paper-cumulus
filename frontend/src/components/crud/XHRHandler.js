@@ -345,6 +345,7 @@ class XhrHandler {
       ]
     };
 
+    // Formdata successfully sends but....I can't parse it from Python side.
     const fd = new FormData();
     fd.append('mytest', 1234);
 
@@ -352,10 +353,10 @@ class XhrHandler {
       axios({
         method: 'post',
         url: endpoint,
-        data: fd,
+        data: JSON.stringify({"data": 123456678}),
         headers: {
-          // 'Content-Type': 'x-www-form-urlencoded',
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'x-www-form-urlencoded'
+          //'Content-Type': 'multipart/form-data',
         },
       }).then(response => {
         console.log(response);
