@@ -180,6 +180,8 @@ class SceneUpdateAPIView(generics.UpdateAPIView):
         # TODO: Currently PATCH request for Scene assumes only ONE FIELD changes at a time
         #       Investigate if this is desirable or not
 
+        changes = {}
+
         if 'movie_url' in request.data:
             # This updates only the url of the movie. Update is currently done by Lambda, not the user.
             new_url = request.data['movie_url']
@@ -189,20 +191,27 @@ class SceneUpdateAPIView(generics.UpdateAPIView):
             scene = Scene.objects.filter(pk=kwargs['pk'])[0]
             old_url = scene.movie_url
             scene.movie_url = new_url
-            scene.save()
+            scene.save() # this may seem redundant, but if I don't do this, it reverts when playback updates
 
-            # More generic response just for the movie field
-            return JsonResponse({
-                'scene_id': scene.id, 
+            changes['movie_url'] = {
                 'new_url': scene.movie_url,
-                'old_url': old_url})
+                'old_url': old_url
+            }
 
-        elif 'playback' in request.data:
+        if 'playback' in request.data:
             # This APPENDS playback into with the new one. It does not replace. 
-            # This PATCH request certainly makes a lot of assumptions.
-
+      
             new_playback = request.data['playback']
-            new_playback = json.loads(new_playback) if isinstance(request.data['playback'], str) else new_playback
+            
+            # Don't use below. For some reason, python thinks the data is string, even though it's json
+            print(new_playback)
+
+            try:
+                new_playback = json.loads(new_playback)
+            except:
+                print("Failed to load the new_playback. It's not stringy enough")
+                new_playback = {}
+           
             scene = Scene.objects.filter(pk=kwargs['pk'])[0]
             STACK_LIMIT = 3
         
@@ -213,6 +222,9 @@ class SceneUpdateAPIView(generics.UpdateAPIView):
             except:
                 print("Existing playback data is not valid. Starting playback stack from scratch.")
                 playback_data = {}
+        
+            # update movie information just in case
+            playback_data['movie_filename'] = scene.movie_url
 
             if len(playback_data.keys()) == 0 or 'playback_stack' not in playback_data:
                 playback_data['playback_stack'] = []
@@ -242,20 +254,24 @@ class SceneUpdateAPIView(generics.UpdateAPIView):
                 
             # You updated reference to the playback stack, so it should be updated?
             scene.playback = json.dumps(playback_data)
-            scene.save()
-
-            return JsonResponse({
-                'scene_id': scene.id, 
+            
+            changes['playback'] = {
                 'playback_status': playback_status,
                 'scene_playback_data': playback_data,
-            })
+            }
 
-        else:
-            # return super(SceneUpdateAPIView, self).partial_update(request, *args, **kwargs)
-            return JsonResponse({
-                'msg': 'PATCH for Field other than "movie_url" for Scene instance is currently not supported',
-                'request': request.data
-            })
+        # SAVE!
+        if changes:
+            scene.save()
+
+        # More generic response just for the movie field
+        return JsonResponse({
+            'scene_id': scene.id, 
+            'changes' : changes
+        })
+
+
+
 
 
  # _______ _______  ______ _____  _____ 

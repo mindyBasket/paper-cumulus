@@ -21,7 +21,7 @@ const h = new Helper();
 const axh = new XhrHandler(); // axios helper
 const constants = new Constants();
 
-logr.info('---- v1.0.0');
+logr.info('---- v1.0.1');
 
 // http://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=FrameStage
 
@@ -192,42 +192,77 @@ class SceneEditor extends Component {
         // ////////////////////////////////////////
         axh.makeLambdaPie(sceneId, orderedFramePathArr).then(lambdaRes => {
           if (lambdaRes && lambdaRes.data) {
-            
-            logr.info("Lambda response recieved!");
+            logr.info('Lambda response recieved!');
             // logr.info('Response: ' + JSON.stringify(lambdaRes.data));
+
+            if (lambdaRes.data.hasOwnProperty('scene_out_path') === false) {
+              logr.warn("Malformed response from Lambda. Movie url and playback not updated.");
+              return;
+            }
 
             logr.info(`New video url: ${lambdaRes.data.scene_out_path}`);
 
+            // Make form data
             const csrfToken = axh.getCSRFToken();
             const movieOutputPath = lambdaRes.data.scene_out_path; // if this exists, that means video output was successful
-            // ////////////////////////////////////////
-            // 3-a. PATCH the url into movie_url field - sends out orderedFramePathArr
-            // ////////////////////////////////////////
-            axh.updateSceneMovieURL(sceneId, movieOutputPath, csrfToken).then(sceneRes => {
-              if (sceneRes) {
-                logr.info(JSON.stringify(sceneRes.data));
-                logr.info(`Scene id ${sceneRes.data.scene_id} movie is updated to ${sceneRes.data.new_url}`);
-              }
-            });
-
-            // ////////////////////////////////////////
-            // 3-b. Update Playback - sends out scenePlayback
-            // ////////////////////////////////////////
             const movieFilename = movieOutputPath.split('/').pop();
-            console.warn("Movie file name check: " + movieFilename);
-            scenePlayback.movie_filename = movieFilename; 
-            axh.addToScenePlayback(sceneId, scenePlayback, axh.getCSRFToken()).then(res => {
-              if (res) {
-                console.log(res.data);
-                if (res.data.playback_status === 0) {
-                  logr.warn(`Playback for scene id=${sceneId} was malformed, so it was not updated!`);
-                } else if (res.data.playback_status === 1) {
-                  logr.info(`Playback for scene id=${sceneId} updated successfully!`);
-                } else {
-                  logr.warn(`Invalid response for playback returned for scene id=${sceneId}. No change was made.`);
+            scenePlayback.movie_filename = movieFilename;
+
+            const sceneFormData = new FormData();
+            sceneFormData.append('movie_url', movieOutputPath);
+            sceneFormData.append('playback', JSON.stringify(scenePlayback));
+
+            axh.updateScene(sceneId, sceneFormData, csrfToken).then(sceneRes => {
+
+              // ////////////////////////////////////////
+              // a. PATCH movie_url and playback info
+              // ////////////////////////////////////////
+              if (sceneRes && sceneRes.data) {
+                const sceneData = sceneRes.data;
+                // Check movie URL response
+                if (sceneData.changes.hasOwnProperty('movie_url')) {
+                  const movieRes = sceneData.changes.movie_url;
+                  logr.info(`Scene id ${sceneData.scene_id} movie is updated to ${movieRes.new_url}`);
+                }
+
+                // Check playback response
+                if (sceneData.changes.hasOwnProperty('playback')) {
+                  const playbackRes = sceneData.changes.playback;
+                  if (playbackRes.playback_status === 0) {
+                    logr.warn(`Playback for scene id=${sceneId} was malformed, so it was not updated!`);
+                  } else if (playbackRes.playback_status === 1) {
+                    logr.info(`Playback for scene id=${sceneId} updated successfully!`);
+                  } else {
+                    logr.warn(`Invalid response for playback returned for scene id=${sceneId}. No change was made.`);
+                  }
                 }
               }
             });
+
+            
+            // axh.updateSceneMovieURL(sceneId, movieOutputPath, csrfToken).then(sceneRes => {
+            //   if (sceneRes) {
+            //     logr.info(JSON.stringify(sceneRes.data));
+            //     logr.info(`Scene id ${sceneRes.data.scene_id} movie is updated to ${sceneRes.data.new_url}`);
+            //   }
+            // });
+
+            // // ////////////////////////////////////////
+            // // 3-b. Update Playback - sends out scenePlayback
+            // // ////////////////////////////////////////
+            
+            // axh.addToScenePlayback(sceneId, scenePlayback, axh.getCSRFToken()).then(res => {
+            //   if (res) {
+            //     console.log(res.data);
+            //     if (res.data.playback_status === 0) {
+            //       logr.warn(`Playback for scene id=${sceneId} was malformed, so it was not updated!`);
+            //     } else if (res.data.playback_status === 1) {
+            //       logr.info(`Playback for scene id=${sceneId} updated successfully!`);
+            //     } else {
+            //       logr.warn(`Invalid response for playback returned for scene id=${sceneId}. No change was made.`);
+            //     }
+            //   }
+            // });
 
           }
         });

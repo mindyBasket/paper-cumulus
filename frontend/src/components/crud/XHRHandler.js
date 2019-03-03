@@ -69,9 +69,6 @@ class XhrHandler {
 
   updateScene(sceneId, formData, csrfToken) {
 
-    // TODO: patch update for Scene does not exist yet. This is template
-    //       copied from updateStrip
-
     return (
       axios({
         method: 'patch',
@@ -136,6 +133,7 @@ class XhrHandler {
     )
 
   }
+
 
   convertToStoreURLs(urls, extArr) {
     // Takes in relative url, and finds storage link for it
@@ -314,35 +312,35 @@ class XhrHandler {
     const endpoint = `https://0u5szwsc6b.execute-api.us-east-2.amazonaws.com/default/framePie?${param}=${sceneId}`;
 
     // Hard coded request for testing purpose
-    const reqBody = {
-      shape: [
-        1500,
-        800,
-      ],
-      frame_file_names: [
-        's70/st192-0__444021504f/st192-0__444021504f.png',
-        's70/st192-1__7cf36b2776/st192-1__7cf36b2776.png',
-        's70/st193-1__735cb5a64d/st193-1__735cb5a64d.png',
-        's70/st193-2__3507c65258/st193-2__3507c65258.png',
-        's70/st193-3__fb3ac9c12f/st193-3__fb3ac9c12f.png',
-        's70/st193-0__46c3171f63/st193-0__46c3171f63.png',
-        's70/st199-0__fa2a90464c/st199-0__fa2a90464c.png',
-        's70/st199-1__3ae68a2f0c/st199-1__3ae68a2f0c.png',
-        's70/st208-0__16634ba6bf/st208-0__16634ba6bf.png',
-        's70/st208-1__6b60a7a6b0/st208-1__6b60a7a6b0.png',
-        's70/st208-2__d2c55d6ba9/st208-2__d2c55d6ba9.png',
-        's70/st208-3__bb89b64a04/st208-3__bb89b64a04.png',
-        's70/st209-0__10b8a60527/st209-0__10b8a60527.png',
-        's70/st209-1__df9954406b/st209-1__df9954406b.png',
-        's70/st209-2__2cd058a384/st209-2__2cd058a384.png',
-        's70/st209-3__7149693794/st209-3__7149693794.png',
-        's70/st210-0__ffd386d2a7/st210-0__ffd386d2a7.png',
-        's70/st210-1__d9a8838b36/st210-1__d9a8838b36.png',
-        's70/st210-2__acf1c63eb2/st210-2__acf1c63eb2.png',
-        's70/st210-3__e507609b50/st210-3__e507609b50.png',
-        's70/st210-4__2e209fd7be/st210-4__2e209fd7be.png',
-      ],
-    };
+    // const reqBody = {
+    //   shape: [
+    //     1500,
+    //     800,
+    //   ],
+    //   frame_file_names: [
+    //     's70/st192-0__444021504f/st192-0__444021504f.png',
+    //     's70/st192-1__7cf36b2776/st192-1__7cf36b2776.png',
+    //     's70/st193-1__735cb5a64d/st193-1__735cb5a64d.png',
+    //     's70/st193-2__3507c65258/st193-2__3507c65258.png',
+    //     's70/st193-3__fb3ac9c12f/st193-3__fb3ac9c12f.png',
+    //     's70/st193-0__46c3171f63/st193-0__46c3171f63.png',
+    //     's70/st199-0__fa2a90464c/st199-0__fa2a90464c.png',
+    //     's70/st199-1__3ae68a2f0c/st199-1__3ae68a2f0c.png',
+    //     's70/st208-0__16634ba6bf/st208-0__16634ba6bf.png',
+    //     's70/st208-1__6b60a7a6b0/st208-1__6b60a7a6b0.png',
+    //     's70/st208-2__d2c55d6ba9/st208-2__d2c55d6ba9.png',
+    //     's70/st208-3__bb89b64a04/st208-3__bb89b64a04.png',
+    //     's70/st209-0__10b8a60527/st209-0__10b8a60527.png',
+    //     's70/st209-1__df9954406b/st209-1__df9954406b.png',
+    //     's70/st209-2__2cd058a384/st209-2__2cd058a384.png',
+    //     's70/st209-3__7149693794/st209-3__7149693794.png',
+    //     's70/st210-0__ffd386d2a7/st210-0__ffd386d2a7.png',
+    //     's70/st210-1__d9a8838b36/st210-1__d9a8838b36.png',
+    //     's70/st210-2__acf1c63eb2/st210-2__acf1c63eb2.png',
+    //     's70/st210-3__e507609b50/st210-3__e507609b50.png',
+    //     's70/st210-4__2e209fd7be/st210-4__2e209fd7be.png',
+    //   ],
+    // };
 
     return (
       axios({
