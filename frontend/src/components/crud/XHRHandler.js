@@ -371,11 +371,11 @@ class XhrHandler {
 
     return (
       axios.post(endpoint, {
-        'data': 123456
+        data: 123456,
       },
       {
         headers: {
-          'Content-type': 'application/x-www-form-urlencoded'
+          'Content-Type': 'application/x-www-form-urlencoded'
         },
       })
     )
