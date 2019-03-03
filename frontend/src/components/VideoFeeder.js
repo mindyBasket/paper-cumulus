@@ -16,11 +16,12 @@ class VideoFeeder extends Component {
 
 
   state = {
-    data: [],
+    videoUrls: [],
+    videoPlaybacks: [],
     loaded: false,
     children_li: null,
 
-    placeholder: 'Video pie is baking...',
+    placeholder: 'Baking video...',
   };
 
   componentDidMount() {
@@ -33,8 +34,8 @@ class VideoFeeder extends Component {
         logr.info(`Children_li for chapter ${this.props.chapterId} retrieved: ${res.data.children_li}`);
         this.setState({ children_li: res.data.children_li });
 
-        // 2. Retrieve each video
-        axh.fetchSceneList(this.props.chapterId).then(sceneLiRes => {
+        // 2. Retrieve each video with its playbacks
+        axh.fetchScenePlaybackList(this.props.chapterId).then(sceneLiRes => {
           if (sceneLiRes && sceneLiRes.data) {
             const scenes = sceneLiRes.data;
 
@@ -42,22 +43,38 @@ class VideoFeeder extends Component {
 
             // TODO: reorder scene by children_li
             const v_urls = [];
+            const v_playbacks = [];
             scenes.forEach(sc => {
               if (sc.movie_url) {
                 v_urls.push(sc.movie_url);
+                v_playbacks.push(JSON.parse(sc.playback)); // make sure you parse!
               }
             });
-            logr.info(`"Passing urls: ${v_urls}`);
-            axh.convertToStoreURLs(v_urls, ['mp4']).then(resArr => {
+            logr.info(`"Passing stringy urls to convert to storage urls: ${v_urls}`);
 
+            axh.convertToStoreURLs(v_urls, ['mp4']).then(resArr => {
               if (resArr && resArr.length > 0) {
-                const urls = [];
+                let convertedUrls = [];
                 resArr.forEach(urlData => {
-                  logr.info(`Pushing url ${urlData.data.url}`);
-                  urls.push(urlData.data.url);
+                  logr.info(`Pushing storage url: ${urlData.data.url}`);
+                  convertedUrls.push(urlData.data.url);
                 });
-                logr.warn('Setting list of url into data');
-                this.setState({ data: urls, loaded: true });
+                logr.info('Set data');
+                console.log(convertedUrls);
+
+                // HARD CODED SOLUTION FOR LOCAL TESTING
+                convertedUrls = [
+                  "https://s3.us-east-2.amazonaws.com/paper-cumulus-s3/media/frame_images/s70/sc-c6c1b12c94.mp4",
+                  "https://s3.us-east-2.amazonaws.com/paper-cumulus-s3/media/frame_images/s71/sc-1cbecfec76.mp4",
+                ];
+                this.setState({
+                  videoUrls: convertedUrls,
+                  videoPlaybacks: v_playbacks,
+                  loaded: true,
+                });
+
+                // TODO: Uncomment this when you are on the server
+                // this.setState({ data: urls, loaded: true });
               }
 
             });
@@ -69,11 +86,18 @@ class VideoFeeder extends Component {
   }
 
   render() {
-    const { data, loaded, children_li, placeholder } = this.state;
+    const {
+      videoUrls,
+      videoPlaybacks,
+      loaded,
+      children_li,
+      placeholder,
+    } = this.state;
 
     if (loaded && children_li) {
       return this.props.render({
-        data: data,
+        videoUrls: videoUrls,
+        videoPlaybacks: videoPlaybacks,
         children_li: children_li,
       });
     } else {

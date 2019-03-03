@@ -33,6 +33,14 @@ class Helper {
 
   }
 
+  changeExtension(path, newExt) {
+    const splitPath = path.split('.');
+    splitPath.pop(); // remove extension
+    splitPath.push(newExt);
+
+    return splitPath.join('.');
+  }
+
   getTotalSceneCount(data) {
     // For now, data is assumed to be a single Scene object, or many
     if (Array.isArray(data)) {
@@ -76,49 +84,48 @@ class Helper {
   }
 
 
-	serializeForm($form){
-        // Note: this does NOT RETURN FORMDATA. It just returns an object.
+  serializeForm($form) {
+    // Note: this does NOT RETURN FORMDATA. It just returns an object.
 
-        //make sure it's a form
-        //if ($form.nodeName != 'FORM'){return false}
-        // the node might be a faux form, in that case, it's not a form
+    // make sure it's a form
+    // if ($form.nodeName != 'FORM'){return false}
+    // the node might be a faux form, in that case, it's not a form
 
-        // iterate through each element
-        // inputArray
-        const ia = $form.querySelectorAll('input, select, textarea, file');
-        var formData = {};
+    // iterate through each element
+    // inputArray
+    const ia = $form.querySelectorAll('input, select, textarea, file');
+    const formData = {};
 
-        for (var i=0;i<ia.length;i++){
-        	formData[ia[i].getAttribute('name')] = ia[i].value;
-        }
-        
-        return formData;
+    for (let i = 0; i < ia.length; i++) {
+      formData[ia[i].getAttribute('name')] = ia[i].value;
+    }
+    return formData;
+  }
+
+
+  makeFormData(obj) {
+    // Turns object into formData
+    const formData = new FormData();
+
+    for (const key in obj) {
+      formData.append(key, obj[key]);
     }
 
+    return formData;
+  }
 
-    makeFormData(obj){
-        // Turns object into formData
-        let formData = new FormData();
-
-        for ( let key in obj ) {
-            formData.append(key, obj[key]);
-        }
-
-        return formData;
+  getUnignoredFrames(strip) {
+    if (!strip.hasOwnProperty('frames') || strip.frames.length == 0) {
+      return [];
     }
 
-    getUnignoredFrames(strip){
-        if(!strip.hasOwnProperty("frames") || strip.frames.length == 0){
-            return [];
-        }
+    let unignoredFrameArr = [];
+    strip.frames.forEach((f) => {
+      if (!f.ignored) { unignoredFrameArr.push(f) }
+    });
 
-        let unignoredFrameArr = [];
-        strip.frames.forEach((f)=>{
-            if(!f.ignored){unignoredFrameArr.push(f)}
-        });
-
-        return unignoredFrameArr;
-    }
+    return unignoredFrameArr;
+  }
 
     reorderFrames(strip){
         // get list of frames and sort and list
@@ -257,9 +264,7 @@ class Helper {
         return childrenNewArr_cleaned;
     }
 
-
 }
-
 
 
 export default Helper;

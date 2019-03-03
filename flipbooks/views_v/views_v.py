@@ -54,6 +54,8 @@ def get_store_URL(request, *args, **kwargs):
         # abs_obj_path = store_path.joinpath(rel_obj_path) # no need?
         abs_obj_path = store_path
         print("joined path = {}".format(store_path))
+    else:
+        print("ERROR: Could not find object at {}".format(rel_obj_path))
 
     # Response
     return JsonResponse({'url': str(abs_obj_path)})

@@ -108,7 +108,7 @@ class XhrHandler {
       if (extArr.includes(urlParts[urlParts.length - 1])) { // make sure extension matches
         urlReqProms.push(
           axios({
-            method: 'get',
+            method: 'get', 
             params: { rel_url: encodeURI(url) },
             url: '/flipbooks/s3/getURL/',
           }).then(response => {
@@ -155,6 +155,21 @@ class XhrHandler {
       })
     )
   }
+
+  fetchScenePlaybackList(chapterId) {
+    return (
+      axios({
+        method: 'get',
+        url: `/api/chapter/${chapterId}/scene/playback/all/`,
+      }).then(res => {
+        logr.info('Scene Playback list fetch successful');
+        return res;
+      }).catch(error => {
+        logr.error(error);
+      })
+    )
+  }
+
 
 
 
@@ -377,9 +392,7 @@ class XhrHandler {
         headers: { 'X-CSRFToken': csrfToken }
       })
     )
-
   }
-
 }
 
 

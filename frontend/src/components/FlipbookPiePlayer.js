@@ -11,9 +11,11 @@ import key from 'weak-key';
 
 import Logr from './tools/Logr';
 import Helper from './Helper';
+import Constants from './Constants';
 
 const logr = new Logr('Flipbook(pie)Player');
 const h = new Helper();
+const cnst = new Constants();
 
 // DEMOONLY
 import { DemoModal,DemoGuideBtn } from './demo/Demo';
@@ -496,13 +498,13 @@ class FrameStage extends PureComponent {
 class FlipbookStage extends Component {
   static propTypes = {
     videoUrls: PropTypes.array.isRequired,
+    videoPlaybacks: PropTypes.array.isRequired,
     children_li: PropTypes.array.isRequired,
     // handle_fetchScene: PropTypes.func.isRequired,
     // setState_LightBox: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
-
   }
 
   constructor(props) {
@@ -516,15 +518,23 @@ class FlipbookStage extends Component {
     return (
       <div>
         <div>Children_li: {this.props.children_li}</div>
-        <div>
+        <div className="chapter_movie_stage">
           {this.props.videoUrls.map(v => {
-            logr.info(v);
+            // if (cnst.BROWSER.isFirefox) {
+            const v_webm = h.changeExtension(v, 'webm');
+
+            console.log(this.props.videoPlaybacks);
             return (
-              <video width="320" height="240" controls>
-                <source src={v} type="video/mp4"/>
+              <video
+                width="100%"
+                height="100%"
+                controls
+              >
+                <source src={v} type="video/mp4" />
+                <source src={v_webm} type="video/webm" />
                 Your browser does not support the video tag.
               </video>
-            )
+            );
           })}
 
         </div>
@@ -568,7 +578,8 @@ class FlipbookPlayer extends Component {
           chapterId={this.props.chapterId}
           render={renderData => (
             <FlipbookStage
-              videoUrls={renderData.data}
+              videoUrls={renderData.videoUrls}
+              videoPlaybacks={renderData.videoPlaybacks}
               children_li={renderData.children_li}
             />
           )}
