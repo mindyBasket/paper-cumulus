@@ -342,13 +342,13 @@ class XhrHandler {
         "s70/st210-3__e507609b50/st210-3__e507609b50.png",
         "s70/st210-4__2e209fd7be/st210-4__2e209fd7be.png"
       ]
-    }
+    };
     
     return (
       axios({
         method: 'post',
         url: endpoint,
-        data: reqBody,
+        data: {},
         headers: {
           'Content-Type': 'application/json',
         },
