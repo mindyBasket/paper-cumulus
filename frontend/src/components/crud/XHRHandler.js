@@ -348,14 +348,16 @@ class XhrHandler {
       axios({
         method: 'post',
         url: endpoint,
-        body: JSON.stringify(reqBody),
+        body: 'TEST BODY',
         // headers: {
         //   'Content-Type': 'application/x-www-form-urlencoded',
         // },
       }).then(response => {
+        console.log(response);
         return response;
       }).catch(error => {
         logr.error(error);
+        logr.error("didn't make it!");
         // TODO: add better error message that is visible on frontend
       })
     )
