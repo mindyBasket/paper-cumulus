@@ -345,39 +345,28 @@ class XhrHandler {
       ]
     };
 
-    // Formdata successfully sends but....I can't parse it from Python side.
-    const fd = new FormData();
-    fd.append('mytest', 1234);
-
     return (
       axios({
         method: 'post',
         url: endpoint,
-        data: fd,
+        data: reqBody,
         headers: {
-          //'Content-Type': 'application/json',
-          //'Content-Type': 'x-www-form-urlencoded'
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'application/json',
         },
       }).then(response => {
-        console.log(response);
         return response;
       }).catch(error => {
         logr.error(error);
-        logr.error("didn't make it!");
-        // TODO: add better error message that is visible on frontend
+
+        // TODO: for some reason, doing it this way doesn't work.
+        //       error.response is always 'undefined'
+        if (error.response) { 
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        }
       })
     )
-
-    // return (
-    //   axios.post(endpoint, fd,
-    //   {
-    //     headers: {
-    //       'Content-Type': 'multipart/form-data'
-    //     },
-    //   })
-    // )
-
 
   }
 

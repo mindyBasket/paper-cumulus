@@ -192,6 +192,7 @@ class SceneEditor extends Component {
         // ////////////////////////////////////////
         axh.makeLambdaPie(sceneId, orderedFramePathArr).then(lambdaRes => {
           if (lambdaRes && lambdaRes.data) {
+            logr.info("Lambda response recieved!");
             logr.info('Response: ' + JSON.stringify(lambdaRes.data));
 
             // logr.info(`New video url: ${lambdaRes.data.scene_out_path}`);
