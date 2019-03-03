@@ -370,12 +370,10 @@ class XhrHandler {
     // )
 
     return (
-      axios.post(endpoint, {
-        data: 123456,
-      },
+      axios.post(endpoint, fd,
       {
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
+          'Content-Type': 'multipart/form-data'
         },
       })
     )
