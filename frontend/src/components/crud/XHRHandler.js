@@ -343,15 +343,15 @@ class XhrHandler {
         "s70/st210-4__2e209fd7be/st210-4__2e209fd7be.png"
       ]
     };
-
+    
     return (
       axios({
         method: 'post',
         url: endpoint,
-        body: 'TEST BODY',
-        // headers: {
-        //   'Content-Type': 'application/x-www-form-urlencoded',
-        // },
+        body: '',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
       }).then(response => {
         console.log(response);
         return response;
