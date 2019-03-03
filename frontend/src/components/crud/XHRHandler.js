@@ -311,8 +311,8 @@ class XhrHandler {
 
   makeLambdaPie(sceneId, orderedFrameList) {
     const param = 'sceneid';
-    // const endpoint = `https://53e5kyqgq7.execute-api.us-east-2.amazonaws.com/production/framePie?${param}=${sceneId}`;
-    const endpoint = `https://0u5szwsc6b.execute-api.us-east-2.amazonaws.com/default/framePie?${param}=${sceneId}`;
+    const endpoint = `https://53e5kyqgq7.execute-api.us-east-2.amazonaws.com/production/framePie?${param}=${sceneId}`;
+    // const endpoint = `https://0u5szwsc6b.execute-api.us-east-2.amazonaws.com/default/framePie?${param}=${sceneId}`;
 
     // Hard coded request for testing purpose
     const reqBody = {
@@ -353,11 +353,11 @@ class XhrHandler {
       axios({
         method: 'post',
         url: endpoint,
-        data: JSON.stringify({"data": 123456678}),
+        data: { 'data': 123456678 },
         headers: {
-          //'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
           //'Content-Type': 'x-www-form-urlencoded'
-          'Content-Type': 'multipart/form-data',
+          //'Content-Type': 'multipart/form-data',
         },
       }).then(response => {
         console.log(response);
