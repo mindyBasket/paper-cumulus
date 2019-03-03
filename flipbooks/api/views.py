@@ -185,12 +185,17 @@ class SceneUpdateAPIView(generics.UpdateAPIView):
             new_url = request.data['movie_url']
 
             # TODO: verify this is actually in s3!
+
             scene = Scene.objects.filter(pk=kwargs['pk'])[0]
+            old_url = scene.movie_url
             scene.movie_url = new_url
             scene.save()
 
             # More generic response just for the movie field
-            return JsonResponse({'scene_id': scene.id, 'new_url': scene.movie_url})
+            return JsonResponse({
+                'scene_id': scene.id, 
+                'new_url': scene.movie_url,
+                'old_url': old_url})
 
         elif 'playback' in request.data:
             # This APPENDS playback into with the new one. It does not replace. 

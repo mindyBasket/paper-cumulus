@@ -21,7 +21,7 @@ const h = new Helper();
 const axh = new XhrHandler(); // axios helper
 const constants = new Constants();
 
-logr.info('---- v0.6.3');
+logr.info('---- v1.0.0');
 
 // http://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=FrameStage
 
@@ -191,8 +191,11 @@ class SceneEditor extends Component {
         // 2. Send frames to Lambda to build video file!
         // ////////////////////////////////////////
         axh.makeLambdaPie(sceneId, orderedFramePathArr).then(lambdaRes => {
-          if (lambdaRes && lambdaRes.data && lambdaRes.data.hasOwnProperty('scene_out_path')) {
-            logr.info('Response: ' + JSON.stringify(lambdaRes.data));
+          if (lambdaRes && lambdaRes.data) {
+            
+            logr.info("Lambda response recieved!");
+            // logr.info('Response: ' + JSON.stringify(lambdaRes.data));
+
             logr.info(`New video url: ${lambdaRes.data.scene_out_path}`);
 
             const csrfToken = axh.getCSRFToken();
@@ -210,7 +213,7 @@ class SceneEditor extends Component {
             // ////////////////////////////////////////
             // 3-b. Update Playback - sends out scenePlayback
             // ////////////////////////////////////////
-            const movieFilename = movieOutputPath.split['/'].pop();
+            const movieFilename = movieOutputPath.split('/').pop();
             console.warn("Movie file name check: " + movieFilename);
             scenePlayback.movie_filename = movieFilename; 
             axh.addToScenePlayback(sceneId, scenePlayback, axh.getCSRFToken()).then(res => {
@@ -225,6 +228,7 @@ class SceneEditor extends Component {
                 }
               }
             });
+
           }
         });
       }

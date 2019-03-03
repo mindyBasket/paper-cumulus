@@ -310,55 +310,67 @@ class XhrHandler {
 
   makeLambdaPie(sceneId, orderedFrameList) {
     const param = 'sceneid';
-    const endpoint = `https://53e5kyqgq7.execute-api.us-east-2.amazonaws.com/production/framePie?${param}=${sceneId}`;
+    // const endpoint = `https://53e5kyqgq7.execute-api.us-east-2.amazonaws.com/production/framePie?${param}=${sceneId}`;
+    const endpoint = `https://0u5szwsc6b.execute-api.us-east-2.amazonaws.com/default/framePie?${param}=${sceneId}`;
 
     // Hard coded request for testing purpose
     const reqBody = {
       shape: [
         1500,
-        800
+        800,
       ],
       frame_file_names: [
-        "s70/st192-0__444021504f/st192-0__444021504f.png",
-        "s70/st192-1__7cf36b2776/st192-1__7cf36b2776.png",
-        "s70/st193-1__735cb5a64d/st193-1__735cb5a64d.png",
-        "s70/st193-2__3507c65258/st193-2__3507c65258.png",
-        "s70/st193-3__fb3ac9c12f/st193-3__fb3ac9c12f.png",
-        "s70/st193-0__46c3171f63/st193-0__46c3171f63.png",
-        "s70/st199-0__fa2a90464c/st199-0__fa2a90464c.png",
-        "s70/st199-1__3ae68a2f0c/st199-1__3ae68a2f0c.png",
-        "s70/st208-0__16634ba6bf/st208-0__16634ba6bf.png",
-        "s70/st208-1__6b60a7a6b0/st208-1__6b60a7a6b0.png",
-        "s70/st208-2__d2c55d6ba9/st208-2__d2c55d6ba9.png",
-        "s70/st208-3__bb89b64a04/st208-3__bb89b64a04.png",
-        "s70/st209-0__10b8a60527/st209-0__10b8a60527.png",
-        "s70/st209-1__df9954406b/st209-1__df9954406b.png",
-        "s70/st209-2__2cd058a384/st209-2__2cd058a384.png",
-        "s70/st209-3__7149693794/st209-3__7149693794.png",
-        "s70/st210-0__ffd386d2a7/st210-0__ffd386d2a7.png",
-        "s70/st210-1__d9a8838b36/st210-1__d9a8838b36.png",
-        "s70/st210-2__acf1c63eb2/st210-2__acf1c63eb2.png",
-        "s70/st210-3__e507609b50/st210-3__e507609b50.png",
-        "s70/st210-4__2e209fd7be/st210-4__2e209fd7be.png"
-      ]
+        's70/st192-0__444021504f/st192-0__444021504f.png',
+        's70/st192-1__7cf36b2776/st192-1__7cf36b2776.png',
+        's70/st193-1__735cb5a64d/st193-1__735cb5a64d.png',
+        's70/st193-2__3507c65258/st193-2__3507c65258.png',
+        's70/st193-3__fb3ac9c12f/st193-3__fb3ac9c12f.png',
+        's70/st193-0__46c3171f63/st193-0__46c3171f63.png',
+        's70/st199-0__fa2a90464c/st199-0__fa2a90464c.png',
+        's70/st199-1__3ae68a2f0c/st199-1__3ae68a2f0c.png',
+        's70/st208-0__16634ba6bf/st208-0__16634ba6bf.png',
+        's70/st208-1__6b60a7a6b0/st208-1__6b60a7a6b0.png',
+        's70/st208-2__d2c55d6ba9/st208-2__d2c55d6ba9.png',
+        's70/st208-3__bb89b64a04/st208-3__bb89b64a04.png',
+        's70/st209-0__10b8a60527/st209-0__10b8a60527.png',
+        's70/st209-1__df9954406b/st209-1__df9954406b.png',
+        's70/st209-2__2cd058a384/st209-2__2cd058a384.png',
+        's70/st209-3__7149693794/st209-3__7149693794.png',
+        's70/st210-0__ffd386d2a7/st210-0__ffd386d2a7.png',
+        's70/st210-1__d9a8838b36/st210-1__d9a8838b36.png',
+        's70/st210-2__acf1c63eb2/st210-2__acf1c63eb2.png',
+        's70/st210-3__e507609b50/st210-3__e507609b50.png',
+        's70/st210-4__2e209fd7be/st210-4__2e209fd7be.png',
+      ],
     };
 
     return (
       axios({
         method: 'post',
         url: endpoint,
-        body: reqBody,
+        data: reqBody,
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Type': 'application/json',
         },
       }).then(response => {
         return response;
       }).catch(error => {
         logr.error(error);
-        // TODO: add better error message that is visible on frontend
+
+        // TODO: for some reason, doing it this way doesn't work.
+        //       error.response is always 'undefined'
+        if (error.response) { 
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        }
       })
     )
+
   }
+
+  
+  
 
 
   // Trying this out
