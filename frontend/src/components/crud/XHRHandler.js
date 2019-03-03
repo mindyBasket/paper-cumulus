@@ -315,11 +315,11 @@ class XhrHandler {
 
     // Hard coded request for testing purpose
     const reqBody = {
-      shape: [
+      "shape": [
         1500,
         800
       ],
-      frame_file_names: [
+      "frame_file_names": [
         "s70/st192-0__444021504f/st192-0__444021504f.png",
         "s70/st192-1__7cf36b2776/st192-1__7cf36b2776.png",
         "s70/st193-1__735cb5a64d/st193-1__735cb5a64d.png",
@@ -341,8 +341,8 @@ class XhrHandler {
         "s70/st210-2__acf1c63eb2/st210-2__acf1c63eb2.png",
         "s70/st210-3__e507609b50/st210-3__e507609b50.png",
         "s70/st210-4__2e209fd7be/st210-4__2e209fd7be.png"
-      ],
-    };
+      ]
+    }
     
     return (
       axios({
