@@ -348,7 +348,7 @@ class XhrHandler {
       axios({
         method: 'post',
         url: endpoint,
-        data: JSON.stringify(reqBody),
+        data: reqBody,
         headers: {
           'Content-Type': 'application/json',
         },
