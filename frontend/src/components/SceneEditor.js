@@ -135,6 +135,7 @@ class SceneEditor extends Component {
         };
 
         // 1. sort Strip
+        const largestCanvasSize = [0,0]; // get the size that fit ALL frames
         const stripMap = {};
         sc.strips.forEach(st => { stripMap[`strip${st.id}`] = st; }); // build map
 
@@ -155,6 +156,12 @@ class SceneEditor extends Component {
                   orderedFrameArr.push(frameMap[targetFrameKey]);
                   visibleFrameCount += 1;
                 }
+                // get the biggest canvas size
+                const frameDim = frameMap[targetFrameKey].dimension.split("x");
+                if (frameDim.length >= 2 && !isNaN(frameDim[0]) || !isNaN(frameDim[1])) {
+                  largestCanvasSize[0] = frameDim[0] > largestCanvasSize[0] ? frameDim[0] : largestCanvasSize[0];
+                  largestCanvasSize[1] = frameDim[1] > largestCanvasSize[1] ? frameDim[1] : largestCanvasSize[1];
+                } 
               }
             });
 
@@ -185,18 +192,24 @@ class SceneEditor extends Component {
             orderedFramePathArr.push('');
           }
         });
+        
+        // Make request object  for Lambda
+        const lambdaRequest = {
+          shape: largestCanvasSize,
+          frame_file_names: orderedFramePathArr,
+        }
 
 
         // ////////////////////////////////////////
         // 2. Send frames to Lambda to build video file!
         // ////////////////////////////////////////
-        axh.makeLambdaPie(sceneId, orderedFramePathArr).then(lambdaRes => {
+        axh.makeLambdaPie(sceneId, lambdaRequest).then(lambdaRes => {
           if (lambdaRes && lambdaRes.data) {
             logr.info('Lambda response recieved!');
             // logr.info('Response: ' + JSON.stringify(lambdaRes.data));
 
             if (lambdaRes.data.hasOwnProperty('scene_out_path') === false) {
-              logr.warn("Malformed response from Lambda. Movie url and playback not updated.");
+              logr.warn('Malformed response from Lambda. Movie url and playback not updated.');
               return;
             }
 
@@ -238,38 +251,10 @@ class SceneEditor extends Component {
                 }
               }
             });
-
-            
-            // axh.updateSceneMovieURL(sceneId, movieOutputPath, csrfToken).then(sceneRes => {
-            //   if (sceneRes) {
-            //     logr.info(JSON.stringify(sceneRes.data));
-            //     logr.info(`Scene id ${sceneRes.data.scene_id} movie is updated to ${sceneRes.data.new_url}`);
-            //   }
-            // });
-
-            // // ////////////////////////////////////////
-            // // 3-b. Update Playback - sends out scenePlayback
-            // // ////////////////////////////////////////
-            
-            // axh.addToScenePlayback(sceneId, scenePlayback, axh.getCSRFToken()).then(res => {
-            //   if (res) {
-            //     console.log(res.data);
-            //     if (res.data.playback_status === 0) {
-            //       logr.warn(`Playback for scene id=${sceneId} was malformed, so it was not updated!`);
-            //     } else if (res.data.playback_status === 1) {
-            //       logr.info(`Playback for scene id=${sceneId} updated successfully!`);
-            //     } else {
-            //       logr.warn(`Invalid response for playback returned for scene id=${sceneId}. No change was made.`);
-            //     }
-            //   }
-            // });
-
-          }
+          } // end: if LambdaRes
         });
       }
     });
-
-    
   }
 
 

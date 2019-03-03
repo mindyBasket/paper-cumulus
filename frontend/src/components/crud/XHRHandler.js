@@ -86,55 +86,6 @@ class XhrHandler {
     )
   }
 
-  updateSceneMovieURL(sceneId, newUrl, csrfToken) {
-    const fd = new FormData();
-    fd.append('movie_url', newUrl);
-
-    return (
-      axios({
-        method: 'patch',
-        url: `/api/scene/${sceneId}/update/`,
-        data: fd,
-        headers: { 'X-CSRFToken': csrfToken },
-      })
-        .then(response => {
-          return response;
-        })
-        .catch(error => {
-          logr.error(error);
-          // TODO: add better error message that is visible on frontend
-        })
-    )
-  }
-
-  addToScenePlayback(sceneId, newPlayback, csrfToken) {
-    // Scene stores up to 3 playback information in case something goes wrong
-    // with the newest playback data.
-
-    const fd = new FormData();
-    fd.append('playback', JSON.stringify(newPlayback));
-    // TODO: validate playback
-
-    // TODO: this appears to be near identical to updateSceneMovieURL.
-    //       It's because both are PATCH request. Find a way to merge them.
-
-    return (
-      axios({
-        method: 'patch',
-        url: `/api/scene/${sceneId}/update/`,
-        data: fd,
-        headers: { 'X-CSRFToken': csrfToken },
-      }).then(response => {
-        return response;
-      }).catch(error => {
-        logr.error(error);
-        // TODO: add better error message that is visible on frontend
-      })
-    )
-
-  }
-
-
   convertToStoreURLs(urls, extArr) {
     // Takes in relative url, and finds storage link for it
     // Currently used in VideoFeeder in order to retrieve video information from a field
@@ -306,13 +257,13 @@ class XhrHandler {
 
 
 
-  makeLambdaPie(sceneId, orderedFrameList) {
+  makeLambdaPie(sceneId, reqBody) {
     const param = 'sceneid';
     // const endpoint = `https://53e5kyqgq7.execute-api.us-east-2.amazonaws.com/production/framePie?${param}=${sceneId}`;
     const endpoint = `https://0u5szwsc6b.execute-api.us-east-2.amazonaws.com/default/framePie?${param}=${sceneId}`;
 
     // Hard coded request for testing purpose
-    // const reqBody = {
+    // reqBody = {
     //   shape: [
     //     1500,
     //     800,
@@ -341,6 +292,9 @@ class XhrHandler {
     //     's70/st210-4__2e209fd7be/st210-4__2e209fd7be.png',
     //   ],
     // };
+
+    console.log('Lambda request preview:');
+    console.log(reqBody);
 
     return (
       axios({
