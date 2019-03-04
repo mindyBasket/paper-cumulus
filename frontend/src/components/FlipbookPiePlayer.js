@@ -514,6 +514,8 @@ class FlipbookPlayer extends Component {
       currFrameIndex: 0,
       orderedChildrenIds: null,
       playbackDict: null,
+
+      isPaused: true,
     };
 
     this.frameState = {
@@ -538,6 +540,7 @@ class FlipbookPlayer extends Component {
     document.addEventListener('keydown', (event) => {
       if (this.state.playbackDict && this.state.orderedChildrenIds) {
         if (event.keyCode === 37) { // GO TO PREVIOUS
+          this.setState({isPaused: true });
           // this.killSetTimeOut();
 
           if (this.frameState.isStripHead) {
@@ -547,7 +550,9 @@ class FlipbookPlayer extends Component {
           }
           // doing either action places you at the head of a strip
           this.frameState.isStripHead = true;
+          
         } else if (event.keyCode === 39) { // GO TO NEXT
+          this.setState({isPaused: false });
           this.gotoNextAndPlay();
           // this.lazyLoad();
           this.frameState.isStripHead = false;
@@ -766,6 +771,8 @@ class FlipbookPlayer extends Component {
               currVideoIndex={this.state.currSceneIndex}
               currStripIndex={this.state.currStripIndex}
               currFrameIndex={this.state.currFrameIndex}
+
+              isPaused={(this.state.isPaused && this.state.currSceneIndex >= 0)}
             />
           )}
         />

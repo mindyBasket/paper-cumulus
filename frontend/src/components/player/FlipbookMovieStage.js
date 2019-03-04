@@ -45,6 +45,8 @@ class FlipbookMovieStage extends Component {
     currVideoIndex: PropTypes.number,
     currStripIndex: PropTypes.number,
     currFrameIndex: PropTypes.number,
+
+    isPaused: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -210,27 +212,57 @@ class FlipbookMovieStage extends Component {
           })}
 
         </div>
-        
-        {/*
-        <div className="frame_window_decorations">
-          <div
-            className="player_instruction"
-            style={{ opacity: (this.state.onIntro ? 1 : 0) }}
-          >
-            <span>Use keyboard to navigate</span>
-            <span>
-              <span className="bigtext-2 far fa-caret-square-left" />
-              <span className="bigtext-2 far fa-caret-square-right" />
-            </span>
-          </div>
+
+        {/* cover for the stage window. Also acts like a "shield" to prevent
+            interaction with the video element */}
+        <div
+          className="movie_window_decorations"
+          onClick={e => { e.stopPropagation(); }}
+        >
+          {this.props.currVideoIndex < 0 && <InstructionStageCover />}
+          {this.props.isPaused && <PausedStageCover />}
+          
         </div>
-        */}
 
       </div>
     );
   }
 }
 
+class InstructionStageCover extends Component {
+  constructor(props) {
+    super(props);
+    this.state={};
+  }
+
+  render() {
+    return (
+      <div className="flipbook_player_instruction">
+        <span>Use keyboard to navigate</span>
+        <span>
+          <span className="bigtext-2 far fa-caret-square-left" />
+          <span className="bigtext-2 far fa-caret-square-right" />
+        </span>
+      </div>
+    );
+  }
+}
+
+
+class PausedStageCover extends Component {
+  constructor(props) {
+    super(props);
+    this.state={};
+  }
+
+  render() {
+    return (
+      <div className="flipbook_player_paused">
+        <span>Paused</span>
+      </div>
+    );
+  }
+}
 
 export {
   FlipbookMovieStage,

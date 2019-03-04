@@ -1811,6 +1811,53 @@ input.untouchable {
   /* TODO: quick hard coded solution */
 }
 
+/* TODO: These are upgraded version of .frame_window_decorations and player_instruction
+   _components.scss. Consider removing the other one. */
+.movie_window_decorations {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.movie_window_decorations .flipbook_player_instruction {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #1d1e1fe3;
+  width: 100%;
+  height: 100%;
+  font-size: 2em;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  padding: 0 0 50px 0;
+}
+.movie_window_decorations .flipbook_player_instruction span {
+  display: inline-block;
+  text-align: center;
+}
+.movie_window_decorations .flipbook_player_paused {
+  background-image: url("img/dots.png");
+  width: 100%;
+  height: 100%;
+  padding: 20px 40px;
+  font-size: 3em;
+}
+
+.flipbook_player .player_instruction span {
+  text-align: center;
+}
+
+.flipbook_player .standby_cover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: "img/slashes_h.png";
+}
+
 .frame_view {
   position: relative;
   display: block;
