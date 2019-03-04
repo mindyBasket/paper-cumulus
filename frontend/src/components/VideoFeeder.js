@@ -50,11 +50,14 @@ class VideoFeeder extends Component {
 
             // TODO: reorder scene by children_li
             const v_urls = [];
+            const v_sceneIds = [];
+
             const v_playbacks = {}; // key: 'scene_#', value: [] of playback for 1 STRIP
             scenes.forEach(sc => {
               if (sc.movie_url) {
                 // TODO: validate selection of playback from the 3-story stack using movie_url
                 v_urls.push(sc.movie_url);
+                v_sceneIds.push(sc.id); // associate each video to this id
                 // Playback stack keeps at least 3 playback history.
                 // Simply grab the first one for now.
                 v_playbacks[`scene_${sc.id}`] = JSON.parse(sc.playback).playback_stack[0];
@@ -66,7 +69,8 @@ class VideoFeeder extends Component {
               if (resArr && resArr.length > 0) {
                 let convertedUrls = [];
                 resArr.forEach(urlData => {
-                  logr.info(`Pushing storage url: ${urlData.data.url}`);
+                  // Note: Returning url will be '' if file not found in storage
+                  logr.info(`Pushing storage url: ${urlData.data.url}`); 
                   convertedUrls.push(urlData.data.url);
                 });
                 logr.info('Set data');
@@ -80,6 +84,7 @@ class VideoFeeder extends Component {
 
                 this.setState({
                   videoUrls: convertedUrls,
+                  videoSceneIds: v_sceneIds,
                   videoPlaybacks: v_playbacks,
                   children_li: orderedChildren,
                   loaded: true,
@@ -100,15 +105,17 @@ class VideoFeeder extends Component {
   render() {
     const {
       videoUrls,
+      videoSceneIds,
       videoPlaybacks,
       loaded,
       children_li,
       placeholder,
     } = this.state;
 
-    if (loaded && children_li) {
+    if (loaded && children_li && videoUrls && videoSceneIds) {
       return this.props.render({
         videoUrls: videoUrls,
+        videoSceneIds: videoSceneIds,
         videoPlaybacks: videoPlaybacks,
         children_li: children_li,
       });

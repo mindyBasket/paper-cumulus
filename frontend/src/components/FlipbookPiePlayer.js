@@ -510,7 +510,8 @@ class FlipbookPlayer extends Component {
 
     this.state = {
       currSceneIndex: -1, // index for orderedChildrenIds
-      currStripIndex: 0, 
+      currStripIndex: 0,
+      currFrameIndex: 0,
       orderedChildrenIds: null,
       playbackDict: null,
     };
@@ -520,12 +521,14 @@ class FlipbookPlayer extends Component {
       isPlaying: false,
     };
 
-    this.setTimeOutArr = [];
+    this.setTimeOutArr = []; 
 
 
     this.gotoPrev = this.gotoPrev.bind(this);
     this.rewind = this.rewind.bind(this);
     this.gotoNextAndPlay = this.gotoNextAndPlay.bind(this);
+    this.playFrame = this.playFrame.bind(this);
+    // this.killSetTimeOut = this.killSetTimeOut.bind(this);
 
     this.setPlayerData = this.setPlayerData.bind(this);
   }
@@ -546,7 +549,7 @@ class FlipbookPlayer extends Component {
     document.addEventListener('keydown', (event) => {
       if (this.state.playbackDict && this.state.orderedChildrenIds) {
         if (event.keyCode === 37) { // GO TO PREVIOUS
-          this.killSetTimeOut();
+          // this.killSetTimeOut();
 
           if (this.frameState.isStripHead) {
             this.gotoPrev(); // go to previous strip
@@ -581,11 +584,54 @@ class FlipbookPlayer extends Component {
 
   gotoPrev() {
     logr.info('Go to previous');
+
+    // check if you reached the beginning
+    if (this.currStrip.getAttribute('index') === 0) {
+      // turn on intro page
+      //_setState_FlipbookPlayer({introActive: true});
+      flpb.pub_setIntroCover(true);
+      _setState_Scrubber({
+        currStrip: -1
+      });
+    } else {
+      // Get previous strip
+      // Note: you maybe on the first strip of current scene, so move to previous scene
+      let prevStrip = null;
+      prevStrip = this.currStrip.className.includes('start') ? (
+        this.currStrip.parentElement.previousElementSibling.querySelector('.strip.last')
+      ) : (
+        this.currStrip.previousElementSibling
+      );
+
+      if (prevStrip != null) {
+        // scroll
+        this.currStrip = prevStrip;
+        this.currStrip.scrollIntoView(true);
+
+        // set frame_window to the right aspect ratio
+        flpb.pub_recalcDimension(this.currStrip);
+
+
+        _setState_Scrubber({
+          numFrames: Number(this.currStrip.getAttribute("count")),
+          currStrip: Number(this.currStrip.getAttribute("index"))
+        });
+      }
+    }
   }
+
+
 
   rewind() {
     logr.info('Rewind current strip');
-  }
+		this.currStrip.scrollIntoView(true);
+
+		// Clear timer
+		_setState_Scrubber({currFrame: -1});
+		flpb.pub_setStandy(true);
+		
+	}
+
 
   gotoNextAndPlay() {
     const currSceneIndex = this.state.currSceneIndex;
@@ -595,22 +641,19 @@ class FlipbookPlayer extends Component {
     const orderedId = this.state.orderedChildrenIds;
     let currScenePlayback = null; // object with key 'strips', which contain array
 
-    // logr.info(`Current: SceneInd - StripInd = ${currSceneIndex} - ${currStripIndex}`);
-    if (currSceneIndex === -1) {
-      // current on "cover"
-      // TODO: remove cover
+    // 1. Determine what to play next ----------------------------------------------
+    if (currSceneIndex === -1) { // currently on "cover"
+      // TODO: actually remove cover
       logr.info('Remove cover');
       nextSceneIndex = 0;
       nextStripindex = 0;
-    } else {
-      // Not on "cover"
+    } else { // Not "cover". In the middle of the book
       try {
         currScenePlayback = this.state.playbackDict[`scene_${currSceneIndex + 1}`];
       } catch (err) {
         logr.warn(`ERROR:. Playback info not found for scene = ${currSceneIndex}.`);
         return false;
       }
-
       // Check if OOB for Strip
       if (currStripIndex >= currScenePlayback.strips.length - 1) {
         // Out of strip. Go to next scene
@@ -620,11 +663,9 @@ class FlipbookPlayer extends Component {
           // TODO: implement better end-of-chapter indication
           return false;
         }
-
         logr.warn(`Go to next scene = ${orderedId[currSceneIndex]} (reset strip index)`);
         nextSceneIndex = currSceneIndex + 1;
         nextStripindex = 0; // reset because new Scene
-
       } else {
         nextSceneIndex = currSceneIndex; // is same
         nextStripindex = currStripIndex + 1;
@@ -635,7 +676,8 @@ class FlipbookPlayer extends Component {
       }
     }
 
-    // extract playback info
+    // 2. Actually play ----------------------------------------------
+    // Update and Extract playback info
     currScenePlayback = this.state.playbackDict[`scene_${nextSceneIndex + 1}`];
 
     if (!currScenePlayback || currScenePlayback.strips.length === 0) {
@@ -656,23 +698,33 @@ class FlipbookPlayer extends Component {
       logr.error(`Either scene index or strip index is null: scene:strip = ${nextSceneIndex}:${nextStripindex}`);
     }
 
-    // Note: wait...I think the playing SHOULD happen here because of killSetTimeout.
+  
+    // setTimeout map moved inside Stage component
+    // for (let i = 1; i < frameCount; i++) {
+    //   // Add reference to stop it later
+    //   this.setTimeOutArr.push(
+    //     setTimeout(this.playFrame.bind(this, i), i * frameDuration)
+    //   );
+    // }
   }
 
-  killSetTimeOut() {
-    for (let i = 0; i < this.setTimeOutArr.length; i++) {
-      clearTimeout(this.setTimeOutArr[i]);
-    }
+  // PARTIALLY NOT USED. Moved inside Stage component
+  playFrame(index) {
+    // the actual animation is done inside stage. Only update its prop.
+    // PROBLEM: doing it this way causes frame skip. I am guessing it is because
+    //          the component could be busy updating other states!
+    this.setState({
+      currFrameIndex: index,
+    });
 
-    // Dump array
-    // the array only gets new entry in playNext()
-    this.setTimeOutArr = [];
+    // TODO: update timer
+    // _setState_Scrubber({ currFrame: index });
+
   }
-
 
   // Communication with stage
   setPlayerData(children_li, playbackDict) {
-    logr.info("Children order and playback information for player received from VideoFeeder")
+    logr.info('Children order and playback information for player received from VideoFeeder');
     console.log(playbackDict);
     console.log(children_li);
 
@@ -682,7 +734,6 @@ class FlipbookPlayer extends Component {
       orderedChildrenIds: children_li,
     });
   }
-
 
   render() {
     const wOv = this.props.widthOverride;
@@ -702,9 +753,13 @@ class FlipbookPlayer extends Component {
           render={renderData => (
             <FlipbookMovieStage
               videoUrls={renderData.videoUrls}
-              videoPlaybacks={renderData.videoPlaybacks}
+              videoSceneIds={renderData.videoSceneIds}
+              videoPlaybackDict={renderData.videoPlaybacks}
               children_li={renderData.children_li}
-              currScene={this.state.currScene}
+
+              currVideoIndex={this.state.currSceneIndex}
+              currStripIndex={this.state.currStripIndex}
+              currFrameIndex={this.state.currFrameIndex}
             />
           )}
         />
