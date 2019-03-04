@@ -9,6 +9,22 @@ const logr = new Logr('MovieStage');
 const h = new Helper();
 const cnst = new Constants();
 
+const movieStage_publicFunctions = {
+
+  // Bind to MovieStage
+  mStage_playFrame: function () {
+    this.playFrame();
+  },
+
+  mStage_gotoStrip: function (newStripIndex) {
+    this.gotoStrip(newStripIndex);
+  }
+  
+}
+
+// alias
+const mStage = movieStage_publicFunctions;
+
 // http://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=Stage
 
 // ███████╗████████╗ █████╗  ██████╗ ███████╗
@@ -41,10 +57,17 @@ class FlipbookMovieStage extends Component {
     // NOT a state
     this.currStripTime = 0; // sec
     this.setTimeOutArr = [];
+    this.currVideo = null;
 
+    this.getCurrSceneId = this.getCurrSceneId.bind(this);
     this.gotoStrip = this.gotoStrip.bind(this);
+    this.playFrame = this.playFrame.bind(this);
+    this.gotoFrame = this.gotoFrame.bind(this);
     this.killSetTimeOut = this.killSetTimeOut.bind(this);
 
+    // pub bind
+    mStage.mStage_playFrame = mStage.mStage_playFrame.bind(this);
+    mStage.mStage_gotoStrip = mStage.mStage_gotoStrip.bind(this);
   }
 
   componentDidUpdate(prevProps) {
@@ -53,10 +76,10 @@ class FlipbookMovieStage extends Component {
     const currIndex = this.props.currVideoIndex;
     const currStripIndex = this.props.currStripIndex;
     const currSceneId = scIds[currIndex];
-    const currVideo = document.querySelector(`.movie_stack #sc_${currSceneId}`);
+    this.currVideo = document.querySelector(`.movie_stack #sc_${currSceneId}`);
 
-    if (currVideo) {
-      currVideo.scrollIntoView(true);
+    if (this.currVideo) {
+      this.currVideo.scrollIntoView(true);
     } else {
       logr.error(`Video for scene id=${currSceneId} not found.`);
     }
@@ -65,28 +88,28 @@ class FlipbookMovieStage extends Component {
     // TODO: This seem horribly inefficient...You are doing this every key press.
     //       It would be better if "frameCounts" were already gathered by the api
     if (prevProps.currStripIndex !== currStripIndex) {
-      this.gotoStrip(currVideo, currSceneId, currStripIndex);
+      this.gotoStrip();
+      // Called externally
+      // this.playFrame();
 
-      // Make timeline
-      // Playing SHOULD happen here, and utilize killSetTimeout.
-      const currScenePlayback = this.props.videoPlaybackDict[`scene_${currSceneId}`];
-      const frameCount = Number(currScenePlayback.strips[currStripIndex].frame_count);
-      let frameDuration = Number(currScenePlayback.strips[currStripIndex].frame_duration);
-      frameDuration = frameDuration || T_STEP;
-
-      for (let i = 1; i < frameCount; i++) {
-        // Add reference to stop it later
-        this.setTimeOutArr.push(
-          setTimeout(this.gotoFrame.bind(this, currVideo, i), i * frameDuration)
-        );
-      }
     } 
   }
 
-  gotoStrip(currVideo, currSceneId, currStripIndex) {
+
+  getCurrSceneId() {
+    const scIds = this.props.videoSceneIds;
+    const currIndex = this.props.currVideoIndex;
+    return scIds[currIndex];
+  }
+
+  gotoStrip(newStripIndex) {
+
+    const currSceneId = this.getCurrSceneId();
+    const currStripIndex = newStripIndex || this.props.currStripIndex;
+    
     this.killSetTimeOut();
 
-    if (currVideo) {
+    if (this.currVideo) {
       try {
         // make array of frame nums
         const frameCounts = [];
@@ -100,10 +123,31 @@ class FlipbookMovieStage extends Component {
         }
 
         this.currStripTime = frameCountPassed;
-        currVideo.currentTime = frameCountPassed + 0.5; // 0.5 makes sure it's inside the frame
+        this.currVideo.currentTime = frameCountPassed + 0.2; // makes sure it's inside the frame
       } catch (err) {
         logr.error('Error while calculating strip time location');
       }
+    }
+  }
+
+  playFrame() {
+    // Make timeline
+    // Playing SHOULD happen here, and utilize killSetTimeout.
+    const scIds = this.props.videoSceneIds;
+    const currIndex = this.props.currVideoIndex;
+    const currStripIndex = this.props.currStripIndex;
+    const currSceneId = scIds[currIndex];
+    const currScenePlayback = this.props.videoPlaybackDict[`scene_${currSceneId}`];
+
+    const frameCount = Number(currScenePlayback.strips[currStripIndex].frame_count);
+    let frameDuration = Number(currScenePlayback.strips[currStripIndex].frame_duration);
+    frameDuration = frameDuration || cnst.T_STEP;
+
+    for (let i = 1; i < frameCount; i++) {
+      // Add reference to stop it later
+      this.setTimeOutArr.push(
+        setTimeout(this.gotoFrame.bind(this, this.currVideo, i), i * frameDuration)
+      );
     }
   }
 
@@ -111,10 +155,9 @@ class FlipbookMovieStage extends Component {
     // animate frame (if warrents it)
     // It simply adds to currStripTime.
     // If currFrameIndex=0, that's same as head of strip
-    // Note: frame and strip would never update {together.
     if (currVideo) {
-      currVideo.currentTime = this.currStripTime + currFrameIndex + 0.5;
-      console.log("Frame timestamp: " + this.currStripTime + " + " + currFrameIndex);
+      currVideo.currentTime = this.currStripTime + currFrameIndex + 0.2;
+      logr.info('Frame timestamp: ' + this.currStripTime + ' + ' + currFrameIndex);
     }
   }
 
@@ -170,5 +213,6 @@ class FlipbookMovieStage extends Component {
 
 
 export {
-  FlipbookMovieStage
+  FlipbookMovieStage,
+  movieStage_publicFunctions,
 };

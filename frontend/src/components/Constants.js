@@ -1,6 +1,8 @@
 class Constants {
   MEDIA_IMAGES_URL = 'media/frame_images/';
 
+  T_STEP = 400; // ms
+
   // Opera
   static isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
 

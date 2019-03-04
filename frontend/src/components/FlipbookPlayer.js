@@ -78,9 +78,9 @@ const flipbook_publicFunctions = {
     }
 
     if (!di) {
-      // TODO: implement alternatie way to get dimension if none of 
+      // TODO: implement alternatie way to get dimension if none of
       //		 the frames contain dimensions
-      // Warning: getting offsetWidth and Height causes reflow! 
+      // Warning: getting offsetWidth and Height causes reflow!
       return false;
     }
 

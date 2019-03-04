@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 
 import VideoFeeder from './VideoFeeder';
-import { FlipbookMovieStage } from './player/FlipbookMovieStage';
+import { movieStage_publicFunctions as mStage, FlipbookMovieStage } from './player/FlipbookMovieStage';
 import Spinner from './Spinner';
 import { LightBox } from './LightBox';
 import { MenuButton } from './UI';
@@ -561,6 +561,7 @@ class FlipbookPlayer extends Component {
         } else if (event.keyCode === 39) { // GO TO NEXT
           this.gotoNextAndPlay();
           // this.lazyLoad();
+          this.frameState.isStripHead = false;
         }
       }
     });
@@ -588,7 +589,7 @@ class FlipbookPlayer extends Component {
     // check if you reached the beginning
     if (this.currStrip.getAttribute('index') === 0) {
       // turn on intro page
-      //_setState_FlipbookPlayer({introActive: true});
+      // _setState_FlipbookPlayer({introActive: true});
       flpb.pub_setIntroCover(true);
       _setState_Scrubber({
         currStrip: -1
@@ -621,19 +622,20 @@ class FlipbookPlayer extends Component {
   }
 
 
-
+  /**
+   * Only executed if "back" arrow key is pressed while a strip is playing
+   * It simply rewinds the strip back to its head.
+   */
   rewind() {
-    logr.info('Rewind current strip');
-		this.currStrip.scrollIntoView(true);
-
-		// Clear timer
-		_setState_Scrubber({currFrame: -1});
-		flpb.pub_setStandy(true);
-		
-	}
-
+    logr.info('Reset current strip');
+    mStage.mStage_gotoStrip(); // pass nothing to reset to current strip.
+    // Clear timer
+    // _setState_Scrubber({currFrame: -1});
+    // flpb.pub_setStandy(true);
+  }
 
   gotoNextAndPlay() {
+
     const currSceneIndex = this.state.currSceneIndex;
     let nextSceneIndex = null;
     const currStripIndex = this.state.currStripIndex;
@@ -648,6 +650,12 @@ class FlipbookPlayer extends Component {
       nextSceneIndex = 0;
       nextStripindex = 0;
     } else { // Not "cover". In the middle of the book
+      if (this.frameState.isStripHead) {
+        // no need to determine next strip. Just play current one.
+        mStage.mStage_playFrame();
+        return;
+      }
+
       try {
         currScenePlayback = this.state.playbackDict[`scene_${currSceneIndex + 1}`];
       } catch (err) {
@@ -688,27 +696,19 @@ class FlipbookPlayer extends Component {
     logr.info("Current scene's playback");
     console.log(currScenePlayback); // this is stack for the WHOLE chapter though
 
-    // This will trigger update to the stage
+    // This will trigger update to the stage and PLAY
     if (nextSceneIndex !== null && nextStripindex !== null) {
       this.setState({
         currSceneIndex: nextSceneIndex,
         currStripIndex: nextStripindex,
-      });
+      }, mStage.mStage_playFrame);
     } else {
       logr.error(`Either scene index or strip index is null: scene:strip = ${nextSceneIndex}:${nextStripindex}`);
     }
 
-  
-    // setTimeout map moved inside Stage component
-    // for (let i = 1; i < frameCount; i++) {
-    //   // Add reference to stop it later
-    //   this.setTimeOutArr.push(
-    //     setTimeout(this.playFrame.bind(this, i), i * frameDuration)
-    //   );
-    // }
   }
 
-  // PARTIALLY NOT USED. Moved inside Stage component
+  // NOT USED. Moved inside Stage component
   playFrame(index) {
     // the actual animation is done inside stage. Only update its prop.
     // PROBLEM: doing it this way causes frame skip. I am guessing it is because
@@ -719,7 +719,6 @@ class FlipbookPlayer extends Component {
 
     // TODO: update timer
     // _setState_Scrubber({ currFrame: index });
-
   }
 
   // Communication with stage
