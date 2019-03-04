@@ -534,17 +534,6 @@ class FlipbookPlayer extends Component {
   }
 
   componentDidMount() {
-    // TODO: uncomment when implemented
-    // if (!this.$node || !this.$node.current) {
-    //   // why would this be empty..?
-    //   return false;
-    // }
-
-    // NOTE: update this.$node to this.currStrip. It is not always aware.
-    //		 this is especially the case since the lazy load makes the number of
-    //		 loaded scene to be 0 when first mounted.
-    // this.currStrip = this.$node.current.querySelector('.strip.start');
-
     // bind keyboard
     document.addEventListener('keydown', (event) => {
       if (this.state.playbackDict && this.state.orderedChildrenIds) {
@@ -586,39 +575,58 @@ class FlipbookPlayer extends Component {
   gotoPrev() {
     logr.info('Go to previous');
 
-    // check if you reached the beginning
-    if (this.currStrip.getAttribute('index') === 0) {
-      // turn on intro page
-      // _setState_FlipbookPlayer({introActive: true});
-      flpb.pub_setIntroCover(true);
-      _setState_Scrubber({
-        currStrip: -1
+    const currSceneIndex = this.state.currSceneIndex;
+    let prevSceneIndex = null;
+    const currStripIndex = this.state.currStripIndex;
+    let prevStripindex = null;
+    const orderedId = this.state.orderedChildrenIds;
+    let currScenePlayback = null; // object with key 'strips', which contain array
+
+    // 1. Determine if previous segment is available ----------------------------------------------
+    if (currStripIndex === 0) {
+      // no more previous strip
+      if (currSceneIndex <= 0) {
+        // Go back to "cover"
+        prevSceneIndex = -1;
+        prevStripindex = 0; // reset
+      } else {
+        // go to last strip of previous scene
+        currScenePlayback = this.state.playbackDict[`scene_${orderedId[currSceneIndex - 1]}`];
+        prevStripindex = currScenePlayback.strips.length - 1;
+        prevSceneIndex = currSceneIndex - 1;
+      }
+    } else {
+      // go back on strip on the same scene
+      prevSceneIndex = currSceneIndex;
+      prevStripindex = currStripIndex - 1;
+    }
+
+    // This will trigger update to the stage
+    if (prevSceneIndex !== null && prevStripindex !== null) {
+      this.setState({
+        currSceneIndex: prevSceneIndex,
+        currStripIndex: prevStripindex,
       });
     } else {
-      // Get previous strip
-      // Note: you maybe on the first strip of current scene, so move to previous scene
-      let prevStrip = null;
-      prevStrip = this.currStrip.className.includes('start') ? (
-        this.currStrip.parentElement.previousElementSibling.querySelector('.strip.last')
-      ) : (
-        this.currStrip.previousElementSibling
-      );
-
-      if (prevStrip != null) {
-        // scroll
-        this.currStrip = prevStrip;
-        this.currStrip.scrollIntoView(true);
-
-        // set frame_window to the right aspect ratio
-        flpb.pub_recalcDimension(this.currStrip);
-
-
-        _setState_Scrubber({
-          numFrames: Number(this.currStrip.getAttribute("count")),
-          currStrip: Number(this.currStrip.getAttribute("index"))
-        });
-      }
+      logr.error(`Either scene index or strip index is null: scene:strip = ${prevSceneIndex}:${prevStripindex}`);
     }
+
+
+    // TODO: uncomment when implemented
+    // if (prevStrip != null) {
+    //   // scroll
+    //   this.currStrip = prevStrip;
+    //   this.currStrip.scrollIntoView(true);
+
+    //   // set frame_window to the right aspect ratio
+    //   flpb.pub_recalcDimension(this.currStrip);
+
+
+    //   _setState_Scrubber({
+    //     numFrames: Number(this.currStrip.getAttribute("count")),
+    //     currStrip: Number(this.currStrip.getAttribute("index"))
+    //   });
+    // }
   }
 
 
@@ -635,7 +643,6 @@ class FlipbookPlayer extends Component {
   }
 
   gotoNextAndPlay() {
-
     const currSceneIndex = this.state.currSceneIndex;
     let nextSceneIndex = null;
     const currStripIndex = this.state.currStripIndex;
@@ -657,7 +664,7 @@ class FlipbookPlayer extends Component {
       }
 
       try {
-        currScenePlayback = this.state.playbackDict[`scene_${currSceneIndex + 1}`];
+        currScenePlayback = this.state.playbackDict[`scene_${orderedId[currSceneIndex]}`];
       } catch (err) {
         logr.warn(`ERROR:. Playback info not found for scene = ${currSceneIndex}.`);
         return false;
@@ -686,7 +693,7 @@ class FlipbookPlayer extends Component {
 
     // 2. Actually play ----------------------------------------------
     // Update and Extract playback info
-    currScenePlayback = this.state.playbackDict[`scene_${nextSceneIndex + 1}`];
+    currScenePlayback = this.state.playbackDict[`scene_${orderedId[nextSceneIndex]}`];
 
     if (!currScenePlayback || currScenePlayback.strips.length === 0) {
       logr.warn('There are more scenes, but playback is not available!');

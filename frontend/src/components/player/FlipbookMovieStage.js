@@ -78,10 +78,15 @@ class FlipbookMovieStage extends Component {
     const currSceneId = scIds[currIndex];
     this.currVideo = document.querySelector(`.movie_stack #sc_${currSceneId}`);
 
+    if (currIndex < 0) {
+      // Not a valid index of video/scene
+      return;
+    }
+
     if (this.currVideo) {
       this.currVideo.scrollIntoView(true);
     } else {
-      logr.error(`Video for scene id=${currSceneId} not found.`);
+      logr.warn(`Video for scene id=${currSceneId} not found.`);
     }
 
     // Switch to current strip (section of video)
@@ -205,6 +210,21 @@ class FlipbookMovieStage extends Component {
           })}
 
         </div>
+        
+        {/*
+        <div className="frame_window_decorations">
+          <div
+            className="player_instruction"
+            style={{ opacity: (this.state.onIntro ? 1 : 0) }}
+          >
+            <span>Use keyboard to navigate</span>
+            <span>
+              <span className="bigtext-2 far fa-caret-square-left" />
+              <span className="bigtext-2 far fa-caret-square-right" />
+            </span>
+          </div>
+        </div>
+        */}
 
       </div>
     );
