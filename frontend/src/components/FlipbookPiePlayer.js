@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 
 import VideoFeeder from './VideoFeeder';
+import { FlipbookMovieStage } from './player/FlipbookMovieStage';
 import Spinner from './Spinner';
 import { LightBox } from './LightBox';
 import { MenuButton } from './UI';
@@ -120,6 +121,9 @@ function playFrameStage(){
 // ██╔══╝  ██╔══██╗██╔══██║██║╚██╔╝██║██╔══╝  ╚════██║   ██║   ██╔══██║██║   ██║██╔══╝
 // ██║     ██║  ██║██║  ██║██║ ╚═╝ ██║███████╗███████║   ██║   ██║  ██║╚██████╔╝███████╗
 // ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚══════╝
+
+
+// TODO: this is being placed by FlipbookMovieStage
 
 class FrameStage extends PureComponent {
   constructor(props) {
@@ -488,70 +492,13 @@ class FrameStage extends PureComponent {
 
 
 
-// ███████╗████████╗ █████╗  ██████╗ ███████╗
-// ██╔════╝╚══██╔══╝██╔══██╗██╔════╝ ██╔════╝
-// ███████╗   ██║   ███████║██║  ███╗█████╗
-// ╚════██║   ██║   ██╔══██║██║   ██║██╔══╝
-// ███████║   ██║   ██║  ██║╚██████╔╝███████╗
-// ╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚══════╝
 
-class FlipbookStage extends Component {
-  static propTypes = {
-    videoUrls: PropTypes.array.isRequired,
-    videoPlaybacks: PropTypes.array.isRequired,
-    children_li: PropTypes.array.isRequired,
-    // handle_fetchScene: PropTypes.func.isRequired,
-    // setState_LightBox: PropTypes.func.isRequired,
-  };
-
-  static defaultProps = {
-  }
-
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
-  render() {
-    logr.warn(JSON.stringify(this.props.videoUrls));
-
-    return (
-      <div>
-        <div>Children_li: {this.props.children_li}</div>
-        <div className="chapter_movie_stage">
-          {this.props.videoUrls.map(v => {
-            // if (cnst.BROWSER.isFirefox) {
-            const v_webm = h.changeExtension(v, 'webm');
-
-            console.log(this.props.videoPlaybacks);
-            return (
-              <video
-                width="100%"
-                height="100%"
-                controls
-              >
-                <source src={v} type="video/mp4" />
-                <source src={v_webm} type="video/webm" />
-                Your browser does not support the video tag.
-              </video>
-            );
-          })}
-
-        </div>
-
-      </div>
-    );
-  }
-}
-
-
-
-// ███████╗██████╗  █████╗ ███╗   ███╗███████╗██╗    ██╗██╗███╗   ██╗██████╗  ██████╗ ██╗    ██╗
-// ██╔════╝██╔══██╗██╔══██╗████╗ ████║██╔════╝██║    ██║██║████╗  ██║██╔══██╗██╔═══██╗██║    ██║
-// █████╗  ██████╔╝███████║██╔████╔██║█████╗  ██║ █╗ ██║██║██╔██╗ ██║██║  ██║██║   ██║██║ █╗ ██║
-// ██╔══╝  ██╔══██╗██╔══██║██║╚██╔╝██║██╔══╝  ██║███╗██║██║██║╚██╗██║██║  ██║██║   ██║██║███╗██║
-// ██║     ██║  ██║██║  ██║██║ ╚═╝ ██║███████╗╚███╔███╔╝██║██║ ╚████║██████╔╝╚██████╔╝╚███╔███╔╝
-// ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝ ╚══╝╚══╝ ╚═╝╚═╝  ╚═══╝╚═════╝  ╚═════╝  ╚══╝╚══╝
+// ██████╗ ██╗      █████╗ ██╗   ██╗███████╗██████╗
+// ██╔══██╗██║     ██╔══██╗╚██╗ ██╔╝██╔════╝██╔══██╗
+// ██████╔╝██║     ███████║ ╚████╔╝ █████╗  ██████╔╝
+// ██╔═══╝ ██║     ██╔══██║  ╚██╔╝  ██╔══╝  ██╔══██╗
+// ██║     ███████╗██║  ██║   ██║   ███████╗██║  ██║
+// ╚═╝     ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝  ╚═╝
 
 /**
  * This component, previously a "FrameWindow", will now act as a player component
@@ -560,8 +507,182 @@ class FlipbookStage extends Component {
 class FlipbookPlayer extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+
+    this.state = {
+      currSceneIndex: -1, // index for orderedChildrenIds
+      currStripIndex: 0, 
+      orderedChildrenIds: null,
+      playbackDict: null,
+    };
+
+    this.frameState = {
+      isStripHead: true,
+      isPlaying: false,
+    };
+
+    this.setTimeOutArr = [];
+
+
+    this.gotoPrev = this.gotoPrev.bind(this);
+    this.rewind = this.rewind.bind(this);
+    this.gotoNextAndPlay = this.gotoNextAndPlay.bind(this);
+
+    this.setPlayerData = this.setPlayerData.bind(this);
   }
+
+  componentDidMount() {
+    // TODO: uncomment when implemented
+    // if (!this.$node || !this.$node.current) {
+    //   // why would this be empty..?
+    //   return false;
+    // }
+
+    // NOTE: update this.$node to this.currStrip. It is not always aware.
+    //		 this is especially the case since the lazy load makes the number of
+    //		 loaded scene to be 0 when first mounted.
+    // this.currStrip = this.$node.current.querySelector('.strip.start');
+
+    // bind keyboard
+    document.addEventListener('keydown', (event) => {
+      if (this.state.playbackDict && this.state.orderedChildrenIds) {
+        if (event.keyCode === 37) { // GO TO PREVIOUS
+          this.killSetTimeOut();
+
+          if (this.frameState.isStripHead) {
+            this.gotoPrev(); // go to previous strip
+          } else {
+            this.rewind(); // rewind to beginning of strip
+          }
+          // doing either action places you at the head of a strip
+          this.frameState.isStripHead = true;
+        } else if (event.keyCode === 39) { // GO TO NEXT
+          this.gotoNextAndPlay();
+          // this.lazyLoad();
+        }
+      }
+    });
+
+    // TODO: uncomment when implemented
+    // // initialize the Scrubber.
+    // logr.info('Init scrubber');
+    // _setState_Scrubber({
+    //   data: this.props.data,
+    //   numStrips: h.getTotalStripCount(this.props.data),
+    //   numLoadedScene: 1
+    // });
+
+    // initialize lazySceneCount
+    // this.setState({lazySceneCount: 1});
+
+    // TODO: uncomment when implemented
+    // Tell parent the frame has been loaded
+    // setState_FlipbookPlayer({ frameLoaded: true });
+  }
+
+  gotoPrev() {
+    logr.info('Go to previous');
+  }
+
+  rewind() {
+    logr.info('Rewind current strip');
+  }
+
+  gotoNextAndPlay() {
+    const currSceneIndex = this.state.currSceneIndex;
+    let nextSceneIndex = null;
+    const currStripIndex = this.state.currStripIndex;
+    let nextStripindex = null;
+    const orderedId = this.state.orderedChildrenIds;
+    let currScenePlayback = null; // object with key 'strips', which contain array
+
+    // logr.info(`Current: SceneInd - StripInd = ${currSceneIndex} - ${currStripIndex}`);
+    if (currSceneIndex === -1) {
+      // current on "cover"
+      // TODO: remove cover
+      logr.info('Remove cover');
+      nextSceneIndex = 0;
+      nextStripindex = 0;
+    } else {
+      // Not on "cover"
+      try {
+        currScenePlayback = this.state.playbackDict[`scene_${currSceneIndex + 1}`];
+      } catch (err) {
+        logr.warn(`ERROR:. Playback info not found for scene = ${currSceneIndex}.`);
+        return false;
+      }
+
+      // Check if OOB for Strip
+      if (currStripIndex >= currScenePlayback.strips.length - 1) {
+        // Out of strip. Go to next scene
+        // Check if OOB for Scene
+        if (currSceneIndex >= orderedId.length - 1) {
+          logr.warn(`'Reached the end of all video stack! scene ${currSceneIndex}/${orderedId.length}`);
+          // TODO: implement better end-of-chapter indication
+          return false;
+        }
+
+        logr.warn(`Go to next scene = ${orderedId[currSceneIndex]} (reset strip index)`);
+        nextSceneIndex = currSceneIndex + 1;
+        nextStripindex = 0; // reset because new Scene
+
+      } else {
+        nextSceneIndex = currSceneIndex; // is same
+        nextStripindex = currStripIndex + 1;
+        logr.info(`Next strip. Index = ${nextStripindex + 1}/${currScenePlayback.strips.length}`);
+        this.setState({
+          currStripIndex: nextStripindex,
+        });
+      }
+    }
+
+    // extract playback info
+    currScenePlayback = this.state.playbackDict[`scene_${nextSceneIndex + 1}`];
+
+    if (!currScenePlayback || currScenePlayback.strips.length === 0) {
+      logr.warn('There are more scenes, but playback is not available!');
+      return false;
+    }
+
+    logr.info("Current scene's playback");
+    console.log(currScenePlayback); // this is stack for the WHOLE chapter though
+
+    // This will trigger update to the stage
+    if (nextSceneIndex !== null && nextStripindex !== null) {
+      this.setState({
+        currSceneIndex: nextSceneIndex,
+        currStripIndex: nextStripindex,
+      });
+    } else {
+      logr.error(`Either scene index or strip index is null: scene:strip = ${nextSceneIndex}:${nextStripindex}`);
+    }
+
+    // Note: wait...I think the playing SHOULD happen here because of killSetTimeout.
+  }
+
+  killSetTimeOut() {
+    for (let i = 0; i < this.setTimeOutArr.length; i++) {
+      clearTimeout(this.setTimeOutArr[i]);
+    }
+
+    // Dump array
+    // the array only gets new entry in playNext()
+    this.setTimeOutArr = [];
+  }
+
+
+  // Communication with stage
+  setPlayerData(children_li, playbackDict) {
+    logr.info("Children order and playback information for player received from VideoFeeder")
+    console.log(playbackDict);
+    console.log(children_li);
+
+    // waits for <VideoFeeder> to fetch playback stack and updates it
+    this.setState({
+      playbackDict: playbackDict,
+      orderedChildrenIds: children_li,
+    });
+  }
+
 
   render() {
     const wOv = this.props.widthOverride;
@@ -576,11 +697,14 @@ class FlipbookPlayer extends Component {
 
         <VideoFeeder
           chapterId={this.props.chapterId}
+          player_setPlayerData={this.setPlayerData}
+
           render={renderData => (
-            <FlipbookStage
+            <FlipbookMovieStage
               videoUrls={renderData.videoUrls}
               videoPlaybacks={renderData.videoPlaybacks}
               children_li={renderData.children_li}
+              currScene={this.state.currScene}
             />
           )}
         />

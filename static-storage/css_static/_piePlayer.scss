@@ -5,6 +5,39 @@
 /* -------------------------------------- */
 /* -------------------------------------- */
 
+.movie_stage_window{
+    /* the "hole"/window to stack of movies */
+    position: relative;
+    overflow: scroll;
+
+    margin: 50px;
+    width: 100%;
+    height: 500px; /* TODO: quick hard coded solution */
+}
+
+.movie_stack{
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .frame_view{
     position: relative;
     display: block;
