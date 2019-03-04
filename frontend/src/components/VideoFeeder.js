@@ -90,8 +90,9 @@ class VideoFeeder extends Component {
                   loaded: true,
                 });
 
-                // Also notify the parent (player) with playbacks
+                // Notify the parent (player) with playbacks
                 this.props.player_setPlayerData(orderedChildren, v_playbacks);
+
               }
 
             });

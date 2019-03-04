@@ -1,5 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component, PureComponent } from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
+
+import { scrubber_publicFunctions as scbr, Scrubber } from './Scrubber';
 
 import Logr from '../tools/Logr';
 import Helper from '../Helper';
@@ -34,7 +37,7 @@ const mStage = movieStage_publicFunctions;
 // ███████║   ██║   ██║  ██║╚██████╔╝███████╗
 // ╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚══════╝
 
-class FlipbookMovieStage extends Component {
+class FlipbookMovieStage extends PureComponent {
   static propTypes = {
     videoUrls: PropTypes.array.isRequired,
     videoSceneIds: PropTypes.array.isRequired,
@@ -44,7 +47,7 @@ class FlipbookMovieStage extends Component {
     // setState_LightBox: PropTypes.func.isRequired,
     currVideoIndex: PropTypes.number,
     currStripIndex: PropTypes.number,
-    currFrameIndex: PropTypes.number,
+    // currFrameIndex: PropTypes.number, // NOT USED. MovieStage figures it out.
 
     isPaused: PropTypes.bool,
   };
@@ -54,14 +57,20 @@ class FlipbookMovieStage extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      numTotalStrips: this.getTotalNumStrips(), // for scrubber only so far
+      currFrameIndex: 0, // for scrubber only so far
+    };
 
     // NOT a state
     this.currStripTime = 0; // sec
     this.setTimeOutArr = [];
     this.currVideo = null;
 
+    this.getTotalNumStrips = this.getTotalNumStrips.bind(this);
     this.getCurrSceneId = this.getCurrSceneId.bind(this);
+    this.getCurrStripPlayback = this.getCurrStripPlayback.bind(this);
+
     this.gotoStrip = this.gotoStrip.bind(this);
     this.playFrame = this.playFrame.bind(this);
     this.gotoFrame = this.gotoFrame.bind(this);
@@ -98,10 +107,24 @@ class FlipbookMovieStage extends Component {
       this.gotoStrip();
       // Called externally
       // this.playFrame();
-
-    } 
+    }
   }
 
+  getTotalNumStrips() {
+    // goes through videoPlaybackDict and get number of strips
+    const pbDict = this.props.videoPlaybackDict;
+    let stripCount = 0;
+    Object.keys(pbDict).forEach((scKey) => {
+      if ('strips' in pbDict[scKey]){
+        stripCount += pbDict[scKey].strips.length;
+      } else {
+        logr.error(`'Strips' property not found in playback for ${scKey}.`);
+      }
+    });
+
+    logr.info("Total number of strips in this chapter: " + stripCount);
+    return stripCount;
+  }
 
   getCurrSceneId() {
     const scIds = this.props.videoSceneIds;
@@ -109,12 +132,23 @@ class FlipbookMovieStage extends Component {
     return scIds[currIndex];
   }
 
-  gotoStrip(newStripIndex) {
+  getCurrStripPlayback() {
+    const currSceneId = this.getCurrSceneId();
+    const sceneKey = `scene_${currSceneId}`;
+    if (sceneKey in this.props.videoPlaybackDict) {
+      const stripPlaybackArr = this.props.videoPlaybackDict[`scene_${currSceneId}`].strips;
+      return stripPlaybackArr[this.props.currStripIndex];
+    }
+    return null;
+  }
 
+  gotoStrip(newStripIndex) {
     const currSceneId = this.getCurrSceneId();
     const currStripIndex = newStripIndex || this.props.currStripIndex;
-    
-    this.killSetTimeOut();
+
+    // this.killSetTimeOut(); not really needed here now
+    // Reset frame index!
+    this.setState({ currFrameIndex: 0});
 
     if (this.currVideo) {
       try {
@@ -135,11 +169,13 @@ class FlipbookMovieStage extends Component {
         logr.error('Error while calculating strip time location');
       }
     }
+
   }
 
   playFrame() {
+    this.killSetTimeOut(); // just in case
+
     // Make timeline
-    // Playing SHOULD happen here, and utilize killSetTimeout.
     const scIds = this.props.videoSceneIds;
     const currIndex = this.props.currVideoIndex;
     const currStripIndex = this.props.currStripIndex;
@@ -149,6 +185,7 @@ class FlipbookMovieStage extends Component {
     const frameCount = Number(currScenePlayback.strips[currStripIndex].frame_count);
     let frameDuration = Number(currScenePlayback.strips[currStripIndex].frame_duration);
     frameDuration = frameDuration || cnst.T_STEP;
+    logr.warn(`Frame duration for stripIndex = ${currStripIndex} is ${frameDuration}`);
 
     for (let i = 1; i < frameCount; i++) {
       // Add reference to stop it later
@@ -165,6 +202,10 @@ class FlipbookMovieStage extends Component {
     if (currVideo) {
       currVideo.currentTime = this.currStripTime + currFrameIndex + 0.2;
       logr.info('Frame timestamp: ' + this.currStripTime + ' + ' + currFrameIndex);
+
+      this.setState({
+        currFrameIndex: currFrameIndex,
+      }, ()=>{console.log(`setState frameInd = ${currFrameIndex}`)});
     }
   }
 
@@ -184,6 +225,8 @@ class FlipbookMovieStage extends Component {
     const width = `${100}%`;
     const height = `${100}%`;
 
+    const currStripPlayback = this.getCurrStripPlayback();
+
     return (
       <div
         className="movie_stage_window"
@@ -191,6 +234,18 @@ class FlipbookMovieStage extends Component {
         height={height}
       >
         {/* <div>Children_li: {this.props.children_li}</div> */}
+
+        <ScrubberPortal>
+          <Scrubber
+            numTotalStrips={this.state.numTotalStrips}
+            numFramesInCurrStrip={currStripPlayback ? currStripPlayback.frame_count : 0}
+
+            currStrip={this.props.currStripIndex}
+            currFrame={this.state.currFrameIndex}
+            orderedSceneIds={this.props.children_li}
+            videoPlaybackDict={this.props.videoPlaybackDict}
+          />
+        </ScrubberPortal>
 
         <div className="movie_stack">
           {/* Make movie stack! */}
@@ -221,11 +276,29 @@ class FlipbookMovieStage extends Component {
         >
           {this.props.currVideoIndex < 0 && <InstructionStageCover />}
           {this.props.isPaused && <PausedStageCover />}
-          
         </div>
 
       </div>
     );
+  }
+}
+
+class ScrubberPortal extends Component {
+  constructor(props) {
+    super(props);
+    this.state={};
+  }
+
+  render() {
+    const targetNode = document.querySelector('#portal_scrubber');
+    if (targetNode) {
+      return ReactDOM.createPortal(
+        this.props.children,
+        targetNode,
+      );
+    }
+
+    return (null);
   }
 }
 
