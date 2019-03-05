@@ -42,6 +42,7 @@ class FlipbookMovieStage extends PureComponent {
     videoUrls: PropTypes.array.isRequired,
     videoSceneIds: PropTypes.array.isRequired,
     videoPlaybackDict: PropTypes.array.isRequired,
+    videoStripLocation: PropTypes.array.isRequired,
     // handle_fetchScene: PropTypes.func.isRequired,
     // setState_LightBox: PropTypes.func.isRequired,
     currVideoIndex: PropTypes.number,
@@ -237,8 +238,9 @@ class FlipbookMovieStage extends PureComponent {
             numFramesInCurrStrip={currStripPlayback ? currStripPlayback.frame_count : 0}
 
             currScene={this.props.currVideoIndex}
-            currStrip={this.props.currStripIndex}
+            currStrip={this.props.videoStripLocation[this.props.currVideoIndex] + this.props.currStripIndex}
             currFrame={this.state.currFrameIndex}
+            
             orderedSceneIds={this.props.videoSceneIds}
             videoPlaybackDict={this.props.videoPlaybackDict}
           />

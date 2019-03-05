@@ -93,7 +93,6 @@ class Scrubber extends PureComponent {
 
     const cellStep = this.props.numTotalStrips > 0 ? (100 / this.props.numTotalStrips) : 0;
 
-    const sceneLocation = this.props.currScene;
     const frameLocation = this.props.numFramesInCurrStrip > 0 ? (this.props.currFrame + 1) / this.props.numFramesInCurrStrip : 0;
     const stripLocation = (this.props.currStrip) * cellStep + cellStep * frameLocation;
     // logr.warn("Curr frame index: " + this.props.currFrame);
@@ -114,7 +113,7 @@ class Scrubber extends PureComponent {
           <div
             className="cell_fill"
             style={{
-              width: `${((this.props.currStrip) * cellStep + cellStep * frameLocation)}%`,
+              width: `${stripLocation}%`,
             }}
           />
 

@@ -9,6 +9,13 @@ const axh = new XhrHandler(); // axios helper
 const h = new Helper();
 const logr = new Logr('VideoFeeder');
 
+
+/**
+ * This component fetches video information and at the same time
+ * rebuild the data so that the player can easily use it.
+ * Notably, the scene ids become ordered before being passed into the player.
+ */
+
 class VideoFeeder extends Component {
   static propTypes = {
     chapterId: PropTypes.number.isRequired,
@@ -46,10 +53,12 @@ class VideoFeeder extends Component {
             // const scenes = sceneLiRes.data;
             const orderedScenes = this.orderObj(sceneLiRes.data, orderedChildren);
 
-            // TODO: SceneId must be ORDERED HERE
+            // Data to build:
             const v_urls = [];
             const v_sceneIds = [];
             const v_playbacks = {}; // key: 'scene_#', value: [] of playback for 1 STRIP
+            const v_stripCumulation = []; // for each scene
+            let currCumulation = 0;
 
             orderedScenes.forEach(sc => {
               if (sc.movie_url) {
@@ -57,23 +66,26 @@ class VideoFeeder extends Component {
                 v_urls.push(sc.movie_url);
                 v_sceneIds.push(sc.id); // associate each video to this id
                 // Playback stack keeps at least 3 playback history.
-                // Simply grab the first one for now.
-                v_playbacks[`scene_${sc.id}`] = JSON.parse(sc.playback).playback_stack[0];
+                // Simply grab the "latest" one for now.
+                const latestPlayback = JSON.parse(sc.playback).playback_stack.pop(0);
+                v_playbacks[`scene_${sc.id}`] = latestPlayback;
+                v_stripCumulation.push(currCumulation);
+                currCumulation += latestPlayback.strip_count; // increment for NEXT scene
               }
             });
-            logr.info(`"Passing stringy urls to convert to storage urls: ${v_urls}`);
+
+            logr.info(`Strip cumulation: `);
+            console.log(v_stripCumulation);
 
             axh.convertToStoreURLs(v_urls, ['mp4']).then(resArr => {
               if (resArr && resArr.length > 0) {
                 let convertedUrls = [];
                 resArr.forEach(urlData => {
                   // Note: Returning url will be '' if file not found in storage
-                  logr.info(`Pushing storage url: ${urlData.data.url}`);
+                  // logr.info(`Pushing storage url: ${urlData.data.url}`);
                   convertedUrls.push(urlData.data.url);
                 });
-                logr.info('Set data');
-                console.log(convertedUrls);
-
+     
                 // TODO: HARD CODED SOLUTION FOR LOCAL TESTING. REMOVE AFTER DONE
                 convertedUrls = [
                   'https://s3.us-east-2.amazonaws.com/paper-cumulus-s3/media/frame_images/s70/sc-c6c1b12c94.mp4',
@@ -84,6 +96,7 @@ class VideoFeeder extends Component {
                   videoUrls: convertedUrls, // ORDERED, should be
                   videoSceneIds: v_sceneIds, // ORDERED
                   videoPlaybacks: v_playbacks, // is dictionary
+                  videoStripLocation: v_stripCumulation, // ORDERED
                   // children_li: orderedChildren, // ORDERED, TODO: wait, same as videoSceneIds?
                   loaded: true,
                 });
@@ -121,6 +134,8 @@ class VideoFeeder extends Component {
       videoUrls,
       videoSceneIds,
       videoPlaybacks,
+      videoStripLocation,
+
       loaded,
       placeholder,
     } = this.state;
@@ -130,6 +145,7 @@ class VideoFeeder extends Component {
         videoUrls: videoUrls,
         videoSceneIds: videoSceneIds,
         videoPlaybacks: videoPlaybacks,
+        videoStripLocation: videoStripLocation,
       });
     }
 

@@ -380,7 +380,8 @@ class FlipbookPlayer extends Component {
               videoUrls={renderData.videoUrls}
               videoSceneIds={renderData.videoSceneIds}
               videoPlaybackDict={renderData.videoPlaybacks}
-  
+              videoStripLocation={renderData.videoStripLocation}
+
               currVideoIndex={this.state.currSceneIndex}
               currStripIndex={this.state.currStripIndex}
 

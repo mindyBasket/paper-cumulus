@@ -131,6 +131,7 @@ class SceneEditor extends Component {
         const orderedFrameArr = [];
         const scenePlayback = {
           movie_filename: '',
+          strip_count: 0,
           strips: [],
         };
 
@@ -157,7 +158,7 @@ class SceneEditor extends Component {
                   visibleFrameCount += 1;
                 }
                 // get the biggest canvas size
-                const frameDim = frameMap[targetFrameKey].dimension.split("x");
+                const frameDim = frameMap[targetFrameKey].dimension.split('x');
                 if (frameDim.length >= 2 && !isNaN(frameDim[0]) || !isNaN(frameDim[1])) {
                   largestCanvasSize[0] = frameDim[0] > largestCanvasSize[0] ? frameDim[0] : largestCanvasSize[0];
                   largestCanvasSize[1] = frameDim[1] > largestCanvasSize[1] ? frameDim[1] : largestCanvasSize[1];
@@ -178,6 +179,9 @@ class SceneEditor extends Component {
             }
           }
         });
+
+        // update strip_count for the scene
+        scenePlayback.strip_count = scenePlayback.strips.length;
 
         // Get all frame image path to ship off to Lambda
         const orderedFramePathArr = [];
