@@ -10,7 +10,7 @@
     position: relative;
     overflow: scroll;
 
-    margin: 50px;
+    margin: 0 50px;
     width: 100%;
     height: 500px; /* TODO: quick hard coded solution */
 }
@@ -72,6 +72,7 @@ background-image: ('img/slashes_h.png');
 
 #portal_scrubber{
     width:100%;
+    height:50px;
 }
 
 

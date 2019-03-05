@@ -1805,7 +1805,7 @@ input.untouchable {
   /* the "hole"/window to stack of movies */
   position: relative;
   overflow: scroll;
-  margin: 50px;
+  margin: 0 50px;
   width: 100%;
   height: 500px;
   /* TODO: quick hard coded solution */
@@ -1860,6 +1860,7 @@ input.untouchable {
 
 #portal_scrubber {
   width: 100%;
+  height: 50px;
 }
 
 .frame_view {

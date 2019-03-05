@@ -146,9 +146,8 @@ class FlipbookMovieStage extends PureComponent {
     const currSceneId = this.getCurrSceneId();
     const currStripIndex = newStripIndex || this.props.currStripIndex;
 
-    // this.killSetTimeOut(); not really needed here now
-    // Reset frame index!
-    this.setState({ currFrameIndex: 0});
+    this.killSetTimeOut(); // any change in strip will reset setTimeout array
+    this.setState({ currFrameIndex: 0}); // Reset frame index!
 
     if (this.currVideo) {
       try {

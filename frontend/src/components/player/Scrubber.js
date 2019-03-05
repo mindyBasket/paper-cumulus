@@ -1,5 +1,8 @@
-import React, { Component, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+
+import Timer from './Timer';
+import ScrubberTooltip from './ScrubberTooltip';
 
 import Logr from '../tools/Logr';
 import Helper from '../Helper';
@@ -21,7 +24,7 @@ const scrubber_publicFunctions = {
 // alias
 const scbr = scrubber_publicFunctions;
 
-// ███████╗ ██████╗██████╗ ██╗   ██╗██████╗ ██████╗ ███████╗██████╗ 
+// ███████╗ ██████╗██████╗ ██╗   ██╗██████╗ ██████╗ ███████╗██████╗
 // ██╔════╝██╔════╝██╔══██╗██║   ██║██╔══██╗██╔══██╗██╔════╝██╔══██╗
 // ███████╗██║     ██████╔╝██║   ██║██████╔╝██████╔╝█████╗  ██████╔╝
 // ╚════██║██║     ██╔══██╗██║   ██║██╔══██╗██╔══██╗██╔══╝  ██╔══██╗
@@ -56,17 +59,14 @@ class Scrubber extends PureComponent {
     this.outTooltip = this.outTooltip.bind(this);
   }
 
-
-
   callTooltip(e) {
     const el = e.target;
     // console.log(`Cell pos?: x: ${el.offsetTop}, y: ${el.offsetLeft}`);
     this.setState({
       tooltipActive: true,
-      tooltipContent: el.getAttribute("stamp"),
-      tooltipPos: [el.offsetLeft, el.offsetTop]
+      tooltipContent: el.getAttribute('stamp'),
+      tooltipPos: [el.offsetLeft, el.offsetTop],
     });
-
   }
 
   outTooltip(e) {
@@ -82,18 +82,20 @@ class Scrubber extends PureComponent {
     //     loadedStripCount += el_scene[i].querySelectorAll('.strip').length;
     //   }
     // }
+
     // HARD CODE FOR NOW
     const loadedStripCount = 2;
 
     const playbackDict = this.props.videoPlaybackDict;
- 
+
     // NOTE: things that needs to be ordered for scrubber:
     //       [o] Scenes, [o] Strips, [x] Frames
 
     const cellStep = this.props.numTotalStrips > 0 ? (100 / this.props.numTotalStrips) : 0;
     const frameLocation = this.props.numFramesInCurrStrip > 0 ? (this.props.currFrame + 1) / this.props.numFramesInCurrStrip : 0;
 
-    logr.warn("Curr frame index: " + this.props.currFrame);
+    // logr.warn("Curr frame index: " + this.props.currFrame);
+
     return (
       <div className="frame_scrubber">
         <div className="scrubber">
@@ -118,27 +120,9 @@ class Scrubber extends PureComponent {
           <div className="cell_container">
 
             {/* Mapping over an array generated on the fly */}
-            {/*Array.apply(null, Array(this.state.numStrips)).map((n,index) => (
-                            <div className="cell"/>
-                        ))*/}
-
-            {/* {data ? (
-              data.map((el_scene, ind_sc) => {
-                return el_scene['strips'].map((el, ind_st) => {
-                  return (
-                    <div
-                      className="cell"
-                      onMouseEnter={this.callTooltip}
-                      onMouseOut={this.outTooltip}
-                      stamp={`${ind_sc + 1}-${ind_st + 1}`}
-                      key={{ cell: `${ind_sc}-${ind_st}` }}>
-                    </div>
-                  )
-                })
-              })
-            ) : (
-                <div className="cell" />
-              )} */}
+            {/* Array.apply(null, Array(this.state.numStrips)).map((n,index) => (
+              <div className="cell"/>
+            )) */}
 
             {playbackDict ? (
               this.props.orderedSceneIds.map((scId, ind_sc) => {
@@ -163,111 +147,24 @@ class Scrubber extends PureComponent {
           </div>
         </div>
 
-        {/* Method 1: clone children prop*/}
-        {/*
-        <Timer numFrames={this.state.numFrames}
-          currFrame={this.state.currFrame}>
+        {/* Method 1: clone children prop */}
+        <Timer
+          numFrames={this.props.numFramesInCurrStrip}
+          currFrame={this.props.currFrame}
+        >
           <span className="frame_icon" />
         </Timer>
 
-        <ScrubberTooltip position={this.state.tooltipPos}
+        <ScrubberTooltip
+          position={this.state.tooltipPos}
           content={this.state.tooltipContent}
-          active={this.state.tooltipActive} />
-        */}
+          active={this.state.tooltipActive}
+        />
 
       </div>
     ); // end: return
   }
 }
-
-class ScrubberTooltip extends PureComponent{
-	constructor(props){
-		super(props);
-		//prop ref
-		// this.props.position = [left, top]
-		
-		this.topMargin = 30; //px
-	}
-
-	render(){
-		const pos = this.props.position;
-		// console.log("[tooltip] " + pos);
-		let content = this.props.content;
-		if (!content || content === undefined){
-			content=null;
-		} else{
-			content = content.split("-");
-
-		}
-
-
-		return (
-			<span className={"scrubber_tooltip " + 
-							 (this.props.active ? "active":"")}
-				  style={{top: pos[1]+this.topMargin, left: pos[0]}}>
-				
-				{!content ? (
-					<span>???</span>
-				) : (
-					<span>
-						<span className="dimmed fas fa-video"></span>
-						{content[0]} - 
-						<span className="dimmed fas fa-film"></span>
-						{content[1]}</span>
-				)}
-
-			</span>
-		)
-		
-	}
-}
-
-
-
-
-
-
-
-
-
-// ████████╗██╗███╗   ███╗███████╗██████╗ 
-// ╚══██╔══╝██║████╗ ████║██╔════╝██╔══██╗
-//    ██║   ██║██╔████╔██║█████╗  ██████╔╝
-//    ██║   ██║██║╚██╔╝██║██╔══╝  ██╔══██╗
-//    ██║   ██║██║ ╚═╝ ██║███████╗██║  ██║
-//    ╚═╝   ╚═╝╚═╝     ╚═╝╚══════╝╚═╝  ╚═╝
-
-class Timer extends Component {
-
-  constructor(props) {
-    super(props);
-    this.renderChildren = this.renderChildren.bind(this);
-  }
-
-  renderChildren() {
-    return (
-      Array.apply(null, Array(this.props.numFrames)).map((n, index) => {
-        return React.cloneElement(this.props.children, {
-          index: index,
-          className: "frame_icon" + (index <= this.props.currFrame ? " on" : ""),
-          key: key({ tickmark: "tickmark" + index })
-
-        })
-      })
-
-    ) //end: return
-
-  }
-
-  render() {
-    return (
-      <div className="timer">
-        {this.renderChildren()}
-      </div>
-    )
-  }
-}
-
 
 export {
   scrubber_publicFunctions,
