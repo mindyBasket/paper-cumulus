@@ -346,9 +346,7 @@ class FlipbookPlayer extends Component {
   // Communication with stage
   setPlayerData(children_li, playbackDict) {
     logr.info('Children order and playback information for player received from VideoFeeder');
-    console.log(playbackDict);
-    console.log(children_li);
-
+    
     // waits for <VideoFeeder> to fetch playback stack and updates it
     this.setState({
       playbackDict: playbackDict,

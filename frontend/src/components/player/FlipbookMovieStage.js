@@ -115,14 +115,14 @@ class FlipbookMovieStage extends PureComponent {
     const pbDict = this.props.videoPlaybackDict;
     let stripCount = 0;
     Object.keys(pbDict).forEach((scKey) => {
-      if ('strips' in pbDict[scKey]){
+      if ('strips' in pbDict[scKey]) {
         stripCount += pbDict[scKey].strips.length;
       } else {
         logr.error(`'Strips' property not found in playback for ${scKey}.`);
       }
     });
 
-    logr.info("Total number of strips in this chapter: " + stripCount);
+    // logr.info('Total number of strips in this chapter: ' + stripCount);
     return stripCount;
   }
 
@@ -239,6 +239,7 @@ class FlipbookMovieStage extends PureComponent {
             numTotalStrips={this.state.numTotalStrips}
             numFramesInCurrStrip={currStripPlayback ? currStripPlayback.frame_count : 0}
 
+            currScene={this.props.currVideoIndex}
             currStrip={this.props.currStripIndex}
             currFrame={this.state.currFrameIndex}
             orderedSceneIds={this.props.children_li}
@@ -256,7 +257,6 @@ class FlipbookMovieStage extends PureComponent {
                 id={`sc_${v_sceneIds[i]}`}
                 width="100%"
                 height="100%"
-                controls
               >
                 <source src={v} type="video/mp4" />
                 <source src={v_webm} type="video/webm" />
@@ -281,6 +281,7 @@ class FlipbookMovieStage extends PureComponent {
     );
   }
 }
+
 
 class ScrubberPortal extends Component {
   constructor(props) {
@@ -319,7 +320,6 @@ class InstructionStageCover extends Component {
     );
   }
 }
-
 
 class PausedStageCover extends Component {
   constructor(props) {

@@ -16,7 +16,6 @@ class VideoFeeder extends Component {
     render: PropTypes.func.isRequired,
   };
 
-
   state = {
     videoUrls: [],
     videoPlaybacks: [],
@@ -46,13 +45,11 @@ class VideoFeeder extends Component {
           if (sceneLiRes && sceneLiRes.data) {
             const scenes = sceneLiRes.data;
 
-            // TODO: you must fill up this.state.data for this to render
-
-            // TODO: reorder scene by children_li
+            // Todo: SceneId must be ORDERED HERE
             const v_urls = [];
             const v_sceneIds = [];
-
             const v_playbacks = {}; // key: 'scene_#', value: [] of playback for 1 STRIP
+
             scenes.forEach(sc => {
               if (sc.movie_url) {
                 // TODO: validate selection of playback from the 3-story stack using movie_url
@@ -70,16 +67,16 @@ class VideoFeeder extends Component {
                 let convertedUrls = [];
                 resArr.forEach(urlData => {
                   // Note: Returning url will be '' if file not found in storage
-                  logr.info(`Pushing storage url: ${urlData.data.url}`); 
+                  logr.info(`Pushing storage url: ${urlData.data.url}`);
                   convertedUrls.push(urlData.data.url);
                 });
                 logr.info('Set data');
                 console.log(convertedUrls);
 
-                // HARD CODED SOLUTION FOR LOCAL TESTING
+                // TODO: HARD CODED SOLUTION FOR LOCAL TESTING. REMOVE AFTER DONE
                 convertedUrls = [
-                  "https://s3.us-east-2.amazonaws.com/paper-cumulus-s3/media/frame_images/s70/sc-c6c1b12c94.mp4",
-                  "https://s3.us-east-2.amazonaws.com/paper-cumulus-s3/media/frame_images/s71/sc-1cbecfec76.mp4",
+                  'https://s3.us-east-2.amazonaws.com/paper-cumulus-s3/media/frame_images/s70/sc-c6c1b12c94.mp4',
+                  'https://s3.us-east-2.amazonaws.com/paper-cumulus-s3/media/frame_images/s71/sc-1cbecfec76.mp4',
                 ];
 
                 this.setState({
@@ -92,15 +89,12 @@ class VideoFeeder extends Component {
 
                 // Notify the parent (player) with playbacks
                 this.props.player_setPlayerData(orderedChildren, v_playbacks);
-
               }
-
             });
           }
         });
       }
     });
-
   }
 
   render() {
@@ -120,9 +114,10 @@ class VideoFeeder extends Component {
         videoPlaybacks: videoPlaybacks,
         children_li: children_li,
       });
-    } else {
-      return (<p>{placeholder}</p>);
     }
+
+    // Data not fetched yet
+    return (<p>{placeholder}</p>);
   }
 }
 
