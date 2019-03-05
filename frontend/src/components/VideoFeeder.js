@@ -18,9 +18,9 @@ class VideoFeeder extends Component {
 
   state = {
     videoUrls: [],
+    videoSceneIds: [], // ORDERED. Like children_li
     videoPlaybacks: [],
     loaded: false,
-    children_li: null,
 
     placeholder: 'Baking video...',
   };
@@ -43,14 +43,15 @@ class VideoFeeder extends Component {
         // 2. Retrieve each video with its playbacks
         axh.fetchScenePlaybackList(this.props.chapterId).then(sceneLiRes => {
           if (sceneLiRes && sceneLiRes.data) {
-            const scenes = sceneLiRes.data;
+            // const scenes = sceneLiRes.data;
+            const orderedScenes = this.orderObj(sceneLiRes.data, orderedChildren);
 
-            // Todo: SceneId must be ORDERED HERE
+            // TODO: SceneId must be ORDERED HERE
             const v_urls = [];
             const v_sceneIds = [];
             const v_playbacks = {}; // key: 'scene_#', value: [] of playback for 1 STRIP
 
-            scenes.forEach(sc => {
+            orderedScenes.forEach(sc => {
               if (sc.movie_url) {
                 // TODO: validate selection of playback from the 3-story stack using movie_url
                 v_urls.push(sc.movie_url);
@@ -80,10 +81,10 @@ class VideoFeeder extends Component {
                 ];
 
                 this.setState({
-                  videoUrls: convertedUrls,
-                  videoSceneIds: v_sceneIds,
-                  videoPlaybacks: v_playbacks,
-                  children_li: orderedChildren,
+                  videoUrls: convertedUrls, // ORDERED, should be
+                  videoSceneIds: v_sceneIds, // ORDERED
+                  videoPlaybacks: v_playbacks, // is dictionary
+                  // children_li: orderedChildren, // ORDERED, TODO: wait, same as videoSceneIds?
                   loaded: true,
                 });
 
@@ -97,22 +98,38 @@ class VideoFeeder extends Component {
     });
   }
 
+  orderObj(objArr, orderedIds) {
+    // convert into dictionary, hash alternative
+    const objDict = {};
+    objArr.forEach(obj => {
+      objDict[`obj_${obj.id}`] = obj;
+    });
+
+    const orderedObjArr = [];
+    orderedIds.forEach(refId => {
+      // only order it if it exists in the dictionary
+      if (`obj_${refId}` in objDict) {
+        orderedObjArr.push(objDict[`obj_${refId}`]);
+      }
+    });
+
+    return orderedObjArr;
+  }
+
   render() {
     const {
       videoUrls,
       videoSceneIds,
       videoPlaybacks,
       loaded,
-      children_li,
       placeholder,
     } = this.state;
 
-    if (loaded && children_li && videoUrls && videoSceneIds) {
+    if (loaded && videoUrls && videoSceneIds) {
       return this.props.render({
         videoUrls: videoUrls,
         videoSceneIds: videoSceneIds,
         videoPlaybacks: videoPlaybacks,
-        children_li: children_li,
       });
     }
 

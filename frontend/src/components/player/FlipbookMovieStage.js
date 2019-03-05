@@ -42,7 +42,6 @@ class FlipbookMovieStage extends PureComponent {
     videoUrls: PropTypes.array.isRequired,
     videoSceneIds: PropTypes.array.isRequired,
     videoPlaybackDict: PropTypes.array.isRequired,
-    children_li: PropTypes.array.isRequired,
     // handle_fetchScene: PropTypes.func.isRequired,
     // setState_LightBox: PropTypes.func.isRequired,
     currVideoIndex: PropTypes.number,
@@ -232,8 +231,6 @@ class FlipbookMovieStage extends PureComponent {
         width={width}
         height={height}
       >
-        {/* <div>Children_li: {this.props.children_li}</div> */}
-
         <ScrubberPortal>
           <Scrubber
             numTotalStrips={this.state.numTotalStrips}
@@ -242,7 +239,7 @@ class FlipbookMovieStage extends PureComponent {
             currScene={this.props.currVideoIndex}
             currStrip={this.props.currStripIndex}
             currFrame={this.state.currFrameIndex}
-            orderedSceneIds={this.props.children_li}
+            orderedSceneIds={this.props.videoSceneIds}
             videoPlaybackDict={this.props.videoPlaybackDict}
           />
         </ScrubberPortal>

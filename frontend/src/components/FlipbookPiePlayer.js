@@ -346,7 +346,7 @@ class FlipbookPlayer extends Component {
   // Communication with stage
   setPlayerData(children_li, playbackDict) {
     logr.info('Children order and playback information for player received from VideoFeeder');
-    
+
     // waits for <VideoFeeder> to fetch playback stack and updates it
     this.setState({
       playbackDict: playbackDict,
@@ -380,8 +380,7 @@ class FlipbookPlayer extends Component {
               videoUrls={renderData.videoUrls}
               videoSceneIds={renderData.videoSceneIds}
               videoPlaybackDict={renderData.videoPlaybacks}
-              children_li={renderData.children_li}
-
+  
               currVideoIndex={this.state.currSceneIndex}
               currStripIndex={this.state.currStripIndex}
 
