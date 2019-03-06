@@ -61,11 +61,13 @@ class FlipbookMovieStage extends PureComponent {
     // NOT a state
     this.currStripTime = 0; // sec
     this.setTimeOutArr = [];
-    this.currVideo = null;
+    
     this.TARGET_STAGE_WIDTH = 900; // TODO: this shoudn't be hardcoded, but better solution later
     
     // DOM ref
+    this.currVideo = null;
     this.dom_movieStage = null;
+    this.dom_windowDec = null;
 
     this.state = {
       numTotalStrips: this.getTotalNumStrips(), // for scrubber only so far
@@ -92,6 +94,7 @@ class FlipbookMovieStage extends PureComponent {
 
   componentDidMount() {
     this.dom_movieStage = document.querySelector('.movie_stage_window');
+    this.dom_windowDec = document.querySelector('.movie_window_decorations');
 
     // Calc the first dimension
     const currWidth = this.TARGET_STAGE_WIDTH;
@@ -127,7 +130,10 @@ class FlipbookMovieStage extends PureComponent {
     }
 
     if (this.currVideo) {
-      this.currVideo.scrollIntoView(true);
+      this.currVideo.scrollIntoView(true); // get video to view
+      // get window decoration to view
+      this.dom_windowDec.style.top = `${this.currVideo.offsetTop}px`;
+
     } else {
       logr.warn(`Video for scene id=${currSceneId} not found.`);
     }
