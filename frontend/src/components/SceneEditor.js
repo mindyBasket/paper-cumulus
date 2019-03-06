@@ -131,12 +131,13 @@ class SceneEditor extends Component {
         const orderedFrameArr = [];
         const scenePlayback = {
           movie_filename: '',
+          dimension: [],
           strip_count: 0,
           strips: [],
         };
 
         // 1. sort Strip
-        const largestCanvasSize = [0,0]; // get the size that fit ALL frames
+        const largestCanvasSize = [0, 0]; // get the size that fit ALL frames
         const stripMap = {};
         sc.strips.forEach(st => { stripMap[`strip${st.id}`] = st; }); // build map
 
@@ -145,7 +146,7 @@ class SceneEditor extends Component {
           if (stripMap.hasOwnProperty(targetStripKey)) {
             const st = stripMap[targetStripKey];
             let visibleFrameCount = 0;
-   
+
             // 2. sort Frame
             const frameMap = {};
             st.frames.forEach(fr => { frameMap[`frame${fr.id}`] = fr; }); // build map
@@ -159,10 +160,10 @@ class SceneEditor extends Component {
                 }
                 // get the biggest canvas size
                 const frameDim = frameMap[targetFrameKey].dimension.split('x');
-                if (frameDim.length >= 2 && !isNaN(frameDim[0]) || !isNaN(frameDim[1])) {
+                if (frameDim.length >= 2 && (!isNaN(frameDim[0]) && !isNaN(frameDim[1]))) {
                   largestCanvasSize[0] = frameDim[0] > largestCanvasSize[0] ? frameDim[0] : largestCanvasSize[0];
                   largestCanvasSize[1] = frameDim[1] > largestCanvasSize[1] ? frameDim[1] : largestCanvasSize[1];
-                } 
+                }
               }
             });
 
@@ -178,10 +179,12 @@ class SceneEditor extends Component {
               });
             }
           }
-        });
+        }); // end: finished going through all strips
 
         // update strip_count for the scene
         scenePlayback.strip_count = scenePlayback.strips.length;
+        // update dimenion of the video
+        scenePlayback.dimension = largestCanvasSize;
 
         // Get all frame image path to ship off to Lambda
         const orderedFramePathArr = [];

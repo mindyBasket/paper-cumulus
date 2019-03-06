@@ -57,18 +57,27 @@ class FlipbookMovieStage extends PureComponent {
 
   constructor(props) {
     super(props);
-    this.state = {
-      numTotalStrips: this.getTotalNumStrips(), // for scrubber only so far
-      currFrameIndex: 0, // for scrubber only so far
-    };
 
     // NOT a state
     this.currStripTime = 0; // sec
     this.setTimeOutArr = [];
     this.currVideo = null;
+    this.TARGET_STAGE_WIDTH = 900; // TODO: this shoudn't be hardcoded, but better solution later
+    
+    // DOM ref
+    this.dom_movieStage = null;
 
+    this.state = {
+      numTotalStrips: this.getTotalNumStrips(), // for scrubber only so far
+      currFrameIndex: 0, // for scrubber only so far
+
+      stageDimension: [`${this.TARGET_STAGE_WIDTH}px`, '0px'],
+    };
+
+    this.recalcDimension = this.recalcDimension.bind(this);
     this.getTotalNumStrips = this.getTotalNumStrips.bind(this);
     this.getCurrSceneId = this.getCurrSceneId.bind(this);
+    this.getCurrScenePlayback = this.getCurrScenePlayback.bind(this);
     this.getCurrStripPlayback = this.getCurrStripPlayback.bind(this);
 
     this.gotoStrip = this.gotoStrip.bind(this);
@@ -79,6 +88,29 @@ class FlipbookMovieStage extends PureComponent {
     // pub bind
     mStage.mStage_playFrame = mStage.mStage_playFrame.bind(this);
     mStage.mStage_gotoStrip = mStage.mStage_gotoStrip.bind(this);
+  }
+
+  componentDidMount() {
+    this.dom_movieStage = document.querySelector('.movie_stage_window');
+
+    // Calc the first dimension
+    const currWidth = this.TARGET_STAGE_WIDTH;
+
+    // Get first scene's dimension
+    const sceneDimension = this.getCurrScenePlayback(this.props.videoSceneIds[0]).dimension;
+    if (!sceneDimension) {
+      logr.error(`Could not retrieve dimension information. (sceneId=${this.props.videoSceneIds[0]})`);
+    }
+
+    const newHeight = (Number(sceneDimension[1]) * currWidth) / Number(sceneDimension[0]);
+    this.setState({
+      stageDimension: [`${currWidth}px`, `${newHeight}px`],
+    });
+
+    // TODO:
+    // Future plan is to let movieStage render at 100% to extract exact measure of width.
+    // And then use that to calc the height.
+    // window.requestAnimationFrame(this.recalcDimension);
   }
 
   componentDidUpdate(prevProps) {
@@ -110,6 +142,26 @@ class FlipbookMovieStage extends PureComponent {
     }
   }
 
+  recalcDimension() {
+    // recalc dimension based on current stage of the canvas
+    const currWidth = this.TARGET_STAGE_WIDTH;
+
+    // Get first scene's dimension
+    const sceneDimension = this.getCurrScenePlayback().dimension;
+    if (!sceneDimension) {
+      logr.error(`Could not retrieve dimension information. (sceneId=${this.props.currVideoIndex})`);
+    }
+
+    const newHeight = (Number(sceneDimension[1]) * currWidth) / Number(sceneDimension[0]);
+
+    return [`${currWidth}px`, `${newHeight}px`];
+
+    // TODO: use this in the future to determime if you should go 100% or smaller width...
+    // this.dom_movieStage.offsetWidt
+
+    // TODO: also, increase of calculating dimension only for scene, it should also do for strips
+  }
+
   getTotalNumStrips() {
     // goes through videoPlaybackDict and get number of strips
     const pbDict = this.props.videoPlaybackDict;
@@ -132,6 +184,12 @@ class FlipbookMovieStage extends PureComponent {
     return scIds[currIndex];
   }
 
+  getCurrScenePlayback(scId) {
+    // If you pass sceneId, this function will act like getScenePlayback
+    const currSceneId = scId || this.getCurrSceneId();
+    return this.props.videoPlaybackDict[`scene_${currSceneId}`];
+  }
+
   getCurrStripPlayback() {
     const currSceneId = this.getCurrSceneId();
     const sceneKey = `scene_${currSceneId}`;
@@ -143,17 +201,25 @@ class FlipbookMovieStage extends PureComponent {
   }
 
   gotoStrip(newStripIndex) {
-    const currSceneId = this.getCurrSceneId();
+    const currScenePlayback = this.getCurrScenePlayback();
     const currStripIndex = newStripIndex || this.props.currStripIndex;
 
+    // Reset some information:
     this.killSetTimeOut(); // any change in strip will reset setTimeout array
-    this.setState({ currFrameIndex: 0}); // Reset frame index!
+    this.setState({ currFrameIndex: 0 }); // Reset frame index!
 
     if (this.currVideo) {
       try {
+        // set dimenion of window
+        // Note: the very first strip's dimension is set at componentDidMount()
+        this.setState({
+          stageDimension: this.recalcDimension(),
+        });
+
+
         // make array of frame nums
         const frameCounts = [];
-        this.props.videoPlaybackDict[`scene_${currSceneId}`].strips.forEach((st) => {
+        currScenePlayback.strips.forEach((st) => {
           frameCounts.push(st.frame_count);
         });
 
@@ -168,23 +234,21 @@ class FlipbookMovieStage extends PureComponent {
         logr.error('Error while calculating strip time location');
       }
     }
-
   }
 
   playFrame() {
     this.killSetTimeOut(); // just in case
 
     // Make timeline
-    const scIds = this.props.videoSceneIds;
-    const currIndex = this.props.currVideoIndex;
+    // const scIds = this.props.videoSceneIds;
+    // const currIndex = this.props.currVideoIndex;
     const currStripIndex = this.props.currStripIndex;
-    const currSceneId = scIds[currIndex];
-    const currScenePlayback = this.props.videoPlaybackDict[`scene_${currSceneId}`];
+    // const currSceneId = scIds[currIndex];
+    const currScenePlayback = this.getCurrScenePlayback();
 
     const frameCount = Number(currScenePlayback.strips[currStripIndex].frame_count);
     let frameDuration = Number(currScenePlayback.strips[currStripIndex].frame_duration);
     frameDuration = frameDuration || cnst.T_STEP;
-    logr.warn(`Frame duration for stripIndex = ${currStripIndex} is ${frameDuration}`);
 
     for (let i = 1; i < frameCount; i++) {
       // Add reference to stop it later
@@ -220,17 +284,17 @@ class FlipbookMovieStage extends PureComponent {
   render() {
     // logr.warn(JSON.stringify(this.props.videoUrls));
     const v_sceneIds = this.props.videoSceneIds;
+
     // calc window dimension
-    const width = `${100}%`;
-    const height = `${100}%`;
+    const stageWidth = this.state.stageDimension[0];
+    const stageHeight = this.state.stageDimension[1];
 
     const currStripPlayback = this.getCurrStripPlayback();
 
     return (
       <div
         className="movie_stage_window"
-        width={width}
-        height={height}
+        style={{ width: stageWidth, height: stageHeight }}
       >
         <ScrubberPortal>
           <Scrubber
@@ -240,7 +304,7 @@ class FlipbookMovieStage extends PureComponent {
             currScene={this.props.currVideoIndex}
             currStrip={this.props.videoStripLocation[this.props.currVideoIndex] + this.props.currStripIndex}
             currFrame={this.state.currFrameIndex}
-            
+
             orderedSceneIds={this.props.videoSceneIds}
             videoPlaybackDict={this.props.videoPlaybackDict}
           />
