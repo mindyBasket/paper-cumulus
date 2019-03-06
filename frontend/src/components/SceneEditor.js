@@ -15,6 +15,7 @@ import Constants from './Constants';
 
 // DEMOONLY
 import { DemoGuideBtn } from './demo/Demo';
+import { relative } from 'path';
 
 const logr = new Logr('SceneEditor');
 const h = new Helper();
@@ -37,6 +38,7 @@ class SceneEditor extends Component {
     super(props);
 
     this.sceneId = document.querySelector('#ref-content').getAttribute('sceneId');
+    this.TOOLTIP_DELAY = 2000; // ms
     this.$node = React.createRef();
     // TODO: BAD. $lb is also referenced by each StripCards!
     // this.$lb = document.querySelector("#lightbox_bg"); //lightbox
@@ -45,6 +47,9 @@ class SceneEditor extends Component {
 
       toSceneCardList: null,
       spotlightedAll: false, // lightbox is off by default
+
+      isBaking: false, // for lambda baking button
+      lambdaMessageType: null, // null | "baking" | "done" | "error"
     };
 
     this.setParentState = this.setParentState.bind(this);
@@ -118,6 +123,17 @@ class SceneEditor extends Component {
   handle_lambdaPie() {
     const sceneId = this.sceneId;
     logr.warn('Make Lambda Pie');
+
+    // Start visual for processing
+    this.setState({
+      isBaking: true,
+      lambdaMessageType: 'baking',
+    });
+    const closeLambdaMessage = () => {
+      this.setState({
+        isBaking: false,
+      });
+    }
 
     // ////////////////////////////////////////
     // 1. Fetch scene
@@ -204,8 +220,7 @@ class SceneEditor extends Component {
         const lambdaRequest = {
           shape: largestCanvasSize,
           frame_file_names: orderedFramePathArr,
-        }
-
+        };
 
         // ////////////////////////////////////////
         // 2. Send frames to Lambda to build video file!
@@ -256,9 +271,25 @@ class SceneEditor extends Component {
                     logr.warn(`Invalid response for playback returned for scene id=${sceneId}. No change was made.`);
                   }
                 }
+
+                // DONE!
+                this.setState({
+                  isBaking: true,
+                  lambdaMessageType: 'done',
+                }, () => {
+                  setTimeout(closeLambdaMessage, this.TOOLTIP_DELAY);
+                });
               }
             });
-          } // end: if LambdaRes
+          } else {
+            // Error while lambda
+            this.setState({
+              isBaking: true,
+              lambdaMessageType: 'error',
+            }, () => {
+              setTimeout(closeLambdaMessage, this.TOOLTIP_DELAY);
+            });
+          }
         });
       }
     });
@@ -308,10 +339,32 @@ class SceneEditor extends Component {
           <a
             id="proxy_make_scene"
             className="button flat"
+            style={{ position: 'relative' }}
             onClick={this.handle_lambdaPie}
           >
             Save scene
+            <div className={'message_tooltip ' +
+                            (this.state.isBaking ? 'active' : '')}
+            >
+              {this.state.lambdaMessageType === 'baking' && (
+                <span>
+                  Baking flipbook...
+                  <div className="loading_bar type1" />
+                </span>
+              )}
+              {this.state.lambdaMessageType === 'done' && (
+                <span>
+                  <h2>DONE</h2>
+                </span>
+              )}
+              {this.state.lambdaMessageType === 'error' && (
+                <span>
+                  <h2>ERROR</h2>
+                </span>
+              )}
+            </div>
           </a>
+          
         </FramePiePortal>
 
         {/* invisible */}
