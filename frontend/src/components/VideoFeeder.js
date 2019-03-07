@@ -87,10 +87,10 @@ class VideoFeeder extends Component {
                 });
      
                 // TODO: HARD CODED SOLUTION FOR LOCAL TESTING. REMOVE AFTER DONE
-                convertedUrls = [
-                  'https://s3.us-east-2.amazonaws.com/paper-cumulus-s3/media/frame_images/s70/sc-c6c1b12c94.mp4',
-                  'https://s3.us-east-2.amazonaws.com/paper-cumulus-s3/media/frame_images/s71/sc-1cbecfec76.mp4',
-                ];
+                // convertedUrls = [
+                //   'https://s3.us-east-2.amazonaws.com/paper-cumulus-s3/media/frame_images/s70/sc-c6c1b12c94.mp4',
+                //   'https://s3.us-east-2.amazonaws.com/paper-cumulus-s3/media/frame_images/s71/sc-1cbecfec76.mp4',
+                // ];
 
                 this.setState({
                   videoUrls: convertedUrls, // ORDERED, should be
