@@ -134,6 +134,7 @@ class FlipbookMovieStage extends PureComponent {
       // get window decoration to view
       this.dom_windowDec.style.top = `${this.currVideo.offsetTop}px`;
 
+
     } else {
       logr.warn(`Video for scene id=${currSceneId} not found.`);
     }
@@ -246,10 +247,7 @@ class FlipbookMovieStage extends PureComponent {
     this.killSetTimeOut(); // just in case
 
     // Make timeline
-    // const scIds = this.props.videoSceneIds;
-    // const currIndex = this.props.currVideoIndex;
     const currStripIndex = this.props.currStripIndex;
-    // const currSceneId = scIds[currIndex];
     const currScenePlayback = this.getCurrScenePlayback();
 
     const frameCount = Number(currScenePlayback.strips[currStripIndex].frame_count);
@@ -343,7 +341,7 @@ class FlipbookMovieStage extends PureComponent {
           onClick={e => { e.stopPropagation(); }}
         >
           {this.props.currVideoIndex < 0 && <InstructionStageCover />}
-          {this.props.isPaused && <PausedStageCover />}
+          <PausedStageCover isActive={this.props.isPaused}/>
         </div>
 
       </div>
@@ -398,8 +396,10 @@ class PausedStageCover extends Component {
 
   render() {
     return (
-      <div className="flipbook_player_paused">
-        <span>Paused</span>
+      <div className={'flipbook_player_paused '
+                      + (this.props.isActive ? 'active' : '')}
+      >
+        <span className="pause_label">Rewind</span>
       </div>
     );
   }
