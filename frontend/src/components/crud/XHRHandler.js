@@ -92,12 +92,16 @@ class XhrHandler {
     // that is not actually a FileField!
 
     if (!urls || urls.length === 0) {
-      logr.warn('Url not provided retrieve from storage.');
-      return false;
+      logr.warn('Url not provided to retrieve from storage.');
+      return Promise.reject();
     }
     if (!extArr || extArr.length === 0) {
       logr.warn('Extension to check for storage url is not provided');
-      return false;
+      return Promise.reject();
+    }
+    if (urls.join('') === '') {
+      logr.warn('url list is empty');
+      Promise.reject();
     }
 
     // chain request to get url

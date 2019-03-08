@@ -75,8 +75,8 @@ class VideoFeeder extends Component {
               }
             });
 
-            logr.info(`Strip cumulation: `);
-            console.log(v_stripCumulation);
+            // logr.info(`Strip cumulation: `);
+            // console.log(v_stripCumulation);
 
             axh.convertToStoreURLs(v_urls, ['mp4']).then(resArr => {
               if (resArr && resArr.length > 0) {
@@ -86,7 +86,7 @@ class VideoFeeder extends Component {
                   // logr.info(`Pushing storage url: ${urlData.data.url}`);
                   convertedUrls.push(urlData.data.url);
                 });
-     
+
                 // TODO: HARD CODED SOLUTION FOR LOCAL TESTING. REMOVE AFTER DONE
                 // convertedUrls = [
                 //   'https://s3.us-east-2.amazonaws.com/paper-cumulus-s3/media/frame_images/s70/sc-c6c1b12c94.mp4',
@@ -101,7 +101,7 @@ class VideoFeeder extends Component {
                     break;
                   }
                 }
-                  
+
                 if (isEmpty) {
                   this.setState({
                     showEmpty: true,
@@ -120,7 +120,19 @@ class VideoFeeder extends Component {
 
                 // Notify the parent (player) with playbacks
                 this.props.player_setPlayerData(orderedChildren, v_playbacks);
+              } else {
+                // Nothing came back. NOTE: I have not been able to trigger this part.
+                logr.error('No urls converted.');
+                this.setState({
+                  showEmpty: true,
+                });
               }
+            }).catch((err) => {
+              // The promise was rejected. Probably empty urls
+              logr.error('Urls convertion request was rejected.');
+              this.setState({
+                showEmpty: true,
+              });
             });
           }
         });
