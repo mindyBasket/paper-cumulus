@@ -63,7 +63,10 @@ const getJSXDemoMessage = (msgIndex, staticroot) => {
     [
       <div id="msg1">
         <h3>Flipbook View</h3>
-        <img src={`${staticroot}img/tutorial/tut02a_strip.jpg`} />
+        <img
+          src={`${staticroot}img/tutorial/tut02a_strip.jpg`}
+          alt="Use arrow keys to play the flipbook."
+        />
         <p>
           Use your <strong>arrow keys:
           <span className="bigtext-3 far fa-caret-square-left" />
@@ -77,19 +80,28 @@ const getJSXDemoMessage = (msgIndex, staticroot) => {
       ,
       <div id="msg2">
         <h3>Animation</h3>
-        <img src={`${staticroot}img/tutorial/tut02b_strip.jpg`} />
-        <img src={`${staticroot}img/tutorial/tut02c_strip.jpg`} />
+        <img
+          src={`${staticroot}img/tutorial/tut02b_strip.jpg`}
+          alt="One colored cell equals to one 'strip'."
+        />
+        <img
+          src={`${staticroot}img/tutorial/tut02c_strip.jpg`}
+          alt="A strip appears as one long card in the edit view."
+        />
         <p>
           Each key press
-					<span className="bigtext-3 far fa-caret-square-left"/>
-          <span className="bigtext-3 far fa-caret-square-right"/>
+					<span className="bigtext-3 far fa-caret-square-left" />
+          <span className="bigtext-3 far fa-caret-square-right" />
           "animates" one <strong><span className="bigtext-3 fas fa-film" />strip</strong>.
         </p>
       </div>
       ,
       <div id="msg3">
         <h3>Editing a flipbook</h3>
-        <img src={`${staticroot}img/tutorial/tut02d.jpg`} />
+        <img
+          src={`${staticroot}img/tutorial/tut02d.jpg`}
+          alt="After viewing, you can see flipbook details and make any changes in the edit mode."
+        />
         <p>
           After viewing, you can see flipbook details and make any changes in the edit mode.
         </p>
@@ -100,7 +112,10 @@ const getJSXDemoMessage = (msgIndex, staticroot) => {
     [
       <div id="msg1">
         <h3>Scenes</h3>
-        <img src={`${staticroot}img/tutorial/tut03a_scene.jpg`} />
+        <img
+          src={`${staticroot}img/tutorial/tut03a_scene.jpg`}
+          alt="A group of strips make a scene."
+        />
         <p>
           A group of <span className="bigtext-3 fas fa-film" />strips
 					makes a <strong><span className="bigtext-3 fas fa-video" />scene</strong>.
@@ -114,7 +129,10 @@ const getJSXDemoMessage = (msgIndex, staticroot) => {
       ,
       <div id="msg2">
         <h3>Editing</h3>
-        <img src={`${staticroot}img/tutorial/tut03c.jpg`} />
+        <img
+          src={`${staticroot}img/tutorial/tut03c.jpg`}
+          alt="Add new images to edit strips in the scene."
+        />
         <p>
           Add new images to generate new <strong>
             <span className="bigtext-3 fas fa-sticky-note" />frames</strong> under a
@@ -127,12 +145,19 @@ const getJSXDemoMessage = (msgIndex, staticroot) => {
       ,
       <div id="msg3">
         <h3>Viewing your changes</h3>
-        <img src={`${staticroot}img/tutorial/tut03d_flipbook.jpg`} />
+        <img
+          src={`${staticroot}img/tutorial/tut03d_bake.jpg`}
+          alt="Click 'Save scene' to render a new flipbook."
+        />
         <p>
-          After you are satisfied with your changes, you can check the updated flipbook!
+          After you are satisfied with your changes, save changes update your flipbook!
         </p>
+        <img
+          src={`${staticroot}img/tutorial/tut03e_play.jpg`}
+          alt="Play the updated flipbook by clicking 'See Flipbook'."
+        />
         <p>
-          Keep in mind, you can also preview your changes right here on the edit page.
+          All done? Play the updated flipbook.
         </p>
       </div>,
     ]
