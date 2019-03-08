@@ -67,6 +67,16 @@
         /* Interstingly, mount/unmount method works fine on Firefox */
         opacity: 1
     }
+
+    .flipbook_player_error{
+        font-size:2em;
+        text-align: center;
+        color: coral;
+    }
+
+    .flipbook_player_error.active{
+        opacity: 1;
+    }
 }
   
 

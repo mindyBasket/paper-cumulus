@@ -62,16 +62,13 @@ const getJSXDemoMessage = (msgIndex, staticroot) => {
     // Message 2
     [
       <div id="msg1">
-        <h3>Flipbook View</h3>
+        <h3>Flipbook Error?</h3>
         <img
-          src={`${staticroot}img/tutorial/tut02a_strip.jpg`}
-          alt="Use arrow keys to play the flipbook."
+          src={`${staticroot}img/tutorial/tut02a_empty.jpg`}
+          alt="You have not rendered any flipbook."
         />
         <p>
-          Use your <strong>arrow keys:
-          <span className="bigtext-3 far fa-caret-square-left" />
-            <span className="bigtext-3 far fa-caret-square-right"/></strong> to view.
-        More control options are coming soon.
+          If you did not <strong>render your flipbook</strong>, it cannot play anything!
         </p>
         <p>
           Hover over the scrubber to see which strip it corresponds to.
@@ -79,33 +76,29 @@ const getJSXDemoMessage = (msgIndex, staticroot) => {
       </div>
       ,
       <div id="msg2">
-        <h3>Animation</h3>
-        <img
-          src={`${staticroot}img/tutorial/tut02b_strip.jpg`}
-          alt="One colored cell equals to one 'strip'."
-        />
-        <img
-          src={`${staticroot}img/tutorial/tut02c_strip.jpg`}
-          alt="A strip appears as one long card in the edit view."
-        />
-        <p>
-          Each key press
-					<span className="bigtext-3 far fa-caret-square-left" />
-          <span className="bigtext-3 far fa-caret-square-right" />
-          "animates" one <strong><span className="bigtext-3 fas fa-film" />strip</strong>.
-        </p>
-      </div>
-      ,
-      <div id="msg3">
-        <h3>Editing a flipbook</h3>
+        <h3>Bake your first flipbook</h3>
         <img
           src={`${staticroot}img/tutorial/tut02d.jpg`}
           alt="After viewing, you can see flipbook details and make any changes in the edit mode."
         />
         <p>
-          After viewing, you can see flipbook details and make any changes in the edit mode.
+          Go to the edit mode to bake yuor first flipbook.
         </p>
-      </div>,
+      </div>
+      ,
+      <div id="msg3">
+        <h3>Flipbook View</h3>
+        <img
+          src={`${staticroot}img/tutorial/tut02a_strip.jpg`}
+          alt="Use arrow keys to play the flipbook."
+        />
+        <p>
+          When you come back, use the <strong>arrow keys:
+          <span className="bigtext-3 far fa-caret-square-left" />
+            <span className="bigtext-3 far fa-caret-square-right"/></strong> for a little surprise.
+        </p>
+      </div>
+      ,
     ],
 
     // Message 3
@@ -240,7 +233,6 @@ class DemoModal extends PureComponent {
           onClick={(e) => { e.stopPropagation(); }}
         >
           <div className="message_wrapper">
-            {this.message[pageNum]}
 
             <span className="message_nav">
               {pageNum <= 0 ? (
@@ -270,6 +262,9 @@ class DemoModal extends PureComponent {
                 </span>
               )}
             </span>
+
+            {this.message[pageNum]}
+
           </div>
         </div>
       );

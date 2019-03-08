@@ -28,6 +28,7 @@ class VideoFeeder extends Component {
     videoSceneIds: [], // ORDERED. Like children_li
     videoPlaybacks: [],
     loaded: false,
+    showEmpty: false, 
 
     placeholder: 'Baking video...',
   };
@@ -92,6 +93,22 @@ class VideoFeeder extends Component {
                 //   'https://s3.us-east-2.amazonaws.com/paper-cumulus-s3/media/frame_images/s71/sc-1cbecfec76.mp4',
                 // ];
 
+                // Double check the list
+                let isEmpty = true;
+                for (let urlInd = 0; urlInd < convertedUrls.length; urlInd++) {
+                  if (convertedUrls[urlInd] && convertedUrls[urlInd] !== '' && convertedUrls[urlInd] !== null) {
+                    isEmpty = false;
+                    break;
+                  }
+                }
+                  
+                if (isEmpty) {
+                  this.setState({
+                    showEmpty: true,
+                  });
+                  return;
+                }
+
                 this.setState({
                   videoUrls: convertedUrls, // ORDERED, should be
                   videoSceneIds: v_sceneIds, // ORDERED
@@ -136,6 +153,7 @@ class VideoFeeder extends Component {
       videoPlaybacks,
       videoStripLocation,
 
+      showEmpty,
       loaded,
       placeholder,
     } = this.state;
@@ -146,6 +164,13 @@ class VideoFeeder extends Component {
         videoSceneIds: videoSceneIds,
         videoPlaybacks: videoPlaybacks,
         videoStripLocation: videoStripLocation,
+      });
+    }
+
+    if (showEmpty) {
+      return this.props.render({
+        hasError: true,
+        errorMessage: 'Missing flipbook content. Make sure you saved your scene(s), or try re-saving the rerender your flipbook.',
       });
     }
 

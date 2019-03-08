@@ -74,6 +74,7 @@ class FlipbookMovieStage extends PureComponent {
       currFrameIndex: 0, // for scrubber only so far
 
       stageDimension: [`${this.TARGET_STAGE_WIDTH}px`, '0px'],
+      hasError: false,
     };
 
     this.recalcDimension = this.recalcDimension.bind(this);
@@ -93,6 +94,16 @@ class FlipbookMovieStage extends PureComponent {
   }
 
   componentDidMount() {
+    // Check for error on mount
+    const errMsg = this.props.errorMessage;
+    if (errMsg && errMsg !== '' && errMsg !== null) {
+      this.setState({
+        hasError: true,
+      });
+      return;
+    }
+
+
     this.dom_movieStage = document.querySelector('.movie_stage_window');
     this.dom_windowDec = document.querySelector('.movie_window_decorations');
 
@@ -117,6 +128,8 @@ class FlipbookMovieStage extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
+    if (this.props.hasError) { return; }
+
     // Switch to current scene video
     const scIds = this.props.videoSceneIds;
     const currIndex = this.props.currVideoIndex;
@@ -172,6 +185,8 @@ class FlipbookMovieStage extends PureComponent {
   getTotalNumStrips() {
     // goes through videoPlaybackDict and get number of strips
     const pbDict = this.props.videoPlaybackDict;
+    if (!pbDict || pbDict.keys().length === 0) { return 0; }
+
     let stripCount = 0;
     Object.keys(pbDict).forEach((scKey) => {
       if ('strips' in pbDict[scKey]) {
@@ -187,6 +202,8 @@ class FlipbookMovieStage extends PureComponent {
 
   getCurrSceneId() {
     const scIds = this.props.videoSceneIds;
+    if (!scIds) { return -1; }
+
     const currIndex = this.props.currVideoIndex;
     return scIds[currIndex];
   }
@@ -286,6 +303,27 @@ class FlipbookMovieStage extends PureComponent {
   }
 
   render() {
+    // check if has error
+    if (this.props.hasError) {
+      return (
+        <div
+          className="movie_stage_window"
+          style={{ width: '60%', height: '400px' }}
+        >
+          <div
+            className="movie_window_decorations"
+            onClick={e => { e.stopPropagation(); }}
+          >
+            <ErrorMessageCover
+              isActive
+              errorMessage={this.props.errorMessage}
+            />
+          </div>
+        </div>
+      );
+    }
+
+
     // logr.warn(JSON.stringify(this.props.videoUrls));
     const v_sceneIds = this.props.videoSceneIds;
 
@@ -341,7 +379,11 @@ class FlipbookMovieStage extends PureComponent {
           onClick={e => { e.stopPropagation(); }}
         >
           {this.props.currVideoIndex < 0 && <InstructionStageCover />}
-          <PausedStageCover isActive={this.props.isPaused}/>
+          <PausedStageCover isActive={this.props.isPaused} />
+          <ErrorMessageCover
+            isActive={this.props.hasError}
+            message={this.props.errorMessage}
+          />
         </div>
 
       </div>
@@ -403,6 +445,28 @@ class PausedStageCover extends Component {
       </div>
     );
   }
+}
+
+function ErrorMessageCover(props) {
+  console.log(props);
+  return (
+    <div className={'flipbook_player_error '
+                    + (props.hasError ? 'active' : '')}
+    >
+      <span className="error_message">
+        <p>
+          <span className="bigtext-1 fas fa-exclamation-triangle" />
+        </p>
+        {props.errorMessage ? (
+          <p>{props.errorMessage}</p>
+        ) : (
+          <p>
+            Oh yikes. An error we were NOT prepared to has occurred!
+          </p>
+        )}
+      </span>
+    </div>
+  );
 }
 
 export {

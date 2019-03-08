@@ -386,6 +386,8 @@ class FlipbookPlayer extends Component {
               currStripIndex={this.state.currStripIndex}
 
               isPaused={(this.state.isPaused && this.state.currSceneIndex >= 0)}
+              hasError={renderData.hasError}
+              errorMessage={renderData.errorMessage}
             />
           )}
         />
