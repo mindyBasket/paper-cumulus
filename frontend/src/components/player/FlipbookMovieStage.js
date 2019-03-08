@@ -185,7 +185,7 @@ class FlipbookMovieStage extends PureComponent {
   getTotalNumStrips() {
     // goes through videoPlaybackDict and get number of strips
     const pbDict = this.props.videoPlaybackDict;
-    if (!pbDict || pbDict.keys().length === 0) { return 0; }
+    if (!pbDict || Object.keys(pbDict).length === 0) { return 0; }
 
     let stripCount = 0;
     Object.keys(pbDict).forEach((scKey) => {

@@ -82,6 +82,7 @@ def copy_demo_chapter(request, *args, **kwargs):
             sc.id64 ='' 
             sc.name = "Demo " + sc_original.name
             sc.chapter = new_demo_chapter
+            sc.movie_url = ''
             sc.save()
             print("[SCENE] - new pk = {}".format(sc.pk))
             for st in sc_original.strip_set.all():
@@ -108,8 +109,8 @@ def copy_demo_chapter(request, *args, **kwargs):
         # TODO: give the demo scene, proper children_li to fake "correct order"
         print("====== CHAPTER CLONING DONE ======")
         resp['url'] = "/flipbooks/chapter/%s/" % new_demo_chapter.id64
-        resp['demoChapterId'] = new_demo_chapter.id64;
-        resp['timestamp'] =  time.time();
+        resp['demoChapterId'] = new_demo_chapter.id64
+        resp['timestamp'] =  time.time()
 
         return JsonResponse(resp)
 
