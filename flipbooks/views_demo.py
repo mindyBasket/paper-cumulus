@@ -83,11 +83,13 @@ def copy_demo_chapter(request, *args, **kwargs):
             sc.name = "Demo " + sc_original.name
             sc.chapter = new_demo_chapter
             sc.movie_url = ''
+            sc.children_li = sc_original.children_li
             sc.save()
             print("[SCENE] - new pk = {}".format(sc.pk))
             for st in sc_original.strip_set.all():
                 st_original = Strip.objects.get(pk=st.pk) # for retireving children
                 st.pk = None # will have no children
+                st.children_li = st_original.children_li
                 st.scene = sc
                 st.save()
                 print("[STRIP] --- new pk = {}".format(st.pk))
