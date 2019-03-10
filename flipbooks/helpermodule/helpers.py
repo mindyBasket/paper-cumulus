@@ -7,7 +7,8 @@ def string2List(stringyList):
     li = stringyList.split(",")
     
     #clean up
-    return list( item.strip() for item in li )
+    li = list( item.strip() for item in li )
+    return list ( (int(item) if item.isdigit() else 0) for item in li)
     
 def list2String(li):
     return ','.join(str(item) for item in li)
@@ -25,8 +26,9 @@ def order_by_id_ref(obj_li, ref_id_li):
     for obj in obj_li:
         # Place obj in index matching its id in the ref list 
         # If not, value will remain None
-        if str(obj.id) in ref_id_li:
-            order_position = ref_id_li.index(str(obj.id))
+        if obj.id in ref_id_li:
+            order_position = ref_id_li.index(obj.id)
+            print("order_position = {}".format(order_position))
             try: 
                 obj_li_ordered[order_position] = obj
             except IndexError as error:
@@ -35,7 +37,8 @@ def order_by_id_ref(obj_li, ref_id_li):
                 # if cannot handle: 
                 #     raise
                 raise
-            
+    
+    print("Ordered objects:{}".format(obj_li_ordered))
     return obj_li_ordered
     
 

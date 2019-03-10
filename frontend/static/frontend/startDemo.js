@@ -58,9 +58,9 @@ function bind_makeNewDemo(){
                 })
                 .catch(error => {
                     if(error.response){
-                        console.log(error.response.data);
-                        console.log(error.response.status);
-                        console.log(error.response.headers);
+                        // console.log(error.response.data);
+                        // console.log(error.response.status);
+                        // console.log(error.response.headers);
                         displayErrorMessage("Something went wrong on server side!")
                     } else {
                         displayErrorMessage("Response from the server was a mutant!");

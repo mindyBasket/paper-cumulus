@@ -225,18 +225,43 @@ class ChapterDetailView_REACT(generic.TemplateView):
 
         # it may be an empty chapter
         is_empty_chapter = True
+        preview_frame = None
 
+        # TODO: This does not necessarily pull out first preview-able frame.
+        #       It just takes out first frame of first strip, first scene, which 
+        #       could be empty!
         query_scenes = chapter.scene_set.all()
+        print("-----------------------Length of scenes: {}".format(len(query_scenes)))
         if query_scenes and len(query_scenes) > 0:
-            first_scene = query_scenes[0]
+            id_li = helpers.string2List(chapter.children_li)
+            if len(id_li) <= 0 or id_li[0] == 0: # TODO: should search until you see a valid number
+                first_scene = query_scenes[0]
+            else:
+                first_scene = chapter.scene_set.filter(pk=id_li[0])[0]
             query_strips = first_scene.strip_set.all()
+
+            print("-----------------------Length of strips: {}".format(len(query_strips)))
             if query_strips and len(query_strips) > 0:
-                first_strip = query_strips[0]
+                id_li = helpers.string2List(first_scene.children_li)
+                if len(id_li) <= 0 or id_li[0] == 0: # TODO: should search until you see a valid number
+                    first_strip = query_strips[0]
+                else:
+                    first_strip = first_scene.strip_set.filter(pk=id_li[0])[0]
                 query_frames = first_strip.frame_set.all()
+
+                print("-----------------------Length of frames: {}".format(len(query_frames)))
                 if query_frames and len(query_frames) > 0:
                     is_empty_chapter = False
+                    id_li = helpers.string2List(first_strip.children_li)
+                    if len(id_li) <= 0 or id_li[0] == 0: # TODO: should search until you see a valid number
+                        first_frame = query_strips[0]
+                    else:
+                        first_frame = first_strip.frame_set.filter(pk=id_li[0])[0]
+
+                    preview_frame = first_frame
 
         context['is_empty_chapter'] = is_empty_chapter
+        context['preview_frame'] = preview_frame
 
         # context['object_scene_list'] = context['object_chapter'].scene_set.order_by('order')
 
@@ -639,8 +664,8 @@ def retrieve_scene__strip(request):
     strip_set_of_scene = Strip.objects.filter(scene__id=scene_id)
     
     #send responses as Json
-    strip_set_str_li = [];
-    strip_set_frame_li = [];
+    strip_set_str_li = []
+    strip_set_frame_li = []
     for strip in strip_set_of_scene:
         strip_set_str_li+=[strip.id]
         
