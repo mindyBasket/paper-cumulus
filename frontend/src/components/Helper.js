@@ -9,6 +9,22 @@ class Helper {
     return li.map(item => String(item).trim());
   }
 
+  bytesToSize(bytes, sizeName) {
+
+    const sizes = ['bytes', 'kb', 'mb', 'gb'];
+    if (bytes === 0) return '0 byte';
+
+    if (!sizeName || sizeName === null) {
+      const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+      return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+    } else if (sizes.includes(sizeName.toLowerCase())) {
+      const i = sizes.indexOf(sizeName.toLowerCase());
+      const preRound = bytes / Math.pow(1024, i);
+      return preRound.toFixed(1) + ' ' + sizes[i];
+    } 
+    return bytes;
+  }
+
   calcHeight(defaultWidth, dimension, heightIfFail) {
     // TODO: this function only accepts dimension in String, 
     //       in a form of "[num]x[num]". Do I need to be more flexible?

@@ -15,10 +15,12 @@ import Spinner from '../Spinner';
 // Custom helpers
 import Logr from '../tools/Logr';
 import Helper from '../Helper';
+import Constants from '../Constants';
 import XhrHandler from './XHRHandler';
 
 const logr = new Logr('StripCard');
 const h = new Helper();
+const cnst = new Constants();
 const axh = new XhrHandler(); // axios helper
 
 // http://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=CallOuts
@@ -149,6 +151,7 @@ class StripCard extends PureComponent {
       previewOn: false,
 
       cardCover_messageType: 'default',
+      cardCover_data: {},
     }
 
     // List of state name that is related to modal.
@@ -398,26 +401,42 @@ class StripCard extends PureComponent {
       if (e.dataTransfer.items.length === 1 && e.dataTransfer.items[0].kind === 'file') { 
 
         const file = e.dataTransfer.items[0].getAsFile();
-        logr.info(`File check: file[0].name = ${file.name}: type = ${file.type}`);
+        logr.info(`File check: file[0].name = ${file.name}: type = ${file.type}: size = ${file.size}`);
+        logr.info(h.bytesToSize(file.size));
 
-        /////// CHECKPOINT 1: image only
+        // ///// CHECKPOINT 1: validate image
         const allowedImageTypes = ['image/png', 'image/gif', 'image/jpg', 'image/jpeg'];
+        
         if (!allowedImageTypes.includes(file.type)) {
           // exit abruptly. This causes this component to remain in dragAndDrop state
-          this.setState({ cardCover_messageType: 'wrongFileType' });
+          this.setState({ 
+            cardCover_messageType: 'wrongFileType',
+            loadingFrames: false,
+          });
+          return false;
+        }
+        if (file.size > cnst.MAX_IMAGE_SIZE) {
+          this.setState({
+            cardCover_messageType: 'fileTooBig',
+            cardCover_data: { filesize: file.size },
+            loadingFrames: false,
+          });
           return false;
         }
 
         const csrfToken = axh.getCSRFToken();
 
-        /////// CHECKPOINT 2: valid CSRF token
+        // ///// CHECKPOINT 2: valid CSRF token
         if (!csrfToken) {
           // exit abruptly. This causes this component to remain in dragAndDrop state.
-          this.setState({ cardCover_messageType: 'invalidForm' });
+          this.setState({ 
+            cardCover_messageType: 'invalidForm',
+            loadingFrames: false,
+          });
           return false;
         }
 
-        /////// Build formData and ship it off
+        // ///// Build formData and ship it off
         const fd = new FormData();
         fd.append('strip', this.props.stripObj.id);
         fd.append('frame_image', file);
@@ -435,7 +454,10 @@ class StripCard extends PureComponent {
           logr.warn(error);
           // Well that didn't work!
           logr.warn('Error while creating frame');
-          this.setState({ cardCover_messageType: 'frameCreateError' });
+          this.setState({ 
+            cardCover_messageType: 'frameCreateError',
+            loadingFrames: false,
+          });
         });
 
       } else if (e.dataTransfer.items.length > 1) {
@@ -458,7 +480,10 @@ class StripCard extends PureComponent {
         const csrfToken = axh.getCSRFToken();
         if (!csrfToken) {
           // exit abruptly. This causes this component to remain in dragAndDrop state.
-          this.setState({ cardCover_messageType: 'invalidForm' });
+          this.setState({ 
+            cardCover_messageType: 'invalidForm',
+            loadingFrames: false
+          });
           return false;
         }
 
@@ -655,8 +680,8 @@ class StripCard extends PureComponent {
     return (
 
       <li
-        className={'strip_card ' +
-                   (this.props.spotlightedAll || this.state.selfSpotlighted ? 'spotlighted' : '')}
+        className={'strip_card '
+                   + (this.props.spotlightedAll || this.state.selfSpotlighted ? 'spotlighted' : '')}
         stripid={strip.id}
         onDragOver={(e) => (this.handle_dragMessageToggle(e, true))}
         onDragLeave={(e) => (this.handle_dragMessageToggle(e, false))}
@@ -748,9 +773,10 @@ class StripCard extends PureComponent {
 
         <CardCover
           on={this.state.dragAndDropOn || this.state.cardCoverOn}
-          off={() => { this.endModalState('cardCoverOn', true) }}
+          off={() => { this.endModalState('cardCoverOn', true); }}
           name="dragAndDrop"
           messageType={this.state.cardCover_messageType}
+          messageData={this.state.cardCover_data}
 
           setParentSpotlight={this.setSpotlight}
           handle_deleteScene={this.handle_deleteScene}
