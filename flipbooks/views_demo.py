@@ -75,7 +75,8 @@ def copy_demo_chapter(request, *args, **kwargs):
             ordered_scene[order_position] = sc
 
         # copy children
-        
+        # TODO: temporary solution apply for copying children in order, by ordering them
+        #       by id. However, they should be ordered by children_li to be accurate!
         for sc in ordered_scene:
             sc_original = Scene.objects.get(pk=sc.pk) # for retireving children
             sc.pk = None # resets children to nothing
@@ -86,7 +87,7 @@ def copy_demo_chapter(request, *args, **kwargs):
             sc.playback = ''
             sc.save()
             print("[SCENE] - new pk = {}".format(sc.pk))
-            for st in sc_original.strip_set.all():
+            for st in sc_original.strip_set.all().order_by('pk'):
                 st_original = Strip.objects.get(pk=st.pk) # for retireving children
                 st.pk = None # resets children to nothing
                 st.scene = sc
