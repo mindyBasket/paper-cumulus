@@ -24,9 +24,9 @@ const getJSXDemoMessage = (msgIndex, staticroot) => {
         <h3>Welcome!</h3>
         {/* <img src={`${staticroot}img/tutorial/tut01a_flipbook.jpg`} /> */}
         <p>
-          This app makes shareable instances of <strong>"flipbook"</strong>.
+          This app makes a <strong>"flipbook"</strong>.
 					It is somewhere <strong>between a movie and a storyboard</strong>,
-					an experimenal way to tell a story using fewer images but still look scenamatic.
+					used to tell a story using fewer images but still look scenamatic.
         </p>
       </div>
       ,
@@ -69,9 +69,6 @@ const getJSXDemoMessage = (msgIndex, staticroot) => {
         />
         <p>
           If you did not <strong>render your flipbook</strong>, it cannot play anything!
-        </p>
-        <p>
-          Hover over the scrubber to see which strip it corresponds to.
         </p>
       </div>
       ,

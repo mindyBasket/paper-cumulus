@@ -1,6 +1,6 @@
 var path = require('path');
 var webpack = require('webpack');
-var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
 
@@ -13,18 +13,12 @@ module.exports = {
         exclude: /node_modules/,
         include: path.resolve(__dirname, "frontend/src"),
         loaders: ["babel-loader"]
-        
       }
     ]
   },
   optimization: {
-    minimize: true
+    minimize: true,
   },
-  plugins: [
-    new webpack.DefinePlugin({
-             'process.env.NODE_ENV': '"production"'
-    }),
-  ],
   entry: 
   {
       main: "./frontend/src/index.js"
