@@ -2,13 +2,17 @@ import random
 
 # See examples of these functions being used in views.py 
 
-def string2List(stringyList):
+def string2List(stringyList, keepString=False):
     # assumes items are listed with "," only (for now)
     li = stringyList.split(",")
     
     #clean up
     li = list( item.strip() for item in li )
-    return list ( (int(item) if item.isdigit() else 0) for item in li)
+
+    if keepString:
+        return li
+    else:
+        return list ( (int(item) if item.isdigit() else 0) for item in li)
     
 def list2String(li):
     return ','.join(str(item) for item in li)
