@@ -814,6 +814,14 @@ body {
   left: -50%;
 }
 
+#portal_publish_status .scene_status {
+  padding-right: 10px;
+}
+#portal_publish_status .is_live {
+  text-shadow: 0 0 0.8em #ffadad, 0 0 0.5em #ff9595;
+  color: #da8d8d;
+}
+
 @media (min-width: 768px) {
   .container {
     width: 750px;

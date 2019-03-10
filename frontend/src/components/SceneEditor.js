@@ -364,10 +364,21 @@ class SceneEditor extends Component {
               )}
             </div>
           </a>
-          
         </FramePiePortal>
 
-        {/* invisible */}
+
+        {/* I wanted to do this here but scene is fetched inside the SceneCardList 
+
+        <SceneUIPortal
+          domId="portal_publish_status"
+        >
+          <span className={"scene_status is_live"}>
+            <span className="fas fa-circle" /> Not live
+          </span>
+        </SceneUIPortal>
+        */}
+
+        {/* Initially invisible components */}
         <LightBox
           addToOnClick={this.addTo_LightBoxOnClick}
           handle_dragAndDrop={this.handle_dragAndDrop}

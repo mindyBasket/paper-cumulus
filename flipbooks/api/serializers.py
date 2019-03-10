@@ -160,6 +160,7 @@ class SceneModelSerializer(serializers.ModelSerializer):
             'chapter',
             'movie',
             'movie_url',
+            'playback',
             'children_li',
             'name',
             'strips',

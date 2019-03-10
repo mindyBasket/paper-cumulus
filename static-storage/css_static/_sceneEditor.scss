@@ -1,0 +1,10 @@
+#portal_publish_status{
+    .scene_status{
+        padding-right: 10px;
+    }
+    
+    .is_live{
+        text-shadow: 0 0 0.8em #ffadad, 0 0 0.5em #ff9595;
+        color: $highlight_red;
+    }
+}

@@ -1,4 +1,5 @@
 import React, { Component, PureComponent } from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 
 import { Sortable } from '@shopify/draggable';
@@ -232,6 +233,12 @@ class SceneCardList extends Component {
 
   render() {
     const reorderedStrips = this.reorderedStrips(this.state.data);
+    const scene = this.state.data;
+
+    let isLive = false;
+    if (scene && scene.playback && scene.playback.trim()) {
+      isLive = true;
+    }
 
     return (
       <div>
@@ -267,11 +274,37 @@ class SceneCardList extends Component {
             })}
           </ul>
         )}
+
+        {/* Portals */}
+        <SceneUIPortal
+          domId="portal_publish_status"
+        >
+          <span className="scene_status">
+            {(scene && isLive) && (
+              <span>
+                <span className="is_live fas fa-circle" />Live
+              </span>
+            )}
+            {(scene && !isLive) && (
+              <span>
+                <span className="is_not_live far fa-circle" />Not Live
+              </span>
+            )}
+          </span>
+        </SceneUIPortal>
+
       </div>
-    ) // end: return
+    ); // end: return
   } // end: render()
 }
 
+function SceneUIPortal(props) {
+  const portal = document.querySelector(`#${props.domId}`);
+  return ReactDOM.createPortal(
+    props.children,
+    portal,
+  );
+}
 
 export {
   SceneCardList,
