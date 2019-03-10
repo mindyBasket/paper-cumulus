@@ -196,7 +196,7 @@ class VideoFeeder extends Component {
     if (showEmpty) {
       return this.props.render({
         hasError: true,
-        errorMessage: 'Missing flipbook content. Make sure you saved your scene(s), or try re-saving the rerender your flipbook.',
+        errorMessage: 'Missing flipbook content. Publish or re-publish at least one scene to get started!',
       });
     }
 

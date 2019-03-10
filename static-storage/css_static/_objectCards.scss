@@ -211,6 +211,20 @@ ul.list_scenes_mini .mini_scene.current::after{
 
 .mini_scene .mini_scene_label{
     color: white;
+    span{
+        padding-top: 6px;
+    }
+    span.is_live{
+        color: $highlight_red_lighter;
+        text-shadow: 
+        -1px -1px 0 #ca5d5d,  
+            1px -1px 0 #ca5d5d,
+            -1px 1px 0 #ca5d5d,
+            1px 1px 0 #ca5d5d;
+
+    }
+    
+
 }
 
 

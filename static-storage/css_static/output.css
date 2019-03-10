@@ -1132,6 +1132,13 @@ ul.list_scenes_mini .mini_scene.current::after {
 .mini_scene .mini_scene_label {
   color: white;
 }
+.mini_scene .mini_scene_label span {
+  padding-top: 6px;
+}
+.mini_scene .mini_scene_label span.is_live {
+  color: #ff9696;
+  text-shadow: -1px -1px 0 #ca5d5d, 1px -1px 0 #ca5d5d, -1px 1px 0 #ca5d5d, 1px 1px 0 #ca5d5d;
+}
 
 /* -------------------------------------- */
 /* -------------------------------------- */

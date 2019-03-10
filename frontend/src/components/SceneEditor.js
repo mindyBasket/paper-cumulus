@@ -342,7 +342,7 @@ class SceneEditor extends Component {
             style={{ position: 'relative' }}
             onClick={this.handle_lambdaPie}
           >
-            Save scene
+            Publish Scene
             <div className={'message_tooltip ' +
                             (this.state.isBaking ? 'active' : '')}
             >
