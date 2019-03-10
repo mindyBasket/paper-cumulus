@@ -3,7 +3,7 @@ class Constants {
 
   T_STEP = 400; // ms
 
-  MAX_IMAGE_SIZE = 1572864 // bytes (1.5 mb)
+  MAX_IMAGE_SIZE = 3145728 // bytes (3 mb)
 
   // Opera
   static isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
