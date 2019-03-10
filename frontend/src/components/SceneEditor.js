@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 
 // import FrameFeeder from './FrameFeeder';
 import SceneCreateForm from './crud/Form';
-import { SceneCardList } from './crud/SceneList';
+import { pub_handle_fetchScene as fetchScene, SceneCardList } from './crud/SceneList';
 import { FrameModal } from './crud/FrameModal';
 
 import { LightBox, lightBox_publicFunctions as lb } from './LightBox';
@@ -279,6 +279,9 @@ class SceneEditor extends Component {
                 }, () => {
                   setTimeout(closeLambdaMessage, this.TOOLTIP_DELAY);
                 });
+
+                // Fetch Scene again to refresh
+                fetchScene();
               }
             });
           } else {
