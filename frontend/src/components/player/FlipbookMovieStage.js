@@ -61,9 +61,12 @@ class FlipbookMovieStage extends PureComponent {
     // NOT a state
     this.currStripTime = 0; // sec
     this.setTimeOutArr = [];
-    
+
+    // constants
     this.TARGET_STAGE_WIDTH = 900; // TODO: this shoudn't be hardcoded, but better solution later
-    
+    this.MIN_DIMENSION_RATIO = 1.329; // width / height
+    this.FALLBACK_DIMENSION = [`70%`, `70%`];
+
     // DOM ref
     this.currVideo = null;
     this.dom_movieStage = null;
@@ -78,6 +81,7 @@ class FlipbookMovieStage extends PureComponent {
     };
 
     this.recalcDimension = this.recalcDimension.bind(this);
+    this.recalcDimensionFormatted = this.recalcDimensionFormatted.bind(this);
     this.getTotalNumStrips = this.getTotalNumStrips.bind(this);
     this.getCurrSceneId = this.getCurrSceneId.bind(this);
     this.getCurrScenePlayback = this.getCurrScenePlayback.bind(this);
@@ -102,7 +106,6 @@ class FlipbookMovieStage extends PureComponent {
       });
       return;
     }
-
 
     this.dom_movieStage = document.querySelector('.movie_stage_window');
     this.dom_windowDec = document.querySelector('.movie_window_decorations');
@@ -155,31 +158,49 @@ class FlipbookMovieStage extends PureComponent {
     // Switch to current strip (section of video)
     // TODO: This seem horribly inefficient...You are doing this every key press.
     //       It would be better if "frameCounts" were already gathered by the api
-    if (prevProps.currStripIndex !== currStripIndex) {
+    if (prevProps.currStripIndex !== currStripIndex) { 
       this.gotoStrip();
       // Called externally
       // this.playFrame();
     }
   }
 
+  /**
+   * Returns array [width, height]
+   */
   recalcDimension() {
-    // recalc dimension based on current stage of the canvas
-    const currWidth = this.TARGET_STAGE_WIDTH;
-
-    // Get first scene's dimension
+ 
+    // Get scene's dimension
     const sceneDimension = this.getCurrScenePlayback().dimension;
+    const sw = sceneDimension[0];
+    const sh = sceneDimension[1];
     if (!sceneDimension) {
       logr.error(`Could not retrieve dimension information. (sceneId=${this.props.currVideoIndex})`);
+      // fallback
+      return this.FALLBACK_DIMENSION;
     }
 
-    const newHeight = (Number(sceneDimension[1]) * currWidth) / Number(sceneDimension[0]);
+    if ((sw / sh) < this.MIN_DIMENSION_RATIO) {
+      // Image is too vertical. Recalc dimension fitting the height
+      // const maxHeight = document.querySelector(".letterbox").clientHeight; // If you use this, height keeps growing
+      const maxHeight = window.innerHeight - 220; // TODO: hard coded padding!
+      const newWidth = (Number(sw) * maxHeight) / Number(sh);
+      return [newWidth, maxHeight];
+    }
 
-    return [`${currWidth}px`, `${newHeight}px`];
+    const currWidth = this.TARGET_STAGE_WIDTH;
+    const newHeight = (Number(sh) * currWidth) / Number(sw);
+    return [currWidth, newHeight];
 
     // TODO: use this in the future to determime if you should go 100% or smaller width...
     // this.dom_movieStage.offsetWidt
 
-    // TODO: also, increase of calculating dimension only for scene, it should also do for strips
+    // TODO: also, currently calculates dimension only for scene, it should also do for strips
+  }
+
+  recalcDimensionFormatted() {
+    const newDimension = this.recalcDimension();
+    return [`${newDimension[0]}px`, `${newDimension[1]}px`];
   }
 
   getTotalNumStrips() {
@@ -237,7 +258,7 @@ class FlipbookMovieStage extends PureComponent {
         // set dimenion of window
         // Note: the very first strip's dimension is set at componentDidMount()
         this.setState({
-          stageDimension: this.recalcDimension(),
+          stageDimension: this.recalcDimensionFormatted(),
         });
 
 
@@ -330,7 +351,7 @@ class FlipbookMovieStage extends PureComponent {
     // calc window dimension
     const stageWidth = this.state.stageDimension[0];
     const stageHeight = this.state.stageDimension[1];
-
+    
     const currStripPlayback = this.getCurrStripPlayback();
 
     return (
