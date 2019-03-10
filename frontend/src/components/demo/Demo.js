@@ -68,7 +68,7 @@ const getJSXDemoMessage = (msgIndex, staticroot) => {
           alt="You have not rendered any flipbook."
         />
         <p>
-          If you did not <strong>render your flipbook</strong>, it cannot play anything!
+          Since this is your first time, you will have to <strong>render your flipbook</strong> first before seeing it.
         </p>
       </div>
       ,
@@ -79,7 +79,7 @@ const getJSXDemoMessage = (msgIndex, staticroot) => {
           alt="After viewing, you can see flipbook details and make any changes in the edit mode."
         />
         <p>
-          Go to the edit mode to bake yuor first flipbook.
+          Go to the edit mode to bake your first flipbook.
         </p>
       </div>
       ,
