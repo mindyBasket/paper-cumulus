@@ -28,7 +28,7 @@ class VideoFeeder extends Component {
     videoSceneIds: [], // ORDERED. Like children_li
     videoPlaybacks: [],
     loaded: false,
-    showEmpty: false, 
+    showEmpty: false,
 
     placeholder: 'Baking video...',
   };
@@ -38,7 +38,7 @@ class VideoFeeder extends Component {
 
     // 1. Fetch list of Chapter for scene order
     axh.fetchChapter(this.props.chapterId).then(chapterRes => {
-      if (chapterRes && chapterRes.data && chapterRes.data.hasOwnProperty('children_li')) {
+      if (chapterRes && chapterRes.data && 'children_li' in chapterRes.data) {
         logr.info(`Children_li for chapter ${this.props.chapterId} retrieved: ${chapterRes.data.children_li}`);
 
         // TODO: does this need to be here?
@@ -62,9 +62,15 @@ class VideoFeeder extends Component {
             let currCumulation = 0;
 
             orderedScenes.forEach(sc => {
-              if (sc.movie_url) {
+              // Completely SKIP Scene if playback doesn't exist.
+              // Most likely it means it was never rendered/published.
+              if (sc.playback && sc.playback.trim) {
+                
                 // TODO: validate selection of playback from the 3-story stack using movie_url
-                v_urls.push(sc.movie_url);
+
+                // Push empty link anyway. It will resolve as "" when convertToStoreURLs()
+                v_urls.push(sc.movie_url ? sc.movie_url : '');
+
                 v_sceneIds.push(sc.id); // associate each video to this id
                 // Playback stack keeps at least 3 playback history.
                 // Simply grab the "latest" one for now.
@@ -87,11 +93,18 @@ class VideoFeeder extends Component {
                   convertedUrls.push(urlData.data.url);
                 });
 
-                // TODO: HARD CODED SOLUTION FOR LOCAL TESTING. REMOVE AFTER DONE
-                // convertedUrls = [
-                //   'https://s3.us-east-2.amazonaws.com/paper-cumulus-s3/media/frame_images/s70/sc-c6c1b12c94.mp4',
-                //   'https://s3.us-east-2.amazonaws.com/paper-cumulus-s3/media/frame_images/s71/sc-1cbecfec76.mp4',
-                // ];
+                // FOR DEV:
+                // Because not only I cannot make lambda call from my local server, the video baked
+                // by lambda is uploaded to S3, which the folder names and the files names match
+                // based on the production database. The following are videos in reserved folder
+                // in S3 just for developement, and must updated manually
+                if (IS_DEV) {
+                  convertedUrls = [
+                    'https://s3.us-east-2.amazonaws.com/paper-cumulus-s3/media/frame_images/s70/sc-c6c1b12c94.mp4',
+                    'https://s3.us-east-2.amazonaws.com/paper-cumulus-s3/media/frame_images/s71/sc-1cbecfec76.mp4',
+                    '',
+                  ];
+                }
 
                 // Double check the list
                 let isEmpty = true;
@@ -130,6 +143,7 @@ class VideoFeeder extends Component {
             }).catch((err) => {
               // The promise was rejected. Probably empty urls
               logr.error('Urls convertion request was rejected.');
+              logr.error(err);
               this.setState({
                 showEmpty: true,
               });

@@ -1807,6 +1807,13 @@ input.untouchable {
   overflow: hidden;
   margin: 0 50px;
 }
+.movie_stage_window .movie_stack {
+  /* This container does not actually need width and height info,
+     but it has some children that is a div with arbitrary content. 
+     And that will need to know the width and height of the parent. */
+  width: 100%;
+  height: 100%;
+}
 
 /* TODO: These are upgraded version of .frame_window_decorations and player_instruction
    _components.scss. Consider removing the other one. */
@@ -1855,12 +1862,26 @@ input.untouchable {
   opacity: 1;
 }
 .movie_window_decorations .flipbook_player_error {
-  font-size: 2em;
+  font-size: 1.5em;
   text-align: center;
   color: coral;
 }
 .movie_window_decorations .flipbook_player_error.active {
   opacity: 1;
+}
+
+.player_cover {
+  padding: 30px 50px 0 50px;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+}
+
+.player_cover.error {
+  font-size: 1.5em;
+  color: coral;
+  border: 1px solid #ff7f504a;
+  box-sizing: border-box;
 }
 
 .flipbook_player .player_instruction span {

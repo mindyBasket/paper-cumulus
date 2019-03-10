@@ -354,19 +354,37 @@ class FlipbookMovieStage extends PureComponent {
 
         <div className="movie_stack">
           {/* Make movie stack! */}
-          {this.props.videoUrls.map((v, i) => {
-            // if (cnst.BROWSER.isFirefox) {
-            const v_webm = h.changeExtension(v, 'webm');
+          {this.props.videoUrls.map((vURL, i) => {
+            if (vURL) {
+              // if (cnst.BROWSER.isFirefox) {
+              const vURL_webm = h.changeExtension(vURL, 'webm');
+              return (
+                <video
+                  id={`sc_${v_sceneIds[i]}`}
+                  width="100%"
+                  height="100%"
+                >
+                  <source src={vURL} type="video/mp4" />
+                  <source src={vURL_webm} type="video/webm" />
+                  Your browser does not support the video tag.
+                </video>
+              );
+            }
+
+            // Else, show that video is missing
             return (
-              <video
+              <div
                 id={`sc_${v_sceneIds[i]}`}
-                width="100%"
-                height="100%"
+                className="player_cover error missing_video_file"
               >
-                <source src={v} type="video/mp4" />
-                <source src={v_webm} type="video/webm" />
-                Your browser does not support the video tag.
-              </video>
+                <p>
+                  <span className="bigtext-1 fas fa-file-video" />
+                  <span className="bigtext-1 fas fa-question" />
+                </p>
+                <p>
+                  The scene source file is corrupt or missing. Try publishing this scene again!
+                </p>
+              </div>
             );
           })}
 
@@ -448,7 +466,6 @@ class PausedStageCover extends Component {
 }
 
 function ErrorMessageCover(props) {
-  console.log(props);
   return (
     <div className={'flipbook_player_error '
                     + (props.hasError ? 'active' : '')}

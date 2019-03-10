@@ -49,7 +49,7 @@ def get_store_URL(request, *args, **kwargs):
     print("------ rel_obj_path: {}".format(rel_obj_path))
     abs_obj_path = ''
     store_path = ''
-    if storage.exists(str(rel_obj_path)):
+    if rel_obj_path and storage.exists(str(rel_obj_path)):
         print("EXISTS! Object at {}".format(rel_obj_path))
         # print("Path check: {}".format(storage.path(str(rel_obj_path)) )) # fails here on heroku
 
@@ -71,6 +71,7 @@ def get_store_URL(request, *args, **kwargs):
         print("------- joined path = {}".format(store_path))
     else:
         print("ERROR: Could not find object at {}".format(rel_obj_path))
+        # This does not reject request. It returns "" as URL.
 
     # Response
     return JsonResponse({'url': str(abs_obj_path)})
