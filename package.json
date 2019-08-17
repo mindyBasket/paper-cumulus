@@ -39,6 +39,7 @@
     "eslint-plugin-jsx-a11y": "^6.2.1",
     "eslint-plugin-react": "^7.12.4",
     "terser-webpack-plugin": "^1.1.0",
+    "typescript": "^3.5.3",
     "weak-key": "^1.0.1",
     "webpack": "^4.19.0",
     "webpack-bundle-analyzer": "^3.0.3",
