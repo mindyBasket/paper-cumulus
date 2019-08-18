@@ -10,18 +10,23 @@
         display: block;
         
         padding: 0 20px;
-     
+
         color: #5d4f4f;
     }
 
     .env_type{
-        background-color: #545454;
+        background-color: transparent;
         border-radius: 5px;
         padding: 5px 10px;
+
+        &.dev{
+            background-color: #545454;
+        }
         &.dev::after{
             content: "Dev mode";
             color: #ff9b9b;
         }
+        
     }
 }
 
