@@ -1,10 +1,13 @@
 @import "vars";
 
+
+@import "layouts/mainLayout";
+@import "layouts/footer";
+@import "layouts/content";
+
+@import "sceneEditor";
 @import "components";
 @import "forms";
-@import "mainLayout";
-@import "sceneEditor";
-
 @import "media";
 @import "menus";
 @import "objectCards";

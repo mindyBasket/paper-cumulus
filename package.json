@@ -7,13 +7,14 @@
     "setvar_w": "set DJANGO_SETTINGS_MODULE=proj_cumulus.settings.local",
     "setvar_m": "export DJANGO_SETTINGS_MODULE=proj_cumulus.settings.local",
     "sassWatch": "cd static-storage/css_static/ && sass --watch input.scss output.css",
+    "sassBuild": "sass static-storage/css_static/input.scss static-storage/css_static/output.css",
     "builddev": "webpack --mode development --config wp_dev.config.js",
     "buildprod": "webpack --mode production --config wp_prod.config.js",
     "analyzer": "webpack --mode development --config webpack-analyzer.config.js",
     "hdeploy": "git push heroku master && heroku run python manage.py collectstatic --noinput --clear",
-    "hcollectstatic": "heroku run python manage.py collectstatic --noinput --clear",
-    "postinstall": "npm run buildprod",
-    "heroku-postbuild": "echo \"Webpack build done.\" "
+    "heroku-prebuild": "echo \"Heroku pre-build stage. No extra script added.\"",
+    "heroku-postbuild": "npm run builddev && npm run sassBuild",
+    "hcollectstatic": "heroku run python manage.py collectstatic --noinput --clear"
   },
   "repository": {
     "type": "git",

@@ -1,4 +1,318 @@
 @charset "UTF-8";
+html, body {
+  /* keep these property to make flexbox fill whole screen*/
+  margin: 0;
+  height: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #efecea;
+  height: 100%;
+  padding-bottom: 60px;
+  /*for footer*/
+  /*font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;*/
+  font-family: "Quicksand", sans-serif;
+  color: #808080;
+  /* used when just the background needs to be darkened */
+  transition-property: background-color;
+  transition-duration: 0.5s;
+}
+
+/* -------------------------------------- */
+/* -------------------------------------- */
+/*        globally used text styles       */
+/* -------------------------------------- */
+/* -------------------------------------- */
+.flex_column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.flex_row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.justify_start {
+  justify-content: flex-start;
+}
+
+.justify_end {
+  justify-content: flex-end;
+}
+
+.justify_space_between {
+  justify-content: space-between;
+}
+
+.grow1 {
+  flex-grow: 1;
+}
+
+.bigtext-1 {
+  font-size: 3em;
+}
+
+.bigtext-2 {
+  font-size: 2em;
+}
+
+.bigtext-3 {
+  font-size: 1.2em;
+}
+
+.color.red {
+  /* TODO: would be nice if I could use variables here */
+  color: #b97682;
+}
+
+.blurred {
+  filter: blur(0.6px);
+}
+
+.dimmed {
+  opacity: 0.4;
+}
+
+.footer {
+  background-color: #c7c2c2;
+  height: 60px;
+  /*margin-top: -60px; /*footer is not part of the flexbox*/
+  /* using padding-bottom on body instead*/
+}
+.footer span {
+  text-align: right;
+  display: block;
+  padding: 0 20px;
+  color: #5d4f4f;
+}
+.footer .env_type {
+  background-color: #545454;
+  border-radius: 5px;
+  padding: 5px 10px;
+}
+.footer .env_type.dev::after {
+  content: "Dev mode";
+  color: blue;
+}
+
+/* -------------------------------------- */
+/* -------------------------------------- */
+/*                Base layout             */
+/* -------------------------------------- */
+/* -------------------------------------- */
+.flexy_content_wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  /*padding-bottom: 60px; /*height of footer*/
+}
+
+/* in a columned layout, the contents stretched to fill the rest of the page */
+.flexy_content_wrapper.columned .container {
+  /* stretched to fill rest of screen*/
+  display: flex;
+  flex-grow: 1;
+  flex-basis: auto;
+}
+
+.flexy_content_wrapper.columned .container .row {
+  /* ALSO stretched to fill rest of screen*/
+  display: flex;
+  flex-grow: 1;
+  flex-basis: auto;
+}
+
+.flexy_content_wrapper.columned .container .right_column {
+  /* ALSO stretched to fill rest of screen*/
+  flex-grow: 1;
+  flex-basis: auto;
+  padding-bottom: 50px;
+  border-left: 1px solid #cfcfcf;
+}
+
+.flexy_content_wrapper.columned .container .left_column,
+.flexy_content_wrapper.columned .container .right_column {
+  padding-top: 15px;
+}
+
+.headband_wrapper {
+  /* I was going to call this 'header' but that name is used in other places */
+  display: flex;
+  justify-content: space-between;
+  min-height: 60px;
+  padding: 0px 60px;
+  border-bottom: 1px solid #1d1e1f26;
+}
+
+.headband_wrapper.disabled {
+  display: none;
+}
+
+.headband_wrapper.dark {
+  background-color: #2f2f2f;
+}
+
+.headband_wrapper.with_splash {
+  /* special case where headband has splash image in it*/
+  padding: 0px;
+}
+
+.headband {
+  align-self: center;
+  padding: 0 20px;
+}
+
+.splash {
+  height: 180px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  flex-grow: 1;
+  overflow: hidden;
+  filter: blur(10px);
+  opacity: 0.5;
+}
+
+.splash_float {
+  height: 180px;
+  /* must match with .splash */
+  position: absolute;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  width: 100%;
+  text-align: center;
+  color: white;
+}
+
+.splash_float a {
+  color: white;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+
+.splash_float a:hover {
+  color: white;
+  opacity: 1;
+}
+
+.letterbox {
+  display: block;
+  width: 100%;
+  background-color: #1e1e1e;
+}
+
+/* -------------------------------------- */
+/* -------------------------------------- */
+/*             showcase layout            */
+/* -------------------------------------- */
+/* -------------------------------------- */
+.contentbox {
+  /* hoping that this will replace bootstrap's 'container' */
+}
+
+.contentbox.centering {
+  /* Note: the main wrapper (parent) is flexbox */
+  flex-grow: 1;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  color: white;
+}
+
+.contentbox.centering .hideable_content {
+  margin: 0 auto;
+  padding-bottom: 90px;
+  color: #cab6a1;
+  max-width: 450px;
+  display: none;
+  /*initially hidden*/
+}
+
+/* -------------------------------------- */
+/* -------------------------------------- */
+/*          generic views stuff           */
+/* -------------------------------------- */
+/* -------------------------------------- */
+.book-list {
+  padding: 0;
+}
+
+.book-list li {
+  list-style: none;
+  margin: 5px 0 0 0;
+}
+
+.book-list .card-link.wide {
+  /*the <a>*/
+  display: block;
+  height: 150px;
+  background-color: PaleTurquoise;
+}
+
+.book-list .card-link.wide:hover {
+  background-color: #baf4f4;
+}
+
+.book-list .card-link.wide span:nth-of-type(1) {
+  display: inline-block;
+  background-color: DarkTurquoise;
+  height: 100%;
+  padding: 0 20px 0 15px;
+  font-size: 2em;
+  -webkit-clip-path: polygon(0 0, 100% 0%, 70% 100%, 0% 100%);
+  clip-path: polygon(0 0, 100% 0%, 70% 100%, 0% 100%);
+}
+
+.book-list .card-link.wide[inActive=true] {
+  background-color: LightGray;
+}
+
+/* -------------------------------------- */
+/* -------------------------------------- */
+/*         form and msg related           */
+/* -------------------------------------- */
+/* -------------------------------------- */
+.placeholder {
+  display: inline-block;
+  width: 100px;
+  height: 60px;
+  border: 1px solid #ccc;
+  vertical-align: middle;
+}
+
+.placeholder.new {
+  border: 1px solid blue;
+}
+
+.message_container {
+  position: absolute;
+  top: -100%;
+  left: 50%;
+  transition: top 2s;
+}
+
+.message {
+  display: inline-block;
+  height: 80px;
+  width: 600px;
+  background-color: white;
+  position: relative;
+  left: -50%;
+}
+
+#portal_publish_status .scene_status {
+  padding-right: 10px;
+}
+#portal_publish_status .is_live {
+  text-shadow: 0 0 0.8em #ffadad, 0 0 0.5em #ff9595;
+  color: #da8d8d;
+}
+
 /* -------------------------------------- */
 /* -------------------------------------- */
 /*            Lightbox and Modals         */
@@ -527,320 +841,6 @@ form button[type=submit] {
 
 #loading_msg.active {
   display: inline-block;
-}
-
-html, body {
-  /* keep these property to make flexbox fill whole screen*/
-  margin: 0;
-  height: 100%;
-  scroll-behavior: smooth;
-}
-
-body {
-  background-color: #efecea;
-  height: 100%;
-  padding-bottom: 60px;
-  /*for footer*/
-  /*font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;*/
-  font-family: "Quicksand", sans-serif;
-  color: #808080;
-  /* used when just the background needs to be darkened */
-  transition-property: background-color;
-  transition-duration: 0.5s;
-}
-
-/* -------------------------------------- */
-/* -------------------------------------- */
-/*        globally used text styles       */
-/* -------------------------------------- */
-/* -------------------------------------- */
-.flex_column {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.flex_row {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-.justify_start {
-  justify-content: flex-start;
-}
-
-.justify_end {
-  justify-content: flex-end;
-}
-
-.justify_space_between {
-  justify-content: space-between;
-}
-
-.grow1 {
-  flex-grow: 1;
-}
-
-.bigtext-1 {
-  font-size: 3em;
-}
-
-.bigtext-2 {
-  font-size: 2em;
-}
-
-.bigtext-3 {
-  font-size: 1.2em;
-}
-
-.color.red {
-  /* TODO: would be nice if I could use variables here */
-  color: #b97682;
-}
-
-.blurred {
-  filter: blur(0.6px);
-}
-
-.dimmed {
-  opacity: 0.4;
-}
-
-/* -------------------------------------- */
-/* -------------------------------------- */
-/*                Base layout             */
-/* -------------------------------------- */
-/* -------------------------------------- */
-.flexy_content_wrapper {
-  display: flex;
-  flex-direction: column;
-  min-height: 100%;
-  /*padding-bottom: 60px; /*height of footer*/
-}
-
-/* in a columned layout, the contents stretched to fill the rest of the page */
-.flexy_content_wrapper.columned .container {
-  /* stretched to fill rest of screen*/
-  display: flex;
-  flex-grow: 1;
-  flex-basis: auto;
-}
-
-.flexy_content_wrapper.columned .container .row {
-  /* ALSO stretched to fill rest of screen*/
-  display: flex;
-  flex-grow: 1;
-  flex-basis: auto;
-}
-
-.flexy_content_wrapper.columned .container .right_column {
-  /* ALSO stretched to fill rest of screen*/
-  flex-grow: 1;
-  flex-basis: auto;
-  padding-bottom: 50px;
-  border-left: 1px solid #cfcfcf;
-}
-
-.flexy_content_wrapper.columned .container .left_column,
-.flexy_content_wrapper.columned .container .right_column {
-  padding-top: 15px;
-}
-
-.headband_wrapper {
-  /* I was going to call this 'header' but that name is used in other places */
-  display: flex;
-  justify-content: space-between;
-  min-height: 60px;
-  padding: 0px 60px;
-  border-bottom: 1px solid #1d1e1f26;
-}
-
-.headband_wrapper.disabled {
-  display: none;
-}
-
-.headband_wrapper.dark {
-  background-color: #2f2f2f;
-}
-
-.headband_wrapper.with_splash {
-  /* special case where headband has splash image in it*/
-  padding: 0px;
-}
-
-.headband {
-  align-self: center;
-  padding: 0 20px;
-}
-
-.splash {
-  height: 180px;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-  flex-grow: 1;
-  overflow: hidden;
-  filter: blur(10px);
-  opacity: 0.5;
-}
-
-.splash_float {
-  height: 180px;
-  /* must match with .splash */
-  position: absolute;
-  display: flex;
-  flex-flow: column;
-  justify-content: center;
-  width: 100%;
-  text-align: center;
-  color: white;
-}
-
-.splash_float a {
-  color: white;
-  opacity: 0.7;
-  transition: opacity 0.3s;
-}
-
-.splash_float a:hover {
-  color: white;
-  opacity: 1;
-}
-
-.letterbox {
-  display: block;
-  width: 100%;
-  background-color: #1e1e1e;
-}
-
-.footer {
-  background-color: #c7c2c2;
-  height: 60px;
-  /*margin-top: -60px; /*footer is not part of the flexbox*/
-  /* using padding-bottom on body instead*/
-}
-.footer span {
-  text-align: right;
-  display: block;
-  padding: 0 20px;
-  color: #5d4f4f;
-}
-.footer .env_type {
-  background-color: #545454;
-  border-radius: 5px;
-  padding: 5px 10px;
-}
-.footer .env_type.dev::after {
-  content: "Dev mode";
-  color: #ff9b9b;
-}
-
-/* -------------------------------------- */
-/* -------------------------------------- */
-/*             showcase layout            */
-/* -------------------------------------- */
-/* -------------------------------------- */
-.contentbox {
-  /* hoping that this will replace bootstrap's 'container' */
-}
-
-.contentbox.centering {
-  /* Note: the main wrapper (parent) is flexbox */
-  flex-grow: 1;
-  display: flex;
-  flex-flow: column;
-  justify-content: center;
-  color: white;
-}
-
-.contentbox.centering .hideable_content {
-  margin: 0 auto;
-  padding-bottom: 90px;
-  color: #cab6a1;
-  max-width: 450px;
-  display: none;
-  /*initially hidden*/
-}
-
-/* -------------------------------------- */
-/* -------------------------------------- */
-/*          generic views stuff           */
-/* -------------------------------------- */
-/* -------------------------------------- */
-.book-list {
-  padding: 0;
-}
-
-.book-list li {
-  list-style: none;
-  margin: 5px 0 0 0;
-}
-
-.book-list .card-link.wide {
-  /*the <a>*/
-  display: block;
-  height: 150px;
-  background-color: PaleTurquoise;
-}
-
-.book-list .card-link.wide:hover {
-  background-color: #baf4f4;
-}
-
-.book-list .card-link.wide span:nth-of-type(1) {
-  display: inline-block;
-  background-color: DarkTurquoise;
-  height: 100%;
-  padding: 0 20px 0 15px;
-  font-size: 2em;
-  -webkit-clip-path: polygon(0 0, 100% 0%, 70% 100%, 0% 100%);
-  clip-path: polygon(0 0, 100% 0%, 70% 100%, 0% 100%);
-}
-
-.book-list .card-link.wide[inActive=true] {
-  background-color: LightGray;
-}
-
-/* -------------------------------------- */
-/* -------------------------------------- */
-/*         form and msg related           */
-/* -------------------------------------- */
-/* -------------------------------------- */
-.placeholder {
-  display: inline-block;
-  width: 100px;
-  height: 60px;
-  border: 1px solid #ccc;
-  vertical-align: middle;
-}
-
-.placeholder.new {
-  border: 1px solid blue;
-}
-
-.message_container {
-  position: absolute;
-  top: -100%;
-  left: 50%;
-  transition: top 2s;
-}
-
-.message {
-  display: inline-block;
-  height: 80px;
-  width: 600px;
-  background-color: white;
-  position: relative;
-  left: -50%;
-}
-
-#portal_publish_status .scene_status {
-  padding-right: 10px;
-}
-#portal_publish_status .is_live {
-  text-shadow: 0 0 0.8em #ffadad, 0 0 0.5em #ff9595;
-  color: #da8d8d;
 }
 
 @media (min-width: 768px) {

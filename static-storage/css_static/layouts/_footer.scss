@@ -1,0 +1,27 @@
+.footer{
+
+    background-color: #c7c2c2;
+    height: 60px;
+    /*margin-top: -60px; /*footer is not part of the flexbox*/
+    /* using padding-bottom on body instead*/
+
+    span{
+        text-align: right;
+        display: block;
+        
+        padding: 0 20px;
+     
+        color: #5d4f4f;
+    }
+
+    .env_type{
+        background-color: #545454;
+        border-radius: 5px;
+        padding: 5px 10px;
+        &.dev::after{
+            content: "Dev mode";
+            color: #ff9b9b;
+        }
+    }
+}
+

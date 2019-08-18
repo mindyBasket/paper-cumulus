@@ -10,3 +10,4 @@ node_modules
 .vscode
 package-lock.json
 env.json
+static-storage/css_static/output.css
