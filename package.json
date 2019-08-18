@@ -6,7 +6,7 @@
   "scripts": {
     "setvar_w": "set DJANGO_SETTINGS_MODULE=proj_cumulus.settings.local",
     "setvar_m": "export DJANGO_SETTINGS_MODULE=proj_cumulus.settings.local",
-    "sass": "cd static-storage/css_static/ && sass --watch input.scss output.css",
+    "sassWatch": "cd static-storage/css_static/ && sass --watch input.scss output.css",
     "builddev": "webpack --mode development --config wp_dev.config.js",
     "buildprod": "webpack --mode production --config wp_prod.config.js",
     "analyzer": "webpack --mode development --config webpack-analyzer.config.js",

@@ -1,6 +1,6 @@
 ## About
 
-This app makes shareable instances of "flipbook". It is somewhere between a movie and a storyboard. An instance of flipbook contain units of very short animations, but linked together they generate a story. It is an experimenal way to tell a story scenamatically but at low-cost.
+This app makes shareable instances of "flipbook", which is somewhere between a movie and a storyboard. An instance of flipbook contains units of very short animations, but linked together they generate a story. It is an experimenal medium in a attempt to tell a story with a scenamatic feel without being a full blown movie.
 
 This project started out experimental and explorative in order to help me learn Django and React. 
 
@@ -61,10 +61,10 @@ This project compiles a single master .css (called `output.css`) using sass. Sas
 1. Setup Sass at section "Install Anywhere (Standalone)" at their [install page](https://sass-lang.com/install).
 2. Unzip the folder somewhere you can find it. For example: `c:\dart-sass`
 3. Add Sass to your PATH variable. Sass provides [instructions](https://katiek2.github.io/path-doc/) 
-2. cd into `static_storage/css_static/`.
-3. Run sass: `sass --watch input.scss output.css`
+2. cd into `static_storage/css_static/`
+3. Run sass: `npm run sassWatch`
 
-## Running this project 
+## Running this project for development
 
 1. For dev, set environment variable
     ```
@@ -81,3 +81,8 @@ This project compiles a single master .css (called `output.css`) using sass. Sas
     (python/py) manage.py runserver
     ```
     You can exit anytime by pressing ctrl/cmd+c
+
+Alternatively, you can use powershell script that runs virtualenv and starts server. Currently, if DJANGO_SETTINGS_MODULE is not specified, it assumes you are using `proj_cumulus.settings.local`.
+```
+(windows) .\devEnv.ps1`
+```
