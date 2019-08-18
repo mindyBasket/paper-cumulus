@@ -1,0 +1,4 @@
+{
+    "SECRET_KEY" : "{really long secret key}",
+    "ENV_TYPE": "DEV | PROD"
+}

@@ -61,8 +61,16 @@ dg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">-->
         
     </div>
     
-    <div class='footer'>
-        <span>Paper Cumulus | Powered by Django</span>
+    <div class='footer flex_row grow1 justify_end'>
+      <div class="group flex_row">
+          {% if env_type %}
+            <span class="env_type {{env_type}}"></span>
+          {% endif %}
+          <span>
+              Paper Cumulus | Powered by Django
+          </span>
+      </div>
+        
     </div>
 
     <!-- lightbox component -->

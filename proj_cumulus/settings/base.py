@@ -18,33 +18,31 @@ from django.core.exceptions import ImproperlyConfigured
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+# This is to help distinguish where the server is running
+ENV_TYPE = "prod"
 
 # Read from env file
 ENV_FILE_PATH = os.path.join(BASE_DIR, "env.json")
 
 CONFIGS = None
 if os.path.isfile(ENV_FILE_PATH):
-    print("[CONFIGS] Env file found. WIll use this to config environment.")
+    print("ENV FILE FOUND: WIll use this to config environment.")
     with open(ENV_FILE_PATH) as f:
         CONFIGS = json.loads(f.read())
         f.close()
 
     if not CONFIGS:
-        raise ImproperlyConfigured("ImproperlyConfigured: Env.json is empty.")
+        raise ImproperlyConfigured("ImproperlyConfigured: Env.json is empty. Please follow env-template.json to setup an environment config file.")
 
-    try:
-        # grab environment variables
+    # Grab environment variables from env.json
+    if "SECRET_KEY" in CONFIGS:
         SECRET_KEY = CONFIGS["SECRET_KEY"]
-        # Below are extracted in production settings
-        # AWS_ACCESS_KEY_ID = CONFIGS["AWS_ACCESS_KEY_ID"]
-        # AWS_SECRET_ACCESS_KEY = CONFIGS["AWS_SECRET_ACCESS_KEY"]
-    except KeyError as err:
-        print(repr(err))
-        raise ImproperlyConfigured("ImproperlyConfigured env file.")
-
+    else:
+        raise ImproperlyConfigured("ImproperlyConfigured: No SECRET_KEY in env file.")
 
 else:
     # In some environment, sensitive information will be in environment var directly.
+    print("NO ENV FILE: Attempting to extract config from environment directly.")
     try:
         SECRET_KEY = os.environ['SECRET_KEY']
         AWS_ACCESS_KEY_ID = os.environ["AWS_ACCESS_KEY_ID"]

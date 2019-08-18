@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from datetime import datetime
 
+from django.conf import settings
 from django.http import JsonResponse, HttpResponseNotFound
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, get_object_or_404, redirect
@@ -77,7 +78,6 @@ class ChapterDetailView(generic.TemplateView):
     template_name = "frontend/chapter_detail.html"
     
     def get_context_data(self, *args, **kwargs):
-
 
         # TODO: YOU ARE LOOKING AT OLD VIEW OBJECT.
         #       THIS PROJECT WENT THROUGH A CHANGE WHERE REACT IS USED FOR FRONTEND
@@ -218,7 +218,9 @@ class ChapterDetailView_REACT(generic.TemplateView):
             book = Book.objects.get(pk=kwargs['book_pk'])
             chapter = book.chapter_set.filter(number=kwargs['chapter_number'])[0]
 
-    
+        # TODO: This is environment information that is only accessible on chapter object. 
+        #       You should look for a better way!
+        context['env_type'] = settings.ENV_TYPE
 
         # make context for the Chapter and its Scenes
         context['object_chapter'] = chapter

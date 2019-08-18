@@ -1,5 +1,6 @@
 from .base import *
 
+ENV_TYPE = "dev"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

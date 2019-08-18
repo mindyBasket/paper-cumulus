@@ -557,11 +557,29 @@ body {
 .flex_column {
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 .flex_row {
   display: flex;
   flex-direction: row;
+  align-items: center;
+}
+
+.justify_start {
+  justify-content: flex-start;
+}
+
+.justify_end {
+  justify-content: flex-end;
+}
+
+.justify_space_between {
+  justify-content: space-between;
+}
+
+.grow1 {
+  flex-grow: 1;
 }
 
 .bigtext-1 {
@@ -697,22 +715,25 @@ body {
 }
 
 .footer {
-  display: flex;
-  flex-grow: 1;
-  /*will fill the rest of the page */
+  background-color: #c7c2c2;
+  height: 60px;
   /*margin-top: -60px; /*footer is not part of the flexbox*/
   /* using padding-bottom on body instead*/
 }
-
 .footer span {
   text-align: right;
-  align-self: flex-end;
   display: block;
-  height: 60px;
-  width: 100%;
-  background-color: #c7c2c2;
-  padding: 20px;
+  padding: 0 20px;
   color: #5d4f4f;
+}
+.footer .env_type {
+  background-color: #545454;
+  border-radius: 5px;
+  padding: 5px 10px;
+}
+.footer .env_type.dev::after {
+  content: "Dev mode";
+  color: #ff9b9b;
 }
 
 /* -------------------------------------- */
@@ -948,13 +969,13 @@ body {
 /*
 .thumb .popup_menu .tickmark{
     position:absolute;
-    
+
     bottom: -14px; left: 50%;
     width: 0; 
     height: 0; 
     border-left: 15px solid transparent;
     border-right: 15px solid transparent;
-  
+
     border-top: 15px solid #5C5C5C;
 }*/
 /* -------------------------------------- */

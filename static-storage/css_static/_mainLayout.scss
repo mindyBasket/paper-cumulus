@@ -31,13 +31,28 @@ body{
 .flex_column{
     display: flex;
     flex-direction: column;
+    align-items: center;
 }
 
 .flex_row{
     display: flex;
     flex-direction: row;
+    align-items: center;
 }
 
+.justify_start{
+    justify-content: flex-start;
+}
+.justify_end{
+    justify-content: flex-end;
+}
+.justify_space_between{
+    justify-content: space-between;
+}
+
+.grow1{
+    flex-grow: 1;
+}
 
 .bigtext-1{
     font-size: 3em;
@@ -177,26 +192,31 @@ body{
     background-color: #1e1e1e;
 }
 
-.footer {
-    display: flex;
-    flex-grow: 1; /*will fill the rest of the page */
-
-
-    /*margin-top: -60px; /*footer is not part of the flexbox*/
-    /* using padding-bottom on body instead*/
-    
-}
-
-.footer span{
-    text-align: right;
-    align-self: flex-end;
-    display: block;
-    height: 60px; width: 100%;
+.footer{
 
     background-color: #c7c2c2;
-    padding: 20px;
- 
-    color: #5d4f4f;
+    height: 60px;
+    /*margin-top: -60px; /*footer is not part of the flexbox*/
+    /* using padding-bottom on body instead*/
+
+    span{
+        text-align: right;
+        display: block;
+        
+        padding: 0 20px;
+     
+        color: #5d4f4f;
+    }
+
+    .env_type{
+        background-color: #545454;
+        border-radius: 5px;
+        padding: 5px 10px;
+        &.dev::after{
+            content: "Dev mode";
+            color: #ff9b9b;
+        }
+    }
 }
 
 
