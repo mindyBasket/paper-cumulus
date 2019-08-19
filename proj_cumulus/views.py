@@ -15,6 +15,7 @@ def home(request):
     return render(request, "standalone/home.html", context) 
 
 def home_demo(request):
+    print("Redirect to /flipbooks/")
     response = redirect('/flipbooks/')
     return response
 
