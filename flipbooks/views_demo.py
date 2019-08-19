@@ -26,6 +26,7 @@ from .helpermodule import helpers
 
 def home_demo(request):
     context = {'welcome_msg': "Start Demo?"}
+    print("-------- Rendering demo welcome page")
 
     demo_book = Book.objects.filter(slug="2-demo-book")[0]
     if not demo_book:
@@ -38,7 +39,7 @@ def home_demo(request):
     demo_chapter_create_form = forms.ChapterCreateForm(
         #{"default_book_pk": demo_book.pk},
         initial={'book': demo_book.pk}
-        ) 
+    ) 
 
     context['demo_chapter_create_form'] = demo_chapter_create_form
     return render(request, "standalone/start_demo.html", context) 
