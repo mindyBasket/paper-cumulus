@@ -58,13 +58,14 @@ else:
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = '$k3(_qgf48hzeddm(fw-8^aj1pk%u0l%w8sa2&kzpyr$ufjj8@'
-
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "playflipbook.herokuapp.com"]
+ALLOWED_HOSTS = [
+    "localhost", 
+    "playflipbook.herokuapp.com", 
+    "playflipbook-dev.herokuapp.com"
+]
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
