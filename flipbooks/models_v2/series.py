@@ -53,4 +53,4 @@ class Series(models.Model):
 
     def __str__(self):
         # https://docs.python.org/2/library/stdtypes.html#str.format
-        return "Book {} : {} : {}".format(self.pk, self.title, self.slug)
+        return "Series {} : {} : {}".format(self.pk, self.title, self.slug)
