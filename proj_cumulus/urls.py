@@ -19,13 +19,16 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic.base import RedirectView
+from django.views.decorators.csrf import csrf_exempt
+
+from graphene_django.views import GraphQLView
 
 from . import views
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    
+
     #standalone homepage
     # re_path(r'^$', views.home, name='home'),
     # Using demo page for now!
@@ -33,10 +36,10 @@ urlpatterns = [
 
     # This doesn't work!
     # url(r'^.*$', RedirectView.as_view(url='flipbooks/chapter/0/', permanent=False), name='index'),
-    
+
     #flipbooks include
     path('flipbooks/', include(('flipbooks.urls','flipbooks'), namespace='flipbooks')),
-    
+
     # frontend handler
     path('see/', include(('frontend.urls','frontend'), namespace='frontend' )),
 
@@ -44,8 +47,8 @@ urlpatterns = [
     #serializer
     re_path(r'^api/', include(('flipbooks.api.urls','flipbooks'), namespace='flipbooks-api')),
 
-    
-    
+    #graphql, will replace RESTful api
+    path('grphi/', csrf_exempt(GraphQLView.as_view(graphiql=True))),
 ]
 
 if settings.DEBUG == True:
