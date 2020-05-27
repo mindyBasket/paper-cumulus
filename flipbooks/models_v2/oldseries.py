@@ -36,11 +36,12 @@ def get_rand_base64(length):
     return result_code
 
 
-class Series(models.Model):
+class Oldseries(models.Model):
     """
     Model binding multiple Episodes
 
     A series should be unique, and is identified with a slug.
+    Note: this is going to be replaced by "Series" in Storypiper app
     """
     title = models.CharField(max_length=50, blank=True, default="Untitled")
     slug = models.SlugField(blank=True, default='')
@@ -53,4 +54,4 @@ class Series(models.Model):
 
     def __str__(self):
         # https://docs.python.org/2/library/stdtypes.html#str.format
-        return "Series {} : {} : {}".format(self.pk, self.title, self.slug)
+        return "Oldseries {} : {} : {}".format(self.pk, self.title, self.slug)

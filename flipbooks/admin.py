@@ -38,7 +38,7 @@ class FrameModelAdmin(admin.ModelAdmin):
     #form = forms.FrameForm
 
 
-class SeriesModelAdmin(admin.ModelAdmin):
+class OldseriesModelAdmin(admin.ModelAdmin):
     list_display = ("id", 'title', "slug", "is_demo")
 
 class EpisodeModelAdmin(admin.ModelAdmin):
@@ -46,7 +46,7 @@ class EpisodeModelAdmin(admin.ModelAdmin):
 
 
 # Register your models here.
-admin.site.register(models2.Series, SeriesModelAdmin)
+admin.site.register(models2.Oldseries, OldseriesModelAdmin)
 admin.site.register(models2.Episode, EpisodeModelAdmin)
 
 admin.site.register(models.Chapter, ChapterModelAdmin)

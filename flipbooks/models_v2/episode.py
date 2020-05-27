@@ -12,7 +12,7 @@ from easy_thumbnails.fields import ThumbnailerImageField
 from easy_thumbnails.signals import saved_file
 from easy_thumbnails.signal_handlers import generate_aliases_global
 
-from .series import Series
+from .oldseries import Oldseries
 
 # ---------------------------------------------
 # This is moved to the end to
@@ -55,7 +55,7 @@ class Episode(models.Model):
     # playback = models.TextField(blank=True, default="")
     
     # TODO: make this NOT CASCADE. Kinda dangerous
-    series = models.ForeignKey(Series, on_delete=models.CASCADE, default=0)
+    oldseries = models.ForeignKey(Oldseries, on_delete=models.CASCADE, default=0)
     
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
