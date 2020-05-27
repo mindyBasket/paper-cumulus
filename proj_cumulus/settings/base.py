@@ -87,7 +87,8 @@ INSTALLED_APPS = [
     'graphene_django',
     
     'flipbooks',
-    'frontend',   
+    'frontend',
+    'storypiper',
 ]
 
 MIDDLEWARE = [
