@@ -83,6 +83,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'widget_tweaks',
     'storages',
+
+    'graphene_django',
     
     'flipbooks',
     'frontend',   
@@ -126,6 +128,10 @@ THUMBNAIL_ALIASES = {
 }
 
 WSGI_APPLICATION = 'proj_cumulus.wsgi.application'
+
+GRAPHENE = {
+    'SCHEMA': 'proj_cumulus.schema.schema',
+}
 
 
 # Database
