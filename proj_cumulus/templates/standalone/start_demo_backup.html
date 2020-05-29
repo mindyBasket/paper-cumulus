@@ -1,0 +1,71 @@
+{% extends "layout_showcase.html" %}
+{% load static %}
+
+
+{% block title %} {{block.super}} {% endblock title %}
+
+{% block body_class %}dark glow{% endblock body_class %}
+{% block headband_class %}disabled{% endblock headband_class %}
+
+
+
+{% block contentbox %}
+
+    <div class="hideable_content" id="msg_new">
+        <h2>{{welcome_msg}}</h2>
+        <p id="msg">
+            This project is still in its infancy, but some of the features can
+            be explored. The demo you generate will be available for <strong>3 days</strong>. 
+        </p>
+        <div style="height:70px;">
+            <button id="make_demo">Yes, make a demo chapter</button>
+
+            <div id="loading_msg">
+                <img src="{% static 'css_static/img/loading-io_spinner.gif' %}"/>
+                <span class="bigtext-2">Creating demo...</span>
+                <br/>
+                <span>Thank you for being patient <br/>while the sample images copy over :)</span>
+                <p>
+                    <a href="https://loading.io" target="_blank">Preloader image from loading.io</a>
+                </p>
+            </div>
+
+        </div>
+
+        <div>
+            <!-- chapter create form -->
+            {% include "flipbooks/includes/form_dynamic.html" with form=demo_chapter_create_form action_url=strip_create_url form_id="demo_chapter_create_form" btn_title='Start' %}
+            
+        </div>
+    </div>
+
+
+    <div class="hideable_content" id="msg_returning">
+        <h2>Welcome back! <span class="far fa-smile"/></h2>
+        <p id="msg">
+            You started a demo $$ ago. (id: $$)
+        </p>
+        <div style="height:70px;">
+            <button id="return_to_demo">Take me there! <span class="fas fa-angle-double-right"/></button>
+        </div>
+    </div>
+
+
+    <div class="hideable_content" id="msg_error">
+        <h2 class="color red">Oh no! <span class="far fa-sad-tear"/></h2>
+        <p id="msg">
+            <!-- msg -->
+        </p>
+        <p>
+            Sorry about this. Please try again later.
+        </p>
+    </div>
+
+
+{% endblock contentbox %}
+
+
+{% block extra_js %}
+    <script src="{% static 'frontend/startDemo.js' %}"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+{% endblock %}

@@ -143,6 +143,11 @@
     display:none; /*initially hidden*/
 }
 
+.contentbox.centering .hideable_content.show_anyway{
+    max-width: 450px;
+    display: block; /*initially hidden*/
+}
+
 
 
 
