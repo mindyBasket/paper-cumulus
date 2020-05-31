@@ -31,14 +31,14 @@ class Flipbook(models.Model):
     description = models.TextField(max_length=100, blank=True, default="")
 
     # TODO: make this NOT CASCADE. Kinda dangerous
-    series = models.ForeignKey(Series, on_delete=models.CASCADE, default=0)
+    series = models.ForeignKey(Series, on_delete=models.CASCADE, blank=True, null=True)
 
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         # https://docs.python.org/2/library/stdtypes.html#str.format
-        return "Flipbook #{} [id64: {}, title: {} ]".format(self.pk, self.id64, self.title)
+        return "Flipbook (#{}) [title: {}, series: #{}]".format(self.id64, self.title, self.series.id)
 
     def save(self, *args, **kwargs):  
         # check if this has base64 id
