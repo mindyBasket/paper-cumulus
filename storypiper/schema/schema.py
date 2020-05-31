@@ -19,11 +19,24 @@ class SeriesType(DjangoObjectType):
         model = models.Series
 
 class Query(graphene.ObjectType):
-    flipbooks = graphene.List(FlipbookType, search=graphene.String())
+    all_flipbooks = graphene.List(
+        FlipbookType,
+        search=graphene.String(),
+        first=graphene.Int(),
+        skip=graphene.Int(),
+    )
+
+    flipbook = graphene.Field(
+        FlipbookType,
+        id=graphene.Int(),
+        id64=graphene.String(),
+    )
+
     seriess = graphene.List(SeriesType)
 
-    def resolve_flipbooks(self, info, search=None, **kwargs):
-        # TODO: would be nice to be able to search series name also!
+    def resolve_all_flipbooks(self, info, search=None, first=None, skip=None, **kwargs):
+        flipbooks_queryset = models.Flipbook.objects.all()
+
         if search:
             filter = (
                 Q(title__icontains=search) |
@@ -31,9 +44,28 @@ class Query(graphene.ObjectType):
                 Q(series__title__icontains=search)
             )
             
-            return models.Flipbook.objects.filter(filter)
+            return flipbooks_queryset.filter(filter)
+        
+        if skip:
+            flipbooks_queryset = flipbooks_queryset[skip:]
 
-        return models.Flipbook.objects.all()
+        if first:
+            flipbooks_queryset = flipbooks_queryset[:first]
+
+        return flipbooks_queryset
+    
+    def resolve_flipbook(self, info, **kwargs):
+        # individual query
+        pk = kwargs.get('id')
+        id64 = kwargs.get('id64')
+
+        if pk is not None:
+            return models.Flipbook.objects.get(pk=pk)
+
+        if id64 is not None:
+            return models.Flipbook.objects.get(id64=id64)
+
+        return None
 
     def resolve_seriess(self, info, **kwargs):
         return models.Series.objects.all()
