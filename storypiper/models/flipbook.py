@@ -38,7 +38,10 @@ class Flipbook(models.Model):
 
     def __str__(self):
         # https://docs.python.org/2/library/stdtypes.html#str.format
-        return "Flipbook (#{}) [title: {}, series: #{}]".format(self.id64, self.title, self.series.id)
+        if self.series:
+            return "Flipbook (#{}) [title: {}, series: #{}]".format(self.id64, self.title, self.series.id)
+        else:
+            return "Flipbook (#{}) [title: {}, series: FREE RANGE]".format(self.id64, self.title)            
 
     def save(self, *args, **kwargs):  
         # check if this has base64 id
