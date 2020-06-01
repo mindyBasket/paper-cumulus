@@ -66,7 +66,7 @@ class Episode(models.Model):
 
     def save(self, *args, **kwargs):  
         # check if this has base64 id
-        if self._state.adding or self.id64 == '' or self.id64.length != ID_LENGTH:
+        if self._state.adding or self.id64 == '' or len(self.id64) != ID_LENGTH:
             self.id64 = get_id64()
 
         # 1. Check if valid children_li exists:
