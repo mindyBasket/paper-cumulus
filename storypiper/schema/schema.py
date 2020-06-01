@@ -12,6 +12,11 @@ from .. import models
 # Note: if you add new object here, make sure you update the "entry point" in
 #       proj_cumulus/schema.py
 
+# Interfaces
+# TODO: learn about Interfaces here: https://docs.graphene-python.org/en/latest/types/interfaces/
+# This a reminder for you add interface later for sake of practice
+
+
 # Graphene will automatically map the Category model's fields onto the CategoryNode.
 # This is configured in the CategoryNode's Meta class (as you can see below)
 
@@ -23,8 +28,6 @@ class SeriesNode(DjangoObjectType):
         interfaces = (relay.Node, )
     
     pk = graphene.Int(source='pk')
-
-
 
 class FlipbookNode(DjangoObjectType):
     class Meta:
@@ -48,10 +51,9 @@ class Query(graphene.ObjectType):
     series = relay.Node.Field(SeriesNode)
     all_seriess = DjangoFilterConnectionField(SeriesNode)
 
-class CreateFlipbook(graphene.relay.ClientIDMutation):    
-    flipbook = graphene.Field(FlipbookNode)
-
-    # Similar to "Argument", but you can pass a whole object into Input
+class CreateFlipbook(graphene.relay.ClientIDMutation):
+    # Similar to "Argument", but you can pass a whole object into Input.
+    # Note that "Argument" is depreciated in Graphene 2.0
     class Input:
         title = graphene.String()
         description = graphene.String() # there has to be a way to make this optional
@@ -74,6 +76,37 @@ class CreateFlipbook(graphene.relay.ClientIDMutation):
         flipbook.save()
 
         return CreateFlipbook(flipbook=flipbook)
+    
+    # output type
+    flipbook = graphene.Field(FlipbookNode) 
+
+class UpdateFlipbook(graphene.relay.ClientIDMutation):
+    class Input:
+        pk = graphene.Int(required=True)
+
+        title = graphene.String()
+        description = graphene.String()
+
+    def mutate_and_get_payload(root, info, **input):
+        # grab the flipbook?
+        pk = input.get('pk')
+        updated_flipbook = models.Flipbook.objects.filter(pk=pk).first()
+
+        if updated_flipbook:
+            for key, value in input.items():
+                if (key == 'title') and not value:
+                    raise Exception('A flipbook cannot have an empty title!')
+                else:
+                    setattr(updated_flipbook, key, value)
+        else:
+            raise Exception('Could not find Flipbook to edit!')
+
+        updated_flipbook.save()
+        return UpdateFlipbook(flipbook=updated_flipbook)
+
+    # output type
+    flipbook = graphene.Field(FlipbookNode)
 
 class Mutation(graphene.ObjectType):
     create_flipbook = CreateFlipbook.Field()
+    update_flipbook = UpdateFlipbook.Field()
