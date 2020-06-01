@@ -1,5 +1,7 @@
 import graphene
+from graphene import relay, ObjectType
 from graphene_django import DjangoObjectType
+from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
 from django.db.models import Q
@@ -10,97 +12,68 @@ from .. import models
 # Note: if you add new object here, make sure you update the "entry point" in
 #       proj_cumulus/schema.py
 
-class FlipbookType(DjangoObjectType):
-    class Meta:
-        model = models.Flipbook
+# Graphene will automatically map the Category model's fields onto the CategoryNode.
+# This is configured in the CategoryNode's Meta class (as you can see below)
 
-class SeriesType(DjangoObjectType):
+# More about ObjectType meta fields: https://docs.graphene-python.org/projects/django/en/latest/queries/
+class SeriesNode(DjangoObjectType):
     class Meta:
         model = models.Series
-
-class Query(graphene.ObjectType):
-    all_flipbooks = graphene.List(
-        FlipbookType,
-        search=graphene.String(),
-        first=graphene.Int(),
-        skip=graphene.Int(),
-    )
-
-    flipbook = graphene.Field(
-        FlipbookType,
-        id=graphene.Int(),
-        id64=graphene.String(),
-    )
-
-    seriess = graphene.List(SeriesType)
-
-    def resolve_all_flipbooks(self, info, search=None, first=None, skip=None, **kwargs):
-        flipbooks_queryset = models.Flipbook.objects.all()
-
-        if search:
-            filter = (
-                Q(title__icontains=search) |
-                Q(description__icontains=search) |
-                Q(series__title__icontains=search)
-            )
-            
-            return flipbooks_queryset.filter(filter)
-        
-        if skip:
-            flipbooks_queryset = flipbooks_queryset[skip:]
-
-        if first:
-            flipbooks_queryset = flipbooks_queryset[:first]
-
-        return flipbooks_queryset
+        filter_fields = ['title']
+        interfaces = (relay.Node, )
     
-    def resolve_flipbook(self, info, **kwargs):
-        # individual query
-        pk = kwargs.get('id')
-        id64 = kwargs.get('id64')
-
-        if pk is not None:
-            return models.Flipbook.objects.get(pk=pk)
-
-        if id64 is not None:
-            return models.Flipbook.objects.get(id64=id64)
-
-        return None
-
-    def resolve_seriess(self, info, **kwargs):
-        return models.Series.objects.all()
+    pk = graphene.Int(source='pk')
 
 
-class CreateFlipbook(graphene.Mutation):
-    # This must match what you return below
-    id64 = graphene.String()
-    title = graphene.String()
-    description = graphene.String()
-    series = graphene.Field(SeriesType)
 
-    class Arguments:
+class FlipbookNode(DjangoObjectType):
+    class Meta:
+        model = models.Flipbook
+        # Allow for some more advanced filtering here
+        filter_fields = {
+            'id64': ['exact'],
+            'title': ['exact', 'icontains', 'istartswith'],
+            'description': ['exact', 'icontains'],
+            'series__title': ['exact', 'icontains'],
+        }
+        interfaces = (relay.Node,)
+
+    pk = graphene.Int(source='pk')
+
+# Resolvers
+class Query(graphene.ObjectType):
+    flipbook = relay.Node.Field(FlipbookNode)
+    all_flipbooks = DjangoFilterConnectionField(FlipbookNode)
+
+    series = relay.Node.Field(SeriesNode)
+    all_seriess = DjangoFilterConnectionField(SeriesNode)
+
+class CreateFlipbook(graphene.relay.ClientIDMutation):    
+    flipbook = graphene.Field(FlipbookNode)
+
+    # Similar to "Argument", but you can pass a whole object into Input
+    class Input:
         title = graphene.String()
         description = graphene.String() # there has to be a way to make this optional
         series_id = graphene.Int()
 
-    def mutate(self, info, title, description="", series_id=None):
+    def mutate_and_get_payload(root, info, **input):
+        # user = info.context.user or None
         series = None
+        series_id = input.get('series_id')
         if series_id:
             series = models.Series.objects.filter(id=series_id).first()
             if not series:
                 raise Exception('Cannot find series with id {}!'.format(series_id))
 
-        flipbook = models.Flipbook(title=title, description=description, series=series)
+        flipbook = models.Flipbook(
+            title=input.get('title'),
+            description=input.get('description'),
+            series=series
+        )
         flipbook.save()
 
-        # respond with the newly created object
-        return CreateFlipbook(
-            id64=flipbook.id64,
-            title=flipbook.title,
-            description=flipbook.description,
-            series=flipbook.series,
-        )
+        return CreateFlipbook(flipbook=flipbook)
 
 class Mutation(graphene.ObjectType):
     create_flipbook = CreateFlipbook.Field()
-
