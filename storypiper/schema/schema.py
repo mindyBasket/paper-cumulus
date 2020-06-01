@@ -1,3 +1,4 @@
+import json
 import graphene
 from graphene import relay, ObjectType
 from graphene_django import DjangoObjectType
@@ -5,9 +6,7 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
 from django.db.models import Q
-
 from .. import models
-
 
 # Note: if you add new object here, make sure you update the "entry point" in
 #       proj_cumulus/schema.py
@@ -15,7 +14,6 @@ from .. import models
 # Interfaces
 # TODO: learn about Interfaces here: https://docs.graphene-python.org/en/latest/types/interfaces/
 # This a reminder for you add interface later for sake of practice
-
 
 # Graphene will automatically map the Category model's fields onto the CategoryNode.
 # This is configured in the CategoryNode's Meta class (as you can see below)
@@ -59,7 +57,8 @@ class CreateFlipbook(graphene.relay.ClientIDMutation):
         description = graphene.String() # there has to be a way to make this optional
         series_id = graphene.Int()
 
-    def mutate_and_get_payload(root, info, **input):
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, **input):
         # user = info.context.user or None
         series = None
         series_id = input.get('series_id')
@@ -87,7 +86,8 @@ class UpdateFlipbook(graphene.relay.ClientIDMutation):
         title = graphene.String()
         description = graphene.String()
 
-    def mutate_and_get_payload(root, info, **input):
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, **input):
         # grab the flipbook?
         pk = input.get('pk')
         updated_flipbook = models.Flipbook.objects.filter(pk=pk).first()
@@ -107,6 +107,48 @@ class UpdateFlipbook(graphene.relay.ClientIDMutation):
     # output type
     flipbook = graphene.Field(FlipbookNode)
 
+# TODO: eventually I would like to add an "archive" behavior, so that you can
+#       'undo' deletion.
+
+# Learn more about json dumps: https://docs.python.org/3/library/json.html
+class DeleteFlipbook(graphene.relay.ClientIDMutation):
+    # output type
+    response = graphene.String()
+
+    class Input:
+        gid = graphene.ID(required=True)
+
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, **input):
+        # pk = relay.Node.from_global_id(input.get('id'))[1]
+        # target_flipbook = models.Flipbook.objects.get(pk=pk)
+        target_flipbook = relay.Node.get_node_from_global_id(
+            info,
+            input.get('gid'),
+            only_type=FlipbookNode
+        )
+
+        if target_flipbook:
+
+            object_deleted = {
+                'id64': target_flipbook.id64,
+                'title': target_flipbook.title
+            }
+            if target_flipbook.series:
+                object_deleted['series__title'] = target_flipbook.series.title
+
+            response_json = {
+                'success': True,
+                'object_deleted': object_deleted
+            }
+
+            target_flipbook.delete()
+            return cls(response=json.dumps(response_json))
+
+        else:
+            raise Exception('Could not find Flipbook to delete!')
+
 class Mutation(graphene.ObjectType):
     create_flipbook = CreateFlipbook.Field()
     update_flipbook = UpdateFlipbook.Field()
+    delete_flipbook = DeleteFlipbook.Field()
