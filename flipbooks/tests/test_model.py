@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.test import TestCase
+import unittest
 
 from ..models import (
     Book,
@@ -15,9 +16,8 @@ from ..models import (
 
 # Run using 
 # python manage.py test flipbooks.tests.AnimalTestCase
-
+@unittest.skip("Will be replaced by GraphQL version")
 class ModelTestCase(TestCase):
-    
     def setUp(self):
         """Define the test client and other test variables."""
         self.scene = Scene(order=1, description="Test scene")
@@ -68,8 +68,7 @@ class ModelTestCase(TestCase):
     #     self.assertRaises(FooException, Thing, name='1234')
     
     
-    
-    
+@unittest.skip("Will be replaced by GraphQL version")
 class StripModelTestCase(TestCase):
     
     def setUp(self):
@@ -151,7 +150,7 @@ class StripModelTestCase(TestCase):
 
 # Run using 
 # python manage.py test flipbooks.tests.FrameModelTestCase
-
+@unittest.skip("Will be replaced by GraphQL version")
 class FrameModelTestCase(TestCase):
     
     def setUp(self):
@@ -231,7 +230,7 @@ class FrameModelTestCase(TestCase):
 
 # Run using 
 # python manage.py test flipbooks.tests.SignalsTestCase
-
+@unittest.skip("Will be replaced by GraphQL version")
 class SignalsTestCase(TestCase):
     
     def setUp(self):
