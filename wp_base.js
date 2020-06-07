@@ -7,6 +7,10 @@ module.exports = {
   devtool: 'source-map', // cheap-module-source-map is TOO CHEAP
 
   resolve: {
+    alias: {
+      // Please make tsconfig sync to this list
+      '@Storypiper': path.resolve(__dirname, 'storypiper_view/src'),
+    },
     // Add '.ts' and '.tsx' as resolvable extensions.
     extensions: ['.ts', '.tsx'],
   },
