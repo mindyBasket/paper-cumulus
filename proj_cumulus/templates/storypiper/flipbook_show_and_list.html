@@ -1,0 +1,29 @@
+{% extends "layouts/layout_plain.html" %}
+
+{% block title %} {{block.super}} | Storypiper view test{% endblock title %}
+
+{% block content %}
+    <p>
+        {{welcome_msg}}
+    </p>
+    
+    <p>
+        Test view that shows one target flipbook, and also list ALL flipbooks. 
+        I can test that a template can load one individual flipbook using the query param
+        passed in the url, but can also use graphQL to retrieve all flipbooks, or filtered.
+        <br/>
+        Note that the current targetted flipbook information is sent from Django server, and 
+        is stored in context. The information must carry into the react component.
+    </p>
+
+    
+
+    <hr/>
+    {% include "partials/react_entry.html" with react_entry_id='flipbook-test' %}
+
+{% endblock %}
+
+{% block internal_chunk_lib %}
+    {% load static %}
+    <script src="{% static 'js/storypiper_view.js' %}"></script>
+{% endblock %}

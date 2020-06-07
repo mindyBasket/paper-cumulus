@@ -7,8 +7,10 @@
         {{welcome_msg}}
     </p>
 
-    <h3>React entry below</h3>
-    {% block react_entry %}{{block.super}}{% endblock react_entry %}
+    <h3>React entry below: </h3>    
+    {% include "partials/react_entry.html" with react_entry_id='flipbook-test' %}
+
+    
 
 {% endblock %}
 

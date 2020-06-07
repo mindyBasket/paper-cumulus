@@ -50,7 +50,7 @@ urlpatterns = [
 
     # STORYPIPER SPACE BELOW
     # view
-    path('piper/', include(('storypiper_view.urls', 'storypiper_view'), namespace='storypiper_view')),
+    path('piper/', include(('storypiper.urls', 'storypiper'), namespace='storypiper')),
 
     #graphql, will replace RESTful api
     path('grphi/', csrf_exempt(GraphQLView.as_view(graphiql=True))),

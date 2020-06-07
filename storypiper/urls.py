@@ -8,6 +8,8 @@ from . import views as v
 urlpatterns = [
     #note: "/" = "{proj}/piper"
     re_path(r'^$', v.playground.test, name='playground-test'),
+    path('flipbook/', v.playground.test, name='playground-test'),
+    path('flipbook/<id64>/', v.ViewAllFlipbooks.as_view(), name='flipbook-detail-test'),
 ]
 
 if settings.DEBUG == True:
