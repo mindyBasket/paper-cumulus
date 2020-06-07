@@ -89,6 +89,7 @@ INSTALLED_APPS = [
     'flipbooks',
     'frontend',
     'storypiper',
+    'storypiper_view',
 ]
 
 MIDDLEWARE = [

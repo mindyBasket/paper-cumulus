@@ -29,7 +29,7 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    #standalone homepage
+    # standalone homepage
     # re_path(r'^$', views.home, name='home'),
     # Using demo page for now!
     re_path(r'^$', views.home_demo, name='home'),
@@ -37,7 +37,8 @@ urlpatterns = [
     # This doesn't work!
     # url(r'^.*$', RedirectView.as_view(url='flipbooks/chapter/0/', permanent=False), name='index'),
 
-    #flipbooks include
+    # Flipbooks include
+    # TODO: This is old now. Prepare to delete.
     path('flipbooks/', include(('flipbooks.urls','flipbooks'), namespace='flipbooks')),
 
     # frontend handler
@@ -46,6 +47,10 @@ urlpatterns = [
     #restful api
     #serializer
     re_path(r'^api/', include(('flipbooks.api.urls','flipbooks'), namespace='flipbooks-api')),
+
+    # STORYPIPER SPACE BELOW
+    # view
+    path('piper/', include(('storypiper_view.urls', 'storypiper_view'), namespace='storypiper_view')),
 
     #graphql, will replace RESTful api
     path('grphi/', csrf_exempt(GraphQLView.as_view(graphiql=True))),

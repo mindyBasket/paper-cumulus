@@ -1,0 +1,18 @@
+{% extends "layouts/layout_plain.html" %}
+
+{% block title %} {{block.super}} | Storypiper view test{% endblock title %}
+
+{% block content %}
+    <p>
+        {{welcome_msg}}
+    </p>
+
+    <h3>React entry below</h3>
+    {% block react_entry %}{{block.super}}{% endblock react_entry %}
+
+{% endblock %}
+
+{% block internal_chunk_lib %}
+    {% load static %}
+    <script src="{% static 'js/storypiper_view.js' %}"></script>
+{% endblock %}

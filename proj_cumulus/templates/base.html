@@ -22,6 +22,9 @@ dg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">-->
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
     
+    <!-- external libs -->
+    {% block external_libs %}
+    {% endblock %}
     
     <!-- external fonts -->
     <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
@@ -73,6 +76,10 @@ dg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">-->
         
     </div>
 
+    {% block react_entry %}
+      <div id="react_entry"></div>
+    {% endblock %}
+
     <!-- lightbox component -->
     <!--<div id="lightbox_bg"></div>-->
 
@@ -96,6 +103,9 @@ dg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">-->
     <script src="{% static 'js/form.js' %}"></script> -->
     
     {% block extra_js %}
+    {% endblock %}
+
+    {% block internal_chunk_lib %}
     {% endblock %}
   </body>
 </html>

@@ -30,7 +30,7 @@ STATIC_URL = '/static/'
 
 # Storage and serves
 
-# If /static/ above doesn't exist, it will look at the following paths.
+# If /static/ above doesn't exist (within an 'app'), it will look at the following paths.
 # Wait...this IS served directly when I run this app.
 # When production, static files are collected from here. 
 STATICFILES_DIRS = [ 
