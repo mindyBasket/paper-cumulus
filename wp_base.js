@@ -59,4 +59,9 @@ module.exports = {
     'react-dom': 'ReactDOM',
   },
 
+  watch: true,
+  watchOptions: {
+    ignored: /node_modules/,
+    aggregateTimeout: 600,
+  },
 };
