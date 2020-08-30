@@ -22,6 +22,7 @@ from django.views.generic.base import RedirectView
 from django.views.decorators.csrf import csrf_exempt
 
 from graphene_django.views import GraphQLView
+from proj_cumulus.schema import schema
 
 from . import views
 

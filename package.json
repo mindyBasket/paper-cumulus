@@ -14,7 +14,8 @@
     "hdeploy": "git push heroku master && heroku run python manage.py collectstatic --noinput --clear",
     "heroku-prebuild": "echo \"Heroku pre-build stage. No extra script added.\"",
     "heroku-postbuild": "npm run builddev && npm run sassBuild",
-    "hcollectstatic": "heroku run python manage.py collectstatic --noinput --clear"
+    "hcollectstatic": "heroku run python manage.py collectstatic --noinput --clear",
+    "gqlgen": "graphql-codegen --config codegen.yml"
   },
   "repository": {
     "type": "git",
@@ -28,9 +29,14 @@
   },
   "homepage": "https://github.com/blacksandbox/paper-cumulus#readme",
   "devDependencies": {
-    "@babel/core": "^7.10.2",
+    "@babel/core": "^7.11.4",
     "@babel/preset-env": "^7.10.2",
-    "@babel/preset-react": "^7.10.1",
+    "@babel/preset-react": "^7.10.4",
+    "@graphql-codegen/cli": "1.17.8",
+    "@graphql-codegen/introspection": "^1.17.8",
+    "@graphql-codegen/typescript": "^1.17.9",
+    "@graphql-codegen/typescript-operations": "^1.17.8",
+    "@graphql-codegen/typescript-react-apollo": "^2.0.6",
     "@types/react": "^16.9.35",
     "@types/react-dom": "^16.9.8",
     "babel-eslint": "^10.1.0",
@@ -50,9 +56,11 @@
     "webpack-cli": "^3.3.11"
   },
   "dependencies": {
+    "@apollo/client": "^3.1.4",
     "@shopify/draggable": "^1.0.0-beta.8",
     "axios": "^0.18.0",
-    "npm": "^6.14.5",
+    "graphql": "^15.3.0",
+    "npm": "^6.14.8",
     "prop-types": "^15.6.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
