@@ -1,13 +1,12 @@
-input CreateFlipbookInput {
-  title: String
-  description: String
-  seriesId: Int
-  clientMutationId: String
+type CreateFlipbook {
+  success: Boolean
+  flipbook: FlipbookType
 }
 
-type CreateFlipbookPayload {
-  flipbook: FlipbookNode
-  clientMutationId: String
+input CreateStoryletInput {
+  title: String!
+  description: String
+  seriesId: Int
 }
 
 """
@@ -17,122 +16,61 @@ value as specified by
 """
 scalar DateTime
 
-input DeleteFlipbookInput {
-  gid: ID!
-  clientMutationId: String
+interface DefaultInterface {
+  pk: ID!
+  title: String
 }
 
-type DeleteFlipbookPayload {
-  response: String
-  clientMutationId: String
+type DeletedFlipbookType {
+  title: String
 }
 
-type FlipbookNode implements Node {
-  """The ID of the object."""
-  id: ID!
+type DeleteFlipbook {
+  success: Boolean
+  flipbook: DeletedFlipbookType
+}
+
+type FlipbookType implements DefaultInterface {
   id64: String!
-  title: String!
   description: String!
-  series: SeriesNode
-  dateCreated: DateTime!
-  dateModified: DateTime!
-  pk: Int
-}
-
-type FlipbookNodeConnection {
-  """Pagination data for this connection."""
-  pageInfo: PageInfo!
-
-  """Contains the nodes in this connection."""
-  edges: [FlipbookNodeEdge]!
-}
-
-"""A Relay edge containing a `FlipbookNode` and its cursor."""
-type FlipbookNodeEdge {
-  """The item at the end of the edge"""
-  node: FlipbookNode
-
-  """A cursor for use in pagination"""
-  cursor: String!
+  series: SeriesType
+  pk: ID!
+  title: String
 }
 
 type Mutation {
-  createFlipbook(input: CreateFlipbookInput!): CreateFlipbookPayload
-  updateFlipbook(input: UpdateFlipbookInput!): UpdateFlipbookPayload
-  deleteFlipbook(input: DeleteFlipbookInput!): DeleteFlipbookPayload
-}
-
-"""An object with an ID"""
-interface Node {
-  """The ID of the object."""
-  id: ID!
-}
-
-"""
-The Relay compliant `PageInfo` type, containing data necessary to paginate this connection.
-"""
-type PageInfo {
-  """When paginating forwards, are there more items?"""
-  hasNextPage: Boolean!
-
-  """When paginating backwards, are there more items?"""
-  hasPreviousPage: Boolean!
-
-  """When paginating backwards, the cursor to continue."""
-  startCursor: String
-
-  """When paginating forwards, the cursor to continue."""
-  endCursor: String
+  createFlipbook(inputData: CreateStoryletInput!): CreateFlipbook
+  updateFlipbook(inputData: UpdateStoryletInput!): UpdateFlipbook
+  deleteFlipbook(pk: Int!): DeleteFlipbook
 }
 
 type Query {
-  """The ID of the object"""
-  flipbook(id: ID!): FlipbookNode
-  allFlipbooks(before: String, after: String, first: Int, last: Int, id64: String, title: String, title_Icontains: String, title_Istartswith: String, description: String, description_Icontains: String, series_Title: String, series_Title_Icontains: String): FlipbookNodeConnection
-
-  """The ID of the object"""
-  series(id: ID!): SeriesNode
-  allSeriess(before: String, after: String, first: Int, last: Int, title: String): SeriesNodeConnection
+  allFlipbooks(search: String, first: Int, skip: Int): [FlipbookType]
+  allFlipbooksByTitle(title: String): [FlipbookType]
+  flipbook(id: Int, id64: String): FlipbookType
+  seriess: [SeriesType]
 }
 
-type SeriesNode implements Node {
-  """The ID of the object."""
+type SeriesType implements DefaultInterface {
   id: ID!
-  title: String!
+  title: String
   slug: String!
   isDemo: Boolean!
   dateCreated: DateTime!
   dateModified: DateTime!
-  flipbookSet(before: String, after: String, first: Int, last: Int, id64: String, title: String, title_Icontains: String, title_Istartswith: String, description: String, description_Icontains: String, series_Title: String, series_Title_Icontains: String): FlipbookNodeConnection!
-  pk: Int
+  flipbookSet: [FlipbookType!]!
+  pk: ID!
 }
 
-type SeriesNodeConnection {
-  """Pagination data for this connection."""
-  pageInfo: PageInfo!
-
-  """Contains the nodes in this connection."""
-  edges: [SeriesNodeEdge]!
+type UpdateFlipbook {
+  success: Boolean
+  flipbook: FlipbookType
 }
 
-"""A Relay edge containing a `SeriesNode` and its cursor."""
-type SeriesNodeEdge {
-  """The item at the end of the edge"""
-  node: SeriesNode
-
-  """A cursor for use in pagination"""
-  cursor: String!
-}
-
-input UpdateFlipbookInput {
+input UpdateStoryletInput {
   pk: Int!
   title: String
   description: String
-  clientMutationId: String
-}
-
-type UpdateFlipbookPayload {
-  flipbook: FlipbookNode
-  clientMutationId: String
+  seriesId: Int
 }
 
