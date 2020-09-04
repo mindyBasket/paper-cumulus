@@ -14,6 +14,17 @@ class DefaultInterface(graphene.Interface):
     pk = graphene.ID(required=True)
     title = graphene.String(required=False)
 
+class CreateStoryletInput(graphene.InputObjectType):
+    title = graphene.String(required=True)
+    description = graphene.String()
+    seriesId = graphene.Int()
+
+class UpdateStoryletInput(graphene.InputObjectType):
+    pk = graphene.Int(required=True)
+    title = graphene.String()
+    description = graphene.String()
+    series_id = graphene.Int()
+
 # NOTE: Graphene will automatically map the Category model's fields onto the CategoryNode.
 # This is configured in the CategoryNode's Meta class (as you can see below)
 
@@ -29,9 +40,9 @@ class SeriesType(DjangoObjectType):
 class FlipbookType(DjangoObjectType):
     class Meta:
         model = models.Flipbook
-        fields = ('pk', 'id64', 'description', 'series',)
+        fields = ('id64', 'description', 'series',)
         interfaces = (DefaultInterface, )
-    
+
     # pk = graphene.Int(source='pk') # extra custom field
 
     # NOTE: define a custom get_queryset method to control filtering on the ObjectType level
@@ -47,14 +58,12 @@ class FlipbookType(DjangoObjectType):
 # ref: https://docs.graphene-python.org/en/latest/types/objecttypes/#default-resolver
 class DeletedFlipbookType(graphene.ObjectType):
     title = graphene.String()
-    # last_name = String()
 
     @staticmethod
     def resolve_title(parent, info):
         # Arg to this resolve will be a DICT.
         # Dict is not an object in Python. Don't access values using dot operators
         return parent['title']
-
 
 # Resolvers
 class Query(graphene.ObjectType):
@@ -125,12 +134,19 @@ class Query(graphene.ObjectType):
 
 class CreateFlipbook(graphene.Mutation):
     class Arguments:
-        title = graphene.String()
-        description = graphene.String() # there has to be a way to make this optional
-        series_id = graphene.Int()
+        # title = graphene.String()
+        # description = graphene.String()
+        # series_id = graphene.Int()
+        input_data = CreateStoryletInput(required=True)
 
-    def mutate(self, info, title, description="", series_id=None):
+    def mutate(self, info, input_data):
+        # TODO: wonder if I should use input_data.get()? It will return None
+        #       instead of AttributeError if the key does not exist.
         series = None
+        series_id = input_data.seriesId
+        title = input_data.title
+        description = input_data.description
+
         if series_id:
             series = models.Series.objects.filter(id=series_id).first()
             if not series:
@@ -150,18 +166,19 @@ class CreateFlipbook(graphene.Mutation):
 
 class UpdateFlipbook(graphene.Mutation):
     class Arguments:
-        pk = graphene.Int(required=True)
-        title = graphene.String()
-        description = graphene.String()
-        series_id = graphene.Int()
+        input_data = UpdateStoryletInput(required=True)
 
     @classmethod
-    def mutate(cls, root, info, **input):
-        pk = input.get('pk')
+    def mutate(cls, root, info, input_data):
+        # Old way
+        # def mutate(cls, root, info, **input):
+        #     pk = input.get('pk')
+
+        pk = input_data.pk
         updated_flipbook = models.Flipbook.objects.filter(pk=pk).first()
 
         if updated_flipbook:
-            for key, value in input.items():
+            for key, value in input_data.items():
                 if (key == 'title') and not value:
                     raise GraphQLError('A flipbook cannot have an empty title!')
                 else:
@@ -194,14 +211,12 @@ class DeleteFlipbook(graphene.Mutation):
             }
 
             target_flipbook.delete()
-            print("Object deleted!")
             return cls(
                 success=True,
                 flipbook=object_deleted
             )
         else:
             raise GraphQLError('Could not find Flipbook to delete!') # can also use Exception()
-        
 
     success = graphene.Boolean()
     flipbook = graphene.Field(DeletedFlipbookType)
