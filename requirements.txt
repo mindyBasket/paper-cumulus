@@ -13,7 +13,7 @@ cffi==1.14.0
 chardet==3.0.4
 colorama==0.4.3
 configobj==5.0.6
-cryptography==2.9.2
+cryptography==3.2
 cycler==0.10.0
 decorator==4.4.2
 distlib==0.3.0
