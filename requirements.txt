@@ -59,7 +59,7 @@ numpy==1.18.4
 oauth==1.0.1
 oauthlib==3.1.0
 packaging==20.4
-paramiko==2.7.1
+paramiko==2.10.1
 parso==0.7.0
 pbr==5.4.5
 pexpect==4.8.0
